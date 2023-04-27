@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MerchandiseGroup {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Long id;
 
     // 제품 카테고리, 지연로딩 및 Cascade 설정
@@ -30,9 +30,9 @@ public class MerchandiseGroup {
 
     // 성별 그룹, 지연로딩 및 Cascade 설정
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "age_group_id")
+    @JoinColumn(name = "age_gender_group_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private AgeGroup ageGroup;
+    private AgeGenderGroup ageGenderGroup;
 
     // 제품 용도, 지연로딩 및 Cascade 설정
     @ManyToOne(fetch = FetchType.LAZY)
@@ -47,7 +47,7 @@ public class MerchandiseGroup {
     private Store provider;
 
     // 제품 설명
-    @Column(length = 1000)
+    @Column(columnDefinition = "LONGTEXT")
     private String description;
 
     // 정가
@@ -64,13 +64,13 @@ public class MerchandiseGroup {
     private Short fashionYear;
 
     @Builder
-    public MerchandiseGroup(Long id, MerchandiseCategory category, MerchandiseType type, AgeGroup ageGroup,
+    public MerchandiseGroup(Long id, MerchandiseCategory category, MerchandiseType type, AgeGenderGroup ageGenderGroup,
                             MerchandiseUsage usage, Store provider, String description, Integer price, Integer discountedPrice,
                             String season, Short fashionYear) {
         this.id = id;
         this.category = category;
         this.type = type;
-        this.ageGroup = ageGroup;
+        this.ageGenderGroup = ageGenderGroup;
         this.usage = usage;
         this.provider = provider;
         this.description = description;
