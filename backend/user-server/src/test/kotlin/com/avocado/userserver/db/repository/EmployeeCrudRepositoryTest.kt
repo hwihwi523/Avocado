@@ -16,15 +16,22 @@ class EmployeeCrudRepositoryTest {
     @Test
     suspend fun `테스트`() {
 
-//        runBlocking{
-//            val cnt = employeeCrudRepository.count()
-//            print(employeeCrudRepository.findAll())
-//            println(cnt)
-//        }
+        runBlocking{
+            val cnt = employeeCrudRepository.count()
+            print(employeeCrudRepository.findAll())
+            println(cnt)
+        }
     }
 
     @Test
     fun `테스트2`() {
 //        print(employeeCrudRepository.count())
     }
+
+    @Test
+    fun `test find`() {
+        print(employeeCrudRepository.findAllByFirstname("1"))
+
+    }
+
 }
