@@ -10,8 +10,8 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AgeGroup {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class AgeGenderGroup {
+    @Id
     private Short id;
 
     // 성별 (한국어)
@@ -23,7 +23,7 @@ public class AgeGroup {
     private String nameEng;
 
     @Builder
-    public AgeGroup(Short id, String nameKor, String nameEng) {
+    public AgeGenderGroup(Short id, String nameKor, String nameEng) {
         this.id = id;
         this.nameKor = nameKor;
         this.nameEng = nameEng;
