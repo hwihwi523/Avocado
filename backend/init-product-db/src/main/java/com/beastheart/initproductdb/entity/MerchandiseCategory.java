@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MerchandiseCategory {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Short id;
 
     // 카테고리명 (한국어)

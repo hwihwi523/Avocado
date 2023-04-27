@@ -15,7 +15,7 @@ import java.time.ZoneId;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Merchandise {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Long id;
 
     // 제품군

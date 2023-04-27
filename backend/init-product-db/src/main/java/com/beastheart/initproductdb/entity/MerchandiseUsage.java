@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MerchandiseUsage {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Short id;
 
     // 제품 용도 (한국어)
