@@ -1,6 +1,10 @@
 //컴포넌트를 만들 때 테스트 하는 곳
 
+<<<<<<< Updated upstream
 import Image from "next/image";
+=======
+
+>>>>>>> Stashed changes
 import {Stack } from "@mui/material";
 
 
@@ -10,10 +14,15 @@ const Bottom = (props:any) => {
         <div>
             <h1>바텀 만들기~~</h1>
             <Stack direction="row" spacing={2}>
+<<<<<<< Updated upstream
                 <Image>
                         
                 </Image>
             </Stack>
+=======
+        
+</Stack>
+>>>>>>> Stashed changes
         </div>
     )
 }
