@@ -1,28 +1,29 @@
 import styled from "@emotion/styled";
 import { Stack } from "@mui/material";
-import Image from "next/image";
-import IconButton from "@mui/material/IconButton";
-import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 
 
-const MobileHeader = (props: any) => {
-  return (
-    <>
-      <HeaderBackground>
-        <Stack direction={"row"} justifyContent="space-between">
-          <Image src="/asset/images/logo.png" height={100} width={100} alt="logo" />
-          <IconButton>
-            <ShoppingCartOutlinedIcon fontSize="large" />
-          </IconButton>
-        </Stack>
-      </HeaderBackground>
-    </>
-  );
+const UserProfile = (props: any) => {
+    const { avatar, mbti, persenalColor, grade} = props
+    //예시
+
+    return(
+        <>
+            <Background>
+
+
+            </Background>
+        </>
+    )
+    
+  
 };
 
-export default MobileHeader;
+export default UserProfile;
 
-const HeaderBackground = styled.div`
-  width: 100%;
-  padding: 5px;
-`;
+const Background = styled.div`
+    border:1px solid #dddddd;
+    border-radius : 10px;
+
+`
+
+
