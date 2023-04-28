@@ -6,9 +6,7 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface ProviderRepository : CoroutineCrudRepository<Provider, Int>
-//interface ProviderRepository : ReactiveCrudRepository<Provider, Int>
-
+interface ProviderRepository : CoroutineCrudRepository<Provider, ByteArray>
 {
-
+    suspend fun findByEmail(email:String): Provider?
 }
