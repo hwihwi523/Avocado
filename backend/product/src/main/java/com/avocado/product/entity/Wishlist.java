@@ -10,9 +10,10 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "interest")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Interest {
+public class Wishlist {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -29,7 +30,7 @@ public class Interest {
     private Merchandise merchandise;
 
     @Builder
-    public Interest(Long id, Consumer consumer, Merchandise merchandise) {
+    public Wishlist(Long id, Consumer consumer, Merchandise merchandise) {
         this.id = id;
         this.consumer = consumer;
         this.merchandise = merchandise;
