@@ -55,22 +55,22 @@ public class Merchandise {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    @Builder
-    public Merchandise(Long id, MerchandiseGroup group, Color baseColor, Color color1, Color color2,
-                       String name, String imgurl, Integer inventory, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
-        this.group = group;
-        this.baseColor = baseColor;
-        this.color1 = color1;
-        this.color2 = color2;
-        this.name = name;
-        this.imgurl = imgurl;
-        this.inventory = inventory;
-        this.createdAt = createdAt != null
-                ? createdAt
-                : LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-        this.updatedAt = updatedAt != null
-                ? updatedAt
-                : this.createdAt;
-    }
+//    @Builder
+//    public Merchandise(Long id, MerchandiseGroup group, Color baseColor, Color color1, Color color2,
+//                       String name, String imgurl, Integer inventory, LocalDateTime createdAt, LocalDateTime updatedAt) {
+//        this.id = id;
+//        this.group = group;
+//        this.baseColor = baseColor;
+//        this.color1 = color1;
+//        this.color2 = color2;
+//        this.name = name;
+//        this.imgurl = imgurl;
+//        this.inventory = inventory;
+//        this.createdAt = createdAt != null
+//                ? createdAt
+//                : LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+//        this.updatedAt = updatedAt != null
+//                ? updatedAt
+//                : this.createdAt;
+//    }
 }

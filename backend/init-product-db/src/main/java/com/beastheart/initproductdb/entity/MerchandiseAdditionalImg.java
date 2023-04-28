@@ -27,10 +27,10 @@ public class MerchandiseAdditionalImg {
     // 이미지 URL
     private String imgurl;
 
-    @Builder
-    public MerchandiseAdditionalImg(String kind, Merchandise merchandise, String imgurl) {
-        this.kind = kind;
-        this.merchandise = merchandise;
-        this.imgurl = imgurl;
-    }
+//    @Builder
+//    public MerchandiseAdditionalImg(String kind, Merchandise merchandise, String imgurl) {
+//        this.kind = kind;
+//        this.merchandise = merchandise;
+//        this.imgurl = imgurl;
+//    }
 }

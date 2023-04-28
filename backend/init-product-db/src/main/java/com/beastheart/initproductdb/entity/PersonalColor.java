@@ -20,9 +20,9 @@ public class PersonalColor {
     @Column(length = 100)
     private String kind;
 
-    @Builder
-    public PersonalColor(Byte id, String kind) {
-        this.id = id;
-        this.kind = kind;
-    }
+//    @Builder
+//    public PersonalColor(Byte id, String kind) {
+//        this.id = id;
+//        this.kind = kind;
+//    }
 }

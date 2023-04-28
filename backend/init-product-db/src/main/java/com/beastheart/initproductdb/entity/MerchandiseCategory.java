@@ -22,10 +22,10 @@ public class MerchandiseCategory {
     @Column(length = 100)
     private String nameEng;
 
-    @Builder
-    public MerchandiseCategory(Short id, String nameKor, String nameEng) {
-        this.id = id;
-        this.nameKor = nameKor;
-        this.nameEng = nameEng;
-    }
+//    @Builder
+//    public MerchandiseCategory(Short id, String nameKor, String nameEng) {
+//        this.id = id;
+//        this.nameKor = nameKor;
+//        this.nameEng = nameEng;
+//    }
 }

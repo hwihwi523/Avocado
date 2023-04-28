@@ -22,10 +22,10 @@ public class AgeGenderGroup {
     @Column(length = 30)
     private String nameEng;
 
-    @Builder
-    public AgeGenderGroup(Short id, String nameKor, String nameEng) {
-        this.id = id;
-        this.nameKor = nameKor;
-        this.nameEng = nameEng;
-    }
+//    @Builder
+//    public AgeGenderGroup(Short id, String nameKor, String nameEng) {
+//        this.id = id;
+//        this.nameKor = nameKor;
+//        this.nameEng = nameEng;
+//    }
 }

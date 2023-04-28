@@ -22,10 +22,10 @@ public class Color {
     @Column(length = 30)
     private String nameEng;
 
-    @Builder
-    public Color(Long id, String nameKor, String nameEng) {
-        this.id = id;
-        this.nameKor = nameKor;
-        this.nameEng = nameEng;
-    }
+//    @Builder
+//    public Color(Long id, String nameKor, String nameEng) {
+//        this.id = id;
+//        this.nameKor = nameKor;
+//        this.nameEng = nameEng;
+//    }
 }

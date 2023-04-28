@@ -63,20 +63,20 @@ public class MerchandiseGroup {
     // 판매 연도
     private Short fashionYear;
 
-    @Builder
-    public MerchandiseGroup(Long id, MerchandiseCategory category, MerchandiseType type, AgeGenderGroup ageGenderGroup,
-                            MerchandiseUsage usage, Store provider, String description, Integer price, Integer discountedPrice,
-                            String season, Short fashionYear) {
-        this.id = id;
-        this.category = category;
-        this.type = type;
-        this.ageGenderGroup = ageGenderGroup;
-        this.usage = usage;
-        this.provider = provider;
-        this.description = description;
-        this.price = price;
-        this.discountedPrice = discountedPrice;
-        this.season = season;
-        this.fashionYear = fashionYear;
-    }
+//    @Builder
+//    public MerchandiseGroup(Long id, MerchandiseCategory category, MerchandiseType type, AgeGenderGroup ageGenderGroup,
+//                            MerchandiseUsage usage, Store provider, String description, Integer price, Integer discountedPrice,
+//                            String season, Short fashionYear) {
+//        this.id = id;
+//        this.category = category;
+//        this.type = type;
+//        this.ageGenderGroup = ageGenderGroup;
+//        this.usage = usage;
+//        this.provider = provider;
+//        this.description = description;
+//        this.price = price;
+//        this.discountedPrice = discountedPrice;
+//        this.season = season;
+//        this.fashionYear = fashionYear;
+//    }
 }

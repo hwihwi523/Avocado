@@ -20,9 +20,9 @@ public class MBTI {
     @Column(columnDefinition = "CHAR(4)")
     private String kind;
 
-    @Builder
-    public MBTI(Byte id, String kind) {
-        this.id = id;
-        this.kind = kind;
-    }
+//    @Builder
+//    public MBTI(Byte id, String kind) {
+//        this.id = id;
+//        this.kind = kind;
+//    }
 }
