@@ -38,12 +38,7 @@ const Commercials = (props: any) => {
               router.push("product/detail/" + item.id);
             }}
           >
-            <img
-              src={item.img_url}
-              alt="광고 이미지"
-              width="370"
-              height="230"
-            />
+            <img src={item.img_url} alt="광고 이미지" width={"100%"} height={"180px"} />
           </div>
         ))}
       </Carousel>
@@ -53,8 +48,9 @@ const Commercials = (props: any) => {
 
 export default Commercials;
 
-
 const Commercial = styled.div`
-  width:100vw;
-  margin:10px;
-`
+  width: 100%;
+  height:200px;
+  padding:10px;
+  box-sizing:border-box;
+`;
