@@ -88,7 +88,7 @@ const ProductCard = (props: any) => {
           <Grid item xs={12}>
             <Stack direction={"row"} justifyContent={"space-between"}>
               <Typography variant="body1">{price - discount}원</Typography>
-              <Typography variant="body1" color="error">
+              <Typography variant="body1" color="error" style={{fontWeight:"bold"}}>
                 {Math.ceil((discount / price) * 100)}%
               </Typography>
             </Stack>
