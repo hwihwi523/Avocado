@@ -24,6 +24,7 @@ class ProviderServiceImpl(
         val provider: Provider = providerRepository.findByEmail(req.email) ?: throw RuntimeException("존재하지 않는 아이디입니다.")
         
         // 2. 비밀번호 hash로 변환해서 일치하는지 확인하기. (일치하지 않으면 LoginPasswordException 내기)
+
         
         
         // 3. JWT 토큰 발급하기
