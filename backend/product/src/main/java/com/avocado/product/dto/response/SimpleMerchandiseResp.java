@@ -35,7 +35,7 @@ public class SimpleMerchandiseResp {
     public void updatePersonalColor(String personal_color) {
         this.personal_color = personal_color;
     }
-    public void updateAgeGroup(Short ageGroup) {
-        this.age_group = age_group + "대";
+    public void updateAgeGroup(String ageGroup) {
+        this.age_group = ageGroup + "대";
     }
 }
