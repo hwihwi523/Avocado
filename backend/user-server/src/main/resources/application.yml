@@ -3,3 +3,20 @@ spring:
     url: r2dbc:mysql://localhost:3306/test_data?serverTimezone=UTC&characterEncoding=UTF-8
     username: root
     password: ssafy
+
+
+oauth2:
+  kakao:
+    client_id: 34142e13b083ba5a3335330cc8cdaf5e
+    client_secret: S9Yo9z0PJ5CKj8HAMH2QwJsPqxYm6ICc
+    redirect_uri: https://k8a506.p.ssafy.io/api/users/oauth2/kakao/redirect
+    token_uri: https://kauth.kakao.com/oauth/token
+
+jwt:
+  issuer: avocado.com
+  secret: e52713a2bd59e655ffd78ed74fafc5b29a2001d586949e55792e2f1a5b1f3d8ffb9d132354932bdf
+  access_expiration: 21600000
+  refresh_expiration: 1296000000
+
+front:
+  redirect_uri: https://k8a506.p.ssafy.io/redirect
