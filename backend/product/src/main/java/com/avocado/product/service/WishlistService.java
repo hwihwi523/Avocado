@@ -27,9 +27,7 @@ public class WishlistService {
     private final ConsumerRepository consumerRepository;
 
     // 퍼스널컬러, MBTI, 나이대 등 개인화 정보를 조회하기 위한 repo
-    private final PersonalColorScoreRepository personalColorScoreRepository;
-    private final MbtiScoreRepository mbtiScoreRepository;
-    private final AgeGenderScoreRepository ageGenderScoreRepository;
+    private final ScoreRepository scoreRepository;
 
     @Transactional
     public void addProductToWishlist(Long merchandiseId, UUID consumerId) {
@@ -71,9 +69,9 @@ public class WishlistService {
         myWishlist.forEach((wishlist) -> myWishlistIds.add(wishlist.getMerchandise_id()));
 
         // IN 쿼리로 퍼스널컬러, MBTI, 나이대 각각 한 번에 조회
-        List<ScoreDTO> personalColors = personalColorScoreRepository.findPersonalColors(myWishlistIds);
-        List<ScoreDTO> mbtis = mbtiScoreRepository.findMbtis(myWishlistIds);
-        List<ScoreDTO> ages = ageGenderScoreRepository.findAges(myWishlistIds);
+        List<ScoreDTO> personalColors = scoreRepository.findPersonalColors(myWishlistIds);
+        List<ScoreDTO> mbtis = scoreRepository.findMbtis(myWishlistIds);
+        List<ScoreDTO> ages = scoreRepository.findAges(myWishlistIds);
 
         // 최대 점수를 갖는 퍼스널컬러, MBTI, 나이대 구하기
         Map<Long, MaxScoreDTO> maxPersonalColors = getMaxScores(personalColors);
