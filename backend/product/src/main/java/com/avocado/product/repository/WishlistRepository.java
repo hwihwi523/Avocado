@@ -1,5 +1,7 @@
 package com.avocado.product.repository;
 
+import com.avocado.product.dto.query.QSimpleMerchandiseDTO;
+import com.avocado.product.dto.query.SimpleMerchandiseDTO;
 import com.avocado.product.entity.Wishlist;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -8,11 +10,16 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.avocado.product.entity.QCart.cart;
 import static com.avocado.product.entity.QConsumer.consumer;
 import static com.avocado.product.entity.QMerchandise.merchandise;
+import static com.avocado.product.entity.QMerchandiseCategory.merchandiseCategory;
+import static com.avocado.product.entity.QMerchandiseGroup.merchandiseGroup;
+import static com.avocado.product.entity.QStore.store;
 import static com.avocado.product.entity.QWishlist.wishlist;
 
 @Repository
@@ -47,6 +54,36 @@ public class WishlistRepository {
                         eqConsumerId(consumerId)  // 구매자 ID 조건
                 )
                 .fetchFirst();
+    }
+
+    /**
+     * 특정 사용자의 찜 목록을 찜 ID 내림차순으로 정렬하여 조회
+     * @param consumerId : 소비자 ID
+     * @return : 조회 데이터
+     */
+    public List<SimpleMerchandiseDTO> findMyWishlist(UUID consumerId) {
+        return queryFactory
+                .select(new QSimpleMerchandiseDTO(
+                        wishlist.id,
+                        store.name,
+                        merchandise.id,
+                        merchandiseCategory.nameKor,
+                        merchandise.name,
+                        merchandiseGroup.price,
+                        merchandiseGroup.discountedPrice,
+                        merchandise.totalScore.divide(merchandise.reviewCount).floatValue().as("score")
+                ))
+                .from(wishlist)
+                .join(wishlist.consumer, consumer)
+                .join(wishlist.merchandise, merchandise)
+                .join(merchandise.group, merchandiseGroup)
+                .join(merchandiseGroup.provider, store)
+                .join(merchandiseGroup.category, merchandiseCategory)
+                .where(
+                        eqConsumerId(consumerId)
+                )
+                .orderBy(wishlist.id.desc())
+                .fetch();
     }
 
     // 찜 ID 일치 여부
