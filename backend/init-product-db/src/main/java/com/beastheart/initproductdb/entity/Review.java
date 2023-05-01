@@ -24,6 +24,12 @@ public class Review {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Consumer consumer;
 
+    // 상품 ID
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "merchandise_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Merchandise merchandise;
+
     // 댓글 내용
     private String content;
 
@@ -35,10 +41,11 @@ public class Review {
     private LocalDateTime updatedAt;
 
     @Builder
-    public Review(Long id, Consumer consumer, String content, Byte score,
+    public Review(Long id, Consumer consumer, Merchandise merchandise, String content, Byte score,
                   LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.consumer = consumer;
+        this.merchandise = merchandise;
         this.content = content;
         this.score = score;
         this.createdAt = createdAt != null
