@@ -25,9 +25,7 @@ public class CartService {
     private final MerchandiseRepository merchandiseRepository;
 
     // 대표 퍼스널컬러, MBTI, 나이대 조회용 repo
-    private final PersonalColorScoreRepository personalColorScoreRepository;
-    private final MbtiScoreRepository mbtiScoreRepository;
-    private final AgeGenderScoreRepository ageGenderScoreRepository;
+    private final ScoreRepository scoreRepository;
 
     /**
      * 장바구니 내역 등록
@@ -69,9 +67,9 @@ public class CartService {
         myCart.forEach((cart) -> myCartIds.add(cart.getMerchandise_id()));
 
         // IN 쿼리로 퍼스널컬러, MBTI, 나이대 각각 한 번에 조회
-        List<ScoreDTO> personalColors = personalColorScoreRepository.findPersonalColors(myCartIds);
-        List<ScoreDTO> mbtis = mbtiScoreRepository.findMbtis(myCartIds);
-        List<ScoreDTO> ages = ageGenderScoreRepository.findAges(myCartIds);
+        List<ScoreDTO> personalColors = scoreRepository.findPersonalColors(myCartIds);
+        List<ScoreDTO> mbtis = scoreRepository.findMbtis(myCartIds);
+        List<ScoreDTO> ages = scoreRepository.findAges(myCartIds);
 
         // 최대 점수를 갖는 퍼스널컬러, MBTI, 나이대 구하기
         Map<Long, MaxScoreDTO> maxPersonalColors = getMaxScores(personalColors);
