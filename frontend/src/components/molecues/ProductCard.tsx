@@ -15,15 +15,8 @@ import { useRouter } from "next/router";
 const ProductCard = (props: any) => {
   const router = useRouter();
 
-  //const { id, img_url, price, discount, brand, isBookmark, tags }= props;
-  const img_url =
-    "https://img.freepik.com/free-photo/japanese-business-concept-with-business-person_23-2149268012.jpg?w=740&t=st=1682738359~exp=1682738959~hmac=4714981d0d5d09c27675131f07ee4ca11b7d6b57c39febce3e83bb918d3e129b";
-  const price = 32000;
-  const discount = 10000;
-  const brand = "MUJI";
-  const isBookmark = true;
-  const tags = ["ESFP", "SPRING", "상의"];
-  const id = 123123;
+  const { id, img_url, price, discount, brand, isBookmark, tags }= props.data;
+  
 
   const [bookmark, setBookmark] = useState(isBookmark);
 

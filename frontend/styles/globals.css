@@ -18,15 +18,19 @@
  */
 
 
+ @font-face {
+   font-family: "InkLipquid"; 
+   font-weight: 200;
+   src: url("/fonts/InkLipquidFonts.ttf") format("truetype");
+ }
 
 body {
   padding: 0;
   margin: 0;
   font-family: -apple-system, InkLipquid, sans-serif;
+  
 }
 
-@font-face {
-  font-family: "InkLipquid"; 
-  font-weight: 200;
-  src: url("/fonts/InkLipquidFonts.ttf") format("truetype");
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera*/
 }
