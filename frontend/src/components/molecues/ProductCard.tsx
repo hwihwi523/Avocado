@@ -11,12 +11,12 @@ import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlin
 import BookmarkOutlinedIcon from "@mui/icons-material/BookmarkOutlined";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 const ProductCard = (props: any) => {
   const router = useRouter();
 
-  const { id, img_url, price, discount, brand, isBookmark, tags }= props.data;
-  
+  const { id, img_url, price, discount, brand, isBookmark, tags } = props.data;
 
   const [bookmark, setBookmark] = useState(isBookmark);
 
@@ -30,14 +30,11 @@ const ProductCard = (props: any) => {
       <Card onClick={pageMove}>
         {/* 이미지 */}
         <Imagebox>
-          <img
+          <Image
             src={img_url}
             alt="제품 이미지"
-            style={{
-              objectFit: "cover",
-              objectPosition: "center",
-              height: "100%",
-            }}
+            fill
+            style={{ objectFit: "cover" }}
           />
         </Imagebox>
 
@@ -81,7 +78,11 @@ const ProductCard = (props: any) => {
           <Grid item xs={12}>
             <Stack direction={"row"} justifyContent={"space-between"}>
               <Typography variant="body1">{price - discount}원</Typography>
-              <Typography variant="body1" color="error" style={{fontWeight:"bold"}}>
+              <Typography
+                variant="body1"
+                color="error"
+                style={{ fontWeight: "bold" }}
+              >
                 {Math.ceil((discount / price) * 100)}%
               </Typography>
             </Stack>
@@ -133,10 +134,8 @@ const Card = styled.div`
 `;
 
 const Imagebox = styled.div`
+  position: relative;
   width: 100%;
   height: 180px;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
   margin-bottom: 10px;
 `;
