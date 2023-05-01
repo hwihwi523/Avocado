@@ -3,17 +3,15 @@ package com.avocado.product.repository;
 import com.avocado.product.dto.query.CartDTO;
 import com.avocado.product.dto.query.QCartDTO;
 import com.avocado.product.entity.Cart;
-import com.avocado.product.entity.QMerchandise;
-import com.avocado.product.entity.QMerchandiseGroup;
-import com.avocado.product.entity.QStore;
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.rmi.server.UID;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,16 +40,14 @@ public class CartRepository {
 
     /**
      * 장바구니 내역 단건 조회
-     * @param consumerId : 소비자 ID
-     * @param merchandiseId : 상품 ID
+     * @param cartId : 장바구니 ID
      * @return : 장바구니 단건 내역
      */
-    public Cart findByConsumerIdAndMerchandiseId(UUID consumerId, Long merchandiseId) {
+    public Cart findByConsumerIdAndMerchandiseId(Long cartId) {
         return queryFactory
                 .selectFrom(cart)
                 .where(
-                        eqConsumerId(consumerId),
-                        eqMerchandiseId(merchandiseId)
+                        eqCartId(cartId)
                 )
                 .fetchFirst();
     }
@@ -66,15 +62,17 @@ public class CartRepository {
                 .select(new QCartDTO(
                         cart.id,
                         store.name,
+                        merchandise.id,
                         merchandise.name,
                         merchandiseGroup.price,
-                        merchandiseGroup.discountedPrice
+                        merchandiseGroup.discountedPrice,
+                        merchandise.totalScore.divide(merchandise.reviewCount).floatValue().as("score")
                 ))
                 .from(cart)
-                .join(cart.consumer, consumer).fetchJoin()
-                .join(cart.merchandise, merchandise).fetchJoin()
-                .join(merchandise.group, merchandiseGroup).fetchJoin()
-                .join(merchandiseGroup.provider, store).fetchJoin()
+                .join(cart.consumer, consumer)
+                .join(cart.merchandise, merchandise)
+                .join(merchandise.group, merchandiseGroup)
+                .join(merchandiseGroup.provider, store)
                 .where(
                         eqConsumerId(consumerId)
                 )
@@ -82,6 +80,9 @@ public class CartRepository {
                 .fetch();
     }
 
+    private BooleanExpression eqCartId(Long cartId) {
+        return cartId != null ? cart.id.eq(cartId) : null;
+    }
     private BooleanExpression eqConsumerId(UUID consumerId) {
         return consumerId != null ? consumer.id.eq(consumerId) : null;
     }
