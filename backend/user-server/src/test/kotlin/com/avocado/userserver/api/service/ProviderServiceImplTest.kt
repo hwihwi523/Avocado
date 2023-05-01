@@ -1,6 +1,7 @@
 package com.avocado.userserver.api.service
 
 import com.avocado.userserver.db.entity.Provider
+import com.avocado.userserver.db.repository.ProviderRepository
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -13,7 +14,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @WebFluxTest(ProviderService::class)
 @ExtendWith(SpringExtension::class)
 internal class ProviderServiceImplTest @Autowired constructor(
-    private val providerService: ProviderService
+    private val providerService: ProviderService,
+    private val providerRepository: ProviderRepository
 ) {
 
     @Test
@@ -21,7 +23,7 @@ internal class ProviderServiceImplTest @Autowired constructor(
         runBlocking {
             val id:ByteArray = "A15DEE5DE3FF11ED89BF8CB0E9DBB87D".decodeHex()
             println(id)
-            val member: Provider? = providerService.findMemberById(id)
+            val member: Provider? = providerRepository.findById(id)
             println(member)
         }
     }

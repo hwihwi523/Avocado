@@ -15,6 +15,6 @@ class ProviderController @Autowired constructor(
 
     @PostMapping("/provider/login")
     suspend fun login(@RequestBody req: ProviderLoginReq): ResponseEntity<Any> {
-
+        return ResponseEntity.ok().body(providerService.login(req))
     }
 }

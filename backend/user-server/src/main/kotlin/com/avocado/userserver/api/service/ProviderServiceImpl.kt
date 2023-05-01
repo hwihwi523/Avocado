@@ -2,16 +2,20 @@ package com.avocado.userserver.api.service
 
 import com.avocado.userserver.api.request.ProviderLoginReq
 import com.avocado.userserver.api.response.ProviderLoginResp
+import com.avocado.userserver.common.error.BaseException
+import com.avocado.userserver.common.error.ResponseCode
 import com.avocado.userserver.db.entity.Provider
 import com.avocado.userserver.db.repository.ProviderRepository
+import org.mindrot.jbcrypt.BCrypt
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.lang.RuntimeException
 
 @Service
 class ProviderServiceImpl(
-    @Autowired val providerRepository: ProviderRepository
+    @Autowired val providerRepository: ProviderRepository,
+    @Autowired val jwtProvider: JwtProvider
 ):ProviderService {
+
 
     /**
      * 로그인 함수
@@ -21,13 +25,17 @@ class ProviderServiceImpl(
     override suspend fun login(req: ProviderLoginReq): ProviderLoginResp {
         
         // 1. 이메일을 바탕으로 정보 가져오기 (없으면 LoginEmailException 내기)
-        val provider: Provider = providerRepository.findByEmail(req.email) ?: throw RuntimeException("존재하지 않는 아이디입니다.")
+        val provider: Provider = providerRepository.findByEmail(req.email) ?: throw BaseException(ResponseCode.INVALID_LOGIN)
         
-        // 2. 비밀번호 hash로 변환해서 일치하는지 확인하기. (일치하지 않으면 LoginPasswordException 내기)
+        // 2. 비밀번호 hash 로 변환해서 일치하지 않으면 Exception 처리
+        if (!BCrypt.checkpw(req.password, provider.password)) {
+            throw BaseException(ResponseCode.INVALID_LOGIN)
+        }
 
-        
-        
         // 3. JWT 토큰 발급하기
+        val accessToken = jwtProvider.getAccessToken(provider)
+        val refreshToken = jwtProvider.getRefreshToken(provider)
 
+        return ProviderLoginResp(accessToken, refreshToken, provider)
     }
 }
