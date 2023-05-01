@@ -3,7 +3,7 @@ package com.avocado.product.dto.request;
 import lombok.Getter;
 
 @Getter
-public class CartReq {
+public class RemoveCartReq {
     String user_id;
-    Long merchandise_id;
+    Long cart_id;
 }
