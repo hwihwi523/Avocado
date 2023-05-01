@@ -83,10 +83,8 @@ public class CartRepository {
     private BooleanExpression eqCartId(Long cartId) {
         return cartId != null ? cart.id.eq(cartId) : null;
     }
+
     private BooleanExpression eqConsumerId(UUID consumerId) {
         return consumerId != null ? consumer.id.eq(consumerId) : null;
-    }
-    private BooleanExpression eqMerchandiseId(Long merchandiseId) {
-        return merchandiseId != null ? merchandise.id.eq(merchandiseId) : null;
     }
 }
