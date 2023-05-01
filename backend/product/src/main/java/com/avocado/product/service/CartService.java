@@ -74,7 +74,7 @@ public class CartService {
             throw new AccessDeniedException(ErrorCode.ACCESS_DENIED);
 
         // 장바구니가 존재하지 않을 경우 InvalidValueException 반환
-        // 본 예외를 먼저 확인하게 되면, 제3자가 불특정 타인의 장바구니 존재 유무를 파악할 수 있음
+        // 본 예외를 먼저 확인하게 되면, 제3자가 불특정 타인의 장바구니 존재 여부를 파악할 수 있음
         if (cart == null)
             throw new InvalidValueException(ErrorCode.NO_CART);
 
