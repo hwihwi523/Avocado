@@ -71,5 +71,5 @@ const BackgroundDiv = styled.div`
   
   position:fixed;
   bottom:0px;
-  z-index:1000;
+  z-index:100;
 `;
