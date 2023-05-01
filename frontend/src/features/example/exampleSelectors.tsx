@@ -1,6 +1,5 @@
-import { RootState } from "../store";
+import { AppState } from "../store";
 
-export const selectExampleUser = (state: RootState) =>
-  state.example.exampleUser;
-export const selectExampleToken = (state: RootState) =>
-  state.example.exampleUser;
+export const selectExampleUser = (state: AppState) => state.example.exampleUser;
+export const selectExampleToken = (state: AppState) =>
+  state.example.exampleToken;

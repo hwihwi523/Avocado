@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ExampleAuthState, ExampleUser } from "@/src/types/exampleTypes";
-import { RootState } from "../store";
+import { HYDRATE } from "next-redux-wrapper";
 
 const initialState: ExampleAuthState = {
   exampleUser: null,
@@ -20,6 +20,19 @@ export const exampleSlice = createSlice({
     clearExampleUser: (state) => {
       state.exampleUser = null;
       state.exampleToken = "";
+    },
+  },
+  // Special reducer for hydrating the state
+  // You also used the HYDRATE function in next-redux-wrapper to ensure that the state on
+  // the server side matches the client side of your app.
+  // 서버와 클라이언트 단의 store가 일치하도록 하기 위해 필요.
+  extraReducers: {
+    [HYDRATE]: (state, action) => {
+      console.log("HYDRATE-EXAMPLE", state, action.payload);
+      return {
+        ...state,
+        ...action.payload.example,
+      };
     },
   },
 });
