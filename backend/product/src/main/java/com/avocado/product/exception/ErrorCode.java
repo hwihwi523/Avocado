@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum ErrorCode {
     // Common
     INVALID_INPUT_VALUE(400, "INVALID_INPUT_VALUE"),
+    ACCESS_DENIED(403, "ACCESS_DENIED"),
 
     // Consumer
     NO_MEMBER(404, "NO_MEMBER"),
