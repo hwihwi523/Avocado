@@ -34,6 +34,4 @@ class OAuthController(
 //        ServerResponse.ok().render(oAuthUrlUtil.getFrontRedirectUrl(accessToken, refreshToken))
     }
 
-
-
 }
