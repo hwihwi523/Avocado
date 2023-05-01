@@ -6,7 +6,6 @@ import Link from "next/link";
 
 const MobileHeader = (props: any) => {
   return (
-    <>
       <HeaderBackground>
         <Stack
           direction={"row"}
@@ -31,7 +30,6 @@ const MobileHeader = (props: any) => {
           </Link>
         </Stack>
       </HeaderBackground>
-    </>
   );
 };
 

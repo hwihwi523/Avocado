@@ -66,7 +66,10 @@ export default MobileBottom;
 
 const BackgroundDiv = styled.div`
   background-color: black;
-  width: 100%;
+  width:100%;
   color: white;
-  padding: 5px;
+  
+  position:fixed;
+  bottom:0px;
+  z-index:1000;
 `;
