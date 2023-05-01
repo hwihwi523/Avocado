@@ -38,25 +38,29 @@ public class WishlistRepository {
      * @param consumerId : 찜한 회원의 ID
      * @return : 검색결과 (단건 or NULL)
      */
-    public Wishlist searchWishlist(Long merchandiseId, UUID consumerId) {
+    public Wishlist searchWishlist(Long wishlistId, UUID consumerId, Long merchandiseId) {
         return queryFactory
                 .selectFrom(wishlist)
-                .join(wishlist.merchandise, merchandise).fetchJoin()
-                .join(wishlist.consumer, consumer).fetchJoin()
                 .where(
-                        eqMerchandiseId(merchandiseId),
-                        eqConsumerId(consumerId)
+                        eqWishlistId(wishlistId),  // 찜 ID 조건
+                        eqMerchandiseId(merchandiseId),  // 상품 ID 조건
+                        eqConsumerId(consumerId)  // 구매자 ID 조건
                 )
                 .fetchFirst();
     }
 
+    // 찜 ID 일치 여부
+    private BooleanExpression eqWishlistId(Long wishlistId) {
+        return wishlistId != null ? wishlist.id.eq(wishlistId) : null;
+    }
+
     // 상품 ID 일치 여부
     private BooleanExpression eqMerchandiseId(Long merchandiseId) {
-        return merchandiseId != null ? wishlist.merchandise.id.eq(merchandiseId) : null;
+        return merchandiseId != null ? merchandise.id.eq(merchandiseId) : null;
     }
 
     // 구매자 ID 일치 여부
     private BooleanExpression eqConsumerId(UUID consumerId) {
-        return consumerId != null ? wishlist.consumer.id.eq(consumerId) : null;
+        return consumerId != null ? consumer.id.eq(consumerId) : null;
     }
 }
