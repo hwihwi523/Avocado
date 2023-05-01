@@ -92,6 +92,7 @@ const ProductCardsRow = (props: any) => {
 };
 
 export default ProductCardsRow;
+
  type Scroll ={
     scroll : boolean,
 }
