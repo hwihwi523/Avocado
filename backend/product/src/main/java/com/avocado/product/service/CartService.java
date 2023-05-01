@@ -1,6 +1,7 @@
 package com.avocado.product.service;
 
-import com.avocado.product.dto.query.CartDTO;
+import com.avocado.product.dto.query.SimpleMerchandiseDTO;
+import com.avocado.product.dto.response.SimpleMerchandiseResp;
 import com.avocado.product.entity.Cart;
 import com.avocado.product.entity.Consumer;
 import com.avocado.product.entity.Merchandise;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -54,10 +56,15 @@ public class CartService {
      * @param consumerId : 요청한 소비자의 ID
      * @return : 해당 소비자의 장바구니 목록
      */
-    @Transactional(readOnly = true)
-    public List<CartDTO> showMyCart(UUID consumerId) {
-        return cartRepository.findMyCart(consumerId);
-    }
+//    @Transactional(readOnly = true)
+//    public List<SimpleMerchandiseResp> showMyCart(UUID consumerId) {
+//        // 상품 정보 리스트
+//        List<SimpleMerchandiseDTO> myCart = cartRepository.findMyCart(consumerId);
+//
+//        // 반환 DTO 생성
+//        List<SimpleMerchandiseResp> simpleMerchandiseResp
+//
+//    }
 
     /**
      * 장바구니 내역 삭제

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -48,6 +49,15 @@ public class WishlistRepository {
                 )
                 .fetchFirst();
     }
+
+    /**
+     * 내가 찜한 상품의 정보를 리스트로 조회하는 쿼리
+     * @param consumerId : 요청자 ID
+     * @return : 찜한 상품 정보 리스트
+     */
+//    public List<Wishlist> findMyWishlist(UUID consumerId) {
+//
+//    }
 
     // 찜 ID 일치 여부
     private BooleanExpression eqWishlistId(Long wishlistId) {

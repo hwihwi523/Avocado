@@ -9,10 +9,9 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "mbti_score")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MBTIScore {
+public class MbtiScore {
     @Id
     private Long id;
 
@@ -26,7 +25,7 @@ public class MBTIScore {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mbti_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private MBTI mbti;
+    private Mbti mbti;
 
     // 점수
     private Long score;
