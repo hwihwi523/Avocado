@@ -33,4 +33,6 @@ body {
 
 body::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera*/
+  width:0 rem;
+
 }
