@@ -22,17 +22,31 @@ repositories {
 }
 
 dependencies {
+    // R2DBC
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
-//    implementation("com.github.jasync-sql:jasync-r2dbc-mysql:2.0.8")
     implementation("dev.miku:r2dbc-mysql:0.8.2.RELEASE")
+
+    // kotlin + Webflux
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-    compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
-    annotationProcessor("org.projectlombok:lombok")
+
+    // jwt
+    implementation("io.jsonwebtoken:jjwt-api:0.11.2")
+    implementation("io.jsonwebtoken:jjwt-jackson:0.11.2")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.2")
+
+
+    // https://mvnrepository.com/artifact/org.mindrot/jbcrypt (bcrypt)
+    implementation("org.mindrot:jbcrypt:0.4")
+
+    // aop
+    implementation("org.springframework.boot:spring-boot-starter-aop")
+
+    // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
 }
