@@ -51,6 +51,10 @@ public class Merchandise {
     // 재고
     private Integer inventory;
 
+    // 별점 합계 & 리뷰 개수
+    private Long totalScore;
+    private Long reviewCount;
+
     // 생성일자 & 수정일자
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
