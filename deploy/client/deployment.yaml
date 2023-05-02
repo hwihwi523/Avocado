@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: client
+  template:
+    metadata:
+      labels:
+        app: client
+    spec:
+      containers:
+      - name: client
+        image: 749740892195.dkr.ecr.ap-northeast-2.amazonaws.com/avocado-client:<IMAGE_TAG>
+        # imagePullPolicy: Always # 간단하진 않아서 검색해볼 필요가 있음
+        ports:
+        - containerPort: 3000
+        # resources:
+        #   limits:
+        #     cpu: 500m
+        #     memory: 512Mi
+        #   requests:
+        #     cpu: 250m
+        #     memory: 256Mi
