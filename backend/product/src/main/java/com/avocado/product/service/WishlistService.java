@@ -1,20 +1,22 @@
 package com.avocado.product.service;
 
+import com.avocado.product.dto.etc.MaxScoreDTO;
+import com.avocado.product.dto.query.ScoreDTO;
+import com.avocado.product.dto.query.SimpleMerchandiseDTO;
+import com.avocado.product.dto.response.SimpleMerchandiseResp;
 import com.avocado.product.entity.Consumer;
 import com.avocado.product.entity.Merchandise;
 import com.avocado.product.entity.Wishlist;
 import com.avocado.product.exception.AccessDeniedException;
 import com.avocado.product.exception.ErrorCode;
 import com.avocado.product.exception.InvalidValueException;
-import com.avocado.product.repository.ConsumerRepository;
-import com.avocado.product.repository.MerchandiseRepository;
-import com.avocado.product.repository.WishlistRepository;
+import com.avocado.product.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +25,9 @@ public class WishlistService {
     private final WishlistRepository wishlistRepository;
     private final MerchandiseRepository merchandiseRepository;
     private final ConsumerRepository consumerRepository;
+
+    // 퍼스널컬러, MBTI, 나이대 등 개인화 정보를 조회하기 위한 service
+    private final ScoreService scoreService;
 
     @Transactional
     public void addProductToWishlist(Long merchandiseId, UUID consumerId) {
@@ -47,6 +52,18 @@ public class WishlistService {
                 .consumer(consumer)
                 .build();
         wishlistRepository.save(wishlist);
+    }
+
+    /**
+     * 장바구니 목록 조회
+     * @param consumerId : 요청한 소비자의 ID
+     * @return : 해당 소비자의 장바구니 목록
+     */
+    @Transactional(readOnly = true)
+    public List<SimpleMerchandiseResp> showMyWishlist(UUID consumerId) {
+        // 상품 정보 리스트 조회
+        List<SimpleMerchandiseDTO> myWishlist = wishlistRepository.findMyWishlist(consumerId);
+        return scoreService.appendPersonalInfo(myWishlist);
     }
 
     @Transactional

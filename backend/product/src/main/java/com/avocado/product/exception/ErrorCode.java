@@ -16,6 +16,10 @@ public enum ErrorCode {
     // Merchandise
     NO_MERCHANDISE(404, "NO_MERCHANDISE"),
 
+    // Review
+    EXISTS_REVIEW(400, "EXISTS_REVIEW"),
+    NO_REVIEW(404, "NO_REVIEW"),
+
     // Wishlist
     EXISTS_WISHLIST(400, "EXISTS_WISHLIST"),
     NO_WISHLIST(404, "NO_WISHLIST"),

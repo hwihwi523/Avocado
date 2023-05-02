@@ -15,17 +15,15 @@ const inter = Inter({ subsets: ["latin"] });
 export default function Home() {
   const name = "김싸피";
   const mbti = "estp";
-  const personalColor = "spring bright" 
+  const personalColor = "spring bright";
 
   return (
     <BackgroundDiv>
       <Grid container gap={5}>
-
         {/* 사용자 프로필 */}
         <Grid item xs={12}>
           <MainUserProfile />
         </Grid>
-
 
         {/* 메뉴 카테고리 */}
         <Grid item xs={12}>
@@ -41,7 +39,6 @@ export default function Home() {
           <ProductCardsRow />
         </Grid>
 
-
         {/* 브랜드 광고 */}
         <Grid item xs={12}>
           <Typography variant="subtitle1" fontWeight={"bold"}>
@@ -50,7 +47,6 @@ export default function Home() {
           <Commercials />
         </Grid>
 
-
         {/* 펄스널 컬러별 추천 */}
         <Grid item xs={12}>
           <Typography variant="subtitle1" fontWeight={"bold"}>
@@ -58,7 +54,6 @@ export default function Home() {
           </Typography>
           <ProductCardsRow />
         </Grid>
-
 
         {/* mbti별 추천 */}
         <Grid item xs={12}>

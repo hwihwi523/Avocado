@@ -1,21 +1,19 @@
 package com.avocado.product.service;
 
-import com.avocado.product.dto.query.CartDTO;
+import com.avocado.product.dto.query.SimpleMerchandiseDTO;
+import com.avocado.product.dto.response.SimpleMerchandiseResp;
 import com.avocado.product.entity.Cart;
 import com.avocado.product.entity.Consumer;
 import com.avocado.product.entity.Merchandise;
 import com.avocado.product.exception.AccessDeniedException;
 import com.avocado.product.exception.ErrorCode;
 import com.avocado.product.exception.InvalidValueException;
-import com.avocado.product.repository.CartRepository;
-import com.avocado.product.repository.ConsumerRepository;
-import com.avocado.product.repository.MerchandiseRepository;
+import com.avocado.product.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +21,9 @@ public class CartService {
     private final CartRepository cartRepository;
     private final ConsumerRepository consumerRepository;
     private final MerchandiseRepository merchandiseRepository;
+
+    // 대표 퍼스널컬러, MBTI, 나이대 조회용 service
+    private final ScoreService scoreService;
 
     /**
      * 장바구니 내역 등록
@@ -55,8 +56,10 @@ public class CartService {
      * @return : 해당 소비자의 장바구니 목록
      */
     @Transactional(readOnly = true)
-    public List<CartDTO> showMyCart(UUID consumerId) {
-        return cartRepository.findMyCart(consumerId);
+    public List<SimpleMerchandiseResp> showMyCart(UUID consumerId) {
+        // 상품 정보 리스트 조회
+        List<SimpleMerchandiseDTO> myCart = cartRepository.findMyCart(consumerId);
+        return scoreService.appendPersonalInfo(myCart);
     }
 
     /**

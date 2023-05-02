@@ -1,11 +1,9 @@
 package com.avocado.product.repository;
 
-import com.avocado.product.dto.query.CartDTO;
-import com.avocado.product.dto.query.QCartDTO;
-import com.avocado.product.entity.Cart;
-import com.querydsl.core.types.Expression;
+import com.avocado.product.dto.query.QSimpleMerchandiseDTO;
+import com.avocado.product.dto.query.SimpleMerchandiseDTO;
+import com.avocado.product.entity.*;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -18,6 +16,7 @@ import java.util.UUID;
 import static com.avocado.product.entity.QCart.cart;
 import static com.avocado.product.entity.QConsumer.consumer;
 import static com.avocado.product.entity.QMerchandise.merchandise;
+import static com.avocado.product.entity.QMerchandiseCategory.merchandiseCategory;
 import static com.avocado.product.entity.QMerchandiseGroup.merchandiseGroup;
 import static com.avocado.product.entity.QStore.store;
 
@@ -57,12 +56,14 @@ public class CartRepository {
      * @param consumerId : 소비자 ID
      * @return : 조회 데이터
      */
-    public List<CartDTO> findMyCart(UUID consumerId) {
+    public List<SimpleMerchandiseDTO> findMyCart(UUID consumerId) {
         return queryFactory
-                .select(new QCartDTO(
+                .select(new QSimpleMerchandiseDTO(
                         cart.id,
                         store.name,
                         merchandise.id,
+                        merchandiseCategory.nameKor,
+                        merchandise.imgurl,
                         merchandise.name,
                         merchandiseGroup.price,
                         merchandiseGroup.discountedPrice,
@@ -73,6 +74,7 @@ public class CartRepository {
                 .join(cart.merchandise, merchandise)
                 .join(merchandise.group, merchandiseGroup)
                 .join(merchandiseGroup.provider, store)
+                .join(merchandiseGroup.category, merchandiseCategory)
                 .where(
                         eqConsumerId(consumerId)
                 )
