@@ -59,7 +59,7 @@ public class CartService {
     public List<SimpleMerchandiseResp> showMyCart(UUID consumerId) {
         // 상품 정보 리스트 조회
         List<SimpleMerchandiseDTO> myCart = cartRepository.findMyCart(consumerId);
-        return scoreService.appendPersonalInfo(myCart);
+        return scoreService.insertPersonalInfoIntoList(myCart);
     }
 
     /**

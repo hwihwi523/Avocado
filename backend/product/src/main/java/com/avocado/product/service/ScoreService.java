@@ -1,8 +1,10 @@
 package com.avocado.product.service;
 
 import com.avocado.product.dto.etc.MaxScoreDTO;
+import com.avocado.product.dto.query.DetailMerchandiseDTO;
 import com.avocado.product.dto.query.ScoreDTO;
 import com.avocado.product.dto.query.SimpleMerchandiseDTO;
+import com.avocado.product.dto.response.DetailMerchandiseResp;
 import com.avocado.product.dto.response.SimpleMerchandiseResp;
 import com.avocado.product.repository.ScoreRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +28,7 @@ public class ScoreService {
      * @return : Response DTO (DB 조회 데이터 + 대표 퍼스널컬러, MBTI, 나이대)
      */
     @Transactional(readOnly = true)
-    public List<SimpleMerchandiseResp> appendPersonalInfo(List<SimpleMerchandiseDTO> queryContent) {
+    public List<SimpleMerchandiseResp> insertPersonalInfoIntoList(List<SimpleMerchandiseDTO> queryContent) {
         // 상품 ID 취합
         List<Long> myContentsId = new ArrayList<>();
         queryContent.forEach((myContent) -> myContentsId.add(myContent.getMerchandiseId()));
@@ -55,6 +57,26 @@ public class ScoreService {
                 combined.updateAgeGroup(maxAges.get(merchandiseId).getType());  // 대표 나이대
             respContent.add(combined);
         }
+
+        return respContent;
+    }
+
+    @Transactional(readOnly = true)
+    public DetailMerchandiseResp insertPersonalInfo(DetailMerchandiseDTO queryContent) {
+        DetailMerchandiseResp respContent = new DetailMerchandiseResp(queryContent);
+
+        // 대표 퍼스널컬러, MBTI, 나이대 부착
+        String personalColor = scoreRepository.findPersonalColor(queryContent.getMerchandiseId());
+        if (personalColor != null)
+            respContent.updatePersonalColor(personalColor);
+
+        String mbti = scoreRepository.findMbti(queryContent.getMerchandiseId());
+        if (mbti != null)
+            respContent.updateMBTI(mbti);
+
+        String age = scoreRepository.findAge(queryContent.getMerchandiseId());
+        if (age != null)
+            respContent.updateAgeGroup(age);
 
         return respContent;
     }
