@@ -1,4 +1,3 @@
-
 @font-face {
   font-family: "SeoulNamsanL";
   src: url("/fonts/SeoulNamsanL.ttf") format("truetype");
@@ -20,6 +19,5 @@
 }
 
 body {
-  font-family: "SeoulNamsanL", sans-serif;
+  font-family: "SeoulNamsanM", sans-serif;
 }
-
