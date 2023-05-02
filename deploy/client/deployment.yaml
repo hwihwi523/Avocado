@@ -16,7 +16,7 @@ spec:
       containers:
       - name: client
         image: avocado-client
-        # imagePullPolicy: Always # 간단하진 않아서 검색해볼 필요가 있음
+        imagePullPolicy: Always # 중요한데 간단하진 않아서, 검색해볼 필요가 있음
         ports:
         - containerPort: 3000
         # resources:
