@@ -1,4 +1,5 @@
-import "@/styles/globals.css";
+import "../../public/fonts/style.css"
+import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { MobileBottom, MobileHeader } from "../components/oranisms";
 

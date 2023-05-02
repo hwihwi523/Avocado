@@ -1,7 +1,7 @@
-/* @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+@tailwind base;
+/* 
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -17,12 +17,12 @@
 }
  */
 
-
+/* 
  @font-face {
    font-family: "InkLipquid"; 
    font-weight: 200;
    src: url("/fonts/InkLipquidFonts.ttf") format("truetype");
- }
+ } */
 
 body {
   -ms-overflow-style:none;

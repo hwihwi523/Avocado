@@ -25,7 +25,7 @@ const UserProfile = (props: any) => {
           
           <Grid item sx={iconStyle} key={item}>
             <Link href="">
-          <img src={`/asset/icons/${item}.png`} alt="원피스" width="40px"/>
+          <img src={`/assets/icons/${item}.png`} alt={item} width="40px"/>
           </Link>
           <Typography variant="subtitle2">{item}</Typography>
           </Grid>

@@ -39,7 +39,7 @@ const Review = () => {
               width={50}
               height={50}
               alt="아바타 이미지"
-              src={`/asset/avatar/${avatar}.png`}
+              src={`/assets/avatar/${avatar}.png`}
             />
             <Stack style={{ color: "gray" }}>
               <Typography variant="body1">
