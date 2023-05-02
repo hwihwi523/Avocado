@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ExampleAuthState, ExampleUser } from "@/src/types/exampleTypes";
+import { ExampleState, ExampleUser } from "@/src/types/exampleTypes";
 import { HYDRATE } from "next-redux-wrapper";
 
-const initialState: ExampleAuthState = {
+const initialState: ExampleState = {
   exampleUser: null,
   exampleToken: "",
+  exampleProducts: [],
 };
 
 export const exampleSlice = createSlice({

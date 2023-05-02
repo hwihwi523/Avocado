@@ -92,7 +92,7 @@ const MainUserProfile = (props: any) => {
               <ColorBox left="50px" color={personalcolor.colors[2]} />
               <ColorBox left="30px" color={personalcolor.colors[3]} />
               <img
-                src={`asset/avatar/${personalcolor.avatar_path[0]}.png`}
+                src={`assets/avatar/${personalcolor.avatar_path[0]}.png`}
                 width="100px"
                 alt="my avatar"
                 style={{ position: "absolute" }}
