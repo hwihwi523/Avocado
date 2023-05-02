@@ -5,14 +5,14 @@ import lombok.Getter;
 
 @Getter
 public class SimpleMerchandiseResp {
-    private Long id;
-    private String brand_name;
-    private Long merchandise_id;
-    private String merchandise_category;
-    private String merchandise_name;
-    private Integer price;
-    private Integer discounted_price;
-    private Float score;
+    private final Long id;
+    private final String brand_name;
+    private final Long merchandise_id;
+    private final String merchandise_category;
+    private final String merchandise_name;
+    private final Integer price;
+    private final Integer discounted_price;
+    private final Float score;
 
     private String mbti;
     private String personal_color;
@@ -20,12 +20,12 @@ public class SimpleMerchandiseResp {
 
     public SimpleMerchandiseResp(SimpleMerchandiseDTO simpleMerchandiseDTO) {
         this.id = simpleMerchandiseDTO.getId();
-        this.brand_name = simpleMerchandiseDTO.getBrand_name();
-        this.merchandise_id = simpleMerchandiseDTO.getMerchandise_id();
-        this.merchandise_category = simpleMerchandiseDTO.getMerchandise_category();
-        this.merchandise_name = simpleMerchandiseDTO.getMerchandise_name();
+        this.brand_name = simpleMerchandiseDTO.getBrandName();
+        this.merchandise_id = simpleMerchandiseDTO.getMerchandiseId();
+        this.merchandise_category = simpleMerchandiseDTO.getMerchandiseCategory();
+        this.merchandise_name = simpleMerchandiseDTO.getMerchandiseName();
         this.price = simpleMerchandiseDTO.getPrice();
-        this.discounted_price = simpleMerchandiseDTO.getDiscounted_price();
+        this.discounted_price = simpleMerchandiseDTO.getDiscountedPrice();
         this.score = simpleMerchandiseDTO.getScore() != null ? simpleMerchandiseDTO.getScore() : 0;
     }
 
