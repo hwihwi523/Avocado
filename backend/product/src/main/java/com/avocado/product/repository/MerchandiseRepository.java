@@ -54,6 +54,7 @@ public class MerchandiseRepository {
                         store.name,
                         merchandise.id,
                         merchandiseCategory.nameKor,
+                        merchandise.imgurl,
                         merchandise.name,
                         merchandiseGroup.price,
                         merchandiseGroup.discountedPrice,

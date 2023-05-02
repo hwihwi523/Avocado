@@ -9,6 +9,7 @@ public class SimpleMerchandiseResp {
     private final String brand_name;
     private final Long merchandise_id;
     private final String merchandise_category;
+    private final String image_url;
     private final String merchandise_name;
     private final Integer price;
     private final Integer discounted_price;
@@ -23,6 +24,7 @@ public class SimpleMerchandiseResp {
         this.brand_name = simpleMerchandiseDTO.getBrandName();
         this.merchandise_id = simpleMerchandiseDTO.getMerchandiseId();
         this.merchandise_category = simpleMerchandiseDTO.getMerchandiseCategory();
+        this.image_url = simpleMerchandiseDTO.getImageUrl();
         this.merchandise_name = simpleMerchandiseDTO.getMerchandiseName();
         this.price = simpleMerchandiseDTO.getPrice();
         this.discounted_price = simpleMerchandiseDTO.getDiscountedPrice();

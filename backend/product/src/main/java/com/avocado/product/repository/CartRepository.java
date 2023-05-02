@@ -13,15 +13,11 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.UUID;
 
-import static com.avocado.product.entity.QAgeGenderScore.ageGenderScore;
 import static com.avocado.product.entity.QCart.cart;
 import static com.avocado.product.entity.QConsumer.consumer;
-import static com.avocado.product.entity.QMbtiScore.mbtiScore;
 import static com.avocado.product.entity.QMerchandise.merchandise;
 import static com.avocado.product.entity.QMerchandiseCategory.merchandiseCategory;
 import static com.avocado.product.entity.QMerchandiseGroup.merchandiseGroup;
-import static com.avocado.product.entity.QPersonalColor.personalColor;
-import static com.avocado.product.entity.QPersonalColorScore.personalColorScore;
 import static com.avocado.product.entity.QStore.store;
 
 @Repository
@@ -67,6 +63,7 @@ public class CartRepository {
                         store.name,
                         merchandise.id,
                         merchandiseCategory.nameKor,
+                        merchandise.imgurl,
                         merchandise.name,
                         merchandiseGroup.price,
                         merchandiseGroup.discountedPrice,
