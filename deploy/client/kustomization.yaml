@@ -17,4 +17,4 @@ vars:
 images:
 - name: 749740892195.dkr.ecr.ap-northeast-2.amazonaws.com/avocado-client
   newName: 749740892195.dkr.ecr.ap-northeast-2.amazonaws.com/avocado-client
-  newTag: "42"
+  newTag: "43"
