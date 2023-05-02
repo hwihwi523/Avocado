@@ -7,10 +7,14 @@ resources:
 # - ingress.yaml
 
 vars:
-- name: IMAGE_TAG
+- fieldref:
+    fieldPath: spec.template.spec.containers[0].image
+  name: IMAGE_TAG
   objref:
+    apiVersion: apps/v1
     kind: Deployment
     name: client
-    apiVersion: apps/v1
-  fieldref:
-    fieldpath: spec.template.spec.containers[0].image
+images:
+- name: 749740892195.dkr.ecr.ap-northeast-2.amazonaws.com/avocado-client
+  newName: 749740892195.dkr.ecr.ap-northeast-2.amazonaws.com/avocado-client
+  newTag: "42"
