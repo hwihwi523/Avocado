@@ -1,4 +1,4 @@
-FROM node:18
+FROM node:18-alpine
 
 RUN mkdir -p /app
 WORKDIR /app
@@ -11,4 +11,4 @@ RUN npm install
 copy . .
 RUN npm run build
 
-CMD ["npx", "serve", "-s", "build"]
+CMD ["npm", "run", "start"]
