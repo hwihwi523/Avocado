@@ -15,7 +15,10 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
+import static com.avocado.product.entity.QClick.click;
+import static com.avocado.product.entity.QConsumer.consumer;
 import static com.avocado.product.entity.QMerchandise.merchandise;
 import static com.avocado.product.entity.QMerchandiseAdditionalImg.merchandiseAdditionalImg;
 import static com.avocado.product.entity.QMerchandiseCategory.merchandiseCategory;
@@ -37,6 +40,54 @@ public class MerchandiseRepository {
                 .selectFrom(merchandise)
                 .where(merchandise.id.eq(merchandiseId))
                 .fetchOne();
+    }
+
+    public List<SimpleMerchandiseDTO> findRecentMerchandises(UUID consumerId) {
+        // 사용자가 최근 조회한 5개의 상품 ID 구하기
+        List<Long> merchandiseIds = queryFactory
+                .select(click.merchandise.id).distinct()
+                .from(click)
+                .where(eqConsumerId(consumerId))
+                .limit(5)
+                .fetch();
+
+        // 해당 상품 내역 조회
+        return queryFactory
+                .select(new QSimpleMerchandiseDTO(
+                        click.id.max(),
+                        store.name,
+                        merchandise.id,
+                        merchandiseCategory.nameKor,
+                        merchandise.imgurl,
+                        merchandise.name,
+                        merchandiseGroup.price,
+                        merchandiseGroup.discountedPrice,
+                        merchandise.totalScore.divide(merchandise.reviewCount).floatValue()
+                ))
+                .from(click)
+                .join(click.consumer, consumer)
+                .join(click.merchandise, merchandise)
+                .join(merchandise.group, merchandiseGroup)
+                .join(merchandiseGroup.provider, store)
+                .join(merchandiseGroup.category, merchandiseCategory)
+                .where(
+                        inMerchandiseIds(merchandiseIds)
+                )
+                .groupBy(
+                        merchandise.id
+                )
+                .orderBy(
+                        click.id.max().desc()
+                )
+                .fetch();
+    }
+    // 사용자 ID 조건
+    private BooleanExpression eqConsumerId(UUID consumerId) {
+        return consumerId != null ? click.consumer.id.eq(consumerId) : null;
+    }
+    // 상품 ID 조건
+    private BooleanExpression inMerchandiseIds(List<Long> merchandiseIds) {
+        return merchandiseIds != null ? merchandise.id.in(merchandiseIds) : null;
     }
 
     /**
