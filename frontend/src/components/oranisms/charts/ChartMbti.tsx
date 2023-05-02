@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { BlockText } from "../atoms";
+import { BlockText } from "../../atoms";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
