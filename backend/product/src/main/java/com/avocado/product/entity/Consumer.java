@@ -24,7 +24,7 @@ public class Consumer {
     // MBTI ID, Cascade 설정 X
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mbti_id")
-    private MBTI mbti;
+    private Mbti mbti;
 
     // 사용자명
     private String name;
@@ -32,8 +32,13 @@ public class Consumer {
     // 프로필 사진
     private String pictureUrl;
 
+    // 나이 & 성별
+    @Column(columnDefinition = "CHAR(1)")
+    private String gender;
+    private Short age;
+
     @Builder
-    public Consumer(UUID id, PersonalColor personalColor, MBTI mbti, String name, String pictureUrl) {
+    public Consumer(UUID id, PersonalColor personalColor, Mbti mbti, String name, String pictureUrl) {
         this.id = id;
         this.personalColor = personalColor;
         this.mbti = mbti;

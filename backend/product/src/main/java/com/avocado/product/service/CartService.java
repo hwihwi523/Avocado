@@ -4,15 +4,14 @@ import com.avocado.product.dto.etc.MaxScoreDTO;
 import com.avocado.product.dto.query.ScoreDTO;
 import com.avocado.product.dto.query.SimpleMerchandiseDTO;
 import com.avocado.product.dto.response.SimpleMerchandiseResp;
+import com.avocado.product.entity.Cart;
 import com.avocado.product.entity.Consumer;
 import com.avocado.product.entity.Merchandise;
-import com.avocado.product.entity.Wishlist;
 import com.avocado.product.exception.AccessDeniedException;
 import com.avocado.product.exception.ErrorCode;
 import com.avocado.product.exception.InvalidValueException;
 import com.avocado.product.repository.*;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,38 +19,37 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
-public class WishlistService {
-    private final WishlistRepository wishlistRepository;
-    private final MerchandiseRepository merchandiseRepository;
+public class CartService {
+    private final CartRepository cartRepository;
     private final ConsumerRepository consumerRepository;
+    private final MerchandiseRepository merchandiseRepository;
 
-    // 퍼스널컬러, MBTI, 나이대 등 개인화 정보를 조회하기 위한 repo
+    // 대표 퍼스널컬러, MBTI, 나이대 조회용 repo
     private final ScoreRepository scoreRepository;
 
+    /**
+     * 장바구니 내역 등록
+     * @param consumerId : 요청한 소비자의 ID
+     * @param productId : 등록할 상품의 ID
+     */
     @Transactional
-    public void addProductToWishlist(Long merchandiseId, UUID consumerId) {
-        // 기존 찜 내역 조회 (구매자 ID, 상품 ID로 조회)
-        Wishlist wishlist = wishlistRepository.searchWishlist(null, consumerId, merchandiseId);
-        if (wishlist != null)
-            throw new InvalidValueException(ErrorCode.EXISTS_WISHLIST);
-
-        // 물품 조회
-        Merchandise merchandise = merchandiseRepository.findById(merchandiseId);
+    public void addProductToCart(UUID consumerId, Long productId) {
+        // 등록할 상품 Entity 찾기
+        Merchandise merchandise = merchandiseRepository.findById(productId);
         if (merchandise == null)
             throw new InvalidValueException(ErrorCode.NO_MERCHANDISE);
 
-        // 구매자 조회
+        // 요청한 소비자 Entity 찾기
         Consumer consumer = consumerRepository.findById(consumerId);
         if (consumer == null)
             throw new InvalidValueException(ErrorCode.NO_MEMBER);
 
-        // 새로운 찜 내역 등록
-        wishlist = Wishlist.builder()
-                .merchandise(merchandise)
+        // Entity 생성 및 저장
+        Cart cart = Cart.builder()
                 .consumer(consumer)
+                .merchandise(merchandise)
                 .build();
-        wishlistRepository.save(wishlist);
+        cartRepository.save(cart);
     }
 
     /**
@@ -60,18 +58,18 @@ public class WishlistService {
      * @return : 해당 소비자의 장바구니 목록
      */
     @Transactional(readOnly = true)
-    public List<SimpleMerchandiseResp> showMyWishlist(UUID consumerId) {
+    public List<SimpleMerchandiseResp> showMyCart(UUID consumerId) {
         // 상품 정보 리스트
-        List<SimpleMerchandiseDTO> myWishlist = wishlistRepository.findMyWishlist(consumerId);
+        List<SimpleMerchandiseDTO> myCart = cartRepository.findMyCart(consumerId);
 
         // 상품 ID 취합
-        List<Long> myWishlistIds = new ArrayList<>();
-        myWishlist.forEach((wishlist) -> myWishlistIds.add(wishlist.getMerchandise_id()));
+        List<Long> myCartIds = new ArrayList<>();
+        myCart.forEach((cart) -> myCartIds.add(cart.getMerchandise_id()));
 
         // IN 쿼리로 퍼스널컬러, MBTI, 나이대 각각 한 번에 조회
-        List<ScoreDTO> personalColors = scoreRepository.findPersonalColors(myWishlistIds);
-        List<ScoreDTO> mbtis = scoreRepository.findMbtis(myWishlistIds);
-        List<ScoreDTO> ages = scoreRepository.findAges(myWishlistIds);
+        List<ScoreDTO> personalColors = scoreRepository.findPersonalColors(myCartIds);
+        List<ScoreDTO> mbtis = scoreRepository.findMbtis(myCartIds);
+        List<ScoreDTO> ages = scoreRepository.findAges(myCartIds);
 
         // 최대 점수를 갖는 퍼스널컬러, MBTI, 나이대 구하기
         Map<Long, MaxScoreDTO> maxPersonalColors = getMaxScores(personalColors);
@@ -80,7 +78,7 @@ public class WishlistService {
 
         // 반환용 DTO 생성
         List<SimpleMerchandiseResp> results = new ArrayList<>();
-        for (SimpleMerchandiseDTO simpleMerchandiseDTO : myWishlist) {
+        for (SimpleMerchandiseDTO simpleMerchandiseDTO : myCart) {
             // 데이터 조합
             SimpleMerchandiseResp result = new SimpleMerchandiseResp(simpleMerchandiseDTO);
             Long merchandiseId = result.getMerchandise_id();  // 상품 ID
@@ -118,21 +116,26 @@ public class WishlistService {
         return maxScores;
     }
 
+    /**
+     * 장바구니 내역 삭제
+     * @param consumerId : 요청한 소비자의 ID
+     * @param cartId : 삭제 요청한 장바구니 ID
+     */
     @Transactional
-    public void removeProductFromWishList(UUID consumerId, Long wishlistId) {
-        // 기존 찜 내역 조회 (찜 ID로 조회)
-        Wishlist wishlist = wishlistRepository.searchWishlist(wishlistId, null, null);
+    public void removeProductFromCart(UUID consumerId, Long cartId) {
+        // 장바구니 내역 찾기
+        Cart cart = cartRepository.findByConsumerIdAndMerchandiseId(cartId);
 
-        // 본인의 찜 목록이 아니라면 Forbidden 예외
-        if (wishlist != null && !wishlist.getConsumer().getId().equals(consumerId))
+        // 본인의 장바구니가 아니라면 Forbidden 예외
+        if (cart != null && !cart.getConsumer().getId().equals(consumerId))
             throw new AccessDeniedException(ErrorCode.ACCESS_DENIED);
 
-        // 찜 내역이 존재하지 않을 경우 InvalidValueException 반환
-        // 본 예외를 먼저 확인하게 되면, 제3자가 불특정 타인의 찜 내역 존재 여부를 파악할 수 있음
-        if (wishlist == null)
-            throw new InvalidValueException(ErrorCode.NO_WISHLIST);
+        // 장바구니가 존재하지 않을 경우 InvalidValueException 반환
+        // 본 예외를 먼저 확인하게 되면, 제3자가 불특정 타인의 장바구니 존재 여부를 파악할 수 있음
+        if (cart == null)
+            throw new InvalidValueException(ErrorCode.NO_CART);
 
         // 삭제
-        wishlistRepository.delete(wishlist);
+        cartRepository.delete(cart);
     }
 }

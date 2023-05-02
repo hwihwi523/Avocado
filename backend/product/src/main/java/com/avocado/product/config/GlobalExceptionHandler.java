@@ -1,6 +1,7 @@
 package com.avocado.product.config;
 
 import com.avocado.product.dto.response.BaseResp;
+import com.avocado.product.exception.AccessDeniedException;
 import com.avocado.product.exception.ErrorCode;
 import com.avocado.product.exception.InvalidValueException;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.valueOf(errorCode.getStatus()))
                 .body(BaseResp.of(errorCode.getMessage(), null));
+    }
+
+    /**
+     * 접근 권한 예외 처리
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    protected ResponseEntity<BaseResp> handleAccessDeniedException(AccessDeniedException e) {
+        ErrorCode errorCode = e.getErrorCode();
+        return ResponseEntity
+                .status(HttpStatus.valueOf(errorCode.getStatus()))
+                .body(BaseResp.of(errorCode.getMessage() + " : 접근 권한이 없습니다.", null));
     }
 
     /**

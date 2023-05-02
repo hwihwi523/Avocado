@@ -14,6 +14,7 @@
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
   }
+<<<<<<< HEAD:frontend/src/styles/globals.css
 } */
 
 /* @font-face {
@@ -28,3 +29,14 @@
   src: local(""),
     url("assets/fonts/seoulnamsan/SeoulNamsan-Medium.ttf") format("woff");
 } */
+
+body {
+  -ms-overflow-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, InkLipquid, sans-serif;
+}
+
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera*/
+}

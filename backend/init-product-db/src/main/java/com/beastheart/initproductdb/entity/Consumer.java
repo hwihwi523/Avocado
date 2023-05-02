@@ -32,6 +32,11 @@ public class Consumer {
     // 프로필 사진
     private String pictureUrl;
 
+    // 나이 & 성별
+    @Column(columnDefinition = "CHAR(1)")
+    private String gender;
+    private Short age;
+
     @Builder
     public Consumer(UUID id, PersonalColor personalColor, MBTI mbti, String name, String pictureUrl) {
         this.id = id;

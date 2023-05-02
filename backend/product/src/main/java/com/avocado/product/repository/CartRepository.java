@@ -2,7 +2,7 @@ package com.avocado.product.repository;
 
 import com.avocado.product.dto.query.QSimpleMerchandiseDTO;
 import com.avocado.product.dto.query.SimpleMerchandiseDTO;
-import com.avocado.product.entity.Wishlist;
+import com.avocado.product.entity.*;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -11,60 +11,59 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
+import static com.avocado.product.entity.QAgeGenderScore.ageGenderScore;
 import static com.avocado.product.entity.QCart.cart;
 import static com.avocado.product.entity.QConsumer.consumer;
+import static com.avocado.product.entity.QMbtiScore.mbtiScore;
 import static com.avocado.product.entity.QMerchandise.merchandise;
 import static com.avocado.product.entity.QMerchandiseCategory.merchandiseCategory;
 import static com.avocado.product.entity.QMerchandiseGroup.merchandiseGroup;
+import static com.avocado.product.entity.QPersonalColor.personalColor;
+import static com.avocado.product.entity.QPersonalColorScore.personalColorScore;
 import static com.avocado.product.entity.QStore.store;
-import static com.avocado.product.entity.QWishlist.wishlist;
 
 @Repository
 @RequiredArgsConstructor
-public class WishlistRepository {
+public class CartRepository {
     @PersistenceContext
     private final EntityManager em;
     private final JPAQueryFactory queryFactory;
 
     /**
-     * 데이터 삽입 및 삭제
+     * 생성 및 삭제
      */
-    public void save(Wishlist wishlist) {
-        em.persist(wishlist);
+    public void save(Cart cart) {
+        em.persist(cart);
     }
-    public void delete(Wishlist wishlist) {
-        em.remove(wishlist);
+    public void delete(Cart cart) {
+        em.remove(cart);
     }
 
     /**
-     * 단건의 찜 내역을 조회하는 쿼리
-     * @param merchandiseId : 찜할 상품의 ID
-     * @param consumerId : 찜한 회원의 ID
-     * @return : 검색결과 (단건 or NULL)
+     * 장바구니 내역 단건 조회
+     * @param cartId : 장바구니 ID
+     * @return : 장바구니 단건 내역
      */
-    public Wishlist searchWishlist(Long wishlistId, UUID consumerId, Long merchandiseId) {
+    public Cart findByConsumerIdAndMerchandiseId(Long cartId) {
         return queryFactory
-                .selectFrom(wishlist)
+                .selectFrom(cart)
                 .where(
-                        eqWishlistId(wishlistId),  // 찜 ID 조건
-                        eqMerchandiseId(merchandiseId),  // 상품 ID 조건
-                        eqConsumerId(consumerId)  // 구매자 ID 조건
+                        eqCartId(cartId)
                 )
                 .fetchFirst();
     }
 
     /**
-     * 특정 사용자의 찜 목록을 찜 ID 내림차순으로 정렬하여 조회
+     * 특정 사용자의 장바구니 목록을 장바구니 ID 내림차순으로 정렬하여 조회
      * @param consumerId : 소비자 ID
      * @return : 조회 데이터
      */
-    public List<SimpleMerchandiseDTO> findMyWishlist(UUID consumerId) {
+    public List<SimpleMerchandiseDTO> findMyCart(UUID consumerId) {
         return queryFactory
                 .select(new QSimpleMerchandiseDTO(
-                        wishlist.id,
+                        cart.id,
                         store.name,
                         merchandise.id,
                         merchandiseCategory.nameKor,
@@ -73,30 +72,23 @@ public class WishlistRepository {
                         merchandiseGroup.discountedPrice,
                         merchandise.totalScore.divide(merchandise.reviewCount).floatValue().as("score")
                 ))
-                .from(wishlist)
-                .join(wishlist.consumer, consumer)
-                .join(wishlist.merchandise, merchandise)
+                .from(cart)
+                .join(cart.consumer, consumer)
+                .join(cart.merchandise, merchandise)
                 .join(merchandise.group, merchandiseGroup)
                 .join(merchandiseGroup.provider, store)
                 .join(merchandiseGroup.category, merchandiseCategory)
                 .where(
                         eqConsumerId(consumerId)
                 )
-                .orderBy(wishlist.id.desc())
+                .orderBy(cart.id.desc())
                 .fetch();
     }
 
-    // 찜 ID 일치 여부
-    private BooleanExpression eqWishlistId(Long wishlistId) {
-        return wishlistId != null ? wishlist.id.eq(wishlistId) : null;
+    private BooleanExpression eqCartId(Long cartId) {
+        return cartId != null ? cart.id.eq(cartId) : null;
     }
 
-    // 상품 ID 일치 여부
-    private BooleanExpression eqMerchandiseId(Long merchandiseId) {
-        return merchandiseId != null ? merchandise.id.eq(merchandiseId) : null;
-    }
-
-    // 구매자 ID 일치 여부
     private BooleanExpression eqConsumerId(UUID consumerId) {
         return consumerId != null ? consumer.id.eq(consumerId) : null;
     }

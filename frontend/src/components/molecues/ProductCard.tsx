@@ -11,19 +11,12 @@ import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlin
 import BookmarkOutlinedIcon from "@mui/icons-material/BookmarkOutlined";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 const ProductCard = (props: any) => {
   const router = useRouter();
 
-  //const { id, img_url, price, discount, brand, isBookmark, tags }= props;
-  const img_url =
-    "https://img.freepik.com/free-photo/japanese-business-concept-with-business-person_23-2149268012.jpg?w=740&t=st=1682738359~exp=1682738959~hmac=4714981d0d5d09c27675131f07ee4ca11b7d6b57c39febce3e83bb918d3e129b";
-  const price = 32000;
-  const discount = 10000;
-  const brand = "MUJI";
-  const isBookmark = true;
-  const tags = ["ESFP", "SPRING", "상의"];
-  const id = 123123;
+  const { id, img_url, price, discount, brand, isBookmark, tags } = props.data;
 
   const [bookmark, setBookmark] = useState(isBookmark);
 
@@ -37,14 +30,11 @@ const ProductCard = (props: any) => {
       <Card onClick={pageMove}>
         {/* 이미지 */}
         <Imagebox>
-          <img
+          <Image
             src={img_url}
             alt="제품 이미지"
-            style={{
-              objectFit: "cover",
-              objectPosition: "center",
-              height: "100%",
-            }}
+            fill
+            style={{ objectFit: "cover" }}
           />
         </Imagebox>
 
@@ -88,7 +78,11 @@ const ProductCard = (props: any) => {
           <Grid item xs={12}>
             <Stack direction={"row"} justifyContent={"space-between"}>
               <Typography variant="body1">{price - discount}원</Typography>
-              <Typography variant="body1" color="error" style={{fontWeight:"bold"}}>
+              <Typography
+                variant="body1"
+                color="error"
+                style={{ fontWeight: "bold" }}
+              >
                 {Math.ceil((discount / price) * 100)}%
               </Typography>
             </Stack>
@@ -140,10 +134,8 @@ const Card = styled.div`
 `;
 
 const Imagebox = styled.div`
+  position: relative;
   width: 100%;
   height: 180px;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
   margin-bottom: 10px;
 `;
