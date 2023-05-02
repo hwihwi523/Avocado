@@ -63,7 +63,7 @@ public class WishlistService {
     public List<SimpleMerchandiseResp> showMyWishlist(UUID consumerId) {
         // 상품 정보 리스트 조회
         List<SimpleMerchandiseDTO> myWishlist = wishlistRepository.findMyWishlist(consumerId);
-        return scoreService.appendPersonalInfo(myWishlist);
+        return scoreService.insertPersonalInfoIntoList(myWishlist);
     }
 
     @Transactional
