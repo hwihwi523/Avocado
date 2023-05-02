@@ -1,3 +1,5 @@
+import "public/fonts/style.css";
+import "../styles/globals.css";
 import React, { FC } from "react";
 import { Provider } from "react-redux";
 import { AppProps } from "next/app";
