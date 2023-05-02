@@ -64,7 +64,7 @@ public class CartService {
 
         // 상품 ID 취합
         List<Long> myCartIds = new ArrayList<>();
-        myCart.forEach((cart) -> myCartIds.add(cart.getMerchandise_id()));
+        myCart.forEach((cart) -> myCartIds.add(cart.getMerchandiseId()));
 
         // IN 쿼리로 퍼스널컬러, MBTI, 나이대 각각 한 번에 조회
         List<ScoreDTO> personalColors = scoreRepository.findPersonalColors(myCartIds);
