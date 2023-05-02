@@ -6,7 +6,8 @@ data class OAuthToken(
     var refresh_token: String,
     var expires_in: Int,
     var scope: String,
-    var refresh_token_expires_in: String
+    var refresh_token_expires_in: Int,
+    var id_token: String
 ) {
 
 }

@@ -19,8 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @WebFluxTest(ProviderService::class)
 @ExtendWith(SpringExtension::class)
 internal class ProviderServiceTest @Autowired constructor(
-    private val providerService: ProviderService,
-    private val providerRepository: ProviderRepository
+    private val providerService: ProviderService
 ) {
     
     @Nested
@@ -28,9 +27,8 @@ internal class ProviderServiceTest @Autowired constructor(
     inner class LoginTest{
 
         private val noEmailReq = ProviderLoginReq("wrong@gmail.com", "avocado506")
-        private val wrongPwdReq = ProviderLoginReq("avoado1@gmail.com", "wrong")
-        private val rightPwdReq = ProviderLoginReq("avoado1@gmail.com", "avocado506")
-
+        private val wrongPwdReq = ProviderLoginReq("avocado1@gmail.com", "wrong")
+        private val rightPwdReq = ProviderLoginReq("avocado1@gmail.com", "avocado506")
 
         @Test
         fun `이메일이 없는 경우`() {
@@ -47,7 +45,7 @@ internal class ProviderServiceTest @Autowired constructor(
         fun `비밀번호가 일치하지 않는 경우`() {
             runBlocking {
                 val e = assertThrows<BaseException> {
-                    providerService.login(noEmailReq)
+                    providerService.login(wrongPwdReq)
                 }
                 assertEquals(HttpStatus.BAD_REQUEST, e.status)
             }

@@ -3,8 +3,7 @@ r2dbc:
   username: root
   password: ssafy
   port: 3306
-  database: avocado_merchandise
-
+  database: avocado_member
 
 oauth2:
   kakao:
@@ -21,3 +20,11 @@ jwt:
 
 front:
   redirect_uri: https://k8a506.p.ssafy.io/redirect
+
+logging:
+  level:
+    io:
+      asyncer:
+        r2dbc:
+          mysql:
+            client: TRACE

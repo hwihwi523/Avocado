@@ -1,5 +1,5 @@
 package com.avocado.userserver.api.service
 
-enum class ProviderType {
+enum class SocialType {
     KAKAO, GOOGLE
 }

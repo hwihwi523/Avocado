@@ -29,7 +29,7 @@ class JwtProvider(
 
     var SECRET_KEY: Key = Keys.hmacShaKeyFor(secretKey.toByteArray())
 
-    fun getAccessToken(member: Any): String {
+    suspend fun getAccessToken(member: Any): String {
         var claims: Map<String, Any>
         if (member is Provider) {
             claims = createProviderAccessClaims(member)
@@ -50,7 +50,7 @@ class JwtProvider(
             .compact()
     }
 
-    fun getRefreshToken(member: Any): String {
+    suspend fun getRefreshToken(member: Any): String {
         var claims: Map<String, Any>
         if (member is Provider) {
             claims = createProviderRefreshClaims(member)
@@ -72,21 +72,21 @@ class JwtProvider(
     }
 
 
-    private fun createProviderAccessClaims(provider: Provider): Map<String, Any> {
+    private suspend fun createProviderAccessClaims(provider: Provider): Map<String, Any> {
         var claims = HashMap<String, Any>()
         claims["type"] = "provider"
         claims["id"] = provider.id
         return claims
     }
 
-    private fun createConsumerAccessClaims(consumer: Consumer): Map<String, Any> {
+    private suspend fun createConsumerAccessClaims(consumer: Consumer): Map<String, Any> {
         var claims = HashMap<String, Any>()
         claims["type"] = "consumer"
-        claims["id"] = consumer.id
+        claims["id"] = consumer.id?:throw BaseException(ResponseCode.INVALID_VALUE)
         return claims
     }
 
-    private fun createProviderRefreshClaims(provider: Provider): Map<String, Any> {
+    private suspend fun createProviderRefreshClaims(provider: Provider): Map<String, Any> {
         var claims = HashMap<String, Any>()
         claims["type"] = "provider"
         claims["id"] = provider.id
@@ -102,23 +102,23 @@ class JwtProvider(
         return claims
     }
 
-    private fun createConsumerRefreshClaims(consumer: Consumer): Map<String, Any> {
+    private suspend fun createConsumerRefreshClaims(consumer: Consumer): Map<String, Any> {
         var claims = HashMap<String, Any>()
         claims["type"] = "consumer"
-        claims["id"] = consumer.id
+        claims["id"] = consumer.id?:throw BaseException(ResponseCode.INVALID_VALUE)
         claims["email"] = consumer.email
         claims["picture_url"] = consumer.pictureUrl
-        claims["gender"] = consumer.gender
-        claims["age"] = consumer.age
-        claims["height"] = consumer.height
-        claims["weight"] = consumer.weight
-        claims["mbti_id"] = consumer.mbtiId
-        claims["personal_color_id"] = consumer.personalColorId
+        claims["gender"] = consumer.gender?:throw BaseException(ResponseCode.INVALID_VALUE)
+        claims["age"] = consumer.age?:throw BaseException(ResponseCode.INVALID_VALUE)
+        claims["height"] = consumer.height?:-1
+        claims["weight"] = consumer.weight?:-1
+        claims["mbti_id"] = consumer.mbtiId?:throw BaseException(ResponseCode.INVALID_VALUE)
+        claims["personal_color_id"] = consumer.personalColorId?:throw BaseException(ResponseCode.INVALID_VALUE)
 
         return claims
     }
 
-    fun getToken(request: ServerHttpRequest): String? {
+    suspend fun getToken(request: ServerHttpRequest): String? {
         val bearerToken: String = request.headers.getFirst(HttpHeaders.AUTHORIZATION)?: throw BaseException(ResponseCode.UNAUTHORIZED)
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(HEADER_PREFIX)) {
             return bearerToken.substring(7)

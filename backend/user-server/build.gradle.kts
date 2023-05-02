@@ -24,7 +24,7 @@ repositories {
 dependencies {
     // R2DBC
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
-    implementation("dev.miku:r2dbc-mysql:0.8.2.RELEASE")
+    implementation("io.asyncer:r2dbc-mysql:1.0.1")
 
     // kotlin + Webflux
     implementation("org.springframework.boot:spring-boot-starter-webflux")
@@ -33,6 +33,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.+")
 
     // jwt
     implementation("io.jsonwebtoken:jjwt-api:0.11.2")
