@@ -15,7 +15,7 @@ const MobileHeader = (props: any) => {
           {/* 로고 이미지 */}
           <Link href="">
             <img
-              src="/asset/images/logo.png"
+              src="/assets/images/logo.png"
               height="100%"
               width="150px"
               alt=""

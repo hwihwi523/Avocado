@@ -7,6 +7,7 @@ import Carousel from "react-material-ui-carousel";
 import { ProductCard } from "../molecues";
 import Image from "next/image";
 import Chip from "@mui/material/Chip";
+import { BlockText, InlineText } from "../atoms";
 
 const DetailProductImage = () => {
   const images = [
@@ -34,22 +35,20 @@ const DetailProductImage = () => {
           </Imagebox>
         ))}
       </Carousel>
-      <Grid container>
+      <Grid container mb={5}>
         {/* 브랜드 */}
         <Grid item xs={12}>
-          <Typography variant="body2" style={{ margin: "30px 0 0 0", color: "grey" }}>
-            {brand}
-          </Typography>
+          <BlockText color="grey" size="1.2rem" style={{ margin: "30px 0 0 0"}}>
+          {brand}
+          </BlockText>
         </Grid>
 
         {/* 제품명 */}
         <Grid item xs={12}>
-          <Typography
-            variant="h5"
-            style={{ fontWeight: "bold" }}
-          >
-            {product_name}
-          </Typography>
+          
+          <BlockText type="B" size="1.8rem">
+          {product_name}
+          </BlockText>
         </Grid>
 
         {/*태그*/}
@@ -69,21 +68,21 @@ const DetailProductImage = () => {
 
         {/* 원래 가격 */}
         <Grid item xs={12}>
-          <Typography
-            variant="h5"
+          <BlockText
+          size="1.5rem"
             style={{ textDecoration: "line-through", color: "grey" }}
           >
             {price}원
-          </Typography>
+          </BlockText>
         </Grid>
 
         {/* 원가 + 할인률 */}
         <Grid item xs={12}>
           <Stack direction={"row"} justifyContent={"space-between"}>
-            <Typography variant="h4">{price - discount}원</Typography>
-            <Typography variant="h4" color="error">
+            <InlineText size="2rem">{price - discount}원</InlineText>
+            <InlineText  size="2rem" color="red">
               {Math.ceil((discount / price) * 100)}%
-            </Typography>
+            </InlineText>
           </Stack>
         </Grid>
       </Grid>

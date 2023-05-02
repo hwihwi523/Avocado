@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Link from "next/link";
+import Image from "next/Image"
 
 
 //할일 링크 설정하기
@@ -25,9 +26,9 @@ const UserProfile = (props: any) => {
           
           <Grid item sx={iconStyle} key={item}>
             <Link href="">
-          <img src={`/asset/icons/${item}.png`} alt="원피스" width="40px"/>
+          <Image src={`/assets/icons/${item}.png`} alt={item} width={40} height={40}/>
           </Link>
-          <Typography variant="subtitle2">{item}</Typography>
+          <MenuText>{item}</MenuText>
           </Grid>
         ))
       }
@@ -40,4 +41,11 @@ export default UserProfile;
 
 const IconBox = styled.div`
   margin : 10px auto;
+`
+
+const MenuText = styled.p`
+  font-family:SeoulNamsanL;
+  font-size:12px;
+  margin-top:10px;
+  color:gray;
 `

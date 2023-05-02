@@ -9,6 +9,7 @@ import {
   Commercials,
   MainUserProfile,
 } from "../components/oranisms";
+import { BlockText } from "../components/atoms";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,34 +33,34 @@ export default function Home() {
 
         {/* 개인화 추천 제품 */}
         <Grid item xs={12}>
-          <Typography variant="subtitle1">
+          <BlockText>
             <StyledSpan>{name}</StyledSpan>
             님을 위한 추천 아이템
-          </Typography>
+          </BlockText>
           <ProductCardsRow />
         </Grid>
 
         {/* 브랜드 광고 */}
         <Grid item xs={12}>
-          <Typography variant="subtitle1" fontWeight={"bold"}>
+          <BlockText>
             지금 Hot한 브랜드 모음
-          </Typography>
+          </BlockText>
           <Commercials />
         </Grid>
 
         {/* 펄스널 컬러별 추천 */}
         <Grid item xs={12}>
-          <Typography variant="subtitle1" fontWeight={"bold"}>
+          <BlockText>
             퍼스널 컬러 “???” 사용자들을 위한 추천 아이템
-          </Typography>
+          </BlockText>
           <ProductCardsRow />
         </Grid>
 
         {/* mbti별 추천 */}
         <Grid item xs={12}>
-          <Typography variant="subtitle1" fontWeight={"bold"}>
+          <BlockText>
             MBTI “???” 사용자들을 위한 추천 아이템
-          </Typography>
+          </BlockText>
           <ProductCardsRow />
         </Grid>
       </Grid>

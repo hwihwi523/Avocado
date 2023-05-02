@@ -3,10 +3,9 @@ import { Stack } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
+import Image from "next/image";
 
-//글씨 적용해야함
-
-const MainUserProfile = (props: any) => {
+const MainUserProfile = () => {
   // const {  mbti, personalColor, grade } = props;
 
   //인덱싱으로 들어올 것을 염두하고 작성함 personalColor[1], personalColor[2], personalColor[3] ...
@@ -91,18 +90,17 @@ const MainUserProfile = (props: any) => {
               <ColorBox left="70px" color={personalcolor.colors[1]} />
               <ColorBox left="50px" color={personalcolor.colors[2]} />
               <ColorBox left="30px" color={personalcolor.colors[3]} />
-              <img
-                src={`asset/avatar/${personalcolor.avatar_path[0]}.png`}
-                width="100px"
+              <Image
+                src={`/assets/avatar/${personalcolor.avatar_path[0]}.png`}
+                width={100}
+                height={100}
                 alt="my avatar"
                 style={{ position: "absolute" }}
               />
             </AvatarDiv>
           </Grid>
           <Grid item xs={5}>
-            <Typography variant="caption">
               <StyledSpan>{name}</StyledSpan>님 반갑습니다.
-            </Typography>
           </Grid>
 
           {/* 하단 메뉴 */}
@@ -170,7 +168,7 @@ const AvatarDiv = styled.div`
 
 const StyledSpan = styled.span`
   font-weight: bold;
-  font-size: 16px;
+  font-size: 18px;
 `;
 
 const ColorBox = styled.span<StyleProps>`
