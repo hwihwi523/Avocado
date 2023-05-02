@@ -1,13 +1,17 @@
-import "@/styles/globals.css";
-import type { AppProps } from "next/app";
-import { MobileBottom, MobileHeader } from "../components/oranisms";
+import "public/fonts/style.css";
+import "../styles/globals.css";
+import React, { FC } from "react";
+import { Provider } from "react-redux";
+import { AppProps } from "next/app";
+import { wrapper } from "../features/store";
 
-export default function App({ Component, pageProps }: AppProps) {
+const MyApp: FC<AppProps> = ({ Component, ...rest }) => {
+  const { store, props } = wrapper.useWrappedStore(rest);
   return (
-    <>
-      <MobileHeader />
-      <Component {...pageProps} />
-      <MobileBottom />
-    </>
+    <Provider store={store}>
+      <Component {...props.pageProps} />
+    </Provider>
   );
-}
+};
+
+export default MyApp;

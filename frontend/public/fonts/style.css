@@ -1,0 +1,23 @@
+@font-face {
+  font-family: "SeoulNamsanL";
+  src: url("/fonts/SeoulNamsanL.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "SeoulNamsanM";
+  src: url("/fonts/SeoulNamsanM.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "SeoulNamsanB";
+  src: url("/fonts/SeoulNamsanB.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "SeoulNamsanEB";
+  src: url("/fonts/SeoulNamsanEB.ttf") format("truetype");
+}
+
+body {
+  font-family: "SeoulNamsanL", sans-serif;
+}
