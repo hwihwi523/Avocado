@@ -23,8 +23,6 @@ front:
 
 logging:
   level:
-    io:
-      asyncer:
-        r2dbc:
-          mysql:
-            client: TRACE
+#    io.asyncer.r2dbc.mysql.client: TRACE
+#    org.springframework.r2dbc: TRACE
+    org.springframework.r2dbc.core: DEBUG
