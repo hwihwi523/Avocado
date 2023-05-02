@@ -1,7 +1,9 @@
 package com.avocado.product.controller;
 
+import com.avocado.product.config.UUIDUtil;
 import com.avocado.product.dto.response.BaseResp;
 import com.avocado.product.dto.response.PageResp;
+import com.avocado.product.dto.response.SimpleMerchandiseResp;
 import com.avocado.product.service.MerchandiseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -11,11 +13,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/merchandises")
 public class MerchandiseListController {
     private final MerchandiseService merchandiseService;
+    private final UUIDUtil uuidUtil;
 
     /**
      * 카테고리와 브랜드 이름을 기준으로 상품을 조회하고 상품 ID 내림차순 정렬
@@ -33,6 +39,13 @@ public class MerchandiseListController {
                                                      @RequestParam(defaultValue = "12") Integer size) {
         PageResp result = merchandiseService.showMerchandiseList_NoOffset(category, store, last, size);
         return ResponseEntity.ok(BaseResp.of("상품 조회 성공", result));
+    }
+
+    @GetMapping("/recents")
+    public ResponseEntity<BaseResp> showRecentMerchandises(@RequestParam String user_id) {
+        UUID consumerId = uuidUtil.joinByHyphen(user_id);
+        List<SimpleMerchandiseResp> result = merchandiseService.showRecentMerchandises(consumerId);
+        return ResponseEntity.ok(BaseResp.of("최근 본 상품 조회 성공", result));
     }
 
     // 위와 동일. Offset 사용 버전
