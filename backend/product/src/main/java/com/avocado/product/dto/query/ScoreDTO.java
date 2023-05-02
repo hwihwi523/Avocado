@@ -5,9 +5,9 @@ import lombok.Getter;
 
 @Getter
 public class ScoreDTO {
-    private Long merchandiseId;
-    private String type;
-    private Long count;
+    private final Long merchandiseId;
+    private final String type;
+    private final Long count;
 
     @QueryProjection
     public ScoreDTO(Long merchandiseId, String type, Long count) {
