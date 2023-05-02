@@ -1,5 +1,7 @@
 package com.avocado.product.repository;
 
+import com.avocado.product.dto.query.DetailMerchandiseDTO;
+import com.avocado.product.dto.query.QDetailMerchandiseDTO;
 import com.avocado.product.dto.query.QSimpleMerchandiseDTO;
 import com.avocado.product.dto.query.SimpleMerchandiseDTO;
 import com.avocado.product.entity.*;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.avocado.product.entity.QMerchandise.merchandise;
+import static com.avocado.product.entity.QMerchandiseAdditionalImg.merchandiseAdditionalImg;
 import static com.avocado.product.entity.QMerchandiseCategory.merchandiseCategory;
 import static com.avocado.product.entity.QMerchandiseGroup.merchandiseGroup;
 import static com.avocado.product.entity.QStore.store;
@@ -88,6 +91,58 @@ public class MerchandiseRepository {
                 );
 
         return PageableExecutionUtils.getPage(result, pageable, countQuery::fetchOne);
+    }
+
+    /**
+     * 특정 상품의 상세정보를 조회하는 쿼리
+     * @param merchandiseId : 조회하려는 상품 ID
+     * @return : 해당 상품의 상세정보
+     */
+    public DetailMerchandiseDTO findDetailMerchandise(Long merchandiseId) {
+        return queryFactory
+                .select(new QDetailMerchandiseDTO(
+                        merchandise.id,
+                        store.name,
+                        merchandise.id,
+                        merchandiseCategory.nameKor,
+                        merchandise.imgurl,
+                        merchandise.name,
+                        merchandiseGroup.price,
+                        merchandiseGroup.discountedPrice,
+                        merchandise.totalScore.divide(merchandise.reviewCount).floatValue(),
+                        merchandiseGroup.description
+                ))
+                .from(merchandise)
+                .join(merchandise.group, merchandiseGroup)
+                .join(merchandiseGroup.provider, store)
+                .join(merchandiseGroup.category, merchandiseCategory)
+                .where(
+                        eqMerchandiseId(merchandiseId)
+                )
+                .fetchFirst();
+    }
+
+    /**
+     * 특정 상품의 추가 이미지 리스트를 조회하는 쿼리
+     * @param merchandiseId : 조회하려는 상품의 ID
+     * @return : 해당 상품의 추가 이미지 리스트
+     */
+    public List<String> findAdditionalImages(Long merchandiseId) {
+        return queryFactory
+                .select(
+                        merchandiseAdditionalImg.imgurl
+                )
+                .from(merchandiseAdditionalImg)
+                .join(merchandiseAdditionalImg.merchandise, merchandise)
+                .where(
+                        eqMerchandiseId(merchandiseId)
+                )
+                .fetch();
+    }
+
+    // 상품 ID 조건
+    private BooleanExpression eqMerchandiseId(Long merchandiseId) {
+        return merchandiseId != null ? merchandise.id.eq(merchandiseId) : null;
     }
 
     // 카테고리 ID 조건

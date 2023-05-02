@@ -4,7 +4,9 @@ import com.avocado.product.config.UUIDUtil;
 import com.avocado.product.dto.request.AddReviewReq;
 import com.avocado.product.dto.request.RemoveReviewReq;
 import com.avocado.product.dto.response.BaseResp;
+import com.avocado.product.dto.response.DetailMerchandiseResp;
 import com.avocado.product.dto.response.ReviewResp;
+import com.avocado.product.service.MerchandiseService;
 import com.avocado.product.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +19,15 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RequestMapping("/merchandises/{merchandise_id}")
 public class DetailMerchandiseController {
+    private final MerchandiseService merchandiseService;
     private final ReviewService reviewService;
     private final UUIDUtil uuidUtil;
+
+    @GetMapping("")
+    public ResponseEntity<BaseResp> showDetailMerchandise(@PathVariable Long merchandise_id) {
+        DetailMerchandiseResp detailMerchandiseResp = merchandiseService.showDetailMerchandise(merchandise_id);
+        return ResponseEntity.ok(BaseResp.of("상품 상세정보 조회 성공", detailMerchandiseResp));
+    }
 
     @PostMapping("/reviews")
     public ResponseEntity<BaseResp> createReview(@PathVariable Long merchandise_id,
