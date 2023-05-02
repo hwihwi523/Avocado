@@ -9,7 +9,7 @@ metadata:
 spec:
   selector:
     app: client
-  type: NodePort
+  type: LoadBalancer
   ports:
     - protocol: TCP
       port: 80
