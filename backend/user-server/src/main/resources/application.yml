@@ -1,8 +1,9 @@
-spring:
-  r2dbc:
-    url: r2dbc:mysql://localhost:3306/test_data?serverTimezone=UTC&characterEncoding=UTF-8
-    username: root
-    password: ssafy
+r2dbc:
+  host: localhost
+  username: root
+  password: ssafy
+  port: 3306
+  database: avocado_merchandise
 
 
 oauth2:
