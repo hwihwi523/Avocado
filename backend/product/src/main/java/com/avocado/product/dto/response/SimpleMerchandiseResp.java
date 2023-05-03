@@ -4,15 +4,9 @@ import com.avocado.product.dto.query.SimpleMerchandiseDTO;
 import lombok.Getter;
 
 @Getter
-public class SimpleMerchandiseResp {
+public class SimpleMerchandiseResp extends DefaultMerchandiseResp {
     private final Long id;
-    private final String brand_name;
-    private final Long merchandise_id;
-    private final String merchandise_category;
     private final String image_url;
-    private final String merchandise_name;
-    private final Integer price;
-    private final Integer discounted_price;
     private final Float score;
 
     private String mbti;
@@ -20,14 +14,9 @@ public class SimpleMerchandiseResp {
     private String age_group;
 
     public SimpleMerchandiseResp(SimpleMerchandiseDTO simpleMerchandiseDTO) {
+        super(simpleMerchandiseDTO);
         this.id = simpleMerchandiseDTO.getId();
-        this.brand_name = simpleMerchandiseDTO.getBrandName();
-        this.merchandise_id = simpleMerchandiseDTO.getMerchandiseId();
-        this.merchandise_category = simpleMerchandiseDTO.getMerchandiseCategory();
         this.image_url = simpleMerchandiseDTO.getImageUrl();
-        this.merchandise_name = simpleMerchandiseDTO.getMerchandiseName();
-        this.price = simpleMerchandiseDTO.getPrice();
-        this.discounted_price = simpleMerchandiseDTO.getDiscountedPrice();
         this.score = simpleMerchandiseDTO.getScore() != null ? simpleMerchandiseDTO.getScore() : 0;
     }
 

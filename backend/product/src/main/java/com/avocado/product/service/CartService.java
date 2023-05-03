@@ -1,6 +1,8 @@
 package com.avocado.product.service;
 
+import com.avocado.product.dto.query.CartMerchandiseDTO;
 import com.avocado.product.dto.query.SimpleMerchandiseDTO;
+import com.avocado.product.dto.response.CartMerchandiseResp;
 import com.avocado.product.dto.response.SimpleMerchandiseResp;
 import com.avocado.product.entity.Cart;
 import com.avocado.product.entity.Consumer;
@@ -56,9 +58,9 @@ public class CartService {
      * @return : 해당 소비자의 장바구니 목록
      */
     @Transactional(readOnly = true)
-    public List<SimpleMerchandiseResp> showMyCart(UUID consumerId) {
+    public List<CartMerchandiseResp> showMyCart(UUID consumerId) {
         // 상품 정보 리스트 조회
-        List<SimpleMerchandiseDTO> myCart = cartRepository.findMyCart(consumerId);
+        List<CartMerchandiseDTO> myCart = cartRepository.findMyCart(consumerId);
         return scoreService.insertPersonalInfoIntoList(myCart);
     }
 

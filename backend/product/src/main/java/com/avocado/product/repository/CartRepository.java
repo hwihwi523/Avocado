@@ -1,5 +1,7 @@
 package com.avocado.product.repository;
 
+import com.avocado.product.dto.query.CartMerchandiseDTO;
+import com.avocado.product.dto.query.QCartMerchandiseDTO;
 import com.avocado.product.dto.query.QSimpleMerchandiseDTO;
 import com.avocado.product.dto.query.SimpleMerchandiseDTO;
 import com.avocado.product.entity.*;
@@ -56,9 +58,9 @@ public class CartRepository {
      * @param consumerId : 소비자 ID
      * @return : 조회 데이터
      */
-    public List<SimpleMerchandiseDTO> findMyCart(UUID consumerId) {
+    public List<CartMerchandiseDTO> findMyCart(UUID consumerId) {
         return queryFactory
-                .select(new QSimpleMerchandiseDTO(
+                .select(new QCartMerchandiseDTO(
                         cart.id,
                         store.name,
                         merchandise.id,

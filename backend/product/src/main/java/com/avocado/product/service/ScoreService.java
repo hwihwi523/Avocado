@@ -1,9 +1,11 @@
 package com.avocado.product.service;
 
 import com.avocado.product.dto.etc.MaxScoreDTO;
+import com.avocado.product.dto.query.DefaultMerchandiseDTO;
 import com.avocado.product.dto.query.DetailMerchandiseDTO;
 import com.avocado.product.dto.query.ScoreDTO;
 import com.avocado.product.dto.query.SimpleMerchandiseDTO;
+import com.avocado.product.dto.response.DefaultMerchandiseResp;
 import com.avocado.product.dto.response.DetailMerchandiseResp;
 import com.avocado.product.dto.response.SimpleMerchandiseResp;
 import com.avocado.product.repository.ScoreRepository;
@@ -28,15 +30,16 @@ public class ScoreService {
      * @return : Response DTO (DB 조회 데이터 + 대표 퍼스널컬러, MBTI, 나이대)
      */
     @Transactional(readOnly = true)
-    public List<SimpleMerchandiseResp> insertPersonalInfoIntoList(List<SimpleMerchandiseDTO> queryContent) {
+    public <Param extends DefaultMerchandiseDTO,
+            Return extends DefaultMerchandiseResp> List<Return> insertPersonalInfoIntoList(List<Param> queryContent) {
         // 상품 ID 취합
-        List<Long> myContentsId = new ArrayList<>();
-        queryContent.forEach((myContent) -> myContentsId.add(myContent.getMerchandiseId()));
+        List<Long> myContentIds = new ArrayList<>();
+        queryContent.forEach((myContent) -> myContentIds.add(myContent.getMerchandiseId()));
 
         // IN 쿼리로 퍼스널컬러, MBTI, 나이대 각각 한 번에 조회
-        List<ScoreDTO> personalColors = scoreRepository.findPersonalColors(myContentsId);
-        List<ScoreDTO> mbtis = scoreRepository.findMbtis(myContentsId);
-        List<ScoreDTO> ages = scoreRepository.findAges(myContentsId);
+        List<ScoreDTO> personalColors = scoreRepository.findPersonalColors(myContentIds);
+        List<ScoreDTO> mbtis = scoreRepository.findMbtis(myContentIds);
+        List<ScoreDTO> ages = scoreRepository.findAges(myContentIds);
 
         // 최대 점수를 갖는 퍼스널컬러, MBTI, 나이대 구하기
         Map<Long, MaxScoreDTO> maxPersonalColors = getMaxScores(personalColors);
@@ -44,10 +47,10 @@ public class ScoreService {
         Map<Long, MaxScoreDTO> maxAges = getMaxScores(ages);
 
         // 응답용 DTO 생성
-        List<SimpleMerchandiseResp> respContent = new ArrayList<>();
-        for (SimpleMerchandiseDTO simpleMerchandiseDTO : queryContent) {
+        List<Return> respContent = new ArrayList<>();
+        for (Param merchandiseDTO : queryContent) {
             // 데이터 조합
-            SimpleMerchandiseResp combined = new SimpleMerchandiseResp(simpleMerchandiseDTO);
+            DefaultMerchandiseResp combined = new DefaultMerchandiseResp(merchandiseDTO);
             Long merchandiseId = combined.getMerchandise_id();  // 상품 ID
             if (maxPersonalColors.get(merchandiseId) != null)
                 combined.updatePersonalColor(maxPersonalColors.get(merchandiseId).getType());  // 대표 퍼스널컬러
@@ -55,7 +58,7 @@ public class ScoreService {
                 combined.updateMBTI(maxMbtis.get(merchandiseId).getType());  // 대표 MBTI
             if (maxAges.get(merchandiseId) != null)
                 combined.updateAgeGroup(maxAges.get(merchandiseId).getType());  // 대표 나이대
-            respContent.add(combined);
+            respContent.add((Return) combined);
         }
 
         return respContent;

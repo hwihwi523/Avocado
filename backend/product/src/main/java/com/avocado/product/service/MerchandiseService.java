@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,7 +53,7 @@ public class MerchandiseService {
                 ? null
                 : respContent.get(respContent.size() - 1).getMerchandise_id();
 
-        return PageResp.of(respContent, result.isLast(), newLastMerchandiseId);
+        return PageResp.of(respContent, result.isLast(), newLastMerchandiseId, null);
     }
 
     /**
@@ -101,6 +102,25 @@ public class MerchandiseService {
         // 대표 퍼스널컬러, MBTI, 나이대 추가 + DTO -> Response 변환
         return scoreService.insertPersonalInfoIntoList(recentMerchandises);
     }
+
+//    @Transactional(readOnly = true)
+//    public PageResp showPurchaseMerchandises(UUID consumerId, LocalDateTime lastPurchaseDate, Integer size) {
+//        // DB 조회
+//        Page<SimpleMerchandiseDTO> result = merchandiseRepository
+//                .findPurchaseHistories(consumerId, lastPurchaseDate, PageRequest.ofSize(size));
+//
+//        // DTO -> Response 변환
+//        List<SimpleMerchandiseResp> respContent = scoreService.insertPersonalInfoIntoList(
+//                result.getContent()
+//        );
+//
+//        // 마지막 상품의 구매일자
+//        Long newLastMerchandiseId = respContent.isEmpty()
+//                ? null
+//                : respContent.get(respContent.size() - 1).get;
+//
+//        return PageResp.of(respContent, result.isLast(), null, newLastMerchandiseId);
+//    }
 
     // Offset 사용 버전.
 //    @Transactional(readOnly = true)

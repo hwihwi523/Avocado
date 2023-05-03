@@ -10,10 +10,12 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,6 +25,7 @@ import static com.avocado.product.entity.QMerchandise.merchandise;
 import static com.avocado.product.entity.QMerchandiseAdditionalImg.merchandiseAdditionalImg;
 import static com.avocado.product.entity.QMerchandiseCategory.merchandiseCategory;
 import static com.avocado.product.entity.QMerchandiseGroup.merchandiseGroup;
+import static com.avocado.product.entity.QPurchase.purchase;
 import static com.avocado.product.entity.QStore.store;
 
 @Repository
@@ -94,6 +97,61 @@ public class MerchandiseRepository {
     private BooleanExpression inMerchandiseIds(List<Long> merchandiseIds) {
         return merchandiseIds != null ? merchandise.id.in(merchandiseIds) : null;
     }
+
+    /**
+     * 구매내역을 조회하는 쿼리
+     * @param consumerId : 사용자 ID
+     * @param lastPurchaseDate : 마지막으로 조회한 상품의 구매일자
+     * @param pageable : 페이징 정보, page size가 -1일 경우 최대로 조회
+     * @return : 구매내역 리스트
+     */
+//    public Page<PurchasHi> findPurchaseHistories(UUID consumerId, LocalDateTime lastPurchaseDate, Pageable pageable) {
+//        // 카운트 쿼리
+//        JPAQuery<Long> countQuery = queryFactory
+//                .select(purchase.id.count())
+//                .from(purchase)
+//                .where(
+//                        purchase.consumer.id.eq(consumerId),
+//                        ltCreatedAt(lastPurchaseDate)
+//                );
+//
+//        // size 설정이 -1이라면 모든 행을 가져오도록 page size 변경
+//        if (pageable.getPageSize() == -1)
+//            pageable = PageRequest.ofSize(countQuery.fetchOne().intValue());
+//
+//        // 구매내역 조회
+//        List<SimpleMerchandiseDTO> content = queryFactory
+//                .select(new Q(
+//                        purchase.id,
+//                        store.name,
+//                        merchandise.id,
+//                        merchandiseCategory.nameKor,
+//                        merchandise.imgurl,
+//                        merchandise.name,
+//                        merchandiseGroup.price,
+//                        merchandiseGroup.discountedPrice,
+//                        merchandise.totalScore.divide(merchandise.reviewCount).floatValue()
+//                ))
+//                .from(purchase)
+//                .join(purchase.merchandise, merchandise)
+//                .join(merchandise.group, merchandiseGroup)
+//                .join(merchandiseGroup.provider, store)
+//                .join(merchandiseGroup.category, merchandiseCategory)
+//                .where(
+//                        purchase.consumer.id.eq(consumerId),
+//                        ltCreatedAt(lastPurchaseDate)
+//                )
+//                .orderBy(
+//                        purchase.createdAt.desc()
+//                )
+//                .limit(pageable.getPageSize())
+//                .fetch();
+//
+//        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+//    }
+//    private BooleanExpression ltCreatedAt(LocalDateTime lastPurchaseDate) {
+//        return lastPurchaseDate != null ? purchase.createdAt.lt(lastPurchaseDate) : null;
+//    }
 
     /**
      * 카테고리와 브랜드 이름을 기준으로 상품을 조회하고 상품 ID 내림차순 정렬

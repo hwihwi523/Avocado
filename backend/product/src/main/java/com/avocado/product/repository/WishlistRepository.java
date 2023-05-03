@@ -1,7 +1,9 @@
 package com.avocado.product.repository;
 
 import com.avocado.product.dto.query.QSimpleMerchandiseDTO;
+import com.avocado.product.dto.query.QWishlistMerchandiseDTO;
 import com.avocado.product.dto.query.SimpleMerchandiseDTO;
+import com.avocado.product.dto.query.WishlistMerchandiseDTO;
 import com.avocado.product.entity.Wishlist;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -61,9 +63,9 @@ public class WishlistRepository {
      * @param consumerId : 소비자 ID
      * @return : 조회 데이터
      */
-    public List<SimpleMerchandiseDTO> findMyWishlist(UUID consumerId) {
+    public List<WishlistMerchandiseDTO> findMyWishlist(UUID consumerId) {
         return queryFactory
-                .select(new QSimpleMerchandiseDTO(
+                .select(new QWishlistMerchandiseDTO(
                         wishlist.id,
                         store.name,
                         merchandise.id,
