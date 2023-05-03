@@ -1,10 +1,10 @@
-FROM docker.elastic.co/elasticsearch/elasticsearch:8.7.0 
+FROM docker.elastic.co/elasticsearch/elasticsearch:8.5.1 
 
 ENV node.name=es
 ENV cluster.name=docker-cluster
 ENV bootstrap.memory_lock=true
 ENV discovery.type=single-node
-ENV ES_JAVA_OPTS="-Xms1g -Xmx1g"
+ENV ES_JAVA_OPTS="-Xms2g -Xmx2g"
 
 # 
 ENV xpack.security.enabled=false
@@ -19,4 +19,4 @@ RUN bin/elasticsearch-plugin install analysis-nori
 
 #VOLUME /usr/share/elasticsearch/data
 
-#EXPOSE 8200
+#EXPOSE 9200
