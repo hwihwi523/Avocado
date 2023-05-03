@@ -1,9 +1,8 @@
 import styled from "@emotion/styled";
 import Grid from "@mui/material/Grid";
-import { ChartMbti } from "../../components/oranisms/charts";
+import { ChartMbti,ChartPersonalColor } from "@/src/components/oranisms/charts";
 import { ProductDetailImage, ProductCardsRow, ProductDescription } from "@/src/components/oranisms";
 
-import { ChartPersonalColor } from "../../components/oranisms/charts";
 const ProductDetail = () => {
   return (
     <Background>
