@@ -6,9 +6,9 @@ resources:
 - service.yaml
 
 vars:
-# - fieldref:
-#     fieldPath: spec.template.spec.containers[0].image
-#   name: IMAGE_TAG
+- fieldref:
+    fieldPath: spec.template.spec.containers[0].image
+  name: IMAGE_TAG
   objref:
     apiVersion: apps/v1
     kind: Deployment
