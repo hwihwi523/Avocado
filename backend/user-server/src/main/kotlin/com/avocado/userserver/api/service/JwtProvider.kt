@@ -119,7 +119,7 @@ class JwtProvider(
         return claims
     }
 
-    suspend fun getToken(request: ServerHttpRequest): String? {
+    suspend fun getToken(request: ServerHttpRequest): String {
         val bearerToken: String = request.headers.getFirst(HttpHeaders.AUTHORIZATION)?: throw BaseException(ResponseCode.UNAUTHORIZED)
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(HEADER_PREFIX)) {
             return bearerToken.substring(7)
