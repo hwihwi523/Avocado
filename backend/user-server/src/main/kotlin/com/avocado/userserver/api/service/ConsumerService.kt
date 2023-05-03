@@ -1,10 +1,15 @@
 package com.avocado.userserver.api.service
 
 import com.avocado.userserver.api.dto.KakaoUserInfo
+import com.avocado.userserver.api.request.ConsumerAddInfoReq
+import com.avocado.userserver.api.request.ConsumerUpdateReq
+import com.avocado.userserver.common.error.BaseException
+import com.avocado.userserver.common.error.ResponseCode
 import com.avocado.userserver.common.utils.OAuthUrlUtil
 import com.avocado.userserver.db.entity.Consumer
 import com.avocado.userserver.db.repository.ConsumerInsertRepository
 import com.avocado.userserver.db.repository.ConsumerRepository
+import io.jsonwebtoken.Claims
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.net.URI
@@ -43,8 +48,25 @@ class ConsumerService(
     @Transactional
     suspend fun save(kakaoUserInfo: KakaoUserInfo):Consumer {
         val consumer = kakaoUserInfo.toConsumer()
-        println(consumer)
         consumerInsertRepository.insert(consumer)
         return consumer
+    }
+
+
+    @Transactional
+    suspend fun putAdditionalInfo(req: ConsumerAddInfoReq, claims: Claims) {
+        val consumer = consumerRepository.findById(jwtProvider.getId(claims))?:throw BaseException(ResponseCode.NOT_FOUND)
+
+
+    }
+
+    @Transactional
+    suspend fun updateInfo(req: ConsumerUpdateReq, claims: Claims) {
+
+    }
+
+    @Transactional
+    suspend fun deleteConsumer(claims: Claims) {
+
     }
 }

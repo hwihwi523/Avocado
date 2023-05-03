@@ -1,6 +1,7 @@
 package com.avocado.userserver.api.dto
 
 import com.avocado.userserver.api.service.SocialType
+import com.avocado.userserver.common.utils.ConvertIdUtil
 import com.avocado.userserver.db.entity.Consumer
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -17,8 +18,9 @@ data class KakaoUserInfo(
     val picture: String,
     val email: String
 ) {
-    fun toConsumer(): Consumer {
-        var id = UUID.randomUUID().toString().replace("-","").decodeHex()
+    suspend fun toConsumer(): Consumer {
+        val convertIdUtil = ConvertIdUtil()
+        var id = convertIdUtil.unHex(UUID.randomUUID().toString().replace("-",""))
         return Consumer(
             id,
             nickname,
