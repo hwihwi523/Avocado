@@ -1,10 +1,12 @@
-FROM adoptopenjdk/openjdk17:alpine-jre AS builder
-RUN apk add --no-cache git
-WORKDIR /app
-COPY . .
-RUN ./gradlew build -x test
+FROM openjdk:17-jdk AS builder
+COPY gradlew .
+COPY gradle gradle
+COPY build.gradle .
+COPY settings.gradle .
+COPY src src
+RUN chmod +x ./gradlew
+RUN ./gradlew bootJAR
 
-FROM adoptopenjdk/openjdk17:alpine-jre
-WORKDIR /app
-COPY --from=builder /app/build/libs/*.jar app.jar
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+FROM openjdk:17-jdk
+COPY --from=builder build/libs/*.jar app.jar
+ENTRYPOINT ["java", "-jar", "/app.jar"]
