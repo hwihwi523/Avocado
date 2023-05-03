@@ -7,10 +7,12 @@ import { examplePostsApi } from "../queries/examplePostApi";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import thunkMiddleware from "redux-thunk";
 import { testProductListApi } from "../queries/testProductListApi";
+import { authSlice } from "./auth/authSlice";
 
 // Root reducer 설정
 const rootReducer = combineReducers({
   example: exampleSlice.reducer,
+  auth: authSlice.reducer,
   [examplePostsApi.reducerPath]: examplePostsApi.reducer,
   [testProductListApi.reducerPath]: testProductListApi.reducer,
 });
