@@ -24,6 +24,9 @@ public class DetailMerchandiseResp {
     private String personal_color;
     private String age_group;
 
+    private Boolean is_purchased;  // 요청한 사용자가 이 상품을 구매했는지
+    private Boolean is_reviewed;  // 요청한 사용자가 이 상품에 리뷰를 남겼는지
+
     public DetailMerchandiseResp(DetailMerchandiseDTO detailMerchandiseDTO) {
         this.id = detailMerchandiseDTO.getId();
         this.brand_name = detailMerchandiseDTO.getBrandName();
@@ -36,6 +39,8 @@ public class DetailMerchandiseResp {
         this.discounted_price = detailMerchandiseDTO.getDiscountedPrice();
         this.score = detailMerchandiseDTO.getScore() != null ? detailMerchandiseDTO.getScore() : 0;
         this.description = detailMerchandiseDTO.getDescription();
+        this.is_purchased = false;
+        this.is_reviewed = false;
     }
 
     public void updateMBTI(String mbti) {
@@ -49,5 +54,11 @@ public class DetailMerchandiseResp {
     }
     public void updateImages(List<String> images) {
         this.images.addAll(images);
+    }
+    public void updateIsPurchased(Boolean is_purchased) {
+        this.is_purchased = is_purchased;
+    }
+    public void updateIsReviewed(Boolean is_reviewed) {
+        this.is_reviewed = is_reviewed;
     }
 }

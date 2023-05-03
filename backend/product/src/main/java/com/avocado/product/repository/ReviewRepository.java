@@ -44,6 +44,26 @@ public class ReviewRepository {
     }
 
     /**
+     * 특정 사용자가 특정 상품에 리뷰를 남겼는지 여부를 조회하는 쿼리
+     * @param consumerId : 사용자 ID
+     * @param merchandiseId : 상품 ID
+     * @return : true / false
+     */
+    public Boolean checkReviewed(UUID consumerId, Long merchandiseId) {
+        // 특정 사용자가 특정 상품에 남긴 리뷰 조회
+        Long reviewId = queryFactory
+                .select(review.id)
+                .from(review)
+                .where(
+                        review.consumer.id.eq(consumerId),
+                        review.merchandise.id.eq(merchandiseId)
+                )
+                .fetchFirst();
+        // 리뷰 여부 반환
+        return reviewId != null;
+    }
+
+    /**
      * 특정 상품에 등록된 모든 리뷰를 조회하는 쿼리
      * @param merchandiseId : 상품 ID
      * @return : 상품에 등록된 모든 리뷰 (등록일자 기준 오름차순 정렬)
