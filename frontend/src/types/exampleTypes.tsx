@@ -1,7 +1,8 @@
 // Auth State
-export interface ExampleAuthState {
+export interface ExampleState {
   exampleUser: ExampleUser | null;
   exampleToken: string | null;
+  exampleProducts: any[] | [];
 }
 
 // User
