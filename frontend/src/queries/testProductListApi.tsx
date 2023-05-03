@@ -1,7 +1,37 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import {
+  BaseQueryFn,
+  createApi,
+  fetchBaseQuery,
+} from "@reduxjs/toolkit/query/react";
 import { HYDRATE } from "next-redux-wrapper";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+export interface TestProduct {
+  api_featured_image: string;
+  brand: string;
+  category: string;
+  created_at: string;
+  currency: null | string;
+  description: string;
+  id: number;
+  image_link: string;
+  name: string;
+  price: string;
+  price_sign: null | string;
+  product_api_url: string;
+  product_colors: any[];
+  product_link: string;
+  product_type: string;
+  rating: number;
+  tag_list: string[];
+  updated_at: string;
+  website_link: string;
+}
+
+interface TestProductsApiResponse {
+  data: TestProduct[];
+}
 
 export const testProductListApi = createApi({
   reducerPath: "testProductsApi",
@@ -17,7 +47,7 @@ export const testProductListApi = createApi({
   // 태그
   tagTypes: [],
   endpoints: (builder) => ({
-    getTestProducts: builder.query({
+    getTestProducts: builder.query<TestProduct[], void>({
       query: () => "",
     }),
   }),
