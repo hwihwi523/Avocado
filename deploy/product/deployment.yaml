@@ -14,8 +14,8 @@ spec:
         app: product
     spec:
       containers:
-        - name: product
-          image: avocado-product
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 8080
+      - name: product
+        image: avocado-product
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 8080
