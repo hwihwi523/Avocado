@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
       - name: client
-        image: 749740892195.dkr.ecr.ap-northeast-2.amazonaws.com/avocado-client:<IMAGE_TAG>
-        # imagePullPolicy: Always # 간단하진 않아서 검색해볼 필요가 있음
+        image: avocado-client
+        imagePullPolicy: Always # 중요한데 간단하진 않아서, 검색해볼 필요가 있음
         ports:
         - containerPort: 3000
         # resources:

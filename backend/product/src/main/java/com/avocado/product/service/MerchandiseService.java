@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -63,6 +64,15 @@ public class MerchandiseService {
         respContent.updateImages(additionalImages);
 
         return respContent;
+    }
+
+    @Transactional(readOnly = true)
+    public List<SimpleMerchandiseResp> showRecentMerchandises(UUID consumerId) {
+        // DB 조회
+        List<SimpleMerchandiseDTO> recentMerchandises = merchandiseRepository.findRecentMerchandises(consumerId);
+
+        // 대표 퍼스널컬러, MBTI, 나이대 추가 + DTO -> Response 변환
+        return scoreService.insertPersonalInfoIntoList(recentMerchandises);
     }
 
     // Offset 사용 버전.
