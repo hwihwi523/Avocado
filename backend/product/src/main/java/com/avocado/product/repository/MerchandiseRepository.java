@@ -42,6 +42,11 @@ public class MerchandiseRepository {
                 .fetchOne();
     }
 
+    /**
+     * 사용자가 최근 본 상품 목록을 조회하는 쿼리 (최대 5개)
+     * @param consumerId : 사용자 ID
+     * @return : 해당 사용자의 최근 조회 상품 목록
+     */
     public List<SimpleMerchandiseDTO> findRecentMerchandises(UUID consumerId) {
         // 사용자가 최근 조회한 5개의 상품 ID 구하기
         List<Long> merchandiseIds = queryFactory

@@ -41,6 +41,11 @@ public class MerchandiseListController {
         return ResponseEntity.ok(BaseResp.of("상품 조회 성공", result));
     }
 
+    /**
+     * 최근 본 상품을 조회하는 기능
+     * @param user_id : 요청한 사용자 (로그인 구현 시 삭제 예정)
+     * @return : 해당 사용자가 조회한 상품 목록
+     */
     @GetMapping("/recents")
     public ResponseEntity<BaseResp> showRecentMerchandises(@RequestParam String user_id) {
         UUID consumerId = uuidUtil.joinByHyphen(user_id);

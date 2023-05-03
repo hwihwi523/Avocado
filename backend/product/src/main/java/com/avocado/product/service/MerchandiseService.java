@@ -51,6 +51,11 @@ public class MerchandiseService {
         return PageResp.of(respContent, result.isLast(), newLastMerchandiseId);
     }
 
+    /**
+     * 특정 상품의 상세정보 조회하기
+     * @param merchandiseId : 상품 ID
+     * @return : 해당 상품의 상세정보, 요청한 사용자가 해당 상품을 구매했는지, 리뷰를 남겼는지 true / false
+     */
     @Transactional(readOnly = true)
     public DetailMerchandiseResp showDetailMerchandise(Long merchandiseId) {
         // DB 조회
@@ -66,6 +71,11 @@ public class MerchandiseService {
         return respContent;
     }
 
+    /**
+     * 최근 본 상품 조회하기
+     * @param consumerId : 사용자 ID
+     * @return : 해당 사용자가 최근 조회한 상품 목록
+     */
     @Transactional(readOnly = true)
     public List<SimpleMerchandiseResp> showRecentMerchandises(UUID consumerId) {
         // DB 조회
