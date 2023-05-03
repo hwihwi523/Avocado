@@ -23,11 +23,11 @@ const ProductCard = (props: any) => {
   const [bookmark, setBookmark] = useState(isBookmark);
 
   function pageMove() {
-    router.push(`product/detail/${id}`);
+    router.push(`product/${id}`);
   }
 
   return (
-    <StyledDiv>
+    <Background>
       {/*북마크를 아래에 위치한 박스*/}
       <Card onClick={pageMove}>
         {/* 이미지 */}
@@ -110,15 +110,15 @@ const ProductCard = (props: any) => {
           )}
         </Tooltip>
       </IconButton>
-    </StyledDiv>
+    </Background>
   );
 };
 
 export default ProductCard;
 
-const StyledDiv = styled.div`
+const Background = styled.div`
   position: relative;
-  width: 180px;
+  width: 200px;
 `;
 
 const Card = styled.div`

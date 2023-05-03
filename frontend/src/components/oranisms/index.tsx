@@ -4,8 +4,8 @@ import MainUserProfile from "./UserProfile";
 import MobileBottom from "./MobileBottom";
 import MobileHeader from "./MobileHeader";
 import ProductCardsRow from "./ProductCardsRow";
-import DetailProductImage from "./DetailProductImage";
-import ChartMbti from "./charts/ChartMbti";
+import ProductDetailImage from "./ProductDetailImage";
+import ProductDescription from "./ProductDescription";
 
 export {
   Category,
@@ -14,6 +14,6 @@ export {
   MobileBottom,
   MobileHeader,
   ProductCardsRow,
-  DetailProductImage,
-  ChartMbti
+  ProductDetailImage,
+  ProductDescription,
 };

@@ -81,7 +81,7 @@ const personal_color_purchase = [
   },
 ];
 
-const PersonalColorChart = () => {
+const ChartPersonalColor = () => {
 
     //그래프에 넣을 데이터 형태에 맞게 넣어주는 함수
   function dataFormat() {
@@ -114,7 +114,7 @@ const PersonalColorChart = () => {
   );
 };
 
-export default PersonalColorChart;
+export default ChartPersonalColor;
 
 const Background = styled.div`
   width: 100%;
