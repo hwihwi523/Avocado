@@ -1,9 +1,15 @@
 import styled from "@emotion/styled";
 import Grid from "@mui/material/Grid";
 import Link from "next/link";
+<<<<<<< HEAD
+import Image from "next/Image";
+
+//할일 링크 설정하기
+=======
 import Image from "next/image";
 //할일 링크 설정하기
 
+>>>>>>> 9236df0abc48455e60c0bc3e7256842330853233
 const iconStyle = {
   textAlign: "center",
   fontWeight: "bold",

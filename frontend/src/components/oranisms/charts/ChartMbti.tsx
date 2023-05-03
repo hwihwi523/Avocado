@@ -78,7 +78,6 @@ const ChartMbti = () => {
 
   return (
     <Background>
-      <BlockText type="B" style={{padding:"10px 0"}}>Preference by mbti </BlockText>
       <Pie data={dataFormat(mbti_data)} options={options} />
     </Background>
   );
@@ -126,7 +125,11 @@ const options={
     legend:{
       display:true,
     }
-  }
+  },
+  title: {
+    display: true,
+    text: "preference MBTI",
+  },
 }
 
 
