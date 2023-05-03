@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { BlockText } from "../atoms";
+import { BlockText } from "../../atoms";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
@@ -78,7 +78,6 @@ const ChartMbti = () => {
 
   return (
     <Background>
-      <BlockText type="B" style={{padding:"10px 0"}}>Preference by mbti </BlockText>
       <Pie data={dataFormat(mbti_data)} options={options} />
     </Background>
   );
@@ -126,7 +125,11 @@ const options={
     legend:{
       display:true,
     }
-  }
+  },
+  title: {
+    display: true,
+    text: "preference MBTI",
+  },
 }
 
 

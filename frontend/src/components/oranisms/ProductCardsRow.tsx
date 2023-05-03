@@ -18,7 +18,7 @@ type ProductInfo = {
 };
 
 const ProductCardsRow = (props: any) => {
-    const isLogin = true;
+    const isLogin = false;
 
 
   const data: ProductInfo[] = [

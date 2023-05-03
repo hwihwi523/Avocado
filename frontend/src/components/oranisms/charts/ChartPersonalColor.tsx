@@ -14,7 +14,6 @@ import { Bubble } from "react-chartjs-2";
 import { IconButton } from "@mui/material";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
 import BookmarkOutlinedIcon from "@mui/icons-material/BookmarkOutlined";
-import { BlockText, InlineText } from "../components/atoms";
 
 import { Bar } from "react-chartjs-2";
 
@@ -37,13 +36,17 @@ ChartJS.register(
   Legend
 );
 
+
+//그래프 옵션
 export const options = {
   responsive: true,
   plugins: {
+    //라벨 옵션
     legend: {
-      display:false,
+      display: false,
       position: "top" as const,
     },
+    //타이틀 옵션
     title: {
       display: true,
       text: "preference Personal Color",
@@ -51,6 +54,7 @@ export const options = {
   },
 };
 
+//더미 데이터
 const personal_color_purchase = [
   {
     type: "봄 라이트",
@@ -96,7 +100,7 @@ const personal_color_purchase = [
 
 const PersonalColorChart = () => {
 
-
+    //그래프에 넣을 데이터 형태에 맞게 넣어주는 함수
   function dataFormat() {
     //데이터 모양
     let data = {
@@ -119,30 +123,6 @@ const PersonalColorChart = () => {
 
     return data;
   }
-  // const labels = [
-  //   "January",
-  //   "February",
-  //   "March",
-  //   "April",
-  //   "May",
-  //   "June",
-  //   "July",
-  // ];
-  // const data = {
-  //   labels,
-  //   datasets: [
-  //     {
-  //       label: "Dataset 1",
-  //       data: [1, 2, 3, 4, 5, 6, 7],
-  //       backgroundColor: "rgba(255, 99, 132, 0.5)",
-  //     },
-  //     {
-  //       label: "Dataset 2",
-  //       data: [1, 2, 3, 4, 5, 6, 7],
-  //       backgroundColor: "rgba(53, 162, 235, 0.5)",
-  //     },
-  //   ],
-  // };
 
   return (
     <Background>

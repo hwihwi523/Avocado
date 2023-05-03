@@ -5,7 +5,7 @@ import MobileBottom from "./MobileBottom";
 import MobileHeader from "./MobileHeader";
 import ProductCardsRow from "./ProductCardsRow";
 import DetailProductImage from "./DetailProductImage";
-import ChartMbti from "./ChartMbti";
+import ChartMbti from "./charts/ChartMbti";
 
 export {
   Category,
