@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/test_yasim?serverTimezone=UTC&characterEncoding=UTF-8
+    url: jdbc:mysql://a4231aa8b5f6f4c258756076545155f8-632431843.ap-northeast-2.elb.amazonaws.com:3306/product?serverTimezone=UTC&characterEncoding=UTF-8
     username: yasim
     password: yasim506
     driver-class-name: com.mysql.cj.jdbc.Driver
