@@ -93,8 +93,8 @@ class JwtProvider(
     private suspend fun createProviderRefreshClaims(provider: Provider): Map<String, Any> {
         var claims = HashMap<String, Any>()
         claims["type"] = "provider"
-        claims["id"] = convertIdUtil.hex(provider.id)
         claims["name"] = provider.name
+        claims["id"] = convertIdUtil.hex(provider.id)
         claims["email"] = provider.email
         claims["picture_url"] = ""
         claims["gender"] = ""

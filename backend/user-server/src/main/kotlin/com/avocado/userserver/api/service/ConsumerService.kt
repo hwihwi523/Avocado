@@ -11,6 +11,7 @@ import com.avocado.userserver.db.repository.ConsumerInsertRepository
 import com.avocado.userserver.db.repository.ConsumerRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import io.jsonwebtoken.Claims
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.net.URI
