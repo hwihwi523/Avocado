@@ -49,6 +49,27 @@ public class ScoreRepository {
                 )
                 .fetch();
     }
+    // 단건 조회
+    public String findPersonalColor(Long merchandiseId) {
+        return queryFactory
+                .select(
+                        personalColor.kind
+                )
+                .from(personalColorScore)
+                .join(personalColorScore.personalColor, personalColor)
+                .join(personalColorScore.merchandise, merchandise)
+                .where(
+                        eqMerchandiseId(merchandiseId)
+                )
+                .groupBy(
+                        merchandise.id,
+                        personalColor.kind
+                )
+                .orderBy(
+                        personalColorScore.score.sum().desc()
+                )
+                .fetchFirst();
+    }
 
     /**
      * 특정 상품의 대표 MBTI를 조회하는 쿼리
@@ -77,6 +98,25 @@ public class ScoreRepository {
                 )
                 .fetch();
     }
+    // 단건 조회
+    public String findMbti(Long merchandiseId) {
+        return queryFactory
+                .select(mbti.kind)
+                .from(mbtiScore)
+                .join(mbtiScore.mbti, mbti)
+                .join(mbtiScore.merchandise, merchandise)
+                .where(
+                        eqMerchandiseId(merchandiseId)
+                )
+                .groupBy(
+                        merchandise.id,
+                        mbti.kind
+                )
+                .orderBy(
+                        mbtiScore.score.sum().desc()
+                )
+                .fetchFirst();
+    }
 
     /**
      * 특정 상품의 대표 나이대를 조회하는 쿼리
@@ -86,16 +126,17 @@ public class ScoreRepository {
     public List<ScoreDTO> findAges(List<Long> merchandiseIds) {
         return queryFactory
                 .select(new QScoreDTO(
-                        ageGenderScore.merchandise.id,
+                        merchandise.id,
                         ageGenderScore.age.stringValue(),
                         ageGenderScore.score.sum()
                 ))
                 .from(ageGenderScore)
+                .join(ageGenderScore.merchandise, merchandise)
                 .where(
                         inMerchandiseIds(merchandiseIds)
                 )
                 .groupBy(
-                        ageGenderScore.merchandise.id,
+                        merchandise.id,
                         ageGenderScore.age
                 )
                 .orderBy(
@@ -103,9 +144,32 @@ public class ScoreRepository {
                 )
                 .fetch();
     }
+    // 단건 조회
+    public String findAge(Long merchandiseId) {
+        return queryFactory
+                .select(
+                        ageGenderScore.age.stringValue()
+                )
+                .from(ageGenderScore)
+                .join(ageGenderScore.merchandise, merchandise)
+                .where(
+                        eqMerchandiseId(merchandiseId)
+                )
+                .groupBy(
+                        merchandise.id,
+                        ageGenderScore.age
+                )
+                .orderBy(
+                        ageGenderScore.score.sum().desc()
+                )
+                .fetchFirst();
+    }
 
     // 상품 ID 조건
     private BooleanExpression inMerchandiseIds(List<Long> merchandiseIds) {
         return merchandiseIds != null ? merchandise.id.in(merchandiseIds) : null;
+    }
+    private BooleanExpression eqMerchandiseId(Long merchandiseId) {
+        return merchandiseId != null ? merchandise.id.eq(merchandiseId) : null;
     }
 }

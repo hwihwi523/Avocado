@@ -4,76 +4,176 @@ import { Stack } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Carousel from "react-material-ui-carousel";
-import { ProductCard } from "../components/molecues";
 import Chip from "@mui/material/Chip";
 import Image from "next/image";
 import Rating from "@mui/material/Rating";
+import { Line, Bar, Chart } from "react-chartjs-2";
+import { useState } from "react";
 
-//임시로 만든 날짜 반환 함수
-function dateFormat() {
-  let today: Date = new Date();
-  let year: number = today.getFullYear();
-  let month: number | string = today.getMonth() + 1;
-  let date: number | string = today.getDate();
+import { Pie, Doughnut } from "react-chartjs-2";
+import { Bubble } from "react-chartjs-2";
+import { IconButton } from "@mui/material";
+import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
+import BookmarkOutlinedIcon from "@mui/icons-material/BookmarkOutlined";
+import { BlockText, InlineText } from "../components/atoms";
 
-  if (month < 10) {
-    month = "0" + month;
-  }
-  if (date < 10) {
-    date = "0" + date;
-  }
 
-  return `${year}.${month}.${date}`;
-}
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
-const Review = () => {
-  const name = "김범식";
-  const avatar = "autumn_man";
-  const mbti = "ISTP";
-  const personal_color = "가을뮤트";
-  const rate = 4;
-  const content = "음식이 친절하고 사장님이 맛있어요.";
+
+ChartJS.register(ArcElement, Tooltip, Legend);
+
+
+const ChartMbti = () => {
+//실제로 받아와야 하는 데이터
+ const mbti_data = [
+  {
+    type: "ISTJ",
+    purchase: 123,
+  },
+  {
+    type: "ISFJ",
+    purchase: 13,
+  },
+  {
+    type: "INFJ",
+    purchase: 23,
+  },
+  {
+    type: "INTJ",
+    purchase: 23,
+  },
+  {
+    type: "ISTP",
+    purchase: 23,
+  },
+  {
+    type: "ISFP",
+    purchase: 103,
+  },
+  {
+    type: "INFP",
+    purchase: 53,
+  },
+  {
+    type: "INTP",
+    purchase: 13,
+  },
+  {
+    type: "ESTP",
+    purchase: 17,
+  },
+  {
+    type: "ESFP",
+    purchase: 44,
+  },
+  {
+    type: "ENFP",
+    purchase: 55,
+  },
+  {
+    type: "ENTP",
+    purchase: 81,
+  },
+  {
+    type: "ESTJ",
+    purchase: 1,
+  },
+  {
+    type: "ESFJ",
+    purchase: 3,
+  },
+  {
+    type: "ENFJ",
+    purchase: 1,
+  },
+  {
+    type: "ENTJ",
+    purchase: 2,
+  },
+];
+
 
   return (
     <Background>
-      <Grid container p={2} gap={3}>
-        <Grid item>
-          <Stack direction={"row"} spacing={3}>
-            <Image
-              width={50}
-              height={50}
-              alt="아바타 이미지"
-              src={`/asset/avatar/${avatar}.png`}
-            />
-            <Stack style={{ color: "gray" }}>
-              <Typography variant="body1">
-                <StyledSpan>{name} </StyledSpan>
-                {mbti} / {personal_color}
-              </Typography>
-              <Typography alignItems={"center"}>
-                <Rating name="half-rating" defaultValue={4} precision={1} />{" "}
-                {dateFormat()}
-              </Typography>
-            </Stack>
-          </Stack>
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="body1">{content}</Typography>
-        </Grid>
-      </Grid>
+      <BlockText type="B" style={{padding:"10px 0"}}>Preference by mbti </BlockText>
+      <Pie data={dataFormat(mbti_data)} options={options} />
     </Background>
   );
 };
 
-export default Review;
-const StyledSpan = styled.span`
-  font-weight: bold;
-  margin-right:5px;
-  font-size:20px;
-  color:black;
-`;
+
+
+export default ChartMbti;
+
+//구매량 순서대로 정렬하는 함수
+function sortByPurchaseAscending(data:any) {
+  return data.sort((a:any, b:any) => a.purchase - b.purchase);
+}
+
+
+//가져온 데이터를 그래프에 넣을 수 있는 형태로 변환
+export const dataFormat = (mbti_datas:any) => {
+  //정렬하기
+  const mbti_data = sortByPurchaseAscending(mbti_datas)
+
+  const data = {
+    labels: [""],
+    datasets: [
+      {
+        label: " # 총 구매수 ",
+        data: [0],
+        backgroundColor: [""],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  data.labels = mbti_data.map((item:any) => item.type);
+  data.datasets[0].data = mbti_data.map((item:any) => item.purchase);
+  data.datasets[0].backgroundColor = mbti_color.map(
+    (color) => `rgba(${color},0.6)`
+  );
+
+
+  return data;
+};
+
+const options={
+  plugins:{
+    legend:{
+      display:true,
+    }
+  }
+}
+
+
 
 const Background = styled.div`
   border: 1px solid #dddddd;
-  width: 100%;
+  width: 100%;  
+  border-radius:10px;
+  text-align:center;
+  padding:10px;
+  box-sizing:border-box;
 `;
+
+
+const mbti_color =[
+ 
+  "255,105,1",
+  "254,66,20",
+  "152,43,186",
+  "94,47,233",
+  "76,32,178",
+  "1,98,255",
+  "0,141,182",
+  "6,110,145",
+  "101,158,52",
+  "119,186,65",
+  "153,211,95",
+  "218,235,54",
+  "255,250,64",
+  "253,197,5",
+  "254,171,3",
+]

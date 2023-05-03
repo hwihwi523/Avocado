@@ -68,6 +68,7 @@ public class WishlistRepository {
                         store.name,
                         merchandise.id,
                         merchandiseCategory.nameKor,
+                        merchandise.imgurl,
                         merchandise.name,
                         merchandiseGroup.price,
                         merchandiseGroup.discountedPrice,

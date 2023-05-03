@@ -5,8 +5,8 @@ import lombok.Getter;
 
 @Getter
 public class RemoveWishlistReq {
-    private String user_id;
-    private Long wishlist_id;
+    private final String user_id;
+    private final Long wishlist_id;
 
     @Builder
     public RemoveWishlistReq(String user_id, Long wishlist_id) {

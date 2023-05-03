@@ -13,6 +13,8 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 
+import { BlockText, InlineText } from "../atoms";
+
 const ProductCard = (props: any) => {
   const router = useRouter();
 
@@ -56,35 +58,31 @@ const ProductCard = (props: any) => {
 
           {/* 브랜드 */}
           <Grid item xs={12}>
-            <Typography
-              variant="body2"
-              style={{ margin: "5px 0 30px 0", color: "grey" }}
-            >
+            <BlockText color="grey" style={{ margin: "5px 0 30px 0" }}>
               {brand}
-            </Typography>
+            </BlockText>
           </Grid>
 
           {/* 원래 가격 */}
           <Grid item xs={12}>
-            <Typography
-              variant="body2"
-              style={{ textDecoration: "line-through", color: "grey" }}
+            <InlineText
+              type="L"
+              color="grey"
+              style={{ textDecoration: "line-through" }}
             >
               {price}원
-            </Typography>
+            </InlineText>
           </Grid>
 
-          {/* 원가 + 할인률 */}
+          {/* 원가 && 할인률 */}
           <Grid item xs={12}>
             <Stack direction={"row"} justifyContent={"space-between"}>
-              <Typography variant="body1">{price - discount}원</Typography>
-              <Typography
-                variant="body1"
-                color="error"
-                style={{ fontWeight: "bold" }}
-              >
+              <InlineText size="1.2rem" type="L">
+                {price - discount}원
+              </InlineText>
+              <InlineText size="1.2rem" type="L" color="red">
                 {Math.ceil((discount / price) * 100)}%
-              </Typography>
+              </InlineText>
             </Stack>
           </Grid>
         </Grid>
