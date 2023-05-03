@@ -2,8 +2,10 @@ package com.avocado.userserver.api.service
 
 import com.avocado.userserver.api.dto.KakaoUserInfo
 import com.avocado.userserver.api.dto.OAuthToken
+import com.avocado.userserver.api.response.OAuthLoginUrlResp
 import com.avocado.userserver.common.error.BaseException
 import com.avocado.userserver.common.error.ResponseCode
+import com.avocado.userserver.common.utils.OAuthUrlUtil
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
@@ -36,14 +38,23 @@ class OauthService(
     @Value("\${oauth2.kakao.token_uri}")
     val TOKEN_URI_KAKAO: String,
 
+    val oAuthUrlUtil: OAuthUrlUtil
 ) {
+    suspend fun getOauth2LoginUrl(provider: String): OAuthLoginUrlResp {
+        var resp: OAuthLoginUrlResp
+        when (provider) {
+            "kakao" -> resp = OAuthLoginUrlResp(SocialType.KAKAO, oAuthUrlUtil.getAuthorizationUrlKakao())
+            else -> throw BaseException(ResponseCode.BAD_REQUEST)
+        }
+        return resp
+    }
 
     suspend fun getUserInfoKakao(code: String): KakaoUserInfo {
         var token: OAuthToken = codeToTokenKakao(code)
         return getUserInfoFromToken(token)
     }
 
-    suspend fun codeToTokenKakao(code: String): OAuthToken {
+    private suspend fun codeToTokenKakao(code: String): OAuthToken {
         val formData: MultiValueMap<String, String> = LinkedMultiValueMap()
         formData.add("client_id", CLIENT_ID_KAKAO)
         formData.add("grant_type", "authorization_code")
