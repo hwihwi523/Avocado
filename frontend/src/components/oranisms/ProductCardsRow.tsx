@@ -5,7 +5,7 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Carousel from "react-material-ui-carousel";
 import { ProductCard } from "../molecues";
-import Button from '@mui/material/Button';
+import Button from "@mui/material/Button";
 
 type ProductInfo = {
   id: number;
@@ -18,8 +18,7 @@ type ProductInfo = {
 };
 
 const ProductCardsRow = (props: any) => {
-    const isLogin = false;
-
+  const isLogin = true;
 
   const data: ProductInfo[] = [
     {
@@ -74,28 +73,34 @@ const ProductCardsRow = (props: any) => {
     },
   ];
 
-  
   return (
     <RowScrollable scroll={isLogin}>
+      {data &&
+        data?.map((item: ProductInfo, i) => (
+          <ProductCard data={item} key={i}/>
+        ))}
 
-        {data && (data?.map((item: ProductInfo, i) => <ProductCard data={item} key={i} />))}
-      
-        
-      {!isLogin && 
-          <LoginBox>
-          <Button size="large" style={{backgroundColor:"black", color:"white"}} variant="contained">로그인이 필요한 서비스 입니다.</Button>
-          </LoginBox>
-        }
-      
+        {/* 로그인 안하면 나타나는 화면 가리개 */}
+      {!isLogin && (
+        <LoginBox>
+          <Button
+            size="large"
+            style={{ backgroundColor: "black", color: "white" }}
+            variant="contained"
+          >
+            로그인이 필요한 서비스 입니다.
+          </Button>
+        </LoginBox>
+      )}
     </RowScrollable>
   );
 };
 
 export default ProductCardsRow;
 
- type Scroll ={
-    scroll : boolean,
-}
+type Scroll = {
+  scroll: boolean;
+};
 
 const RowScrollable = styled.div<Scroll>`
   position: relative;
@@ -108,19 +113,19 @@ const RowScrollable = styled.div<Scroll>`
     display: none; /* Chrome, Safari, Opera*/
   }
 
-  overflow-x:${props => props.scroll ? "" : "hidden"};
-  overflow-y:${props => props.scroll ? "" : "hidden"};
+  overflow-x: ${(props) => (props.scroll ? "" : "hidden")};
+  overflow-y: ${(props) => (props.scroll ? "" : "hidden")};
 `;
 
 const LoginBox = styled.div`
-  position:absolute;
+  position: absolute;
   width: 100%;
-  height:100%;
+  height: 100%;
   background-color: #dddddd;
-  background-color: rgba( 255, 255, 255, 0.8 );
+  background-color: rgba(255, 255, 255, 0.8);
   line-height: 40%;
-  padding:25% 10%;
-  box-sizing:content-box;
+  padding: 25% 10%;
+  box-sizing: content-box;
   left: 0px;
   top: 0px;
 `;

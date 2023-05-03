@@ -9,7 +9,7 @@ import Image from "next/image";
 import Chip from "@mui/material/Chip";
 import { BlockText, InlineText } from "../atoms";
 
-const DetailProductImage = () => {
+const ProductDetailImage = () => {
   const images = [
     "https://cdn.pixabay.com/photo/2023/03/16/15/00/woman-7856919_960_720.jpg",
     "https://cdn.pixabay.com/photo/2023/04/28/12/18/dogs-7956516_960_720.jpg",
@@ -69,6 +69,7 @@ const DetailProductImage = () => {
         {/* 원래 가격 */}
         <Grid item xs={12}>
           <BlockText
+          type="L"
           size="1.5rem"
             style={{ textDecoration: "line-through", color: "grey" }}
           >
@@ -79,8 +80,8 @@ const DetailProductImage = () => {
         {/* 원가 + 할인률 */}
         <Grid item xs={12}>
           <Stack direction={"row"} justifyContent={"space-between"}>
-            <InlineText size="2rem">{price - discount}원</InlineText>
-            <InlineText  size="2rem" color="red">
+            <InlineText type="L" size="2rem">{price - discount}원</InlineText>
+            <InlineText type="L"  size="2rem" color="red">
               {Math.ceil((discount / price) * 100)}%
             </InlineText>
           </Stack>
@@ -90,7 +91,7 @@ const DetailProductImage = () => {
   );
 };
 
-export default DetailProductImage;
+export default ProductDetailImage;
 
 const Imagebox = styled.div`
   position: relative;

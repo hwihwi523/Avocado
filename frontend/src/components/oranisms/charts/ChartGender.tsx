@@ -52,7 +52,7 @@ const gender_data = [
 
 
 
-const PersonalColorChart = () => {
+const ChartGender = () => {
 
   //그래프에 들어갈 데이터
   function dataFormat() {
@@ -83,7 +83,7 @@ const PersonalColorChart = () => {
   );
 };
 
-export default PersonalColorChart;
+export default ChartGender;
 
 const Background = styled.div`
   width: 100%;

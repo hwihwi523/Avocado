@@ -123,11 +123,11 @@ const options={
   plugins:{
     legend:{
       display:true,
-    }
-  },
-  title: {
-    display: true,
-    text: "preference MBTI",
+    },
+    title: {
+      display: true,
+      text: "preference MBTI",
+    },
   },
 }
 
