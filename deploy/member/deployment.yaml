@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: member
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: member
+  template:
+    metadata:
+      labels:
+        app: member
+    spec:
+      containers:
+      - name: member
+        image: avocado-member
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 8080
