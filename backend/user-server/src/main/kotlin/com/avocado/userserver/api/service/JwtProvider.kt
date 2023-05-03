@@ -30,6 +30,7 @@ class JwtProvider(
     var SECRET_KEY: Key = Keys.hmacShaKeyFor(secretKey.toByteArray())
 
     suspend fun getAccessToken(member: Any): String {
+        println(member)
         var claims: Map<String, Any>
         if (member is Provider) {
             claims = createProviderAccessClaims(member)
@@ -39,7 +40,7 @@ class JwtProvider(
             throw BaseException(ResponseCode.BAD_REQUEST)
         }
 
-        var now: Date = Date()
+        var now = Date()
         return Jwts.builder()
             .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
             .setIssuer(ISSUER)
@@ -51,7 +52,7 @@ class JwtProvider(
     }
 
     suspend fun getRefreshToken(member: Any): String {
-        var claims: Map<String, Any>
+        var claims: Map<String, Any?>
         if (member is Provider) {
             claims = createProviderRefreshClaims(member)
         } else if (member is Consumer) {
@@ -60,7 +61,7 @@ class JwtProvider(
             throw BaseException(ResponseCode.BAD_REQUEST)
         }
 
-        var now: Date = Date()
+        var now = Date()
         return Jwts.builder()
             .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
             .setIssuer(ISSUER)
@@ -75,21 +76,21 @@ class JwtProvider(
     private suspend fun createProviderAccessClaims(provider: Provider): Map<String, Any> {
         var claims = HashMap<String, Any>()
         claims["type"] = "provider"
-        claims["id"] = provider.id
+        claims["id"] = provider.id.toHex()
         return claims
     }
 
     private suspend fun createConsumerAccessClaims(consumer: Consumer): Map<String, Any> {
         var claims = HashMap<String, Any>()
         claims["type"] = "consumer"
-        claims["id"] = consumer.id?:throw BaseException(ResponseCode.INVALID_VALUE)
+        claims["id"] = consumer.consumerId.toHex()
         return claims
     }
 
     private suspend fun createProviderRefreshClaims(provider: Provider): Map<String, Any> {
         var claims = HashMap<String, Any>()
         claims["type"] = "provider"
-        claims["id"] = provider.id
+        claims["id"] = provider.id.toHex()
         claims["email"] = provider.email
         claims["picture_url"] = ""
         claims["gender"] = ""
@@ -102,18 +103,18 @@ class JwtProvider(
         return claims
     }
 
-    private suspend fun createConsumerRefreshClaims(consumer: Consumer): Map<String, Any> {
-        var claims = HashMap<String, Any>()
+    private suspend fun createConsumerRefreshClaims(consumer: Consumer): Map<String, Any?> {
+        var claims = HashMap<String, Any?>()
         claims["type"] = "consumer"
-        claims["id"] = consumer.id?:throw BaseException(ResponseCode.INVALID_VALUE)
+        claims["id"] = consumer.consumerId.toHex()
         claims["email"] = consumer.email
         claims["picture_url"] = consumer.pictureUrl
-        claims["gender"] = consumer.gender?:throw BaseException(ResponseCode.INVALID_VALUE)
-        claims["age"] = consumer.age?:throw BaseException(ResponseCode.INVALID_VALUE)
+        claims["gender"] = consumer.gender
+        claims["age"] = consumer.age?:-1
         claims["height"] = consumer.height?:-1
         claims["weight"] = consumer.weight?:-1
-        claims["mbti_id"] = consumer.mbtiId?:throw BaseException(ResponseCode.INVALID_VALUE)
-        claims["personal_color_id"] = consumer.personalColorId?:throw BaseException(ResponseCode.INVALID_VALUE)
+        claims["mbti_id"] = consumer.mbtiId?:-1
+        claims["personal_color_id"] = consumer.personalColorId?:-1
 
         return claims
     }
@@ -127,11 +128,13 @@ class JwtProvider(
     }
 
 
-    fun parseClaims(token: String): Claims {
+    suspend fun parseClaims(token: String): Claims {
         return try {
             Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).body;
         } catch (e: ExpiredJwtException) {
             e.claims
         }
     }
+
+    private suspend fun ByteArray.toHex(): String = joinToString(separator = "") { eachByte -> "%02x".format(eachByte) }
 }

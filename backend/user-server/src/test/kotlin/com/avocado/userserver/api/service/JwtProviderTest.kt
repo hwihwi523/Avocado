@@ -39,5 +39,11 @@ internal class JwtProviderTest @Autowired constructor(
             .toByteArray()
     }
 
-
+    @Test
+    fun `JWT Token 확인`() {
+        runBlocking {
+            println(jwtProvider.parseClaims("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6ImQyZThhYzA1YjI0MjQzYWY4MzliNzUzZTRhZGVlNTc2IiwidHlwZSI6ImNvbnN1bWVyIn0.55k0PHRPcO8KSh2POvfQuU1_VP3JYxqR1oCWL-RVkMM"))
+            println(jwtProvider.parseClaims("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwZXJzb25hbF9jb2xvcl9pZCI6LTEsInBpY3R1cmVfdXJsIjoiaHR0cDovL2sua2FrYW9jZG4ubmV0L2RuL1V3c1U2L2J0cjBSSko5OGd2L25jd2RmT3hDSjdxdmxLczhaaTBpSzEvaW1nXzExMHgxMTAuanBnIiwibWJ0aV9pZCI6LTEsIndlaWdodCI6LTEsImlkIjoiZDJlOGFjMDViMjQyNDNhZjgzOWI3NTNlNGFkZWU1NzYiLCJ0eXBlIjoiY29uc3VtZXIiLCJlbWFpbCI6ImhlbGVuYWxpbTdAbmF2ZXIuY29tIiwiYWdlIjotMSwiaGVpZ2h0IjotMX0.TNdQkmGWD9J9bitC0Sk8xDT5zfDpENIXyMemTLwH43c"))
+        }
+    }
 }

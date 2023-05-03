@@ -3,6 +3,7 @@ package com.avocado.userserver.common.utils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.util.UriComponentsBuilder
+import java.net.URI
 
 @Component
 class OAuthUrlUtil(
@@ -23,10 +24,10 @@ class OAuthUrlUtil(
             .build().toUriString()
     }
 
-    fun getFrontRedirectUrl(accessToken: String, refreshToken: String): String {
+    fun getFrontRedirectUrl(accessToken: String, refreshToken: String): URI {
         return UriComponentsBuilder.fromUriString(FRONT_REDIRECT_URI)
             .queryParam("access_token", accessToken)
-            .queryParam("refresh_token", refreshToken).build().toUriString()
+            .queryParam("refresh_token", refreshToken).build().toUri()
     }
 
 

@@ -10,9 +10,9 @@ import com.avocado.userserver.common.error.BaseException
 import com.avocado.userserver.common.error.ResponseCode
 import com.avocado.userserver.common.utils.OAuthUrlUtil
 import com.avocado.userserver.db.entity.Consumer
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.reactive.function.server.ServerResponse
 
 @RestController
 class OAuthController(
@@ -37,18 +37,23 @@ class OAuthController(
     }
 
     @GetMapping("kakao/redirect")
-    suspend fun redirectKakao(@RequestParam code:String) {
+    suspend fun redirectKakao(@RequestParam code:String): ResponseEntity<Any> {
+        // 1. 카카오 서버에서 유저 정보 가져오기
         val userInfo: KakaoUserInfo = oauthService.getUserInfoKakao(code)
         println(userInfo)
+        
+        // 2. consumer DB에 해당 유저 정보가 있는지 확인하고, 없다면 저장하기
         val consumer: Consumer = consumerService.getConsumerFromSubAndSocial(userInfo.sub, SocialType.KAKAO)
             ?:consumerService.save(userInfo)
-        println(consumer)
 
         val accessToken = jwtProvider.getAccessToken(consumer)
         val refreshToken = jwtProvider.getRefreshToken(consumer)
+        println("accessToken: $accessToken, refreshToken: $refreshToken")
+        val frontRedirectUrl = oAuthUrlUtil.getFrontRedirectUrl(accessToken, refreshToken)
+        println(frontRedirectUrl)
 
-
-        ServerResponse.ok().render(oAuthUrlUtil.getFrontRedirectUrl(accessToken, refreshToken))
+        return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT).location(frontRedirectUrl).build()
     }
 
 }
+

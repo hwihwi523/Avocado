@@ -3,13 +3,16 @@ package com.avocado.userserver.db.entity
 import com.avocado.userserver.api.dto.KakaoUserInfo
 import com.avocado.userserver.api.service.SocialType
 import org.springframework.data.annotation.Id
+import org.springframework.data.domain.Persistable
+import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalDateTime
 
 @Table("consumer")
 data class Consumer (
     @Id
-    val id: ByteArray? = null, // 필수
+    @Column("id")
+    val consumerId: ByteArray, // 필수
     val name: String, // 필수
     val email: String, // 필수
     val pictureUrl: String, // 필수
@@ -24,9 +27,8 @@ data class Consumer (
     val mbtiId: Int?, // 받아야 하는 값
     val personalColorId: Int?, // 받아야 하는 값
     val auth: Int,
-) {
-//    constructor(kakaoUserInfo: KakaoUserInfo):this()
-
+)
+{
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -34,13 +36,13 @@ data class Consumer (
 
         other as Consumer
 
-        if (!id.contentEquals(other.id)) return false
+        if (!consumerId.contentEquals(other.consumerId)) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return id.contentHashCode()
+        return consumerId.contentHashCode()
     }
 
 }
