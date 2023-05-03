@@ -1,10 +1,15 @@
+#r2dbc:
+#  host: localhost
+#  username: root
+#  password: ssafy
+#  port: 3306
+#  database: avocado_member
 r2dbc:
-  host: localhost
+  host: a4231aa8b5f6f4c258756076545155f8-632431843.ap-northeast-2.elb.amazonaws.com
   username: root
-  password: ssafy
+  password: root
   port: 3306
-  database: avocado_member
-
+  database: member
 oauth2:
   kakao:
     client_id: 34142e13b083ba5a3335330cc8cdaf5e

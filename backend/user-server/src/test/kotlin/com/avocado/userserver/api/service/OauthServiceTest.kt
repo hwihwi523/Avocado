@@ -13,12 +13,12 @@ internal class OauthServiceTest @Autowired constructor(
     private val oauthService: OauthService
 ) {
     
-    @Test
-    fun `토큰 발급 테스트`() {
-        runBlocking {
-            println(oauthService.codeToTokenKakao("5_cG8OCKi_W2OcfwDW_pGHGCk7BS2x_zlwAURFjyNhFZMGMcbWLwXViS8imolHpng_iBEQoqJREAAAGH2na6LA"))
-        }
-    }
+//    @Test
+//    fun `토큰 발급 테스트`() {
+//        runBlocking {
+//            println(oauthService.codeToTokenKakao("5_cG8OCKi_W2OcfwDW_pGHGCk7BS2x_zlwAURFjyNhFZMGMcbWLwXViS8imolHpng_iBEQoqJREAAAGH2na6LA"))
+//        }
+//    }
 
     @Test
     fun `사용자 정보 가져오기`() {

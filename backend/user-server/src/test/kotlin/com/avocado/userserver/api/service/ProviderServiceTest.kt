@@ -37,7 +37,6 @@ internal class ProviderServiceTest @Autowired constructor(
                     providerService.login(noEmailReq)
                 }
                 assertEquals(HttpStatus.BAD_REQUEST, e.status)
-
             }
         }
         
