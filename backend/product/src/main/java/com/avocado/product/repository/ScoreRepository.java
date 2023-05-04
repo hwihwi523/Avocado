@@ -61,7 +61,7 @@ public class ScoreRepository {
                 .from(personalColorScore)
                 .join(personalColorScore.personalColor, personalColor)
                 .where(
-                        eqMerchandiseId(merchandiseId)
+                        personalColorScore.merchandise.id.eq(merchandiseId)
                 )
                 .groupBy(
                         personalColorScore.merchandise.id,
@@ -109,7 +109,7 @@ public class ScoreRepository {
                 .from(mbtiScore)
                 .join(mbtiScore.mbti, mbti)
                 .where(
-                        eqMerchandiseId(merchandiseId)
+                        mbtiScore.merchandise.id.eq(merchandiseId)
                 )
                 .groupBy(
                         mbtiScore.merchandise.id,
@@ -157,7 +157,7 @@ public class ScoreRepository {
                 )
                 .from(ageGenderScore)
                 .where(
-                        eqMerchandiseId(merchandiseId)
+                        ageGenderScore.merchandise.id.eq(merchandiseId)
                 )
                 .groupBy(
                         ageGenderScore.merchandise.id,
@@ -167,9 +167,5 @@ public class ScoreRepository {
                         ageGenderScore.score.sum().desc()
                 )
                 .fetchFirst();
-    }
-
-    private BooleanExpression eqMerchandiseId(Long merchandiseId) {
-        return merchandiseId != null ? merchandise.id.eq(merchandiseId) : null;
     }
 }
