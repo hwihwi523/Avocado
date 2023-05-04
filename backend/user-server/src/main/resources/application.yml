@@ -15,7 +15,7 @@ oauth2:
     client_id: 34142e13b083ba5a3335330cc8cdaf5e
     client_secret: S9Yo9z0PJ5CKj8HAMH2QwJsPqxYm6ICc
 #    redirect_uri: http://localhost:8080/kakao/redirect
-    redirect_uri: http:// a38e577e39a114a1ca68e6cc57d19636-137764516.ap-northeast-2.elb.amazonaws.com/kakao/redirect
+    redirect_uri: http://a38e577e39a114a1ca68e6cc57d19636-137764516.ap-northeast-2.elb.amazonaws.com/kakao/redirect
     token_uri: https://kauth.kakao.com/oauth/token
 
 jwt:
