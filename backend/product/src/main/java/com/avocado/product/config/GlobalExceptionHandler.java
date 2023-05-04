@@ -51,6 +51,17 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * 런타임 예러 처리
+     */
+    @ExceptionHandler(RuntimeException.class)
+    protected ResponseEntity<BaseResp> handleRuntimeException(RuntimeException e) {
+        log.error(e.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(BaseResp.of("RUNTIME_ERROR"));
+    }
+
+    /**
      * 그 외 예외 처리
      */
     @ExceptionHandler(Exception.class)
