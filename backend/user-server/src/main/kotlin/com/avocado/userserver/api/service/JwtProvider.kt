@@ -115,7 +115,7 @@ class JwtProvider(
         claims["email"] = consumer.email
         claims["picture_url"] = consumer.pictureUrl
         claims["gender"] = consumer.gender?:"NAN"
-        claims["age"] = consumer.age?:-1
+        claims["age_group"] = consumer.ageGroup?:-1
         claims["height"] = consumer.height?:-1
         claims["weight"] = consumer.weight?:-1
         claims["mbti_id"] = consumer.mbtiId?:-1
