@@ -1,6 +1,8 @@
 package com.avocado.userserver.db.entity
 
-import com.avocado.userserver.api.request.ConsumerAddInfoReq
+import com.avocado.userserver.api.request.ConsumerNotRequiredInfoReq
+import com.avocado.userserver.api.request.ConsumerPersonalColorReq
+import com.avocado.userserver.api.request.ConsumerRequiredInfoReq
 import com.avocado.userserver.api.request.ConsumerUpdateReq
 import com.avocado.userserver.api.service.SocialType
 import com.avocado.userserver.common.error.BaseException
@@ -20,7 +22,7 @@ data class Consumer (
     val email: String, // 필수
     val pictureUrl: String, // 필수
     val gender: String?, // 받아야 하는 값
-    val age: Int?, // 받아야 하는 값
+    val ageGroup: Int?, // 받아야 하는 값
     val createdAt: LocalDateTime, // 필수
     val updatedAt: LocalDateTime, // 필수
     val height: Int?, // 없을 수 있는 값
@@ -32,44 +34,80 @@ data class Consumer (
     val auth: Int,
 )
 {
-    fun addInfo(req: ConsumerAddInfoReq):Consumer {
+    fun updateRequiredInfo(req: ConsumerRequiredInfoReq):Consumer {
         return Consumer(
-            consumerId,
-            name,
-            email,
-            pictureUrl,
-            req.gender,
-            req.age,
-            createdAt,
-            LocalDateTime.now(ZoneId.of("Asia/Seoul")),
-            req.height,
-            req.weight,
-            sub,
-            social,
-            req.mbtiId,
-            req.personalColorId,
-            1
+            consumerId, name, email, pictureUrl,
+            checkGender(req.gender),
+            if (req.ageGroup > 0) {req.ageGroup} else {throw BaseException(ResponseCode.INVALID_VALUE)},
+            createdAt, LocalDateTime.now(ZoneId.of("Asia/Seoul")),
+            height, weight, sub, social, mbtiId, personalColorId, 1
+        )
+    }
+
+    fun updateNotRequiredInfo(req: ConsumerNotRequiredInfoReq):Consumer {
+        val cHeight = checkIntValue(req.height)
+        val cWeight = checkIntValue(req.weight)
+        val cMbtiId = checkIntValueLimit(req.mbtiId, 15)
+
+        return Consumer(
+            consumerId, name, email, pictureUrl, gender, ageGroup,
+            createdAt, LocalDateTime.now(ZoneId.of("Asia/Seoul")),
+            cHeight, cWeight, sub, social, cMbtiId, personalColorId, auth
+        )
+    }
+
+    fun updatePersonalColor(req: ConsumerPersonalColorReq):Consumer {
+        val cPersonalColorId = checkIntValueLimit(req.personalColorId, 9)
+        return Consumer(
+            consumerId, name, email, pictureUrl, gender, ageGroup, createdAt,
+            LocalDateTime.now(ZoneId.of("Asia/Seoul")), height, weight, sub, social,
+            mbtiId, cPersonalColorId, auth
         )
     }
 
     fun updateInfo(req: ConsumerUpdateReq):Consumer {
+        val cHeight = checkIntValue(req.height)
+        val cWeight = checkIntValue(req.weight)
+        val cMbtiId = checkIntValueLimit(req.mbtiId, 15)
+        val cPersonalColorId = checkIntValueLimit(req.personalColorId, 9)
         return Consumer(
-            consumerId,
-            name,
-            email,
-            pictureUrl,
-            if ((req.gender == "M") or (req.gender == "F")) {req.gender} else {throw BaseException(ResponseCode.INVALID_VALUE)},
-            if (req.age > 0) {req.age} else {throw BaseException(ResponseCode.INVALID_VALUE)},
-            createdAt,
-            LocalDateTime.now(ZoneId.of("Asia/Seoul")),
-            if (req.height > 0) {req.height} else {throw BaseException(ResponseCode.INVALID_VALUE)},
-            if (req.weight > 0) {req.weight} else {throw BaseException(ResponseCode.INVALID_VALUE)},
-            sub,
-            social,
-            if ((0<= req.mbtiId) and (req.mbtiId <= 15)) {req.mbtiId} else {throw BaseException(ResponseCode.INVALID_VALUE)},
-            if ((0<= req.personalColorId) and (req.personalColorId <= 9)) {req.personalColorId} else {throw BaseException(ResponseCode.INVALID_VALUE)},
-            auth
+            consumerId, name, email, pictureUrl, checkGender(req.gender),
+            if (req.ageGroup > 0) {req.ageGroup} else {throw BaseException(ResponseCode.INVALID_VALUE)},
+            createdAt, LocalDateTime.now(ZoneId.of("Asia/Seoul")), cHeight, cWeight,
+            sub, social, cMbtiId, cPersonalColorId, auth
         )
+    }
+
+    private fun checkIntValue(value:Int?):Int? {
+        val cValue:Int = value?:return null
+        if (cValue == -1) {
+            return null
+        }
+        if (cValue < 0) {
+            throw BaseException(ResponseCode.INVALID_VALUE)
+        }
+        return cValue
+    }
+
+    private fun checkIntValueLimit(value:Int?, limit:Int):Int? {
+        val cValue:Int = value?:return null
+        if (cValue == -1) {
+            return null
+        }
+        if ((cValue < 0) or (cValue > limit)) {
+            throw BaseException(ResponseCode.INVALID_VALUE)
+        }
+
+        return cValue
+    }
+
+    private fun checkGender(value:String):String {
+        return when(value) {
+            "" -> throw BaseException(ResponseCode.INVALID_VALUE)
+            "F"-> value
+            "M"-> value
+            else -> throw BaseException(ResponseCode.INVALID_VALUE)
+        }
     }
 
     override fun equals(other: Any?): Boolean {

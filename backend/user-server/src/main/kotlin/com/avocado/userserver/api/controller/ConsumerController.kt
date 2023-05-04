@@ -1,6 +1,8 @@
 package com.avocado.userserver.api.controller
 
-import com.avocado.userserver.api.request.ConsumerAddInfoReq
+import com.avocado.userserver.api.request.ConsumerNotRequiredInfoReq
+import com.avocado.userserver.api.request.ConsumerPersonalColorReq
+import com.avocado.userserver.api.request.ConsumerRequiredInfoReq
 import com.avocado.userserver.api.request.ConsumerUpdateReq
 import com.avocado.userserver.api.service.ConsumerService
 import com.avocado.userserver.api.service.JwtProvider
@@ -15,12 +17,32 @@ class ConsumerController(
     val jwtProvider: JwtProvider
 ) {
 
-    @PostMapping("signup/add-info")
-    suspend fun addInfo(@RequestBody req: ConsumerAddInfoReq, request: ServerHttpRequest): ResponseEntity<HashMap<String, Any>> {
+    @PutMapping("signup/required-info")
+    suspend fun addRequiredInfo(@RequestBody req: ConsumerRequiredInfoReq, request: ServerHttpRequest): ResponseEntity<HashMap<String, Any>> {
         var resultMap = HashMap<String, Any>()
         val claims = jwtProvider.getClaims(request)
-        consumerService.putAdditionalInfo(req, claims)
-        resultMap["msg"] = "정보추가_성공"
+        consumerService.putRequiredInfo(req, claims)
+        resultMap["msg"] = "필수정보_추가_성공"
+        resultMap["status"] = 200
+        return ResponseEntity.ok(resultMap)
+    }
+
+    @PutMapping("signup/not-required-info")
+    suspend fun addNotRequiredInfo(@RequestBody req: ConsumerNotRequiredInfoReq, request: ServerHttpRequest): ResponseEntity<HashMap<String, Any>> {
+        var resultMap = HashMap<String, Any>()
+        val claims = jwtProvider.getClaims(request)
+        consumerService.putNotRequiredInfo(req, claims)
+        resultMap["msg"] = "선택정보_추가_성공"
+        resultMap["status"] = 200
+        return ResponseEntity.ok(resultMap)
+    }
+
+    @PutMapping("personal-color")
+    suspend fun updatePersonalColor(@RequestBody req: ConsumerPersonalColorReq, request: ServerHttpRequest): ResponseEntity<HashMap<String, Any>> {
+        var resultMap = HashMap<String, Any>()
+        val claims = jwtProvider.getClaims(request)
+        consumerService.updatePersonalColor(req, claims)
+        resultMap["msg"] = "퍼스널컬러_갱신_성공"
         resultMap["status"] = 200
         return ResponseEntity.ok(resultMap)
     }
@@ -45,7 +67,4 @@ class ConsumerController(
         resultMap["status"] = 200
         return ResponseEntity.ok(resultMap)
     }
-
-
-
 }

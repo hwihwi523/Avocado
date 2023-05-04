@@ -1,11 +1,9 @@
 package com.avocado.userserver.api.request
 
-data class ConsumerUpdateReq(
-    val gender:String,
-    val ageGroup:Int,
+data class ConsumerNotRequiredInfoReq(
     val height:Int?,
     val weight:Int?,
     val mbtiId:Int?,
-    val personalColorId:Int?,
 ) {
+
 }

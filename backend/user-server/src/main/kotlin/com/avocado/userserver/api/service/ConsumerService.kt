@@ -1,7 +1,9 @@
 package com.avocado.userserver.api.service
 
 import com.avocado.userserver.api.dto.KakaoUserInfo
-import com.avocado.userserver.api.request.ConsumerAddInfoReq
+import com.avocado.userserver.api.request.ConsumerNotRequiredInfoReq
+import com.avocado.userserver.api.request.ConsumerPersonalColorReq
+import com.avocado.userserver.api.request.ConsumerRequiredInfoReq
 import com.avocado.userserver.api.request.ConsumerUpdateReq
 import com.avocado.userserver.common.error.BaseException
 import com.avocado.userserver.common.error.ResponseCode
@@ -56,9 +58,23 @@ class ConsumerService(
     }
 
     @Transactional
-    suspend fun putAdditionalInfo(req: ConsumerAddInfoReq, claims: Claims) {
+    suspend fun putRequiredInfo(req: ConsumerRequiredInfoReq, claims: Claims) {
         val consumer = consumerRepository.findById(jwtProvider.getId(claims))?:throw BaseException(ResponseCode.NOT_FOUND)
-        val updatedConsumer = consumer.addInfo(req)
+        val updatedConsumer = consumer.updateRequiredInfo(req)
+        consumerRepository.save(updatedConsumer)
+    }
+
+    @Transactional
+    suspend fun putNotRequiredInfo(req: ConsumerNotRequiredInfoReq, claims: Claims) {
+        val consumer = consumerRepository.findById(jwtProvider.getId(claims))?:throw BaseException(ResponseCode.NOT_FOUND)
+        val updatedConsumer = consumer.updateNotRequiredInfo(req)
+        consumerRepository.save(updatedConsumer)
+    }
+
+    @Transactional
+    suspend fun updatePersonalColor(req: ConsumerPersonalColorReq, claims: Claims) {
+        val consumer = consumerRepository.findById(jwtProvider.getId(claims))?:throw BaseException(ResponseCode.NOT_FOUND)
+        val updatedConsumer = consumer.updatePersonalColor(req)
         consumerRepository.save(updatedConsumer)
     }
 
