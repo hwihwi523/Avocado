@@ -23,7 +23,9 @@ const ProductCard = (props: any) => {
   const [bookmark, setBookmark] = useState(isBookmark);
 
   function pageMove() {
-    router.push(`product/${id}`);
+    router.push({
+      pathname: `/product/${id}`,
+    });
   }
 
   return (
