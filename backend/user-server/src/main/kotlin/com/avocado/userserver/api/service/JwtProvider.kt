@@ -114,7 +114,7 @@ class JwtProvider(
         claims["id"] = convertIdUtil.hex(consumer.consumerId)
         claims["email"] = consumer.email
         claims["picture_url"] = consumer.pictureUrl
-        claims["gender"] = consumer.gender
+        claims["gender"] = consumer.gender?:"NAN"
         claims["age"] = consumer.age?:-1
         claims["height"] = consumer.height?:-1
         claims["weight"] = consumer.weight?:-1
