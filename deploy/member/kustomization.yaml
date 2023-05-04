@@ -16,7 +16,7 @@ vars:
 images:
 - name: avocado-member
   newName: 749740892195.dkr.ecr.ap-northeast-2.amazonaws.com/avocado-member
-  newTag: "98"
+  newTag: "99"
 - name: avocado-product
   newName: 749740892195.dkr.ecr.ap-northeast-2.amazonaws.com/avocado-member
   newTag: "89"
