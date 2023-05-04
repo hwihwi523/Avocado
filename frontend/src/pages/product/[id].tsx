@@ -1,8 +1,17 @@
 import styled from "@emotion/styled";
 import Grid from "@mui/material/Grid";
-import { ChartMbti,ChartPersonalColor } from "@/src/components/oranisms/charts";
-import { ProductDetailImage, ProductCardsRow, ProductDescription } from "@/src/components/oranisms";
-import ProductReview from "../test";
+import {
+  ChartMbti,
+  ChartPersonalColor,
+} from "@/src/components/oranisms/charts";
+import {
+  ProductDetailImage,
+  ProductCardsRow,
+  ProductDescription,
+  ProductReview,
+} from "@/src/components/oranisms";
+
+import { BlockText } from "@/src/components/atoms";
 
 const ProductDetail = () => {
   return (
@@ -14,22 +23,22 @@ const ProductDetail = () => {
         </Grid>
         <Grid item xs={12}>
           <ChartMbti />
-          
         </Grid>
         <Grid item xs={12}>
           <ChartPersonalColor />
-          
         </Grid>
         <Grid item xs={12}>
-          <ProductDescription/>
+          <ProductDescription />
           <DividerBar />
         </Grid>
         <Grid item xs={12}>
+        <BlockText type="B" size="1.3rem" style={{marginBottom:"10px"}}>연관 상품</BlockText>
           <ProductCardsRow />
           <DividerBar />
         </Grid>
         <Grid item xs={12}>
-          <ProductReview/>
+            <BlockText type="B" size="1.3rem" style={{marginBottom:"10px"}}>리뷰 작성하기</BlockText>
+          <ProductReview />
         </Grid>
       </Grid>
     </Background>
