@@ -15,6 +15,9 @@ configurations {
     compileOnly {
         extendsFrom(configurations.annotationProcessor.get())
     }
+    all {
+        exclude("org.springframework.boot", "spring-boot-starter-logging")
+    }
 }
 
 repositories {
@@ -40,8 +43,10 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-jackson:0.11.2")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.2")
 
+    // logger
+    implementation("org.springframework.boot:spring-boot-starter-log4j2")
 
-    // https://mvnrepository.com/artifact/org.mindrot/jbcrypt (bcrypt)
+    // bcrypt
     implementation("org.mindrot:jbcrypt:0.4")
 
     // aop
