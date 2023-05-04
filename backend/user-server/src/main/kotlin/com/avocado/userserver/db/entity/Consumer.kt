@@ -38,7 +38,7 @@ data class Consumer (
         return Consumer(
             consumerId, name, email, pictureUrl,
             checkGender(req.gender),
-            if (req.ageGroup > 0) {req.ageGroup} else {throw BaseException(ResponseCode.INVALID_VALUE)},
+            checkAgeGroup(req.ageGroup),
             createdAt, LocalDateTime.now(ZoneId.of("Asia/Seoul")),
             height, weight, sub, social, mbtiId, personalColorId, 1
         )
@@ -72,12 +72,26 @@ data class Consumer (
         val cPersonalColorId = checkIntValueLimit(req.personalColorId, 9)
         return Consumer(
             consumerId, name, email, pictureUrl, checkGender(req.gender),
-            if (req.ageGroup > 0) {req.ageGroup} else {throw BaseException(ResponseCode.INVALID_VALUE)},
+            checkAgeGroup(ageGroup),
             createdAt, LocalDateTime.now(ZoneId.of("Asia/Seoul")), cHeight, cWeight,
             sub, social, cMbtiId, cPersonalColorId, auth
         )
     }
 
+    private fun checkAgeGroup(value:Int?):Int? {
+        val cValue:Int = value?:return null
+        return when(cValue) {
+            10 -> cValue
+            20 -> cValue
+            30 -> cValue
+            40 -> cValue
+            50 -> cValue
+            60 -> cValue
+            70 -> cValue
+            else -> throw BaseException(ResponseCode.INVALID_VALUE)
+        }
+
+    }
     private fun checkIntValue(value:Int?):Int? {
         val cValue:Int = value?:return null
         if (cValue == -1) {
@@ -103,7 +117,6 @@ data class Consumer (
 
     private fun checkGender(value:String):String {
         return when(value) {
-            "" -> throw BaseException(ResponseCode.INVALID_VALUE)
             "F"-> value
             "M"-> value
             else -> throw BaseException(ResponseCode.INVALID_VALUE)
