@@ -1,7 +1,9 @@
 package com.avocado.product.service;
 
+import com.avocado.product.dto.query.ClickMerchandiseDTO;
 import com.avocado.product.dto.query.DetailMerchandiseDTO;
 import com.avocado.product.dto.query.SimpleMerchandiseDTO;
+import com.avocado.product.dto.response.ClickMerchandiseResp;
 import com.avocado.product.dto.response.DetailMerchandiseResp;
 import com.avocado.product.dto.response.PageResp;
 import com.avocado.product.dto.response.SimpleMerchandiseResp;
@@ -99,13 +101,13 @@ public class MerchandiseService {
      * @return : 해당 사용자가 최근 조회한 상품 목록
      */
     @Transactional(readOnly = true)
-    public List<SimpleMerchandiseResp> showRecentMerchandises(UUID consumerId) {
+    public List<ClickMerchandiseResp> showRecentMerchandises(UUID consumerId) {
         // DB 조회
-        List<SimpleMerchandiseDTO> recentMerchandises = merchandiseRepository.findRecentMerchandises(consumerId);
+        List<ClickMerchandiseDTO> recentMerchandises = merchandiseRepository.findRecentMerchandises(consumerId);
 
         // 대표 퍼스널컬러, MBTI, 나이대 추가 + DTO -> Response 변환
         try {
-            return scoreService.insertPersonalInfoIntoList(recentMerchandises, SimpleMerchandiseResp.class);
+            return scoreService.insertPersonalInfoIntoList(recentMerchandises, ClickMerchandiseResp.class);
         } catch (Exception e) {
             throw new RuntimeException();
         }
