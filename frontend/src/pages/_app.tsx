@@ -23,7 +23,8 @@ const MyApp: FC<AppProps<{ session: Session }>> = ({
     <SessionProvider session={pageProps.session}>
       <Provider store={store}>
         <MobileHeader />
-        <Component {...props.pageProps} />
+        {/* 여기서 pageProps를 컴포넌트에 내려주지 않으면 SSR 불가 */}
+        <Component {...pageProps} />
         <MobileBottom />
       </Provider>
     </SessionProvider>

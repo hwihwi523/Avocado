@@ -1,15 +1,22 @@
 // SSR 방식의 예제
 import Head from "next/head";
-import Link from "next/link";
 import Axios from "axios";
 import { TestProduct } from "@/src/queries/testProductListApi";
 import Image from "next/image";
+import { Product } from "@/src/features/product/productSlice";
+import { authApi } from "@/src/features/auth/authApi";
+import { wrapper } from "@/src/features/store";
+import { useStore } from "react-redux";
 
 interface Props {
-  products: TestProduct[];
+  products: Product[];
 }
 
 export default function Home({ products }: Props) {
+  // console.log(products);
+
+  console.log("State on render", useStore().getState());
+
   return (
     <>
       <Head>
@@ -20,13 +27,15 @@ export default function Home({ products }: Props) {
         {products &&
           products.map((product) => (
             <li key={product.id}>
-              <Image
-                alt="상품 이미지"
-                src={product.image_link}
-                width={300}
-                height={300}
-              />
-              <a>{product.name}</a> ${product.price}
+              <div>
+                <Image
+                  alt="상품 이미지"
+                  src={product.image_url}
+                  width={50}
+                  height={50}
+                />
+              </div>
+              <a>{product.merchandise_name}</a> ${product.price}
             </li>
           ))}
       </ul>
@@ -34,19 +43,45 @@ export default function Home({ products }: Props) {
   );
 }
 
-export async function getServerSideProps() {
-  const apiUrl = process.env.API_URL;
-  if (!apiUrl) {
-    throw new Error("API_URL 환경 변수가 설정되어 있지 않습니다.");
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) => async () => {
+    const productApiUrl = process.env.PRODUCT_API_URL;
+    const memberApiUrl = process.env.MEMBER_API_URL;
+    if (!productApiUrl) {
+      throw new Error("API_URL 환경 변수가 설정되어 있지 않습니다.");
+    }
+    const res = await Axios.get(productApiUrl + "/merchandises?size=10");
+    const content = res.data.data.content;
+    // console.log(content);
+
+    // store와 연동 예시
+    const loginResponse = await store.dispatch(
+      authApi.endpoints.sellerLogin.initiate({
+        email: "avocado1@gmail.com",
+        password: "avocado506",
+      })
+    );
+    console.log("Seller login response:", loginResponse);
+    // 모든 API 작업이 끝날 때까지 대기 -> depreciated
+    // await Promise.all(authApi.util.getRunningOperationPromises());
+
+    console.log("SERVER STATE", store.getState().authApi);
+
+    if (!content) {
+      return {
+        props: {
+          products: [],
+        },
+      };
+    }
+
+    return {
+      props: {
+        products: content,
+      },
+    };
   }
-  const res = await Axios.get(apiUrl);
-  const products = res.data;
-  return {
-    props: {
-      products,
-    },
-  };
-}
+);
 
 // // CSR 방식의 예제
 // import {
@@ -54,6 +89,8 @@ export async function getServerSideProps() {
 //   useGetTestProductsQuery,
 // } from "@/src/queries/testProductListApi";
 // import { useState, useEffect } from "react";
+// import { wrapper } from "@/src/features/store";
+// import { useStore } from "react-redux";
 
 // export default function ProductListTest() {
 //   const { data, error, isLoading } = useGetTestProductsQuery();

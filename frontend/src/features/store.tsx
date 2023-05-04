@@ -8,13 +8,17 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import thunkMiddleware from "redux-thunk";
 import { testProductListApi } from "../queries/testProductListApi";
 import { authSlice } from "./auth/authSlice";
+import { productSlice } from "./product/productSlice";
+import { authApi } from "./auth/authApi";
 
 // Root reducer 설정
 const rootReducer = combineReducers({
   example: exampleSlice.reducer,
   auth: authSlice.reducer,
+  product: productSlice.reducer,
   [examplePostsApi.reducerPath]: examplePostsApi.reducer,
   [testProductListApi.reducerPath]: testProductListApi.reducer,
+  [authApi.reducerPath]: authApi.reducer,
 });
 
 // https://github.com/kirill-konshin/next-redux-wrapper#redux-toolkit
@@ -26,7 +30,8 @@ const makeStore = () => {
       getDefaultMiddleware().concat(
         thunkMiddleware,
         examplePostsApi.middleware,
-        testProductListApi.middleware
+        testProductListApi.middleware,
+        authApi.middleware
       ),
     devTools: true,
   });
