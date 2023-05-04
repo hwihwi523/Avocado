@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { Grid, TextField, Rating } from "@mui/material";
 import { useRef, useState } from "react";
+import {Button} from "@mui/material";
 
 const ReviewInput = (props: any) => {
   const [rating, setRating] = useState(2);
@@ -20,7 +21,7 @@ const ReviewInput = (props: any) => {
     <Background>
       <form onSubmit={submitHandler}>
         <Grid container alignItems={"center"}>
-          <Grid item xs={9}>
+          <Grid item xs={8}>
             <TextField
               fullWidth
               id="standard-basic"
@@ -29,7 +30,7 @@ const ReviewInput = (props: any) => {
               inputRef={inputRef}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={4}>
             <Rating
               size="small"
               name="simple-controlled"
@@ -48,6 +49,9 @@ const ReviewInput = (props: any) => {
               }}
             />
           </Grid>
+          <Grid item xs={12}>
+            <Button variant="outlined" fullWidth style={{height:"50px"}} >댓글 입력</Button>
+          </Grid>
         </Grid>
       </form>
     </Background>
@@ -56,7 +60,7 @@ const ReviewInput = (props: any) => {
 
 //여기는 SeoulNamsan 적용 안되서 기본 sens-self로 함
 const Background = styled.div`
-
+    margin-bottom:10px;
 `;
 
 export default ReviewInput;
