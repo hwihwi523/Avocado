@@ -2,6 +2,7 @@ package com.avocado.product.controller;
 
 import com.avocado.product.config.UUIDUtil;
 import com.avocado.product.dto.response.BaseResp;
+import com.avocado.product.dto.response.ClickMerchandiseResp;
 import com.avocado.product.dto.response.PageResp;
 import com.avocado.product.dto.response.SimpleMerchandiseResp;
 import com.avocado.product.service.MerchandiseService;
@@ -49,7 +50,7 @@ public class MerchandiseListController {
     @GetMapping("/recents")
     public ResponseEntity<BaseResp> showRecentMerchandises(@RequestParam String user_id) {
         UUID consumerId = uuidUtil.joinByHyphen(user_id);
-        List<SimpleMerchandiseResp> result = merchandiseService.showRecentMerchandises(consumerId);
+        List<ClickMerchandiseResp> result = merchandiseService.showRecentMerchandises(consumerId);
         return ResponseEntity.ok(BaseResp.of("최근 본 상품 조회 성공", result));
     }
 

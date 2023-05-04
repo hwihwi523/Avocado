@@ -37,15 +37,9 @@ public class CartService {
         if (originCart != null)
             throw new InvalidValueException(ErrorCode.EXISTS_CART);
 
-        // 등록할 상품 Entity 찾기
-        Merchandise merchandise = merchandiseRepository.findById(merchandiseId);
-        if (merchandise == null)
-            throw new InvalidValueException(ErrorCode.NO_MERCHANDISE);
-
-        // 요청한 소비자 Entity 찾기
-        Consumer consumer = consumerRepository.findById(consumerId);
-        if (consumer == null)
-            throw new InvalidValueException(ErrorCode.NO_MEMBER);
+        // 등록할 상품, 사용자 프록시 조회
+        Consumer consumer = consumerRepository.getOne(consumerId);
+        Merchandise merchandise = merchandiseRepository.getOne(merchandiseId);
 
         // Entity 생성 및 저장
         Cart cart = Cart.builder()

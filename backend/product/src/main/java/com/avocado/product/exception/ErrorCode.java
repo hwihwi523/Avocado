@@ -25,6 +25,7 @@ public enum ErrorCode {
     NO_WISHLIST(404, "NO_WISHLIST"),
 
     // Cart
+    EXISTS_CART(400, "EXISTS_CART"),
     NO_CART(404, "NO_CART"),
     ;
 
