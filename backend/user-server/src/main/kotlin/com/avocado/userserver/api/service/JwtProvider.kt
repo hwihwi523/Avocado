@@ -94,6 +94,7 @@ class JwtProvider(
         var claims = HashMap<String, Any>()
         claims["type"] = "provider"
         claims["id"] = convertIdUtil.hex(provider.id)
+        claims["name"] = provider.name
         claims["email"] = provider.email
         claims["picture_url"] = ""
         claims["gender"] = ""
@@ -109,6 +110,7 @@ class JwtProvider(
     private suspend fun createConsumerRefreshClaims(consumer: Consumer): Map<String, Any?> {
         var claims = HashMap<String, Any?>()
         claims["type"] = "consumer"
+        claims["name"] = consumer.name
         claims["id"] = convertIdUtil.hex(consumer.consumerId)
         claims["email"] = consumer.email
         claims["picture_url"] = consumer.pictureUrl
