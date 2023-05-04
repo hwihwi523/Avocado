@@ -25,88 +25,43 @@ import SendIcon from "@mui/icons-material/Send";
 import { useRef } from "react";
 import { ReviewInput, Review } from "../components/molecues";
 
+import { Category, ProductCardsGrid } from "../components/oranisms";
 
-import {ProductCard} from "../components/molecues";
-
-type ProductInfo = {
-  id: number;
-  img_url: string;
-  price: number;
-  discount: number;
-  isBookmark: boolean;
-  tags: string[];
-  brand: string;
-};
-
-const ProductCardsGrid = (props: any) => {
-  // 더미 데이터
-  const data: ProductInfo[] = [
-    {
-      id: 123123,
-      img_url:
-        "https://img.freepik.com/free-photo/japanese-business-concept-with-business-person_23-2149268012.jpg?w=740&t=st=1682738359~exp=1682738959~hmac=4714981d0d5d09c27675131f07ee4ca11b7d6b57c39febce3e83bb918d3e129b",
-      price: 32000,
-      discount: 10000,
-      brand: "MUJI",
-      isBookmark: true,
-      tags: ["ESFP", "SPRING", "상의"],
-    },
-    {
-      id: 123123,
-      img_url:
-        "https://img.freepik.com/free-photo/japanese-business-concept-with-business-person_23-2149268012.jpg?w=740&t=st=1682738359~exp=1682738959~hmac=4714981d0d5d09c27675131f07ee4ca11b7d6b57c39febce3e83bb918d3e129b",
-      price: 32000,
-      discount: 10000,
-      brand: "MUJI",
-      isBookmark: true,
-      tags: ["ESFP", "SPRING", "상의"],
-    },
-    {
-      id: 123123,
-      img_url:
-        "https://img.freepik.com/free-photo/japanese-business-concept-with-business-person_23-2149268012.jpg?w=740&t=st=1682738359~exp=1682738959~hmac=4714981d0d5d09c27675131f07ee4ca11b7d6b57c39febce3e83bb918d3e129b",
-      price: 32000,
-      discount: 10000,
-      brand: "MUJI",
-      isBookmark: true,
-      tags: ["ESFP", "SPRING", "상의"],
-    },
-    {
-      id: 123123,
-      img_url:
-        "https://img.freepik.com/free-photo/japanese-business-concept-with-business-person_23-2149268012.jpg?w=740&t=st=1682738359~exp=1682738959~hmac=4714981d0d5d09c27675131f07ee4ca11b7d6b57c39febce3e83bb918d3e129b",
-      price: 32000,
-      discount: 10000,
-      brand: "MUJI",
-      isBookmark: true,
-      tags: ["ESFP", "SPRING", "상의"],
-    },
-    {
-      id: 123123,
-      img_url:
-        "https://img.freepik.com/free-photo/japanese-business-concept-with-business-person_23-2149268012.jpg?w=740&t=st=1682738359~exp=1682738959~hmac=4714981d0d5d09c27675131f07ee4ca11b7d6b57c39febce3e83bb918d3e129b",
-      price: 32000,
-      discount: 10000,
-      brand: "MUJI",
-      isBookmark: true,
-      tags: ["ESFP", "SPRING", "상의"],
-    },
-  ];
+const Store = () => {
+  const img_url = "store_main_image";
   return (
-    <Grid container>
-      {data &&
-        data?.map((item: ProductInfo, i) => (
-          <Grid item lg={3} md={3} sm={4} xs={6} key={i}>
-            <ProductCard data={item} key={i} />
-          </Grid>
-        ))}
-    </Grid>
+    <Background>
+      {/* 스토어 이미지 */}
+      <Stack spacing={3} direction={"column"}>
+        <Imagebox>
+          <Image
+            src={`/assets/exampleImage/${img_url}.png`}
+            alt="제품 이미지"
+            fill
+            style={{ objectFit: "cover" }}
+          />
+        </Imagebox>
+
+        {/* 카테고리 */}
+        <Category />
+
+        {/* 제품들 뭐 하기로 했는데 까먹음  */}
+        
+        <ProductCardsGrid />
+      </Stack>
+    </Background>
   );
 };
-
-export default ProductCardsGrid;
+export default Store;
 
 const Background = styled.div`
   padding: 10px;
   box-sizing: border-box;
+`;
+
+const Imagebox = styled.div`
+  position: relative;
+  width: 100%;
+  height: 30vh;
+  margin-bottom: 10px;
 `;

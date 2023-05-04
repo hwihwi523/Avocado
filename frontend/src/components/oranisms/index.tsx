@@ -7,6 +7,7 @@ import ProductCardsRow from "./ProductCardsRow";
 import ProductDetailImage from "./ProductDetailImage";
 import ProductDescription from "./ProductDescription";
 import ProductReview from "./ProductReview";
+import ProductCardsGrid from "./ProductCardsGrid";
 
 export {
   Category,
@@ -18,4 +19,5 @@ export {
   ProductDetailImage,
   ProductDescription,
   ProductReview,
+  ProductCardsGrid,
 };
