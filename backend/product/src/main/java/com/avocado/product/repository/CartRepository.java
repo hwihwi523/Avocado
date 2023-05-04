@@ -3,7 +3,6 @@ package com.avocado.product.repository;
 import com.avocado.product.dto.query.CartMerchandiseDTO;
 import com.avocado.product.dto.query.QCartMerchandiseDTO;
 import com.avocado.product.entity.*;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.avocado.product.entity.QCart.cart;
-import static com.avocado.product.entity.QConsumer.consumer;
 import static com.avocado.product.entity.QMerchandise.merchandise;
 import static com.avocado.product.entity.QMerchandiseCategory.merchandiseCategory;
 import static com.avocado.product.entity.QMerchandiseGroup.merchandiseGroup;
@@ -76,7 +74,7 @@ public class CartRepository {
                         merchandise.name,
                         merchandiseGroup.price,
                         merchandiseGroup.discountedPrice,
-                        merchandise.totalScore.divide(merchandise.reviewCount).floatValue().as("score")
+                        merchandise.totalScore.divide(merchandise.reviewCount).floatValue()
                 ))
                 .from(cart)
                 .join(cart.merchandise, merchandise)

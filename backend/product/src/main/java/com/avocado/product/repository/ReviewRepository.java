@@ -98,11 +98,9 @@ public class ReviewRepository {
         Long reviewId = queryFactory
                 .select(review.id)
                 .from(review)
-                .join(review.consumer, consumer)
-                .join(review.merchandise, merchandise)
                 .where(
-                        eqReviewerId(reviewerId),
-                        eqMerchandiseId(merchandiseId)
+                        review.consumer.id.eq(reviewerId),
+                        review.merchandise.id.eq(merchandiseId)
                 )
                 .fetchFirst();
         return reviewId != null;
@@ -115,9 +113,5 @@ public class ReviewRepository {
     // 리뷰 ID 조건
     private BooleanExpression eqReviewId(Long reviewId) {
         return reviewId != null ? review.id.eq(reviewId) : null;
-    }
-    // 리뷰어 ID 조건
-    private BooleanExpression eqReviewerId(UUID reviewerId) {
-        return reviewerId != null ? consumer.id.eq(reviewerId) : null;
     }
 }
