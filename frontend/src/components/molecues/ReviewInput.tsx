@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { Grid, TextField, Rating } from "@mui/material";
 import { useRef, useState } from "react";
 
-const ProductDescription = (props: any) => {
+const ReviewInput = (props: any) => {
   const [rating, setRating] = useState(2);
   const inputRef = useRef<HTMLInputElement>();
 
@@ -38,9 +38,12 @@ const ProductDescription = (props: any) => {
                 setRating(newValue ? newValue : 0);
               }}
               style={{
+
                 border: "1px solid #dddddd",
                 boxSizing: "border-box",
-                padding: "18px 10px",
+                padding: "18px 0px 18px 10px",
+                width:"100%",
+                textAlign:"center",
                 borderRadius: "5px",
               }}
             />
@@ -52,6 +55,8 @@ const ProductDescription = (props: any) => {
 };
 
 //여기는 SeoulNamsan 적용 안되서 기본 sens-self로 함
-const Background = styled.div``;
+const Background = styled.div`
 
-export default ProductDescription;
+`;
+
+export default ReviewInput;
