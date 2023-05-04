@@ -8,6 +8,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.avocado.product.entity.QAgeGenderScore.ageGenderScore;
@@ -28,20 +29,22 @@ public class ScoreRepository {
      * @return : 대표 퍼스널컬러
      */
     public List<ScoreDTO> findPersonalColors(List<Long> merchandiseIds) {
+        if (merchandiseIds.isEmpty())
+            return new ArrayList<>();
+
         return queryFactory
                 .select(new QScoreDTO(
-                        merchandise.id,
+                        personalColorScore.merchandise.id,
                         personalColor.kind,
                         personalColorScore.score.sum()
                 ))
                 .from(personalColorScore)
                 .join(personalColorScore.personalColor, personalColor)
-                .join(personalColorScore.merchandise, merchandise)
                 .where(
-                        inMerchandiseIds(merchandiseIds)
+                        personalColorScore.merchandise.id.in(merchandiseIds)
                 )
                 .groupBy(
-                        merchandise.id,
+                        personalColorScore.merchandise.id,
                         personalColor.kind
                 )
                 .orderBy(
@@ -57,12 +60,11 @@ public class ScoreRepository {
                 )
                 .from(personalColorScore)
                 .join(personalColorScore.personalColor, personalColor)
-                .join(personalColorScore.merchandise, merchandise)
                 .where(
-                        eqMerchandiseId(merchandiseId)
+                        personalColorScore.merchandise.id.eq(merchandiseId)
                 )
                 .groupBy(
-                        merchandise.id,
+                        personalColorScore.merchandise.id,
                         personalColor.kind
                 )
                 .orderBy(
@@ -77,20 +79,22 @@ public class ScoreRepository {
      * @return : 대표 MBTI
      */
     public List<ScoreDTO> findMbtis(List<Long> merchandiseIds) {
+        if (merchandiseIds.isEmpty())
+            return new ArrayList<>();
+
         return queryFactory
                 .select(new QScoreDTO(
-                        merchandise.id,
+                        mbtiScore.merchandise.id,
                         mbti.kind,
                         mbtiScore.score.sum()
                 ))
                 .from(mbtiScore)
                 .join(mbtiScore.mbti, mbti)
-                .join(mbtiScore.merchandise, merchandise)
                 .where(
-                        inMerchandiseIds(merchandiseIds)
+                        mbtiScore.merchandise.id.in(merchandiseIds)
                 )
                 .groupBy(
-                        merchandise.id,
+                        mbtiScore.merchandise.id,
                         mbti.kind
                 )
                 .orderBy(
@@ -104,12 +108,11 @@ public class ScoreRepository {
                 .select(mbti.kind)
                 .from(mbtiScore)
                 .join(mbtiScore.mbti, mbti)
-                .join(mbtiScore.merchandise, merchandise)
                 .where(
-                        eqMerchandiseId(merchandiseId)
+                        mbtiScore.merchandise.id.eq(merchandiseId)
                 )
                 .groupBy(
-                        merchandise.id,
+                        mbtiScore.merchandise.id,
                         mbti.kind
                 )
                 .orderBy(
@@ -124,19 +127,21 @@ public class ScoreRepository {
      * @return : 대표 MBTI
      */
     public List<ScoreDTO> findAges(List<Long> merchandiseIds) {
+        if (merchandiseIds.isEmpty())
+            return new ArrayList<>();
+
         return queryFactory
                 .select(new QScoreDTO(
-                        merchandise.id,
+                        ageGenderScore.merchandise.id,
                         ageGenderScore.age.stringValue(),
                         ageGenderScore.score.sum()
                 ))
                 .from(ageGenderScore)
-                .join(ageGenderScore.merchandise, merchandise)
                 .where(
-                        inMerchandiseIds(merchandiseIds)
+                        ageGenderScore.merchandise.id.in(merchandiseIds)
                 )
                 .groupBy(
-                        merchandise.id,
+                        ageGenderScore.merchandise.id,
                         ageGenderScore.age
                 )
                 .orderBy(
@@ -151,25 +156,16 @@ public class ScoreRepository {
                         ageGenderScore.age.stringValue()
                 )
                 .from(ageGenderScore)
-                .join(ageGenderScore.merchandise, merchandise)
                 .where(
-                        eqMerchandiseId(merchandiseId)
+                        ageGenderScore.merchandise.id.eq(merchandiseId)
                 )
                 .groupBy(
-                        merchandise.id,
+                        ageGenderScore.merchandise.id,
                         ageGenderScore.age
                 )
                 .orderBy(
                         ageGenderScore.score.sum().desc()
                 )
                 .fetchFirst();
-    }
-
-    // 상품 ID 조건
-    private BooleanExpression inMerchandiseIds(List<Long> merchandiseIds) {
-        return merchandiseIds != null ? merchandise.id.in(merchandiseIds) : null;
-    }
-    private BooleanExpression eqMerchandiseId(Long merchandiseId) {
-        return merchandiseId != null ? merchandise.id.eq(merchandiseId) : null;
     }
 }

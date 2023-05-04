@@ -66,9 +66,9 @@ public class PurchaseRepository {
 
         // size 설정이 null 이면 모든 행을 가져오도록 page size 변경
         Pageable pageable = PageRequest.ofSize(
-                size != null
+                size != null && size > 0
                         ? size
-                        : countQuery.fetchOne().intValue()
+                        : Integer.MAX_VALUE
         );
 
         // 구매내역 조회

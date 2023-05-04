@@ -85,13 +85,12 @@ public class MerchandiseRepository {
                         merchandise.totalScore.divide(merchandise.reviewCount).floatValue()
                 ))
                 .from(click)
-                .join(click.consumer, consumer)
                 .join(click.merchandise, merchandise)
                 .join(merchandise.group, merchandiseGroup)
                 .join(merchandiseGroup.provider, store)
                 .join(merchandiseGroup.category, merchandiseCategory)
                 .where(
-                        inMerchandiseIds(merchandiseIds)
+                        merchandise.id.in(merchandiseIds)
                 )
                 .groupBy(
                         merchandise.id
@@ -100,11 +99,6 @@ public class MerchandiseRepository {
                         click.id.max().desc()
                 )
                 .fetch();
-    }
-
-    // 상품 ID 조건
-    private BooleanExpression inMerchandiseIds(List<Long> merchandiseIds) {
-        return merchandiseIds != null ? merchandise.id.in(merchandiseIds) : null;
     }
 
     /**
@@ -135,7 +129,7 @@ public class MerchandiseRepository {
                 .join(merchandiseGroup.provider, store)
                 .join(merchandiseGroup.category, merchandiseCategory)
                 .where(
-                        loeLastMerchandiseId(lastMerchandiseId),
+                        ltLastMerchandiseId(lastMerchandiseId),
                         eqCategoryId(categoryId),
                         eqBrandName(brandName)
                 )
@@ -151,7 +145,6 @@ public class MerchandiseRepository {
                 .from(merchandise)
                 .join(merchandise.group, merchandiseGroup)
                 .join(merchandiseGroup.provider, store)
-                .join(merchandiseGroup.category, merchandiseCategory)
                 .where(
                         eqCategoryId(categoryId),
                         eqBrandName(brandName)
@@ -213,7 +206,7 @@ public class MerchandiseRepository {
 
     // 카테고리 ID 조건
     private BooleanExpression eqCategoryId(Short categoryId) {
-        return categoryId != null ? merchandiseCategory.id.eq(categoryId) : null;
+        return categoryId != null ? merchandiseGroup.category.id.eq(categoryId) : null;
     }
 
     // 브랜드 이름 조건
@@ -224,8 +217,8 @@ public class MerchandiseRepository {
     }
 
     // 마지막 조회한 상품 ID 조건
-    private BooleanExpression loeLastMerchandiseId(Long lastMerchandiseId) {
-        return lastMerchandiseId != null ? merchandise.id.loe(lastMerchandiseId - 1) : null;
+    private BooleanExpression ltLastMerchandiseId(Long lastMerchandiseId) {
+        return lastMerchandiseId != null ? merchandise.id.lt(lastMerchandiseId) : null;
     }
 
     // Offset 사용 버전.

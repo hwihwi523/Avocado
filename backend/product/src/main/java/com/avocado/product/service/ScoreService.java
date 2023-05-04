@@ -61,6 +61,8 @@ public class ScoreService {
                 ((DetailMerchandiseResp) combined).updateDetail((DetailMerchandiseDTO) merchandiseDTO);
             } else if (combined instanceof PurchaseHistoryMerchandiseResp) {
                 ((PurchaseHistoryMerchandiseResp) combined).updatePurchaseHistory((PurchaseHistoryMerchandiseDTO) merchandiseDTO);
+            } else if (combined instanceof ClickMerchandiseResp) {
+                ((ClickMerchandiseResp) combined).updateClick((ClickMerchandiseDTO) merchandiseDTO);
             }
 
             Long merchandiseId = combined.getMerchandise_id();  // 상품 ID
