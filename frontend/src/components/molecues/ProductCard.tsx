@@ -68,7 +68,7 @@ const ProductCard = (props: any) => {
             <InlineText
               type="L"
               color="grey"
-              style={{ textDecoration: "line-through" }}
+              style={{ textDecorationLine: "line-through" }}
             >
               {price}원
             </InlineText>
@@ -118,10 +118,10 @@ export default ProductCard;
 
 const Background = styled.div`
   position: relative;
-  width: 200px;
 `;
 
 const Card = styled.div`
+width:240px;
   padding: 10px;
   box-sizing: border-box;
   transition: 0.2s;
@@ -134,6 +134,6 @@ const Card = styled.div`
 const Imagebox = styled.div`
   position: relative;
   width: 100%;
-  height: 180px;
+  height: 200px;
   margin-bottom: 10px;
 `;

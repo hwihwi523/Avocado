@@ -9,7 +9,7 @@ type Style = {
   
   
   const InlineText = ({ type = "M", size = "1rem", fontWeight = 400, color = "black", children, style={} }: React.PropsWithChildren<Style>) => {
-    console.log("style>>>", style)
+
     return (
       <StyledSpan type={type} size={size} fontWeight={fontWeight} color={color} style={style}>
         {children}
