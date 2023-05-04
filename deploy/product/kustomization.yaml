@@ -16,4 +16,4 @@ vars:
 images:
 - name: avocado-product
   newName: 749740892195.dkr.ecr.ap-northeast-2.amazonaws.com/avocado-product
-  newTag: "95"
+  newTag: "96"
