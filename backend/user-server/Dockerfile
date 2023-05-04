@@ -5,7 +5,7 @@ COPY build.gradle .
 COPY settings.gradle .
 COPY src src
 RUN chmod +x ./gradlew
-RUN ./gradlew bootJAR
+RUN ./gradlew bootJAR -Dorg.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64
 
 FROM openjdk:17-jdk
 COPY --from=builder build/libs/*.jar app.jar
