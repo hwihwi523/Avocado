@@ -7,13 +7,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class WishlistMerchandiseResp extends DefaultMerchandiseResp {
-    private Long id;
+    private Long wishlist_id;
     private String image_url;
     private Float score;
 
     public void updateWishlist(WishlistMerchandiseDTO wishlistMerchandiseDTO) {
         super.updateDefault(wishlistMerchandiseDTO);
-        this.id = wishlistMerchandiseDTO.getId();
+        this.wishlist_id = wishlistMerchandiseDTO.getWishlistId();
         this.image_url = wishlistMerchandiseDTO.getImageUrl();
         this.score = wishlistMerchandiseDTO.getScore();
     }

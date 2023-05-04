@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class SimpleMerchandiseResp extends DefaultMerchandiseResp {
-    private Long id;
     private String image_url;
     private Float score;
 
@@ -17,7 +16,6 @@ public class SimpleMerchandiseResp extends DefaultMerchandiseResp {
 
     public void updateSimple(SimpleMerchandiseDTO simpleMerchandiseDTO) {
         super.updateDefault(simpleMerchandiseDTO);
-        this.id = simpleMerchandiseDTO.getId();
         this.image_url = simpleMerchandiseDTO.getImageUrl();
         this.score = simpleMerchandiseDTO.getScore() != null ? simpleMerchandiseDTO.getScore() : 0;
     }

@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class CartMerchandiseResp extends DefaultMerchandiseResp {
-    private Long id;
+    private Long cart_id;
     private String image_url;
     private Float score;
 
     public void updateCart(CartMerchandiseDTO cartMerchandiseDTO) {
         super.updateDefault(cartMerchandiseDTO);
-        this.id = cartMerchandiseDTO.getId();
+        this.cart_id = cartMerchandiseDTO.getCartId();
         this.image_url = cartMerchandiseDTO.getImageUrl();
         this.score = cartMerchandiseDTO.getScore();
     }
