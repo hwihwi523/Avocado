@@ -55,21 +55,23 @@ class ConsumerService(
         return consumer
     }
 
-
     @Transactional
     suspend fun putAdditionalInfo(req: ConsumerAddInfoReq, claims: Claims) {
         val consumer = consumerRepository.findById(jwtProvider.getId(claims))?:throw BaseException(ResponseCode.NOT_FOUND)
-
-
+        val updatedConsumer = consumer.addInfo(req)
+        consumerRepository.save(updatedConsumer)
     }
 
     @Transactional
     suspend fun updateInfo(req: ConsumerUpdateReq, claims: Claims) {
-
+        val consumer = consumerRepository.findById(jwtProvider.getId(claims))?:throw BaseException(ResponseCode.NOT_FOUND)
+        val updatedConsumer = consumer.updateInfo(req)
+        consumerRepository.save(updatedConsumer)
     }
 
     @Transactional
     suspend fun deleteConsumer(claims: Claims) {
-
+        consumerRepository.deleteById(jwtProvider.getId(claims))
+        // TODO - 다른 DB 에도 관련 정보를 알려야 함
     }
 }
