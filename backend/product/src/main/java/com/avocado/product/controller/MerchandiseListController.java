@@ -1,10 +1,7 @@
 package com.avocado.product.controller;
 
 import com.avocado.product.config.UUIDUtil;
-import com.avocado.product.dto.response.BaseResp;
-import com.avocado.product.dto.response.ClickMerchandiseResp;
-import com.avocado.product.dto.response.PageResp;
-import com.avocado.product.dto.response.SimpleMerchandiseResp;
+import com.avocado.product.dto.response.*;
 import com.avocado.product.service.MerchandiseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,6 +50,23 @@ public class MerchandiseListController {
         UUID consumerId = uuidUtil.joinByHyphen(user_id);
         List<ClickMerchandiseResp> result = merchandiseService.showRecentMerchandises(consumerId);
         return ResponseEntity.ok(BaseResp.of("최근 본 상품 조회 성공", result));
+    }
+
+    /**
+     * 구매내역 조회하기
+     * @param user_id : 조회할 사용자
+     * @param last_date : (더보기 형식의 페이징 용도) 특정 시점
+     * @param size : 조회할 데이터 개수
+     * @return : 구매내역 리스트, 메시지, Http Status
+     */
+    @GetMapping("/histories")
+    public ResponseEntity<BaseResp> showPurchaseHistories(@RequestParam String user_id,
+                                                          @RequestParam @Nullable String last_date,
+                                                          @RequestParam @Nullable Integer size) {
+        UUID consumerId = uuidUtil.joinByHyphen(user_id);
+        LocalDateTime purchaseDate = last_date != null ? LocalDateTime.parse(last_date) : null;
+        PageResp result = merchandiseService.showPurchaseMerchandises(consumerId, purchaseDate, size);
+        return ResponseEntity.ok(BaseResp.of("구매내역 조회 성공", result));
     }
 
     // 위와 동일. Offset 사용 버전
