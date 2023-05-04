@@ -1,12 +1,17 @@
 package com.avocado.userserver.api.service
 
 import com.avocado.userserver.api.dto.KakaoUserInfo
+import com.avocado.userserver.api.request.ConsumerAddInfoReq
+import com.avocado.userserver.api.request.ConsumerUpdateReq
+import com.avocado.userserver.common.error.BaseException
+import com.avocado.userserver.common.error.ResponseCode
 import com.avocado.userserver.common.utils.OAuthUrlUtil
 import com.avocado.userserver.db.entity.Consumer
 import com.avocado.userserver.db.repository.ConsumerInsertRepository
 import com.avocado.userserver.db.repository.ConsumerRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import io.jsonwebtoken.Claims
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.net.URI
@@ -48,5 +53,25 @@ class ConsumerService(
         log.info("카카오 정보를 바탕으로 소비자 정보 구성. consumer: {}", consumer)
         consumerInsertRepository.insert(consumer)
         return consumer
+    }
+
+    @Transactional
+    suspend fun putAdditionalInfo(req: ConsumerAddInfoReq, claims: Claims) {
+        val consumer = consumerRepository.findById(jwtProvider.getId(claims))?:throw BaseException(ResponseCode.NOT_FOUND)
+        val updatedConsumer = consumer.addInfo(req)
+        consumerRepository.save(updatedConsumer)
+    }
+
+    @Transactional
+    suspend fun updateInfo(req: ConsumerUpdateReq, claims: Claims) {
+        val consumer = consumerRepository.findById(jwtProvider.getId(claims))?:throw BaseException(ResponseCode.NOT_FOUND)
+        val updatedConsumer = consumer.updateInfo(req)
+        consumerRepository.save(updatedConsumer)
+    }
+
+    @Transactional
+    suspend fun deleteConsumer(claims: Claims) {
+        consumerRepository.deleteById(jwtProvider.getId(claims))
+        // TODO - 다른 DB 에도 관련 정보를 알려야 함
     }
 }

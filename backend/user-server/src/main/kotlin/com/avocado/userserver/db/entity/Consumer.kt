@@ -1,12 +1,15 @@
 package com.avocado.userserver.db.entity
 
-import com.avocado.userserver.api.dto.KakaoUserInfo
+import com.avocado.userserver.api.request.ConsumerAddInfoReq
+import com.avocado.userserver.api.request.ConsumerUpdateReq
 import com.avocado.userserver.api.service.SocialType
+import com.avocado.userserver.common.error.BaseException
+import com.avocado.userserver.common.error.ResponseCode
 import org.springframework.data.annotation.Id
-import org.springframework.data.domain.Persistable
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalDateTime
+import java.time.ZoneId
 
 @Table("consumer")
 data class Consumer (
@@ -29,6 +32,45 @@ data class Consumer (
     val auth: Int,
 )
 {
+    fun addInfo(req: ConsumerAddInfoReq):Consumer {
+        return Consumer(
+            consumerId,
+            name,
+            email,
+            pictureUrl,
+            req.gender,
+            req.age,
+            createdAt,
+            LocalDateTime.now(ZoneId.of("Asia/Seoul")),
+            req.height,
+            req.weight,
+            sub,
+            social,
+            req.mbtiId,
+            req.personalColorId,
+            1
+        )
+    }
+
+    fun updateInfo(req: ConsumerUpdateReq):Consumer {
+        return Consumer(
+            consumerId,
+            name,
+            email,
+            pictureUrl,
+            if ((req.gender == "M") or (req.gender == "F")) {req.gender} else {throw BaseException(ResponseCode.INVALID_VALUE)},
+            if (req.age > 0) {req.age} else {throw BaseException(ResponseCode.INVALID_VALUE)},
+            createdAt,
+            LocalDateTime.now(ZoneId.of("Asia/Seoul")),
+            if (req.height > 0) {req.height} else {throw BaseException(ResponseCode.INVALID_VALUE)},
+            if (req.weight > 0) {req.weight} else {throw BaseException(ResponseCode.INVALID_VALUE)},
+            sub,
+            social,
+            if ((0<= req.mbtiId) and (req.mbtiId <= 15)) {req.mbtiId} else {throw BaseException(ResponseCode.INVALID_VALUE)},
+            if ((0<= req.personalColorId) and (req.personalColorId <= 9)) {req.personalColorId} else {throw BaseException(ResponseCode.INVALID_VALUE)},
+            auth
+        )
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

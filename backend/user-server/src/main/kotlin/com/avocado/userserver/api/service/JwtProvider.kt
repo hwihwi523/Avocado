@@ -2,6 +2,7 @@ package com.avocado.userserver.api.service
 
 import com.avocado.userserver.common.error.BaseException
 import com.avocado.userserver.common.error.ResponseCode
+import com.avocado.userserver.common.utils.ConvertIdUtil
 import com.avocado.userserver.db.entity.Consumer
 import com.avocado.userserver.db.entity.Provider
 import io.jsonwebtoken.*
@@ -24,6 +25,8 @@ class JwtProvider(
     val REFRESH_EXPIRATION_TIME: Long,
     @Value("\${jwt.issuer}")
     val ISSUER: String,
+
+    val convertIdUtil: ConvertIdUtil
 ) {
     val HEADER_PREFIX: String = "Bearer "
 
@@ -76,22 +79,22 @@ class JwtProvider(
     private suspend fun createProviderAccessClaims(provider: Provider): Map<String, Any> {
         var claims = HashMap<String, Any>()
         claims["type"] = "provider"
-        claims["id"] = provider.id.toHex()
+        claims["id"] = convertIdUtil.hex(provider.id)
         return claims
     }
 
     private suspend fun createConsumerAccessClaims(consumer: Consumer): Map<String, Any> {
         var claims = HashMap<String, Any>()
         claims["type"] = "consumer"
-        claims["id"] = consumer.consumerId.toHex()
+        claims["id"] = convertIdUtil.hex(consumer.consumerId)
         return claims
     }
 
     private suspend fun createProviderRefreshClaims(provider: Provider): Map<String, Any> {
         var claims = HashMap<String, Any>()
         claims["type"] = "provider"
-        claims["id"] = provider.id.toHex()
         claims["name"] = provider.name
+        claims["id"] = convertIdUtil.hex(provider.id)
         claims["email"] = provider.email
         claims["picture_url"] = ""
         claims["gender"] = ""
@@ -107,11 +110,11 @@ class JwtProvider(
     private suspend fun createConsumerRefreshClaims(consumer: Consumer): Map<String, Any?> {
         var claims = HashMap<String, Any?>()
         claims["type"] = "consumer"
-        claims["id"] = consumer.consumerId.toHex()
         claims["name"] = consumer.name
+        claims["id"] = convertIdUtil.hex(consumer.consumerId)
         claims["email"] = consumer.email
         claims["picture_url"] = consumer.pictureUrl
-        claims["gender"] = consumer.gender
+        claims["gender"] = consumer.gender?:"NAN"
         claims["age"] = consumer.age?:-1
         claims["height"] = consumer.height?:-1
         claims["weight"] = consumer.weight?:-1
@@ -138,5 +141,16 @@ class JwtProvider(
         }
     }
 
-    private suspend fun ByteArray.toHex(): String = joinToString(separator = "") { eachByte -> "%02x".format(eachByte) }
+    suspend fun getClaims(request: ServerHttpRequest): Claims {
+        return parseClaims(getToken(request))
+    }
+
+    suspend fun getType(claims: Claims):String {
+        return claims["type"]?.toString()?:throw BaseException(ResponseCode.WRONG_TOKEN)
+    }
+
+    suspend fun getId(claims: Claims):ByteArray {
+        return convertIdUtil.unHex(claims["id"]?.toString()?:throw BaseException(ResponseCode.WRONG_TOKEN))
+    }
+
 }
