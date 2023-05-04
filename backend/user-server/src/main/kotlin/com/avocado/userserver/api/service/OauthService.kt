@@ -11,6 +11,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -40,6 +42,8 @@ class OauthService(
 
     val oAuthUrlUtil: OAuthUrlUtil
 ) {
+    val log: Logger = LoggerFactory.getLogger(OauthService::class.java)
+
     suspend fun getOauth2LoginUrl(provider: String): OAuthLoginUrlResp {
         var resp: OAuthLoginUrlResp
         when (provider) {
@@ -55,6 +59,7 @@ class OauthService(
     }
 
     private suspend fun codeToTokenKakao(code: String): OAuthToken {
+        log.info("카카오 서버에 유저 정보 요청 시작")
         val formData: MultiValueMap<String, String> = LinkedMultiValueMap()
         formData.add("client_id", CLIENT_ID_KAKAO)
         formData.add("grant_type", "authorization_code")
@@ -75,9 +80,10 @@ class OauthService(
     }
 
     private suspend fun getUserInfoFromToken(token: OAuthToken): KakaoUserInfo {
+        log.info("카카오 서버에서 받은 응답으로 유저 정보 parsing 시작. token: {}", token)
         val idTokenPayload: String = token.id_token.split(".")[1]
         val decodedString = String(Base64.getDecoder().decode(idTokenPayload.toByteArray()))
-        println(decodedString)
+        log.info("decodedString: {}", decodedString)
         val objectMapper = ObjectMapper().registerKotlinModule()
         return objectMapper.readValue(decodedString, KakaoUserInfo::class.java)
     }
