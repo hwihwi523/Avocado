@@ -1,9 +1,4 @@
-#r2dbc:
-#  host: localhost
-#  username: root
-#  password: ssafy
-#  port: 3306
-#  database: avocado_member
+spring.webflux.base-path: /member
 r2dbc:
   host: a4231aa8b5f6f4c258756076545155f8-632431843.ap-northeast-2.elb.amazonaws.com
   username: root

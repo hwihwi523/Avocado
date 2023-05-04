@@ -91,6 +91,7 @@ class JwtProvider(
         var claims = HashMap<String, Any>()
         claims["type"] = "provider"
         claims["id"] = provider.id.toHex()
+        claims["name"] = provider.name
         claims["email"] = provider.email
         claims["picture_url"] = ""
         claims["gender"] = ""
@@ -107,6 +108,7 @@ class JwtProvider(
         var claims = HashMap<String, Any?>()
         claims["type"] = "consumer"
         claims["id"] = consumer.consumerId.toHex()
+        claims["name"] = consumer.name
         claims["email"] = consumer.email
         claims["picture_url"] = consumer.pictureUrl
         claims["gender"] = consumer.gender
