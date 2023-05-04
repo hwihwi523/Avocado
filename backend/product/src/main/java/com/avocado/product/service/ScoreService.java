@@ -1,18 +1,14 @@
 package com.avocado.product.service;
 
 import com.avocado.product.dto.etc.MaxScoreDTO;
-import com.avocado.product.dto.query.DefaultMerchandiseDTO;
-import com.avocado.product.dto.query.DetailMerchandiseDTO;
-import com.avocado.product.dto.query.ScoreDTO;
-import com.avocado.product.dto.query.SimpleMerchandiseDTO;
-import com.avocado.product.dto.response.DefaultMerchandiseResp;
-import com.avocado.product.dto.response.DetailMerchandiseResp;
-import com.avocado.product.dto.response.SimpleMerchandiseResp;
+import com.avocado.product.dto.query.*;
+import com.avocado.product.dto.response.*;
 import com.avocado.product.repository.ScoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +27,9 @@ public class ScoreService {
      */
     @Transactional(readOnly = true)
     public <Param extends DefaultMerchandiseDTO,
-            Return extends DefaultMerchandiseResp> List<Return> insertPersonalInfoIntoList(List<Param> queryContent) {
+            Return extends DefaultMerchandiseResp> List<Return> insertPersonalInfoIntoList(List<Param> queryContent,
+                                                                                           Class<Return> returnClass)
+            throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         // 상품 ID 취합
         List<Long> myContentIds = new ArrayList<>();
         queryContent.forEach((myContent) -> myContentIds.add(myContent.getMerchandiseId()));
@@ -50,7 +48,19 @@ public class ScoreService {
         List<Return> respContent = new ArrayList<>();
         for (Param merchandiseDTO : queryContent) {
             // 데이터 조합
-            DefaultMerchandiseResp combined = new DefaultMerchandiseResp(merchandiseDTO);
+            Return combined = returnClass.getDeclaredConstructor().newInstance();
+
+            // 클래스의 종류에 따라 데이터를 다르게 초기화
+            if (combined instanceof CartMerchandiseResp) {
+                ((CartMerchandiseResp) combined).updateCart((CartMerchandiseDTO) merchandiseDTO);
+            } else if (combined instanceof WishlistMerchandiseResp) {
+                ((WishlistMerchandiseResp) combined).updateWishlist((WishlistMerchandiseDTO) merchandiseDTO);
+            } else if (combined instanceof SimpleMerchandiseResp) {
+                ((SimpleMerchandiseResp) combined).updateSimple((SimpleMerchandiseDTO) merchandiseDTO);
+            } else if (combined instanceof DetailMerchandiseResp) {
+                ((DetailMerchandiseResp) combined).updateDetail((DetailMerchandiseDTO) merchandiseDTO);
+            }
+
             Long merchandiseId = combined.getMerchandise_id();  // 상품 ID
             if (maxPersonalColors.get(merchandiseId) != null)
                 combined.updatePersonalColor(maxPersonalColors.get(merchandiseId).getType());  // 대표 퍼스널컬러
@@ -58,7 +68,7 @@ public class ScoreService {
                 combined.updateMBTI(maxMbtis.get(merchandiseId).getType());  // 대표 MBTI
             if (maxAges.get(merchandiseId) != null)
                 combined.updateAgeGroup(maxAges.get(merchandiseId).getType());  // 대표 나이대
-            respContent.add((Return) combined);
+            respContent.add(combined);
         }
 
         return respContent;

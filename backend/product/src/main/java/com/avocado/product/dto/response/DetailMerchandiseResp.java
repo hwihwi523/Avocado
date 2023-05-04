@@ -3,22 +3,29 @@ package com.avocado.product.dto.response;
 import com.avocado.product.dto.query.DetailMerchandiseDTO;
 import com.avocado.product.dto.query.SimpleMerchandiseDTO;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@NoArgsConstructor
 public class DetailMerchandiseResp extends DefaultMerchandiseResp {
-    private final Long id;
-    private final List<String> images;
-    private final Float score;
-    private final String description;
+    private Long id;
+    private List<String> images;
+    private Float score;
+    private String description;
 
     private Boolean is_purchased;  // 요청한 사용자가 이 상품을 구매했는지
     private Boolean is_reviewed;  // 요청한 사용자가 이 상품에 리뷰를 남겼는지
 
     public DetailMerchandiseResp(DetailMerchandiseDTO detailMerchandiseDTO) {
-        super(detailMerchandiseDTO);
+        super();
+        updateDetail(detailMerchandiseDTO);
+    }
+
+    public void updateDetail(DetailMerchandiseDTO detailMerchandiseDTO) {
+        super.updateDefault(detailMerchandiseDTO);
         this.id = detailMerchandiseDTO.getId();
         this.images = new ArrayList<>();
         this.images.add(detailMerchandiseDTO.getImageUrl());

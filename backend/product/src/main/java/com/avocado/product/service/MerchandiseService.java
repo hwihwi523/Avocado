@@ -44,9 +44,13 @@ public class MerchandiseService {
                 .findByCategoryAndBrand_NoOffset(categoryId, brandName, lastMerchandiseId, PageRequest.ofSize(size));
 
         // DTO -> Response 변환
-        List<SimpleMerchandiseResp> respContent = scoreService.insertPersonalInfoIntoList(
-                result.getContent()
-        );
+        List<SimpleMerchandiseResp> respContent;
+
+        try {
+            respContent = scoreService.insertPersonalInfoIntoList(result.getContent(), SimpleMerchandiseResp.class);
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
 
         // 마지막으로 조회한 ID
         Long newLastMerchandiseId = respContent.isEmpty()
@@ -100,7 +104,11 @@ public class MerchandiseService {
         List<SimpleMerchandiseDTO> recentMerchandises = merchandiseRepository.findRecentMerchandises(consumerId);
 
         // 대표 퍼스널컬러, MBTI, 나이대 추가 + DTO -> Response 변환
-        return scoreService.insertPersonalInfoIntoList(recentMerchandises);
+        try {
+            return scoreService.insertPersonalInfoIntoList(recentMerchandises, SimpleMerchandiseResp.class);
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
     }
 
 //    @Transactional(readOnly = true)

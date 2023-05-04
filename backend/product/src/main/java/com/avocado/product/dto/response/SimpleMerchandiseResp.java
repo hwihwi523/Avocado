@@ -2,19 +2,21 @@ package com.avocado.product.dto.response;
 
 import com.avocado.product.dto.query.SimpleMerchandiseDTO;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class SimpleMerchandiseResp extends DefaultMerchandiseResp {
-    private final Long id;
-    private final String image_url;
-    private final Float score;
+    private Long id;
+    private String image_url;
+    private Float score;
 
     private String mbti;
     private String personal_color;
     private String age_group;
 
-    public SimpleMerchandiseResp(SimpleMerchandiseDTO simpleMerchandiseDTO) {
-        super(simpleMerchandiseDTO);
+    public void updateSimple(SimpleMerchandiseDTO simpleMerchandiseDTO) {
+        super.updateDefault(simpleMerchandiseDTO);
         this.id = simpleMerchandiseDTO.getId();
         this.image_url = simpleMerchandiseDTO.getImageUrl();
         this.score = simpleMerchandiseDTO.getScore() != null ? simpleMerchandiseDTO.getScore() : 0;

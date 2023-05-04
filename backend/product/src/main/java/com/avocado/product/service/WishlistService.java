@@ -65,7 +65,11 @@ public class WishlistService {
     public List<WishlistMerchandiseResp> showMyWishlist(UUID consumerId) {
         // 상품 정보 리스트 조회
         List<WishlistMerchandiseDTO> myWishlist = wishlistRepository.findMyWishlist(consumerId);
-        return scoreService.insertPersonalInfoIntoList(myWishlist);
+        try {
+            return scoreService.insertPersonalInfoIntoList(myWishlist, WishlistMerchandiseResp.class);
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
     }
 
     @Transactional

@@ -2,21 +2,23 @@ package com.avocado.product.dto.response;
 
 import com.avocado.product.dto.query.DefaultMerchandiseDTO;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class DefaultMerchandiseResp {
-    private final String brand_name;
-    private final Long merchandise_id;
-    private final String merchandise_category;
-    private final String merchandise_name;
-    private final Integer price;
-    private final Integer discounted_price;
+    private String brand_name;
+    private Long merchandise_id;
+    private String merchandise_category;
+    private String merchandise_name;
+    private Integer price;
+    private Integer discounted_price;
 
     private String mbti;
     private String personal_color;
     private String age_group;
 
-    public DefaultMerchandiseResp(DefaultMerchandiseDTO defaultMerchandiseDTO) {
+    public void updateDefault(DefaultMerchandiseDTO defaultMerchandiseDTO) {
         this.brand_name = defaultMerchandiseDTO.getBrandName();
         this.merchandise_id = defaultMerchandiseDTO.getMerchandiseId();
         this.merchandise_category = defaultMerchandiseDTO.getMerchandiseCategory();
