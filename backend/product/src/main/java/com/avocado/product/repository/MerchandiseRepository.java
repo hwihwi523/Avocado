@@ -1,9 +1,6 @@
 package com.avocado.product.repository;
 
-import com.avocado.product.dto.query.DetailMerchandiseDTO;
-import com.avocado.product.dto.query.QDetailMerchandiseDTO;
-import com.avocado.product.dto.query.QSimpleMerchandiseDTO;
-import com.avocado.product.dto.query.SimpleMerchandiseDTO;
+import com.avocado.product.dto.query.*;
 import com.avocado.product.entity.*;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -14,6 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,7 +28,18 @@ import static com.avocado.product.entity.QStore.store;
 @Repository
 @RequiredArgsConstructor
 public class MerchandiseRepository {
+    @PersistenceContext
+    private final EntityManager em;
     private final JPAQueryFactory queryFactory;
+
+    /**
+     * 프록시 객체 조회
+     * @param merchandiseId : 상품 ID
+     * @return : 상품 ID를 갖는 프록시 객체
+     */
+    public Merchandise getOne(Long merchandiseId) {
+        return em.getReference(Merchandise.class, merchandiseId);
+    }
 
     /**
      * 상품 ID로 데이터 조회
@@ -42,18 +53,27 @@ public class MerchandiseRepository {
                 .fetchOne();
     }
 
-    public List<SimpleMerchandiseDTO> findRecentMerchandises(UUID consumerId) {
+    /**
+     * 사용자가 최근 본 상품 목록을 조회하는 쿼리 (최대 5개)
+     * @param consumerId : 사용자 ID
+     * @return : 해당 사용자의 최근 조회 상품 목록
+     */
+    public List<ClickMerchandiseDTO> findRecentMerchandises(UUID consumerId) {
         // 사용자가 최근 조회한 5개의 상품 ID 구하기
         List<Long> merchandiseIds = queryFactory
                 .select(click.merchandise.id).distinct()
                 .from(click)
-                .where(eqConsumerId(consumerId))
+                .where(click.consumer.id.eq(consumerId))
                 .limit(5)
                 .fetch();
 
+        // 최근 조회한 상품이 없다면 빈 리스트 반환
+        if (merchandiseIds.isEmpty())
+            return new ArrayList<>();
+
         // 해당 상품 내역 조회
         return queryFactory
-                .select(new QSimpleMerchandiseDTO(
+                .select(new QClickMerchandiseDTO(
                         click.id.max(),
                         store.name,
                         merchandise.id,
@@ -81,10 +101,7 @@ public class MerchandiseRepository {
                 )
                 .fetch();
     }
-    // 사용자 ID 조건
-    private BooleanExpression eqConsumerId(UUID consumerId) {
-        return consumerId != null ? click.consumer.id.eq(consumerId) : null;
-    }
+
     // 상품 ID 조건
     private BooleanExpression inMerchandiseIds(List<Long> merchandiseIds) {
         return merchandiseIds != null ? merchandise.id.in(merchandiseIds) : null;
@@ -104,7 +121,6 @@ public class MerchandiseRepository {
         // 데이터 조회
         List<SimpleMerchandiseDTO> result = queryFactory
                 .select(new QSimpleMerchandiseDTO(
-                        merchandise.id,
                         store.name,
                         merchandise.id,
                         merchandiseCategory.nameKor,
@@ -152,7 +168,6 @@ public class MerchandiseRepository {
     public DetailMerchandiseDTO findDetailMerchandise(Long merchandiseId) {
         return queryFactory
                 .select(new QDetailMerchandiseDTO(
-                        merchandise.id,
                         store.name,
                         merchandise.id,
                         merchandiseCategory.nameKor,

@@ -38,11 +38,14 @@ public class Consumer {
     private Short age;
 
     @Builder
-    public Consumer(UUID id, PersonalColor personalColor, MBTI mbti, String name, String pictureUrl) {
+    public Consumer(UUID id, PersonalColor personalColor, MBTI mbti, String name, String pictureUrl,
+                    String gender, Short age) {
         this.id = id;
         this.personalColor = personalColor;
         this.mbti = mbti;
         this.name = name;
         this.pictureUrl = pictureUrl;
+        this.gender = gender;
+        this.age = age;
     }
 }

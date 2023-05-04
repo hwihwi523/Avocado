@@ -3,7 +3,9 @@ package com.avocado.product.service;
 import com.avocado.product.dto.etc.MaxScoreDTO;
 import com.avocado.product.dto.query.ScoreDTO;
 import com.avocado.product.dto.query.SimpleMerchandiseDTO;
+import com.avocado.product.dto.query.WishlistMerchandiseDTO;
 import com.avocado.product.dto.response.SimpleMerchandiseResp;
+import com.avocado.product.dto.response.WishlistMerchandiseResp;
 import com.avocado.product.entity.Consumer;
 import com.avocado.product.entity.Merchandise;
 import com.avocado.product.entity.Wishlist;
@@ -60,10 +62,14 @@ public class WishlistService {
      * @return : 해당 소비자의 장바구니 목록
      */
     @Transactional(readOnly = true)
-    public List<SimpleMerchandiseResp> showMyWishlist(UUID consumerId) {
+    public List<WishlistMerchandiseResp> showMyWishlist(UUID consumerId) {
         // 상품 정보 리스트 조회
-        List<SimpleMerchandiseDTO> myWishlist = wishlistRepository.findMyWishlist(consumerId);
-        return scoreService.insertPersonalInfoIntoList(myWishlist);
+        List<WishlistMerchandiseDTO> myWishlist = wishlistRepository.findMyWishlist(consumerId);
+        try {
+            return scoreService.insertPersonalInfoIntoList(myWishlist, WishlistMerchandiseResp.class);
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
     }
 
     @Transactional

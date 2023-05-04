@@ -1,16 +1,14 @@
 package com.avocado.product.service;
 
 import com.avocado.product.dto.etc.MaxScoreDTO;
-import com.avocado.product.dto.query.DetailMerchandiseDTO;
-import com.avocado.product.dto.query.ScoreDTO;
-import com.avocado.product.dto.query.SimpleMerchandiseDTO;
-import com.avocado.product.dto.response.DetailMerchandiseResp;
-import com.avocado.product.dto.response.SimpleMerchandiseResp;
+import com.avocado.product.dto.query.*;
+import com.avocado.product.dto.response.*;
 import com.avocado.product.repository.ScoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,15 +26,18 @@ public class ScoreService {
      * @return : Response DTO (DB 조회 데이터 + 대표 퍼스널컬러, MBTI, 나이대)
      */
     @Transactional(readOnly = true)
-    public List<SimpleMerchandiseResp> insertPersonalInfoIntoList(List<SimpleMerchandiseDTO> queryContent) {
+    public <Param extends DefaultMerchandiseDTO,
+            Return extends DefaultMerchandiseResp> List<Return> insertPersonalInfoIntoList(List<Param> queryContent,
+                                                                                           Class<Return> returnClass)
+            throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         // 상품 ID 취합
-        List<Long> myContentsId = new ArrayList<>();
-        queryContent.forEach((myContent) -> myContentsId.add(myContent.getMerchandiseId()));
+        List<Long> myContentIds = new ArrayList<>();
+        queryContent.forEach((myContent) -> myContentIds.add(myContent.getMerchandiseId()));
 
         // IN 쿼리로 퍼스널컬러, MBTI, 나이대 각각 한 번에 조회
-        List<ScoreDTO> personalColors = scoreRepository.findPersonalColors(myContentsId);
-        List<ScoreDTO> mbtis = scoreRepository.findMbtis(myContentsId);
-        List<ScoreDTO> ages = scoreRepository.findAges(myContentsId);
+        List<ScoreDTO> personalColors = scoreRepository.findPersonalColors(myContentIds);
+        List<ScoreDTO> mbtis = scoreRepository.findMbtis(myContentIds);
+        List<ScoreDTO> ages = scoreRepository.findAges(myContentIds);
 
         // 최대 점수를 갖는 퍼스널컬러, MBTI, 나이대 구하기
         Map<Long, MaxScoreDTO> maxPersonalColors = getMaxScores(personalColors);
@@ -44,10 +45,24 @@ public class ScoreService {
         Map<Long, MaxScoreDTO> maxAges = getMaxScores(ages);
 
         // 응답용 DTO 생성
-        List<SimpleMerchandiseResp> respContent = new ArrayList<>();
-        for (SimpleMerchandiseDTO simpleMerchandiseDTO : queryContent) {
+        List<Return> respContent = new ArrayList<>();
+        for (Param merchandiseDTO : queryContent) {
             // 데이터 조합
-            SimpleMerchandiseResp combined = new SimpleMerchandiseResp(simpleMerchandiseDTO);
+            Return combined = returnClass.getDeclaredConstructor().newInstance();
+
+            // 클래스의 종류에 따라 데이터를 다르게 초기화
+            if (combined instanceof CartMerchandiseResp) {
+                ((CartMerchandiseResp) combined).updateCart((CartMerchandiseDTO) merchandiseDTO);
+            } else if (combined instanceof WishlistMerchandiseResp) {
+                ((WishlistMerchandiseResp) combined).updateWishlist((WishlistMerchandiseDTO) merchandiseDTO);
+            } else if (combined instanceof SimpleMerchandiseResp) {
+                ((SimpleMerchandiseResp) combined).updateSimple((SimpleMerchandiseDTO) merchandiseDTO);
+            } else if (combined instanceof DetailMerchandiseResp) {
+                ((DetailMerchandiseResp) combined).updateDetail((DetailMerchandiseDTO) merchandiseDTO);
+            } else if (combined instanceof PurchaseHistoryMerchandiseResp) {
+                ((PurchaseHistoryMerchandiseResp) combined).updatePurchaseHistory((PurchaseHistoryMerchandiseDTO) merchandiseDTO);
+            }
+
             Long merchandiseId = combined.getMerchandise_id();  // 상품 ID
             if (maxPersonalColors.get(merchandiseId) != null)
                 combined.updatePersonalColor(maxPersonalColors.get(merchandiseId).getType());  // 대표 퍼스널컬러

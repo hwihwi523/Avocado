@@ -1,7 +1,7 @@
 package com.avocado.product.repository;
 
-import com.avocado.product.dto.query.QSimpleMerchandiseDTO;
-import com.avocado.product.dto.query.SimpleMerchandiseDTO;
+import com.avocado.product.dto.query.CartMerchandiseDTO;
+import com.avocado.product.dto.query.QCartMerchandiseDTO;
 import com.avocado.product.entity.*;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -42,11 +42,20 @@ public class CartRepository {
      * @param cartId : 장바구니 ID
      * @return : 장바구니 단건 내역
      */
-    public Cart findByConsumerIdAndMerchandiseId(Long cartId) {
+    public Cart findById(Long cartId) {
         return queryFactory
                 .selectFrom(cart)
                 .where(
-                        eqCartId(cartId)
+                        cart.id.eq(cartId)
+                )
+                .fetchFirst();
+    }
+    public Cart findByConsumerIdAndMerchandiseId(UUID consumerId, Long merchandiseId) {
+        return queryFactory
+                .selectFrom(cart)
+                .where(
+                        cart.consumer.id.eq(consumerId),
+                        cart.merchandise.id.eq(merchandiseId)
                 )
                 .fetchFirst();
     }
@@ -56,9 +65,9 @@ public class CartRepository {
      * @param consumerId : 소비자 ID
      * @return : 조회 데이터
      */
-    public List<SimpleMerchandiseDTO> findMyCart(UUID consumerId) {
+    public List<CartMerchandiseDTO> findMyCart(UUID consumerId) {
         return queryFactory
-                .select(new QSimpleMerchandiseDTO(
+                .select(new QCartMerchandiseDTO(
                         cart.id,
                         store.name,
                         merchandise.id,
@@ -70,23 +79,14 @@ public class CartRepository {
                         merchandise.totalScore.divide(merchandise.reviewCount).floatValue().as("score")
                 ))
                 .from(cart)
-                .join(cart.consumer, consumer)
                 .join(cart.merchandise, merchandise)
                 .join(merchandise.group, merchandiseGroup)
                 .join(merchandiseGroup.provider, store)
                 .join(merchandiseGroup.category, merchandiseCategory)
                 .where(
-                        eqConsumerId(consumerId)
+                        cart.consumer.id.eq(consumerId)
                 )
                 .orderBy(cart.id.desc())
                 .fetch();
-    }
-
-    private BooleanExpression eqCartId(Long cartId) {
-        return cartId != null ? cart.id.eq(cartId) : null;
-    }
-
-    private BooleanExpression eqConsumerId(UUID consumerId) {
-        return consumerId != null ? consumer.id.eq(consumerId) : null;
     }
 }
