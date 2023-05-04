@@ -1,5 +1,6 @@
 import { signIn, useSession, signOut, getCsrfToken } from "next-auth/react";
 
+// next-auth를 이용한 로그인 방식 -> 이번 프로젝트에서는 사용 X
 export default function Home() {
   const { data: session } = useSession();
 

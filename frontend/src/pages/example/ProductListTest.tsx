@@ -7,6 +7,7 @@ import { Product } from "@/src/features/product/productSlice";
 import { authApi } from "@/src/features/auth/authApi";
 import { wrapper } from "@/src/features/store";
 import { useStore } from "react-redux";
+import { productApi } from "@/src/features/product/productApi";
 
 interface Props {
   products: Product[];
@@ -45,23 +46,41 @@ export default function Home({ products }: Props) {
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) => async () => {
-    const productApiUrl = process.env.PRODUCT_API_URL;
-    const memberApiUrl = process.env.MEMBER_API_URL;
-    if (!productApiUrl) {
-      throw new Error("API_URL 환경 변수가 설정되어 있지 않습니다.");
-    }
-    const res = await Axios.get(productApiUrl + "/merchandises?size=10");
-    const content = res.data.data.content;
+    // const productApiUrl = process.env.PRODUCT_API_URL;
+    // const memberApiUrl = process.env.MEMBER_API_URL;
+    // if (!productApiUrl) {
+    //   throw new Error("API_URL 환경 변수가 설정되어 있지 않습니다.");
+    // }
+    // const res = await Axios.get(productApiUrl + "/merchandises?size=10");
+    // const content = res.data.data.content;
     // console.log(content);
 
-    // store와 연동 예시
+    // store와 연동 예시 -> 판매자 로그인
     const loginResponse = await store.dispatch(
       authApi.endpoints.sellerLogin.initiate({
         email: "avocado1@gmail.com",
         password: "avocado506",
       })
     );
-    console.log("Seller login response:", loginResponse);
+    console.log("SELLER LOGIN RESPONSE:", loginResponse);
+    // store와 연동 예시 -> productList
+    const productListResponse = await store.dispatch(
+      productApi.endpoints.getProductList.initiate({
+        store: "nike",
+        category: 1,
+        size: 3,
+      })
+    );
+    let content: Product[] = [];
+    if (productListResponse.data) {
+      console.log(
+        "PRODUCT LIST RESPONSE:",
+        productListResponse.data.data.content
+      );
+      content = productListResponse.data.data.content;
+    } else {
+      throw new Error("Product List Response Error");
+    }
     // 모든 API 작업이 끝날 때까지 대기 -> depreciated
     // await Promise.all(authApi.util.getRunningOperationPromises());
 

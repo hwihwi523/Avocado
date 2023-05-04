@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Member, authSlice } from "./authSlice";
+import { Member } from "./authSlice";
 import { HYDRATE } from "next-redux-wrapper";
 
 const MEMBER_API_URL = process.env.NEXT_PUBLIC_MEMBER_API_URL;

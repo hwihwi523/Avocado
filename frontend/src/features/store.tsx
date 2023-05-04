@@ -10,6 +10,7 @@ import { testProductListApi } from "../queries/testProductListApi";
 import { authSlice } from "./auth/authSlice";
 import { productSlice } from "./product/productSlice";
 import { authApi } from "./auth/authApi";
+import { productApi } from "./product/productApi";
 
 // Root reducer 설정
 const rootReducer = combineReducers({
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   [examplePostsApi.reducerPath]: examplePostsApi.reducer,
   [testProductListApi.reducerPath]: testProductListApi.reducer,
   [authApi.reducerPath]: authApi.reducer,
+  [productApi.reducerPath]: productApi.reducer,
 });
 
 // https://github.com/kirill-konshin/next-redux-wrapper#redux-toolkit
@@ -31,7 +33,8 @@ const makeStore = () => {
         thunkMiddleware,
         examplePostsApi.middleware,
         testProductListApi.middleware,
-        authApi.middleware
+        authApi.middleware,
+        productApi.middleware
       ),
     devTools: true,
   });
