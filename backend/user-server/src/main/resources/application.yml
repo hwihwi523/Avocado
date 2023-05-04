@@ -26,7 +26,7 @@ jwt:
 
 front:
 #  redirect_uri: http://localhost:8080/redirect
-  redirect_uri: http:// a38e577e39a114a1ca68e6cc57d19636-137764516.ap-northeast-2.elb.amazonaws.com/redirect
+  redirect_uri: http://a38e577e39a114a1ca68e6cc57d19636-137764516.ap-northeast-2.elb.amazonaws.com/redirect
 
 logging:
   level:
