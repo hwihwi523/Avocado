@@ -10,6 +10,6 @@ spec:
     app: member
   type: LoadBalancer
   ports:
-    - port: 8080 # 서비스가 생성할 포트  
+    - port: 80 # 서비스가 생성할 포트  
       targetPort: 8080 # 서비스가 접근할 pod의 포트
       protocol: TCP
