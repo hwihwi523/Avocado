@@ -2,6 +2,7 @@ package com.avocado.product.config;
 
 import com.avocado.product.dto.response.BaseResp;
 import com.avocado.product.exception.AccessDeniedException;
+import com.avocado.product.exception.DataManipulationException;
 import com.avocado.product.exception.ErrorCode;
 import com.avocado.product.exception.InvalidValueException;
 import lombok.extern.slf4j.Slf4j;
@@ -40,14 +41,14 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 프록시를 사용해 entity save 시 발생하는 예외 처리
+     * 프록시를 사용해 entity 조작 시 발생하는 예외 처리
      */
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    protected ResponseEntity<BaseResp> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
+    @ExceptionHandler(DataManipulationException.class)
+    protected ResponseEntity<BaseResp> handleDataManipulationException(DataManipulationException e) {
         log.error(e.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(BaseResp.of("존재하지 않는 데이터입니다."));
+                .body(BaseResp.of(e.getErrorCode().getMessage()));
     }
 
     /**
