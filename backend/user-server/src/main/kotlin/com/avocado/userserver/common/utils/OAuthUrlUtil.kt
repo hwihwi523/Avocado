@@ -15,7 +15,7 @@ class OAuthUrlUtil(
     val CLIENT_ID_KAKAO: String,
     @Value("\${front.redirect_uri}")
     val FRONT_REDIRECT_URI: String,
-    @Value("\${authorization_uri}")
+    @Value("\${oauth2.kakao.authorization_uri}")
     val AUTHORIZATION_URI_KAKAO: String,
 ){
 
