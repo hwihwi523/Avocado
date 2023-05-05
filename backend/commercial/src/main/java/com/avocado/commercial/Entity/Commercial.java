@@ -1,6 +1,7 @@
 package com.avocado.commercial.Entity;
 
-import com.avocado.commercial.Dto.response.CommercialRespDto;
+import com.avocado.commercial.Dto.response.item.Carousel;
+import com.avocado.commercial.Dto.response.item.Popup;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -48,11 +49,18 @@ public class Commercial {
     @Column(nullable = false)
     private long merchandiseId;
 
-    public CommercialRespDto toCommercialRespDto(){
-        CommercialRespDto commercialRespDto = CommercialRespDto.builder()
+    public Carousel toCarousel(){
+        Carousel carousel = Carousel.builder()
                 .imgurl(this.imgurl)
                 .merchandise_id(this.merchandiseId)
                 .build();
-        return commercialRespDto;
+        return carousel;
+    }
+    public Popup toPopup(){
+        Popup popup = Popup.builder()
+                .imgurl(this.imgurl)
+                .merchandise_id(this.merchandiseId)
+                .build();
+        return popup;
     }
 }

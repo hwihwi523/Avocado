@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/")
@@ -24,17 +23,24 @@ public class CommercialController {
 
     // 70대까지
     // 다양한 조건에서 되게 만들어야 함 (ex. personalColor가 없음)
+    // 팝업 광고 1개, 캐러셀 광고 5개 합쳐서 보내자
     @GetMapping("/ads")
-    public ResponseEntity<CommercialRespDto> exposePopupCommercial(
-            @RequestParam("mbti_id") int mbtiId,@RequestParam("age") int age,  @RequestParam("commercial_type_id") int commercialTypeId,
-            @RequestParam("personal_color_id") int personalColorId, @RequestParam("gender") char gender){
-        List<CommercialRespDto> commercialRespDtoList = null;
+    public ResponseEntity<CommercialRespDto> exposeCommercial(
+            @RequestParam(name = "mbti_id", defaultValue = "-1") int mbtiId, @RequestParam(name = "age", defaultValue = "-1") int age,
+            @RequestParam(name = "commercial_type_id", defaultValue = "-1") int commercialTypeId,
+            @RequestParam(name = "personal_color_id", defaultValue = "-1") int personalColorId, @RequestParam(name = "gender", defaultValue = "X") char gender){
+        System.out.println(personalColorId);
+        CommercialRespDto commercialRespDto = null;
+        
+        // 예외 처리 환경 구성 필요
         try{
-            commercialRespDtoList = commercialService.getCommercialExposure(mbtiId,age >=70 ? 70 : age/10*10,commercialTypeId,personalColorId,gender);
+            commercialRespDto = commercialService.getCommercialExposure(mbtiId, age, commercialTypeId, personalColorId, gender);
         }catch (Exception e){
             e.printStackTrace();
         }
-        return new ResponseEntity<CommercialRespDto>(commercialRespDtoList.get(0), HttpStatus.OK);
+        
+        // 응답 환경 구성 필요
+        return new ResponseEntity<CommercialRespDto>(commercialRespDto, HttpStatus.OK);
     }
 
 
