@@ -1,10 +1,6 @@
 package com.avocado.product.service;
 
-import com.avocado.product.dto.etc.MaxScoreDTO;
-import com.avocado.product.dto.query.ScoreDTO;
-import com.avocado.product.dto.query.SimpleMerchandiseDTO;
 import com.avocado.product.dto.query.WishlistMerchandiseDTO;
-import com.avocado.product.dto.response.SimpleMerchandiseResp;
 import com.avocado.product.dto.response.WishlistMerchandiseResp;
 import com.avocado.product.entity.Consumer;
 import com.avocado.product.entity.Merchandise;
