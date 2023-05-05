@@ -4,15 +4,13 @@ import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 
 @Getter
-public class ScoreDTO {
+public class MaxTypeDTO {
     private final Long merchandiseId;
     private final String type;
-    private final Long count;
 
     @QueryProjection
-    public ScoreDTO(Long merchandiseId, String type, Long count) {
+    public MaxTypeDTO(Long merchandiseId, String type) {
         this.merchandiseId = merchandiseId;
         this.type = type;
-        this.count = count;
     }
 }

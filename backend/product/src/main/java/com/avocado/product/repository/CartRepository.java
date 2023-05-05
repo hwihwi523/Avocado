@@ -3,12 +3,15 @@ package com.avocado.product.repository;
 import com.avocado.product.dto.query.CartMerchandiseDTO;
 import com.avocado.product.dto.query.QCartMerchandiseDTO;
 import com.avocado.product.entity.*;
+import com.avocado.product.exception.DataManipulationException;
+import com.avocado.product.exception.ErrorCode;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,7 +32,11 @@ public class CartRepository {
      * 생성 및 삭제
      */
     public void save(Cart cart) {
-        em.persist(cart);
+        try {
+            em.persist(cart);
+        } catch (PersistenceException e) {
+            throw new DataManipulationException(ErrorCode.INVALID_INSERT);
+        }
     }
     public void delete(Cart cart) {
         em.remove(cart);
