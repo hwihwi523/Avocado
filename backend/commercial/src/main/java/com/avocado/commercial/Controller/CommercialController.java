@@ -33,11 +33,11 @@ public class CommercialController {
         CommercialRespDto commercialRespDto = null;
         
         // 예외 처리 환경 구성 필요
-        try{
+//        try{
             commercialRespDto = commercialService.getCommercialExposure(mbtiId, age, commercialTypeId, personalColorId, gender);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
         
         // 응답 환경 구성 필요
         return new ResponseEntity<CommercialRespDto>(commercialRespDto, HttpStatus.OK);
