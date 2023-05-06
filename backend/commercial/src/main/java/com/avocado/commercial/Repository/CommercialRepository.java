@@ -14,7 +14,7 @@ public interface CommercialRepository extends Repository<Commercial,Long> {
             (int age, int commercialTypeId, int personalColorId, char gender);
     List<Commercial> findByAgeAndCommercialTypeIdAndGender
             (int age, int commercialTypeId, char gender);
-    List<Commercial> findAll();
+    List<Commercial> findByCommercialTypeId(int commercialTypeId);
 
 
 }

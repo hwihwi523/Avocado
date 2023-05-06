@@ -27,17 +27,16 @@ public class CommercialController {
     @GetMapping("/ads")
     public ResponseEntity<CommercialRespDto> exposeCommercial(
             @RequestParam(name = "mbti_id", defaultValue = "-1") int mbtiId, @RequestParam(name = "age", defaultValue = "-1") int age,
-            @RequestParam(name = "commercial_type_id", defaultValue = "-1") int commercialTypeId,
             @RequestParam(name = "personal_color_id", defaultValue = "-1") int personalColorId, @RequestParam(name = "gender", defaultValue = "X") char gender){
         System.out.println(personalColorId);
         CommercialRespDto commercialRespDto = null;
         
         // 예외 처리 환경 구성 필요
-        try{
-            commercialRespDto = commercialService.getCommercialExposure(mbtiId, age, commercialTypeId, personalColorId, gender);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+//        try{
+            commercialRespDto = commercialService.getCommercialExposure(mbtiId, age, personalColorId, gender);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
         
         // 응답 환경 구성 필요
         return new ResponseEntity<CommercialRespDto>(commercialRespDto, HttpStatus.OK);
