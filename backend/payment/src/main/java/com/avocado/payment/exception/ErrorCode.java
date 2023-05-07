@@ -17,6 +17,10 @@ public enum ErrorCode {
 
     // Merchandise
     NO_MERCHANDISE(404, "NO_MERCHANDISE"),
+
+    // Pay
+    NOT_SAME_WITH_TOTAL_PRICE(400, "NOT_SAME_WITH_TOTAL_PRICE"),
+    UNKNOWN_ERROR(500, "UNKNOWN_ERROR"),
     ;
 
     final int status;
