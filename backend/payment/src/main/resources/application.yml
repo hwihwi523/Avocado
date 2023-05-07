@@ -8,8 +8,21 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
         format_sql: true
+
+server:
+  servlet:
+    context-path: /payment
+
+kakao-pay:
+  host: https://kapi.kakao.com
+  ready-url: /v1/payment/ready
+  admin-key: 3c11e4e624e930df14f2c8618a2b454a
+  cid: TC0ONETIME
+  approval-url: http://localhost:3000/approval/
+  cancel-url: http://localhost:3000/cancel/
+  fail-url: http://localhost:3000/fail/
