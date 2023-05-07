@@ -15,6 +15,6 @@ internal class OAuthUrlUtilTest @Autowired constructor(
     @Test
     fun `url 가져오기 테스트`() {
         println(oAuthUrlUtil.getAuthorizationUrlKakao())
-        println(oAuthUrlUtil.getFrontRedirectUrl("aa", "bb"))
+        println(oAuthUrlUtil.getFrontRedirectUrl("aa", "bb", 0))
     }
 }
