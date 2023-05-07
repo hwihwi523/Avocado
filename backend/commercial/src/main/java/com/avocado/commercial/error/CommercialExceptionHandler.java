@@ -1,4 +1,4 @@
-package com.avocado.commercial.Exceptions;
+package com.avocado.commercial.error;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

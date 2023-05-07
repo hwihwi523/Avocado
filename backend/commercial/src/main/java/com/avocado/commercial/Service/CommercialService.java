@@ -2,12 +2,8 @@ package com.avocado.commercial.Service;
 
 import com.avocado.commercial.Dto.response.item.Carousel;
 import com.avocado.commercial.Dto.response.CommercialRespDto;
-import com.avocado.commercial.Dto.response.item.Popup;
 import com.avocado.commercial.Entity.Commercial;
-import com.avocado.commercial.Exceptions.CommercialException;
-import com.avocado.commercial.Exceptions.ErrorCode;
 import com.avocado.commercial.Repository.CommercialRepository;
-import net.bytebuddy.TypeCache;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -98,5 +94,6 @@ public class CommercialService {
 
         return commercialRespDto;
     }
+
 
 }

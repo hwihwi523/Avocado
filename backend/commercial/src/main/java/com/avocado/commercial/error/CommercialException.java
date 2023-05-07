@@ -1,4 +1,4 @@
-package com.avocado.commercial.Exceptions;
+package com.avocado.commercial.error;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

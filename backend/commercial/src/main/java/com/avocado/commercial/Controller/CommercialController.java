@@ -1,16 +1,19 @@
 package com.avocado.commercial.Controller;
 
+import com.avocado.commercial.Dto.request.CommercialReqDto;
 import com.avocado.commercial.Service.CommercialService;
 import com.avocado.commercial.Dto.response.CommercialRespDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
 @RequestMapping("/")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 ////ads?age={age}&gender={gender}mbti_id={mbti_id}&commercial_type_id={commercial_type_id}&personal_color_id={personal_color_id}
 public class CommercialController {
 
@@ -30,17 +33,19 @@ public class CommercialController {
             @RequestParam(name = "personal_color_id", defaultValue = "-1") int personalColorId, @RequestParam(name = "gender", defaultValue = "X") char gender){
         System.out.println(personalColorId);
         CommercialRespDto commercialRespDto = null;
-        
-        // 예외 처리 환경 구성 필요
-//        try{
+
             commercialRespDto = commercialService.getCommercialExposure(mbtiId, age, personalColorId, gender);
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
         
         // 응답 환경 구성 필요
         return new ResponseEntity<CommercialRespDto>(commercialRespDto, HttpStatus.OK);
     }
 
+
+    @PostMapping(value = "/ads", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<String> registCommercial(@RequestPart("commercial_req_dto") CommercialReqDto commercial_req_dto,@RequestPart("img") MultipartFile img){
+        System.out.println(commercial_req_dto);
+        System.out.println(img);
+        return new ResponseEntity<String>("success",HttpStatus.CREATED);
+    }
 
 }
