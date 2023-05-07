@@ -1,0 +1,33 @@
+server:
+  servlet:
+    context-path: /community
+spring:
+  datasource:
+    username: root
+    password: yasim506
+    url: jdbc:mysql://a07c6127933494883b1ce18e5a21f697-895151877.ap-northeast-2.elb.amazonaws.com:3306/community?serverTimezone=UTC&characterEncoding=UTF-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations:
+    - classpath:mapper/**/*.xml
+  type-aliases-package: com.avocado.community.api.response, com.avocado.community.db.entity
+  type-handlers-package: com.avocado.community.config.
+cloud:
+  aws:
+    s3:
+      bucket: avocado-img
+    credentials:
+      access-key: AKIARYDHVDZHU3W2D3ST
+      secret-key: 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
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+jwt:
+  issuer: avocado.com
+  secret: e52713a2bd59e655ffd78ed74fafc5b29a2001d586949e55792e2f1a5b1f3d8ffb9d132354932bdf
+  access_expiration: 21600000
+  refresh_expiration: 1296000000
