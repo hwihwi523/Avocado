@@ -23,7 +23,9 @@ const ProductCard = (props: any) => {
   const [bookmark, setBookmark] = useState(isBookmark);
 
   function pageMove() {
-    router.push(`product/${id}`);
+    router.push({
+      pathname: `/product/${id}`,
+    });
   }
 
   return (
@@ -53,6 +55,7 @@ const ProductCard = (props: any) => {
                   style={{ fontSize: "8px" }}
                 />
               ))}
+              
             </Stack>
           </Grid>
 
@@ -68,7 +71,7 @@ const ProductCard = (props: any) => {
             <InlineText
               type="L"
               color="grey"
-              style={{ textDecoration: "line-through" }}
+              style={{ textDecorationLine: "line-through" }}
             >
               {price}원
             </InlineText>
@@ -118,10 +121,11 @@ export default ProductCard;
 
 const Background = styled.div`
   position: relative;
-  width: 200px;
+  width:100%;
 `;
 
 const Card = styled.div`
+  width: 100%;
   padding: 10px;
   box-sizing: border-box;
   transition: 0.2s;
@@ -134,6 +138,6 @@ const Card = styled.div`
 const Imagebox = styled.div`
   position: relative;
   width: 100%;
-  height: 180px;
+  height: 200px;
   margin-bottom: 10px;
 `;

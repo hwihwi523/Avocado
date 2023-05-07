@@ -27,19 +27,13 @@ public class ReviewService {
 
     @Transactional
     public void createReview(UUID reviewerId, Long merchandiseId, Byte score, String content) {
-        // 리뷰 주인 찾기
-        Consumer reviewer = consumerRepository.findById(reviewerId);
-        if (reviewer == null)
-            throw new InvalidValueException(ErrorCode.NO_MEMBER);
-
-        // 상품 찾기
-        Merchandise merchandise = merchandiseRepository.findById(merchandiseId);
-        if (merchandise == null)
-            throw new InvalidValueException(ErrorCode.NO_MERCHANDISE);
-
         // 기존 리뷰 존재 여부 파악
         if (reviewRepository.existsReview(reviewerId, merchandiseId))
             throw new InvalidValueException(ErrorCode.EXISTS_REVIEW);
+
+        // 리뷰 주인 & 상품 프록시 조회
+        Consumer reviewer = consumerRepository.getOne(reviewerId);
+        Merchandise merchandise = merchandiseRepository.getOne(merchandiseId);
 
         // 리뷰 생성 및 저장
         Review review = Review.builder()

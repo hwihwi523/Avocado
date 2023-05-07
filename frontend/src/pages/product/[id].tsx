@@ -1,34 +1,44 @@
 import styled from "@emotion/styled";
 import Grid from "@mui/material/Grid";
-import { ChartMbti,ChartPersonalColor } from "@/src/components/oranisms/charts";
-import { ProductDetailImage, ProductCardsRow, ProductDescription } from "@/src/components/oranisms";
+import {
+  ChartMbti,
+  ChartPersonalColor,
+} from "@/src/components/oranisms/charts";
+import {
+  ProductDetailImage,
+  ProductCardsRow,
+  ProductDescription,
+  ProductReview,
+} from "@/src/components/oranisms";
+
+import { BlockText } from "@/src/components/atoms";
 
 const ProductDetail = () => {
   return (
     <Background>
-      <Grid container>
+      <Grid container gap={2}>
         <Grid item xs={12}>
           <ProductDetailImage />
           <DividerBar />
         </Grid>
         <Grid item xs={12}>
           <ChartMbti />
-          <DividerBar />
         </Grid>
         <Grid item xs={12}>
           <ChartPersonalColor />
+        </Grid>
+        <Grid item xs={12}>
+          <ProductDescription />
           <DividerBar />
         </Grid>
         <Grid item xs={12}>
-          <ProductDescription/>
-          <DividerBar />
-        </Grid>
-        <Grid item xs={12}>
+        <BlockText type="B" size="1.3rem" style={{marginBottom:"10px"}}>연관 상품</BlockText>
           <ProductCardsRow />
           <DividerBar />
         </Grid>
         <Grid item xs={12}>
-          <h2>댓글 컴포넌트 올거임</h2>
+            <BlockText type="B" size="1.3rem" style={{marginBottom:"10px"}}>리뷰 작성하기</BlockText>
+          <ProductReview />
         </Grid>
       </Grid>
     </Background>

@@ -10,6 +10,7 @@ import com.avocado.product.service.MerchandiseService;
 import com.avocado.product.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,8 +25,9 @@ public class DetailMerchandiseController {
     private final UUIDUtil uuidUtil;
 
     @GetMapping("")
-    public ResponseEntity<BaseResp> showDetailMerchandise(@PathVariable Long merchandise_id) {
-        DetailMerchandiseResp detailMerchandiseResp = merchandiseService.showDetailMerchandise(merchandise_id);
+    public ResponseEntity<BaseResp> showDetailMerchandise(@PathVariable Long merchandise_id, @RequestParam @Nullable String user_id) {
+        UUID consumerId = user_id != null ? uuidUtil.joinByHyphen(user_id) : null;
+        DetailMerchandiseResp detailMerchandiseResp = merchandiseService.showDetailMerchandise(consumerId, merchandise_id);
         return ResponseEntity.ok(BaseResp.of("상품 상세정보 조회 성공", detailMerchandiseResp));
     }
 

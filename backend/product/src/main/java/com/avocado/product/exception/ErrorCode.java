@@ -9,6 +9,9 @@ public enum ErrorCode {
     // Common
     INVALID_INPUT_VALUE(400, "INVALID_INPUT_VALUE"),
     ACCESS_DENIED(403, "ACCESS_DENIED"),
+    INVALID_INSERT(500, "INVALID_SAVE"),
+    INVALID_UPDATE(500, "INVALID_UPDATE"),
+    INVALID_DELETE(500, "INVALID_DELETE"),
 
     // Consumer
     NO_MEMBER(404, "NO_MEMBER"),
@@ -25,6 +28,7 @@ public enum ErrorCode {
     NO_WISHLIST(404, "NO_WISHLIST"),
 
     // Cart
+    EXISTS_CART(400, "EXISTS_CART"),
     NO_CART(404, "NO_CART"),
     ;
 

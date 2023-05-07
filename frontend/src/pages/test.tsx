@@ -23,57 +23,45 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import SendIcon from "@mui/icons-material/Send";
 import { useRef } from "react";
+import { ReviewInput, Review } from "../components/molecues";
 
-const ProductDescription = (props: any) => {
-  const [rating, setRating] = useState(2);
-  const inputRef = useRef<HTMLInputElement>();
+import { Category, ProductCardsGrid } from "../components/oranisms";
 
-  function submitHandler(e: any) {
-    e.preventDefault();
-    if (inputRef.current) {
-      //여기 useMutation 작성해야함
-      console.log({
-        rating,
-        content: inputRef.current.value,
-      });
-    }
-  }
+const Store = () => {
+  const img_url = "store_main_image";
   return (
     <Background>
-      <form onSubmit={submitHandler}>
-        <Grid container alignItems={"center"}>
-          <Grid item xs={9}>
-            <TextField
-              fullWidth
-              id="standard-basic"
-              label="리뷰작성"
-              variant="outlined"
-              inputRef={inputRef}
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <Rating
-              size="small"
-              name="simple-controlled"
-              value={rating}
-              onChange={(event, newValue) => {
-                setRating(newValue ? newValue : 0);
-              }}
-              style={{
-                border: "1px solid #dddddd",
-                boxSizing: "border-box",
-                padding: "18px 10px",
-                borderRadius: "5px",
-              }}
-            />
-          </Grid>
-        </Grid>
-      </form>
+      {/* 스토어 이미지 */}
+      <Stack spacing={3} direction={"column"}>
+        <Imagebox>
+          <Image
+            src={`/assets/exampleImage/${img_url}.png`}
+            alt="제품 이미지"
+            fill
+            style={{ objectFit: "cover" }}
+          />
+        </Imagebox>
+
+        {/* 카테고리 */}
+        <Category />
+
+        {/* 제품들 뭐 하기로 했는데 까먹음  */}
+        
+        <ProductCardsGrid />
+      </Stack>
     </Background>
   );
 };
+export default Store;
 
-//여기는 SeoulNamsan 적용 안되서 기본 sens-self로 함
-const Background = styled.div``;
+const Background = styled.div`
+  padding: 10px;
+  box-sizing: border-box;
+`;
 
-export default ProductDescription;
+const Imagebox = styled.div`
+  position: relative;
+  width: 100%;
+  height: 30vh;
+  margin-bottom: 10px;
+`;

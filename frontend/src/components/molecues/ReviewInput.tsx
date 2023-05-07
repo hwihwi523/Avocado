@@ -1,8 +1,9 @@
 import styled from "@emotion/styled";
 import { Grid, TextField, Rating } from "@mui/material";
 import { useRef, useState } from "react";
+import {Button} from "@mui/material";
 
-const ProductDescription = (props: any) => {
+const ReviewInput = (props: any) => {
   const [rating, setRating] = useState(2);
   const inputRef = useRef<HTMLInputElement>();
 
@@ -20,7 +21,7 @@ const ProductDescription = (props: any) => {
     <Background>
       <form onSubmit={submitHandler}>
         <Grid container alignItems={"center"}>
-          <Grid item xs={9}>
+          <Grid item xs={8}>
             <TextField
               fullWidth
               id="standard-basic"
@@ -29,7 +30,7 @@ const ProductDescription = (props: any) => {
               inputRef={inputRef}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={4}>
             <Rating
               size="small"
               name="simple-controlled"
@@ -38,12 +39,18 @@ const ProductDescription = (props: any) => {
                 setRating(newValue ? newValue : 0);
               }}
               style={{
+
                 border: "1px solid #dddddd",
                 boxSizing: "border-box",
-                padding: "18px 10px",
+                padding: "18px 0px 18px 10px",
+                width:"100%",
+                textAlign:"center",
                 borderRadius: "5px",
               }}
             />
+          </Grid>
+          <Grid item xs={12}>
+            <Button variant="outlined" fullWidth style={{height:"50px"}} >댓글 입력</Button>
           </Grid>
         </Grid>
       </form>
@@ -52,6 +59,8 @@ const ProductDescription = (props: any) => {
 };
 
 //여기는 SeoulNamsan 적용 안되서 기본 sens-self로 함
-const Background = styled.div``;
+const Background = styled.div`
+    margin-bottom:10px;
+`;
 
-export default ProductDescription;
+export default ReviewInput;

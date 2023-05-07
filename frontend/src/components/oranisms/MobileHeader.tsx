@@ -13,7 +13,7 @@ const MobileHeader = (props: any) => {
           alignItems={"center"}
         >
           {/* 로고 이미지 */}
-          <Link href="">
+          <Link href="/">
             <img
               src="/assets/images/logo.png"
               height="100%"

@@ -3,6 +3,8 @@ package com.avocado.product.repository;
 import com.avocado.product.dto.query.QReviewDTO;
 import com.avocado.product.dto.query.ReviewDTO;
 import com.avocado.product.entity.*;
+import com.avocado.product.exception.DataManipulationException;
+import com.avocado.product.exception.ErrorCode;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,7 +31,11 @@ public class ReviewRepository {
 
     // 생성 및 삭제
     public void save(Review review) {
-        em.persist(review);
+        try {
+            em.persist(review);
+        } catch (PersistenceException e) {
+            throw new DataManipulationException(ErrorCode.INVALID_INSERT);
+        }
     }
     public void delete(Review review) {
         em.remove(review);
@@ -41,6 +48,26 @@ public class ReviewRepository {
                         eqReviewId(reviewId)
                 )
                 .fetchFirst();
+    }
+
+    /**
+     * 특정 사용자가 특정 상품에 리뷰를 남겼는지 여부를 조회하는 쿼리
+     * @param consumerId : 사용자 ID
+     * @param merchandiseId : 상품 ID
+     * @return : true / false
+     */
+    public Boolean checkReviewed(UUID consumerId, Long merchandiseId) {
+        // 특정 사용자가 특정 상품에 남긴 리뷰 조회
+        Long reviewId = queryFactory
+                .select(review.id)
+                .from(review)
+                .where(
+                        review.consumer.id.eq(consumerId),
+                        review.merchandise.id.eq(merchandiseId)
+                )
+                .fetchFirst();
+        // 리뷰 여부 반환
+        return reviewId != null;
     }
 
     /**
@@ -78,11 +105,9 @@ public class ReviewRepository {
         Long reviewId = queryFactory
                 .select(review.id)
                 .from(review)
-                .join(review.consumer, consumer)
-                .join(review.merchandise, merchandise)
                 .where(
-                        eqReviewerId(reviewerId),
-                        eqMerchandiseId(merchandiseId)
+                        review.consumer.id.eq(reviewerId),
+                        review.merchandise.id.eq(merchandiseId)
                 )
                 .fetchFirst();
         return reviewId != null;
@@ -95,9 +120,5 @@ public class ReviewRepository {
     // 리뷰 ID 조건
     private BooleanExpression eqReviewId(Long reviewId) {
         return reviewId != null ? review.id.eq(reviewId) : null;
-    }
-    // 리뷰어 ID 조건
-    private BooleanExpression eqReviewerId(UUID reviewerId) {
-        return reviewerId != null ? consumer.id.eq(reviewerId) : null;
     }
 }

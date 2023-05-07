@@ -6,6 +6,8 @@ import MobileHeader from "./MobileHeader";
 import ProductCardsRow from "./ProductCardsRow";
 import ProductDetailImage from "./ProductDetailImage";
 import ProductDescription from "./ProductDescription";
+import ProductReview from "./ProductReview";
+import ProductCardsGrid from "./ProductCardsGrid";
 
 export {
   Category,
@@ -16,4 +18,6 @@ export {
   ProductCardsRow,
   ProductDetailImage,
   ProductDescription,
+  ProductReview,
+  ProductCardsGrid,
 };
