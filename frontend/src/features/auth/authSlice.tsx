@@ -20,14 +20,12 @@ interface AuthState {
   member: Member | null;
   accessToken: string | "";
   refreshToken: string | "";
-  isLoggedIn: boolean;
 }
 
 const initialState: AuthState = {
   member: null,
   accessToken: "",
   refreshToken: "",
-  isLoggedIn: false,
 };
 
 export const authSlice = createSlice({
@@ -43,7 +41,7 @@ export const authSlice = createSlice({
     setRefreshToken: (state, action: PayloadAction<string>) => {
       state.refreshToken = action.payload;
     },
-    clearMember: (state) => {
+    clearAuth: (state) => {
       state.member = null;
       state.accessToken = "";
       state.refreshToken = "";
@@ -60,5 +58,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setMember, setAccessToken, setRefreshToken, clearMember } =
+export const { setMember, setAccessToken, setRefreshToken, clearAuth } =
   authSlice.actions;

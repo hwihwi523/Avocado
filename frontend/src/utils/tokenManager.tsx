@@ -11,7 +11,7 @@ function setToken(
 
   appCookies.set(key, token, {
     path: "/",
-    expires: expires,
+    expires: expires, // 이 부분을 설정해두면 만료 기한 이후 자동으로 삭제됨
   });
 }
 

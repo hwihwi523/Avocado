@@ -13,7 +13,7 @@ import { Cookies, CookiesProvider } from "react-cookie";
 import { NextPage } from "next";
 import { DecodedToken } from "../features/auth/authApi";
 import jwt from "jsonwebtoken";
-import { Member, clearMember, setMember } from "../features/auth/authSlice";
+import { Member, clearAuth, setMember } from "../features/auth/authSlice";
 
 export const appCookies = new Cookies(); // 앱에서 사용할 쿠키 생성
 
@@ -47,6 +47,8 @@ const MyApp: FC<AppProps<{ session: Session }>> = ({
 
 export default MyApp;
 
+// 서버에서 Redux Store를 초기화하고, wrapper.useWrappedStore()를 사용해
+// 클라이언트에서도 동일한 store를 사용하도록 설정
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) => async (context) => {
     const refreshToken = appCookies.get("REFRESH_TOKEN");
@@ -57,7 +59,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     // refresh token이 없거나 만료된 경우(고민 좀 더..)
     if (!refreshToken || isExpired) {
       // Redux Store에서 유저 정보 삭제
-      store.dispatch(clearMember());
+      store.dispatch(clearAuth());
       // 쿠키 삭제
       appCookies.remove("ACCESS_TOKEN");
       appCookies.remove("REFRESH_TOKEN");

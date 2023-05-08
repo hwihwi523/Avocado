@@ -2,23 +2,26 @@ import { fetchBaseQuery } from "@reduxjs/toolkit/dist/query";
 import { appCookies } from "../pages/_app";
 import jwt from "jsonwebtoken";
 import { DecodedToken } from "../features/auth/authApi";
-import { setToken } from "./tokenManager";
+import { removeTokenAll, setToken } from "./tokenManager";
+import { clearAuth } from "../features/auth/authSlice";
 
 const API_URL = process.env.NEXT_PUBLIC_MEMBER_API_URL
   ? process.env.NEXT_PUBLIC_MEMBER_API_URL
   : "";
-const SECRET = process.env.JWT_SECRET ? process.env.JWT_SECRET : "";
+const SECRET = process.env.NEXT_PUBLIC_JWT_SECRET
+  ? process.env.NEXT_PUBLIC_JWT_SECRET
+  : "";
 
-interface RefreshResponse {
+export interface RefreshResponse {
   access_token: string;
   refresh_token: string;
 }
 
 // 각 API 요청 시 token을 헤더에 담아 보내기 위한 커스텀 함수(검증이 필요한 경우 사용)
-export function customFetchBaseQuery(option: { baseUrl: string }) {
+export const customFetchBaseQuery = (option: { baseUrl: string }) => {
   return fetchBaseQuery({
-    baseUrl: option.baseUrl,
     prepareHeaders: async (headers) => {
+      // 토큰이 존재하면 토큰을 헤더에 넣어서 보내기
       let token = appCookies.get("ACCESS_TOKEN");
       if (token) {
         // 토큰 파싱(유효기간 구하기)
@@ -35,8 +38,8 @@ export function customFetchBaseQuery(option: { baseUrl: string }) {
         const isExpired = new Date(exp).getTime() <= new Date().getTime();
         if (isExpired) {
           let refreshToken = appCookies.get("REFRESH_TOKEN");
-          // 새로운 access token 가져오기
-          const response = await fetch(API_URL + "/tokens/refresh", {
+          // refresh token을 헤더에 담아 요청하여 새로운 access token 가져오기
+          const response = await fetch(API_URL + "/refresh", {
             method: "GET",
             headers: {
               Authorization: `Bearer ${refreshToken}`,
@@ -64,19 +67,16 @@ export function customFetchBaseQuery(option: { baseUrl: string }) {
             setToken("ACCESS_TOKEN", newTokens.access_token, accessExp);
             setToken("REFRESH_TOKEN", newTokens.refresh_token, refreshExp);
             token = appCookies.get("ACCESS_TOKEN");
+            headers.set("Authorization", token);
           } else {
             // 요청이 실패하면 로그아웃시키기
+            removeTokenAll();
+            clearAuth();
           }
         }
-        return {
-          ...headers,
-          Authorization: `Bearer ${token}`,
-        };
       }
-      // 토큰 검증
-      const response = await fetch("");
-
       return headers;
     },
+    ...option,
   });
-}
+};

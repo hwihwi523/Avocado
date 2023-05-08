@@ -21,7 +21,7 @@
     "chart.js": "^4.3.0",
     "eslint": "8.39.0",
     "eslint-config-next": "13.3.1",
-    "jsonwebtoken": "^9.0.0",
+    "jsonwebtoken": "^8.5.1",
     "next": "^13.3.1",
     "next-auth": "^4.22.1",
     "next-redux-wrapper": "^8.1.0",

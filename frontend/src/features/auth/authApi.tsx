@@ -1,8 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { Member } from "./authSlice";
 import { HYDRATE } from "next-redux-wrapper";
+import { customFetchBaseQuery } from "@/src/utils/customFetchBaseQuery";
 
-const MEMBER_API_URL = process.env.NEXT_PUBLIC_MEMBER_API_URL;
+const MEMBER_API_URL = process.env.NEXT_PUBLIC_MEMBER_API_URL
+  ? process.env.NEXT_PUBLIC_MEMBER_API_URL
+  : "";
 
 interface CheckAuthResponse {
   isAuth: boolean;
@@ -35,16 +38,16 @@ interface SellerLoginRequest {
   password: string;
 }
 
-interface SellerLoginResponse {
-  access_token: String;
-  refresh_token: String;
-  email: String;
-  name: String;
+export interface SellerLoginResponse {
+  access_token: string;
+  refresh_token: string;
+  email: string;
+  name: string;
 }
 
 export const authApi = createApi({
   reducerPath: "authApi",
-  baseQuery: fetchBaseQuery({
+  baseQuery: customFetchBaseQuery({
     baseUrl: MEMBER_API_URL,
   }),
   // next.js에서 rtk 쿼리를 사용하기 위한 hydrate 과정
@@ -72,7 +75,7 @@ export const authApi = createApi({
     }),
     refreshAuth: builder.query<CheckAuthResponse, void>({
       query: () => ({
-        url: "/tokens/refresh",
+        url: "/refresh",
         method: "GET",
       }),
     }),
