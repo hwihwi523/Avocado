@@ -12,5 +12,5 @@ public class StyleshotResp {
     String pictureUrl;
     int rating;
     LocalDateTime createdAt;
-    List<Long> wears;
+    List<MerchandiseResp> wears;
 }
