@@ -2,18 +2,18 @@ package com.avocado.payment.service;
 
 import com.avocado.payment.config.KakaoPayUtil;
 import com.avocado.payment.config.UUIDUtil;
+import com.avocado.payment.dto.kakaopay.KakaoPayApproveResp;
 import com.avocado.payment.dto.kakaopay.KakaoPayReadyResp;
 import com.avocado.payment.dto.request.PurchaseMerchandiseReq;
 import com.avocado.payment.dto.request.ReadyForPaymentReq;
 import com.avocado.payment.dto.response.KakaoPayRedirectUrlResp;
-import com.avocado.payment.entity.Consumer;
-import com.avocado.payment.entity.Merchandise;
-import com.avocado.payment.entity.Purchasing;
+import com.avocado.payment.entity.*;
 import com.avocado.payment.exception.ErrorCode;
 import com.avocado.payment.exception.InvalidValueException;
 import com.avocado.payment.exception.KakaoPayException;
 import com.avocado.payment.repository.ConsumerRepository;
 import com.avocado.payment.repository.MerchandiseRepository;
+import com.avocado.payment.repository.PurchasingMerchandiseRepository;
 import com.avocado.payment.repository.PurchasingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +27,8 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,16 +39,19 @@ import java.util.UUID;
 public class KakaoPayService {
     @Value("${kakao-pay.host}")
     private String host;
-    @Value("${kakao-pay.ready-url}")
-    private String readyUrl;
+    @Value("${kakao-pay.url.api.ready}")
+    private String apiReadyUrl;
+    @Value("${kakao-pay.url.api.approve}")
+    private String apiApproveUrl;
     @Value("${kakao-pay.cid}")
     private String cid;
-    @Value("${kakao-pay.approval-url}")
-    private String approvalUrl;
-    @Value("${kakao-pay.cancel-url}")
-    private String cancelUrl;
-    @Value("${kakao-pay.fail-url}")
-    private String failUrl;
+
+    @Value("${kakao-pay.url.handle.approve}")
+    private String handleApprovalUrl;
+    @Value("${kakao-pay.url.handle.cancel}")
+    private String handleCancelUrl;
+    @Value("${kakao-pay.url.handle.fail}")
+    private String handleFailUrl;
 
     @PersistenceContext
     private final EntityManager em;
@@ -55,6 +60,8 @@ public class KakaoPayService {
     private final MerchandiseRepository merchandiseRepository;
     private final PurchasingRepository purchasingRepository;
     private final ConsumerRepository consumerRepository;
+    private final PurchasingMerchandiseRepository purchasingMerchandiseRepository;
+
     private final UUIDUtil uuidUtil;
     private final KakaoPayUtil kakaoPayUtil;
 
@@ -104,23 +111,23 @@ public class KakaoPayService {
         body.add("quantity", String.valueOf(quantity));
         body.add("total_amount", String.valueOf(paymentReq.getTotal_price()));
         body.add("tax_free_amount", "0");
-        body.add("approval_url", approvalUrl + strPurchaseId);
-        body.add("cancel_url", cancelUrl + strPurchaseId);
-        body.add("fail_url", failUrl + strPurchaseId);
+        body.add("approval_url", handleApprovalUrl + strPurchaseId);
+        body.add("cancel_url", handleCancelUrl + strPurchaseId);
+        body.add("fail_url", handleFailUrl + strPurchaseId);
 
         // body, headers 취합
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(body, kakaoPayUtil.getKakaoPayHeaders());
 
         // API 요청
         ResponseEntity<KakaoPayReadyResp> response = restTemplate.postForEntity(
-                host + readyUrl,
+                host + apiReadyUrl,
                 entity,
                 KakaoPayReadyResp.class
         );
 
         // 오류 발생 시 예외 던지기
         if (response.getStatusCodeValue() != 200)
-            throw new KakaoPayException(ErrorCode.UNKNOWN_ERROR);
+            throw new KakaoPayException(ErrorCode.READY_ERROR);
         KakaoPayReadyResp kakaoPayReadyResp = response.getBody();
 
         // 구매 대기 내역 등록
@@ -133,12 +140,7 @@ public class KakaoPayService {
         purchasingRepository.save(purchasing);
 
         // 구매 대기 상품 등록 (Native Query Bulk)
-        // 상품 ID, 구매대기내역 ID 모두 내부 데이터를 사용하기 때문에 sql injection 문제 없을 듯 (아마)
-        String bulkQuery = "INSERT INTO purchasing_merchandise (merchandise_id, purchasing_id) " +
-                "VALUES (" + merchandiseIds.get(0) + ", UNHEX(\"" + strPurchaseId + "\"))";
-        for (int i = 1; i < merchandiseIds.size(); i++)
-            bulkQuery += ", (" + merchandiseIds.get(i) + ", UNHEX(\"" + strPurchaseId + "\"))";
-        em.createNativeQuery(bulkQuery).executeUpdate();
+        bulkInsert("purchasing_merchandise", strPurchaseId, merchandiseIds);
 
         // Response 생성 및 반환
         KakaoPayRedirectUrlResp kakaoPayRedirectUrlResp = KakaoPayRedirectUrlResp.builder()
@@ -146,5 +148,73 @@ public class KakaoPayService {
                 .next_redirect_pc_url(kakaoPayReadyResp.getNext_redirect_pc_url())
                 .build();
         return kakaoPayRedirectUrlResp;
+    }
+
+    @Transactional
+    public void approve(String purchasingId, String pgToken) {
+        UUID uuidPurchasingId = uuidUtil.joinByHyphen(purchasingId);
+
+        // 구매 대기 내역 조회
+        Optional<Purchasing> optionalPurchasing = purchasingRepository.findById(uuidPurchasingId);
+        if (optionalPurchasing.isEmpty())
+            throw new InvalidValueException(ErrorCode.NO_PURCHASING);
+        Purchasing purchasing = optionalPurchasing.get();
+        String consumerId = uuidUtil.removeHyphen(purchasing.getConsumer().getId());
+
+        // body 생성
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("cid", cid);
+        body.add("tid", purchasing.getTid());
+        body.add("partner_order_id", purchasingId);
+        body.add("partner_user_id", consumerId);
+        body.add("pg_token", pgToken);
+        body.add("total_amount", String.valueOf(purchasing.getTotalPrice()));
+
+        // headers와 취합하여 entity 생성
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(body, kakaoPayUtil.getKakaoPayHeaders());
+
+        // 카카오페이에 승인 요청
+        ResponseEntity<KakaoPayApproveResp> response = restTemplate.postForEntity(
+                host + apiApproveUrl,
+                httpEntity,
+                KakaoPayApproveResp.class
+        );
+
+        // 정상 응답이 아니라면 예외 던지기
+        if (response.getStatusCodeValue() != 200)
+            throw new KakaoPayException(ErrorCode.APPROVE_ERROR);
+
+        // 구매 완료 내역 업데이트
+//        Purchase purchase = Purchase.builder()
+//                .id(purchasing.getId())
+//                .consumer(purchasing.getConsumer())
+//                .
+//                .build();
+
+        // 구매 완료된 상품 테이블 업데이트
+//        List<Long> merchandiseIds = purchasingMerchandiseRepository.findMerchandiseIdsByPurchasing_Id(purchasing.getId());
+//        bulkInsert("purchased_merchandise", purchasingId, merchandiseIds);
+
+        System.out.println(response.getBody());
+    }
+
+    @Transactional
+    public void cancel(String purchasingId) {
+
+    }
+
+    @Transactional
+    public void fail(String purchasingId) {
+
+    }
+
+    @Transactional
+    public void bulkInsert(String table, String purchaseId, List<Long> merchandiseIds) {
+        // 상품 ID, 구매대기내역 ID 모두 내부 데이터를 사용하기 때문에 sql injection 문제 없을 듯 (아마)
+        String bulkQuery = "INSERT INTO " + table + " (merchandise_id, purchasing_id) " +
+                "VALUES (" + merchandiseIds.get(0) + ", UNHEX(\"" + purchaseId + "\"))";
+        for (int i = 1; i < merchandiseIds.size(); i++)
+            bulkQuery += ", (" + merchandiseIds.get(i) + ", UNHEX(\"" + purchaseId + "\"))";
+        em.createNativeQuery(bulkQuery).executeUpdate();
     }
 }
