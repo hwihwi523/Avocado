@@ -16,3 +16,12 @@ spring:
 server:
   servlet:
     context-path: /merchandise
+  tomcat:
+    accesslog:
+      enabled: true
+      directory: tomcat
+      suffix: .log
+      prefix: access_log
+      file-date-format: .yyyy-MM-dd
+      pattern: '%{yyyy-MM-dd HH:mm:ss}t %s %r %l %u'
+    basedir: /var/log
