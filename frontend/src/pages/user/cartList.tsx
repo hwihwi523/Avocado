@@ -60,6 +60,7 @@ const CartList = () => {
 
   return (
     <Background>
+        <BlockText type="B" size="1.5rem" style={{marginTop:"20px"}}>장바구니</BlockText>
       <Stack spacing={2}>
         {data.map((item, i) => (
           <CartItem data={item} key={i} />

@@ -28,6 +28,11 @@ const ProductCard = (props: any) => {
     });
   }
 
+  //숫자 변환 함수 3000  => 3,000원
+  function formatCurrency(num: number) {
+    return num.toLocaleString("en-US") + "원";
+  }
+
   return (
     <Background>
       {/*북마크를 아래에 위치한 박스*/}
@@ -55,7 +60,6 @@ const ProductCard = (props: any) => {
                   style={{ fontSize: "8px" }}
                 />
               ))}
-              
             </Stack>
           </Grid>
 
@@ -73,7 +77,7 @@ const ProductCard = (props: any) => {
               color="grey"
               style={{ textDecorationLine: "line-through" }}
             >
-              {price}원
+              {formatCurrency(price)}
             </InlineText>
           </Grid>
 
@@ -81,7 +85,7 @@ const ProductCard = (props: any) => {
           <Grid item xs={12}>
             <Stack direction={"row"} justifyContent={"space-between"}>
               <InlineText size="1.2rem" type="L">
-                {price - discount}원
+                {formatCurrency(price - discount)}
               </InlineText>
               <InlineText size="1.2rem" type="L" color="red">
                 {Math.ceil((discount / price) * 100)}%
@@ -121,7 +125,7 @@ export default ProductCard;
 
 const Background = styled.div`
   position: relative;
-  width:100%;
+  width: 100%;
 `;
 
 const Card = styled.div`

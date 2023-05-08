@@ -71,6 +71,7 @@ export default function Home() {
 const BackgroundDiv = styled.div`
   padding: 10px;
   box-sizing: border-box;
+  margin-bottom:50px;
 `;
 
 const StyledSpan = styled.span`

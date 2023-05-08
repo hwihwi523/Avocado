@@ -1,27 +1,11 @@
 import styled from "@emotion/styled";
-import { Stack, Chip, IconButton } from "@mui/material";
+import { Stack, IconButton } from "@mui/material";
 import Image from "next/image";
-import { BlockText, InlineText } from "../components/atoms";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import { Button } from "@mui/material";
-import { useState, ChangeEvent } from "react";
+import { BlockText } from "../atoms";
 import Grid from "@mui/material/Grid";
-import AddIcon from "@mui/icons-material/Add";
-import { CartItem, SnapshotItem } from "../components/molecues";
 import router from "next/router";
-import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
-import TextField from "@mui/material/TextField";
-import { useSnackbar } from "notistack";
-import {
-  ProductCardsRow,
-  UserProfile,
-  UserStateSummary,
-} from "../components/oranisms";
-import { ChartPersonalColor } from "../components/oranisms/charts";
 import ClearIcon from "@mui/icons-material/Clear";
 import StarIcon from "@mui/icons-material/Star";
-
 
 type Item = {
   img_url: string;
@@ -33,9 +17,10 @@ type Item = {
   count: number;
   price: number;
   discount: number;
+  order_date:string;
 };
 
-const WishItem: React.FC<{ data: Item }> = (props) => {
+const OrderItem: React.FC<{ data: Item }> = (props) => {
   const {
     img_url,
     brand_name,
@@ -46,6 +31,7 @@ const WishItem: React.FC<{ data: Item }> = (props) => {
     count,
     price,
     discount,
+    order_date,
   } = props.data;
 
   //숫자 변환 함수 3000  => 3,000원
@@ -55,10 +41,6 @@ const WishItem: React.FC<{ data: Item }> = (props) => {
 
   function pageMove() {
     router.push("product/" + product_id);
-  }
-
-  function InputCartList() {
-    console.log("장바구니에 추가하는 로직");
   }
 
   return (
@@ -83,16 +65,13 @@ const WishItem: React.FC<{ data: Item }> = (props) => {
                 alignItems={"center"}
                 justifyContent={"space-between"}
               >
-                <BlockText size="0.6rem" type="L">
+                <BlockText size="0.8rem" type="L">
                   {brand_name}
                 </BlockText>
 
-                <IconButton
-                  aria-label="clearIcon"
-                  style={{ margin: "0px", padding: "0px" }}
-                >
-                  <ClearIcon />
-                </IconButton>
+                <BlockText size="0.8rem" type="L">
+                    {order_date}
+                </BlockText>
               </Stack>
               <BlockText>{product_name}</BlockText>
               <BlockText>
@@ -120,17 +99,12 @@ const WishItem: React.FC<{ data: Item }> = (props) => {
             </Stack>
           </div>
         </Grid>
-        <Grid item xs={12}>
-          <Button variant="outlined"  fullWidth onClick={InputCartList}>
-            장바구니 추가
-          </Button>
-        </Grid>
       </Grid>
     </Background>
   );
 };
 
-export default WishItem;
+export default OrderItem;
 
 const Background = styled.div`
   width: 100%;

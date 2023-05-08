@@ -7,7 +7,6 @@ import { AppProps } from "next/app";
 import type { Session } from "next-auth";
 import { wrapper } from "../features/store";
 import { MobileBottom, MobileHeader } from "../components/oranisms";
-
 import { SnackbarProvider } from "notistack";
 
 // Use of the <SessionProvider> is mandatory to allow components that call
