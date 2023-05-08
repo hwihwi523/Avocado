@@ -2,6 +2,7 @@ package com.avocado.product.repository;
 
 import com.avocado.product.dto.query.PurchaseHistoryMerchandiseDTO;
 import com.avocado.product.dto.query.QPurchaseHistoryMerchandiseDTO;
+import com.avocado.product.entity.QPurchasedMerchandise;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -20,6 +21,7 @@ import static com.avocado.product.entity.QMerchandise.merchandise;
 import static com.avocado.product.entity.QMerchandiseCategory.merchandiseCategory;
 import static com.avocado.product.entity.QMerchandiseGroup.merchandiseGroup;
 import static com.avocado.product.entity.QPurchase.purchase;
+import static com.avocado.product.entity.QPurchasedMerchandise.purchasedMerchandise;
 import static com.avocado.product.entity.QStore.store;
 
 @Repository
@@ -37,10 +39,11 @@ public class PurchaseRepository {
         // 특정 사용자가 특정 상품을 구매한 내역 조회
         UUID purchaseId = queryFactory
                 .select(purchase.id)
-                .from(purchase)
+                .from(purchasedMerchandise)
+                .join(purchasedMerchandise.purchase, purchase)
                 .where(
                         purchase.consumer.id.eq(consumerId),
-                        purchase.merchandise.id.eq(merchandiseId)
+                        purchasedMerchandise.merchandise.id.eq(merchandiseId)
                 )
                 .fetchFirst();
         // 내역 존재 여부 반환
@@ -83,12 +86,13 @@ public class PurchaseRepository {
                         merchandiseGroup.price,
                         merchandiseGroup.discountedPrice,
                         purchase.createdAt,
-                        purchase.size
+                        purchasedMerchandise.size
                 ))
-                .from(purchase)
-                .join(purchase.merchandise, merchandise)
+                .from(purchasedMerchandise)
+                .join(purchasedMerchandise.provider, store)
+                .join(purchasedMerchandise.purchase, purchase)
+                .join(purchasedMerchandise.merchandise, merchandise)
                 .join(merchandise.group, merchandiseGroup)
-                .join(merchandiseGroup.provider, store)
                 .join(merchandiseGroup.category, merchandiseCategory)
                 .where(
                         purchase.consumer.id.eq(consumerId),
