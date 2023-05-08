@@ -15,6 +15,4 @@ public class BaseException extends RuntimeException {
         this.msg = code.msg;
     }
 
-
-
 }

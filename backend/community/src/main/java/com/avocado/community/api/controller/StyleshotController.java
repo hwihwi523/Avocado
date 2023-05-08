@@ -53,4 +53,24 @@ public class StyleshotController {
         return ResponseEntity.ok(resMap);
     }
 
+    @PostMapping("{styleshotId}/like")
+    public ResponseEntity<?> likeStyleshot(@PathVariable long styleshotId, HttpServletRequest request) {
+        Map<String, Object> resMap = new HashMap<>();
+        Claims claims = jwtUtils.getClaims(request);
+        styleshotService.like(styleshotId, claims);
+        resMap.put("status", 200);
+        resMap.put("msg", "좋아요_성공");
+        return ResponseEntity.ok(resMap);
+    }
+
+    @PostMapping("{styleshotId}/unlike")
+    public ResponseEntity<?> unlikeStyleshot(@PathVariable long styleshotId, HttpServletRequest request) {
+        Map<String, Object> resMap = new HashMap<>();
+        Claims claims = jwtUtils.getClaims(request);
+        styleshotService.unlike(styleshotId, claims);
+        resMap.put("status", 200);
+        resMap.put("msg", "좋아요_취소_성공");
+        return ResponseEntity.ok(resMap);
+    }
+
 }
