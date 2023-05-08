@@ -1,5 +1,6 @@
 package com.avocado.userserver.api.service
 
+import com.avocado.userserver.api.controller.OauthController
 import com.avocado.userserver.common.error.BaseException
 import com.avocado.userserver.common.error.ResponseCode
 import com.avocado.userserver.common.utils.ConvertIdUtil
@@ -7,6 +8,8 @@ import com.avocado.userserver.db.entity.Consumer
 import com.avocado.userserver.db.entity.Provider
 import io.jsonwebtoken.*
 import io.jsonwebtoken.security.Keys
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.server.reactive.ServerHttpRequest
@@ -31,6 +34,8 @@ class JwtProvider(
     val HEADER_PREFIX: String = "Bearer "
 
     var SECRET_KEY: Key = Keys.hmacShaKeyFor(secretKey.toByteArray())
+
+    val log: Logger = LoggerFactory.getLogger(JwtProvider::class.java)
 
     suspend fun getAccessToken(member: Any): String {
         println(member)
@@ -134,7 +139,10 @@ class JwtProvider(
 
 
     suspend fun parseClaims(token: String): Claims {
-        return Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).body;
+        val claims = Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).body
+        log.info("claims : {}", claims)
+
+        return claims;
     }
 
     suspend fun getClaims(request: ServerHttpRequest): Claims {

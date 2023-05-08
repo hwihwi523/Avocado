@@ -24,17 +24,19 @@ public class StyleshotController {
 
     @GetMapping
     public ResponseEntity<?> getStyleshotList() {
+        log.info("get all styleshot list");
         return ResponseEntity.ok(styleshotService.styleshotList());
     }
 
     @GetMapping("{styleshotId}")
     public ResponseEntity<?> getStyleshotDetail(@PathVariable long styleshotId) {
+        log.info("get detail - styleshotId : {}", styleshotId);
         return ResponseEntity.ok(styleshotService.showStyleshotDetail(styleshotId));
     }
 
     @PostMapping
     public ResponseEntity<?> postStyleshot(PostStyleshotReq req, HttpServletRequest request) {
-        log.info("req: {}", req);
+        log.info("request to post styleshot - req: {}", req);
         Map<String, Object> resMap = new HashMap<>();
         Claims claims = jwtUtils.getClaims(request);
         styleshotService.addStyleshot(req, claims);

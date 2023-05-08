@@ -61,7 +61,9 @@ public class JwtUtils {
     }
 
     private Claims parseClaims(String token) throws ExpiredJwtException {
-        return Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).getBody();
+        Claims claims = Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).getBody();
+        log.info("claims: {}", claims);
+        return claims;
     }
 
     public Claims getClaims(HttpServletRequest request) {
