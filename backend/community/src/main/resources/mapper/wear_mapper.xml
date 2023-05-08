@@ -11,18 +11,10 @@
         values(#{styleshotId}, #{merchandiseId})
     </insert>
 
-    <select id="getAllByStyleshotId" resultType="Long">
-        select merchandise_id from wear where styleshot_id = #{styleshotId}
-    </select>
-
     <delete id="deleteAllByStyleshotId">
         delete from wear
         where styleshot_id = #{styleshotId}
     </delete>
 
-<!--    <update id="updateMember">-->
-<!--        update member set name = #{name}-->
-<!--        where id = #{id}-->
-<!--    </update>-->
 
 </mapper>

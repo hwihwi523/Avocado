@@ -1,11 +1,13 @@
 package com.avocado.community.api.service;
 
 import com.avocado.community.api.request.PostStyleshotReq;
+import com.avocado.community.api.response.MerchandiseResp;
 import com.avocado.community.api.response.StyleshotResp;
 import com.avocado.community.common.error.BaseException;
 import com.avocado.community.common.error.ResponseCode;
 import com.avocado.community.common.utils.JwtUtils;
 import com.avocado.community.db.entity.Styleshot;
+import com.avocado.community.db.repository.MerchandiseRepository;
 import com.avocado.community.db.repository.StyleshotLikeRepository;
 import com.avocado.community.db.repository.StyleshotRepository;
 import com.avocado.community.db.repository.WearRepository;
@@ -16,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,6 +31,7 @@ public class StyleshotService {
 
     private final StyleshotRepository styleshotRepository;
     private final StyleshotLikeRepository styleshotLikeRepository;
+    private final MerchandiseRepository merchandiseRepository;
     private final WearRepository wearRepository;
     private final ImageService imageService;
     private final JwtUtils jwtUtils;
@@ -81,8 +85,8 @@ public class StyleshotService {
     public List<StyleshotResp> styleshotList() {
         List<StyleshotResp> respList = styleshotRepository.getAll();
         for (StyleshotResp resp: respList) {
-            List<Long> styleshotIdList = wearRepository.getAllByStyleshotId(resp.getId());
-            resp.setWears(styleshotIdList);
+            List<MerchandiseResp> wearList = merchandiseRepository.getWearById(resp.getId());
+            resp.setWears(wearList);
         }
 
         return respList;
@@ -93,10 +97,9 @@ public class StyleshotService {
         if (styleshotO.isEmpty()) {
             throw new BaseException(ResponseCode.BAD_REQUEST);
         }
-        List<Long> styleshotIdList = wearRepository.getAllByStyleshotId(styleshotId);
+        List<MerchandiseResp> wearList = merchandiseRepository.getWearById(styleshotId);
         StyleshotResp resp = styleshotO.get();
-        resp.setWears(styleshotIdList);
-
+        resp.setWears(wearList);
         return resp;
     }
 
@@ -111,8 +114,8 @@ public class StyleshotService {
         List<StyleshotResp> respList = styleshotRepository.getAllByConsumerId(consumerId);
 
         for (StyleshotResp resp: respList) {
-            List<Long> styleshotIdList = wearRepository.getAllByStyleshotId(resp.getId());
-            resp.setWears(styleshotIdList);
+            List<MerchandiseResp> wearList = merchandiseRepository.getWearById(resp.getId());
+            resp.setWears(wearList);
         }
         return respList;
 
