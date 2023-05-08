@@ -2,21 +2,16 @@ package com.avocado.community.api.controller;
 
 import com.avocado.community.api.request.PostStyleshotReq;
 import com.avocado.community.api.service.StyleshotService;
-import com.avocado.community.common.error.BaseException;
-import com.avocado.community.common.error.ResponseCode;
 import com.avocado.community.common.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @Slf4j
 @RestController

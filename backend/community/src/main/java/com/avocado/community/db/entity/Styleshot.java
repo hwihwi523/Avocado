@@ -4,7 +4,6 @@ import com.avocado.community.api.request.PostStyleshotReq;
 import lombok.Builder;
 import lombok.Data;
 
-import javax.swing.text.Style;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
