@@ -25,12 +25,10 @@ public class SearchService {
         this.elasticsearchClient = elasticsearchClient;
     }
 
-    public List<Product> searchProduct(String type, String keyword){
+    public List<Product> searchProduct(String category, String keyword){
 
         SearchResponse<Product> search;
         List<Product> products = new ArrayList<>();
-        System.out.println(type);
-        System.out.println(keyword);
 
         //조건
         Query byName = MatchQuery.of(m -> m
@@ -39,18 +37,28 @@ public class SearchService {
         )._toQuery();
         Query byCategory = MatchQuery.of(r -> r
                 .field("category_eng")
-                .query(type)
+                .query(category)
         )._toQuery();
 
         try {
-            search = elasticsearchClient.search(s -> s
-                            .index("products")
-                            .query(q -> q
-                                    .bool(b -> b
-                                            .must(byName)
-                                            .must(byCategory)
-                                    )).size(50),
-                    Product.class);
+            if(category.equals("All")){
+                search = elasticsearchClient.search(s -> s
+                                .index("products")
+                                .query(q -> q
+                                        .bool(b -> b
+                                                .must(byName)
+                                        )).size(50),
+                        Product.class);
+            }else {
+                search = elasticsearchClient.search(s -> s
+                                .index("products")
+                                .query(q -> q
+                                        .bool(b -> b
+                                                .must(byName)
+                                                .must(byCategory)
+                                        )).size(50),
+                        Product.class);
+            }
             for (Hit<Product> hit: search.hits().hits()) {
                 products.add(hit.source());
             }

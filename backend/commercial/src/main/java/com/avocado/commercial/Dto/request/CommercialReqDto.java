@@ -1,6 +1,7 @@
 package com.avocado.commercial.Dto.request;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -15,4 +16,5 @@ public class CommercialReqDto {
     private int commercial_type_id;
     private int age;
     private char gender;
+    private MultipartFile file;
 }

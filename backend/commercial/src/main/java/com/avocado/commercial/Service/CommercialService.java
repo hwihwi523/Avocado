@@ -1,9 +1,13 @@
 package com.avocado.commercial.Service;
 
+import com.avocado.commercial.Dto.request.CommercialReqDto;
+import com.avocado.commercial.Dto.response.Analysis;
 import com.avocado.commercial.Dto.response.item.Carousel;
 import com.avocado.commercial.Dto.response.CommercialRespDto;
+import com.avocado.commercial.Dto.response.item.Exposure;
 import com.avocado.commercial.Entity.Commercial;
 import com.avocado.commercial.Repository.CommercialRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -13,12 +17,15 @@ import java.util.*;
 public class CommercialService {
 
     private CommercialRepository commercialRepository;
+    private ImageService imageService;
 
     private final int TYPE_POPUP = 0;
     private final int TYPE_CAROUSEL = 1;
 
-    public CommercialService(CommercialRepository commercialRepository){
+    @Autowired
+    public CommercialService(CommercialRepository commercialRepository, ImageService imageService){
         this.commercialRepository = commercialRepository;
+        this.imageService = imageService;
     }
 
     // 리팩토링 해야할 듯
@@ -95,5 +102,18 @@ public class CommercialService {
         return commercialRespDto;
     }
 
+
+    public List<Exposure> getAnlyses(int merchandise_id){
+        List<Exposure> list = null;
+        List<Exposure> a = commercialRepository.countExByMerchandiseIdGroupBy(merchandise_id);
+        System.out.println(a.get(0).getExposure_Cnt());
+
+        return list;
+    }
+
+    public void saveCommercial(CommercialReqDto commercialReqDto){
+        String str = imageService.createCommercialImages(commercialReqDto.getFile());
+        System.out.println(str);
+    }
 
 }

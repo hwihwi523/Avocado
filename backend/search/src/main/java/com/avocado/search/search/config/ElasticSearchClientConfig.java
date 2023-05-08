@@ -2,6 +2,7 @@ package com.avocado.search.search.config;
 
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
@@ -16,12 +17,12 @@ public class ElasticSearchClientConfig {
     private ElasticsearchTransport transport;
     private ElasticsearchClient elasticsearchClient;
 
-    static private String eIp = "acc46369d4d4c4626934bf2a21423d47-659575785.ap-northeast-2.elb.amazonaws.com";
-    static private int ePort = 9200;
+    private String eIp = "acc46369d4d4c4626934bf2a21423d47-659575785.ap-northeast-2.elb.amazonaws.com";
+//    private String eIp = "localhost";
+    private int ePort = 9200;
 
     @Bean
-    public ElasticsearchClient getInstance() {
-        System.out.println(eIp + ePort);
+    public ElasticsearchClient getElasticsearchClient() {
         if(elasticsearchClient == null) {
             restClient = RestClient.builder(
                     new HttpHost(eIp, ePort)).build();
