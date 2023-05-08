@@ -21,26 +21,33 @@ import java.util.UUID;
 
 @Component
 @Slf4j
-@RequiredArgsConstructor
 public class JwtUtils {
 
-    private final UUIDUtil uuidUtil;
+    private UUIDUtil uuidUtil;
 
-    @Value("${hwt.secret}")
-    private String secretKey;
-
-    @Value("${jwt.access_expiration}")
+    private Key SECRET_KEY;
     private Long ACCESS_EXPIRATION_TIME;
-
-    @Value("${jwt.refresh_expiration}")
     private Long REFRESH_EXPIRATION_TIME;
 
-    @Value("${jwt.issuer}")
     private String ISSUER;
 
     private final String HEADER_PREFIX = "Bearer ";
 
-    private Key SECRET_KEY = Keys.hmacShaKeyFor(secretKey.getBytes());
+
+    @Autowired
+    private JwtUtils(@Value("${jwt.secret}") String secretKey,
+                     @Value("${jwt.access_expiration}") long eccExpirationTime,
+                     @Value("${jwt.refresh_expiration}") long refExpirationTime,
+                     @Value("${jwt.issuer}") String issuer,
+                     UUIDUtil uuidUtil) {
+        this.SECRET_KEY = Keys.hmacShaKeyFor(secretKey.getBytes());
+        this.ACCESS_EXPIRATION_TIME = eccExpirationTime;
+        this.REFRESH_EXPIRATION_TIME = refExpirationTime;
+        this.ISSUER = issuer;
+        this.uuidUtil = uuidUtil;
+
+    }
+
 
 
     private String getToken(HttpServletRequest request) {
@@ -53,12 +60,8 @@ public class JwtUtils {
 
     }
 
-    private Claims parseClaims(String token) {
-        try {
-            return Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).getBody();
-        } catch (ExpiredJwtException e) {
-            return e.getClaims();
-        }
+    private Claims parseClaims(String token) throws ExpiredJwtException {
+        return Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).getBody();
     }
 
     public Claims getClaims(HttpServletRequest request) {

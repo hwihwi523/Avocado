@@ -134,11 +134,7 @@ class JwtProvider(
 
 
     suspend fun parseClaims(token: String): Claims {
-        return try {
-            Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).body;
-        } catch (e: ExpiredJwtException) {
-            e.claims
-        }
+        return Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).body;
     }
 
     suspend fun getClaims(request: ServerHttpRequest): Claims {
