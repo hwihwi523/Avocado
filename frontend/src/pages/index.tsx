@@ -7,7 +7,7 @@ import {
   ProductCardsRow,
   Category,
   Commercials,
-  MainUserProfile,
+  UserProfile,
 } from "../components/oranisms";
 import { BlockText } from "../components/atoms";
 
@@ -23,7 +23,7 @@ export default function Home() {
       <Grid container gap={5}>
         {/* 사용자 프로필 */}
         <Grid item xs={12}>
-          <MainUserProfile />
+          <UserProfile/>
         </Grid>
 
         {/* 메뉴 카테고리 */}

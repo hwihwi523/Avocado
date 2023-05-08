@@ -1,24 +1,9 @@
 import styled from "@emotion/styled";
-import { Stack, Chip, IconButton } from "@mui/material";
+import { Stack, IconButton } from "@mui/material";
 import Image from "next/image";
-import { BlockText, InlineText } from "../components/atoms";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import { Button } from "@mui/material";
-import { useState, ChangeEvent } from "react";
+import { BlockText } from "../atoms";
 import Grid from "@mui/material/Grid";
-import AddIcon from "@mui/icons-material/Add";
-import { CartItem, SnapshotItem } from "../components/molecues";
 import router from "next/router";
-import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
-import TextField from "@mui/material/TextField";
-import { useSnackbar } from "notistack";
-import {
-  ProductCardsRow,
-  UserProfile,
-  UserStateSummary,
-} from "../components/oranisms";
-import { ChartPersonalColor } from "../components/oranisms/charts";
 import ClearIcon from "@mui/icons-material/Clear";
 import StarIcon from "@mui/icons-material/Star";
 
@@ -34,7 +19,7 @@ type Item = {
   discount: number;
 };
 
-const WishItem: React.FC<{ data: Item }> = (props) => {
+const CartItem: React.FC<{ data: Item }> = (props) => {
   const {
     img_url,
     brand_name,
@@ -54,10 +39,6 @@ const WishItem: React.FC<{ data: Item }> = (props) => {
 
   function pageMove() {
     router.push("product/" + product_id);
-  }
-
-  function InputCartList() {
-    console.log("장바구니에 추가하는 로직");
   }
 
   return (
@@ -119,17 +100,12 @@ const WishItem: React.FC<{ data: Item }> = (props) => {
             </Stack>
           </div>
         </Grid>
-        <Grid item xs={12}>
-          <Button variant="text" onClick={InputCartList}>
-            장바구니 추가
-          </Button>
-        </Grid>
       </Grid>
     </Background>
   );
 };
 
-export default WishItem;
+export default CartItem;
 
 const Background = styled.div`
   width: 100%;
