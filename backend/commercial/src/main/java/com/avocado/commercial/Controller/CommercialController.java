@@ -54,7 +54,7 @@ public class CommercialController {
     }
 
 
-    @PostMapping(value = "/ads", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping( "/ads")
     public ResponseEntity<String> registCommercial(CommercialReqDto commercial, HttpServletRequest request){
 
         commercialService.saveCommercial(commercial);
