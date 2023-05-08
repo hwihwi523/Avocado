@@ -1,30 +1,11 @@
 import styled from "@emotion/styled";
-import { Stack, Chip, IconButton } from "@mui/material";
-// import Image from "next/image";
+import { Stack } from "@mui/material";
 import { BlockText, InlineText } from "../components/atoms";
-// import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-// import FavoriteIcon from "@mui/icons-material/Favorite";
-// import { Button } from "@mui/material";
 import { useState } from "react";
-// import Grid from "@mui/material/Grid";
-// import AddIcon from "@mui/icons-material/Add";
-// import { CartItem, SnapshotItem } from "../components/molecues";
-// import router from "next/router";
-// import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
-// import TextField from "@mui/material/TextField";
-// import { useSnackbar } from "notistack";
-// import {
-//   ProductCardsRow,
-//   UserProfile,
-//   UserStateSummary,
-// } from "../components/oranisms";
-// import { ChartPersonalColor } from "../components/oranisms/charts";
-// import ClearIcon from "@mui/icons-material/Clear";
-// import StarIcon from "@mui/icons-material/Star";
 import { InputAdornment, TextField } from "@mui/material";
 import { AddressInput } from "../components/molecues";
 import MapIcon from "@mui/icons-material/Map";
-import Script from "next/script";
+
 
 const BillingPage = () => {
   const [addressInputVisible, setAddressInputVisible] = useState(false);
@@ -76,28 +57,28 @@ const BillingPage = () => {
     return num.toLocaleString("en-US") + "원";
   }
 
+  //총 할인 금액
   function totalDiscount() {
     let result = 0;
-
     for (let i = 0; i < products.length; i++) {
       result += products[i].discount * products[i].count;
     }
     return formatCurrency(result);
   }
 
+  //총 결제 긍맥
   function totalPrice() {
     let result = 0;
-
     for (let i = 0; i < products.length; i++) {
       result += (products[i].price - products[i].discount) * products[i].count;
     }
-
     return formatCurrency(result);
   }
 
   return (
     <Background>
       <Stack spacing={2}>
+        {/* 주문자정보 */}
         <Box>
           <BlockText size="1.5rem" style={{ marginBottom: "20px" }}>
             주문자 정보
@@ -119,6 +100,7 @@ const BillingPage = () => {
           </Stack>
         </Box>
 
+        {/* 주소입력 */}
         <Box>
           <BlockText size="1.5rem" style={{ marginBottom: "20px" }}>
             주소 입력
@@ -149,6 +131,8 @@ const BillingPage = () => {
             />
           )}
         </Box>
+
+        {/* 결제정보 */}
         <Box>
           <BlockText size="1.5rem" style={{ marginBottom: "20px" }}>
             결제 정보
@@ -191,11 +175,7 @@ const BillingPage = () => {
         </Box>
       </Stack>
 
-      <Script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></Script>
-      <Script
-        type="text/javascript"
-        src="//dapi.kakao.com/v2/maps/sdk.js?appkey=INSERT_YOURE_KAKAO_KEY&libraries=services"
-      ></Script>
+      
     </Background>
   );
 };

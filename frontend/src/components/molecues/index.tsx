@@ -5,5 +5,6 @@ import SnapshotItem from "./SnapshotItem";
 import CartItem from "./CartItem";
 import WishItem from "./WishItem"
 import OrderItem from './OrderItem'
+import AddressInput from "./AddressInput";
 
-export { ProductCard, Review, ReviewInput, SnapshotItem, CartItem,WishItem,OrderItem };
+export { ProductCard, Review, ReviewInput, SnapshotItem, CartItem,WishItem,OrderItem,AddressInput };
