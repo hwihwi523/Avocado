@@ -8,6 +8,24 @@ interface CheckAuthResponse {
   isAuth: boolean;
 }
 
+// refresh token 안에 포함된 내용
+export interface DecodedToken {
+  iss: string; // 발행자
+  iat: number; // 발행 시간
+  exp: number; // 만료 시간
+  type: string; // 일반 사용자 or 판매자
+  id: string;
+  email: string;
+  name: string;
+  picture_url?: string;
+  gender?: string;
+  age?: number;
+  height?: number;
+  weight?: number;
+  mbti_id?: number;
+  personal_color_id?: number;
+}
+
 interface LoginRequest {
   provider: string;
 }
@@ -28,13 +46,6 @@ export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
     baseUrl: MEMBER_API_URL,
-    // prepareHeaders: (headers, { getState }) => {
-    //   const accessToken = "";
-    //   if (accessToken) {
-    //     headers.set("authorization", `Bearer ${accessToken}`);
-    //   }
-    //   return headers;
-    // },
   }),
   // next.js에서 rtk 쿼리를 사용하기 위한 hydrate 과정
   extractRehydrationInfo(action, { reducerPath }) {
@@ -59,14 +70,14 @@ export const authApi = createApi({
         body,
       }),
     }),
-    checkAuth: builder.query<CheckAuthResponse, void>({
+    refreshAuth: builder.query<CheckAuthResponse, void>({
       query: () => ({
-        url: "",
+        url: "/tokens/refresh",
         method: "GET",
       }),
     }),
   }),
 });
 
-export const { useLoginMutation, useSellerLoginMutation, useCheckAuthQuery } =
+export const { useLoginMutation, useSellerLoginMutation, useRefreshAuthQuery } =
   authApi;

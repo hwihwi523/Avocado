@@ -1,12 +1,20 @@
 import { ExamplePost } from "@/src/types/exampleTypes";
 import { useGetPostsQuery } from "@/src/queries/examplePostApi";
+import { useSelector } from "react-redux";
+import { AppState } from "@/src/features/store";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 export default function ExamplePostList() {
-  const { data: posts = [], isFetching } = useGetPostsQuery();
+  const isLoggedIn = useSelector((state: AppState) => state.auth.isLoggedIn);
+  const router = useRouter();
 
-  if (isFetching) {
-    return <div>Loading...</div>;
-  }
+  useEffect(() => {
+    // 로그인되어 있지 않은 경우 로그인 페이지로 이동
+    if (!isLoggedIn) {
+      router.replace("/login");
+    }
+  }, [isLoggedIn, router]);
 
   return (
     <ul>

@@ -20,12 +20,14 @@ interface AuthState {
   member: Member | null;
   accessToken: string | "";
   refreshToken: string | "";
+  isLoggedIn: boolean;
 }
 
 const initialState: AuthState = {
   member: null,
   accessToken: "",
   refreshToken: "",
+  isLoggedIn: false,
 };
 
 export const authSlice = createSlice({
@@ -58,4 +60,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setMember, setAccessToken, setRefreshToken } = authSlice.actions;
+export const { setMember, setAccessToken, setRefreshToken, clearMember } =
+  authSlice.actions;
