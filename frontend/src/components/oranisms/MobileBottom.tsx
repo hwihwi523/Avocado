@@ -32,14 +32,14 @@ const MobileBottom = (props: any) => {
         </Link>
 
         {/* 스넵샷 */}
-        <Link href="snapshot">
+        <Link href="/snapshot">
           <IconButton aria-label="snapshot">
             <ImageIcon fontSize="large" style={{ fill: "#FFFFFF" }} />
           </IconButton>
         </Link>
 
         {/* 찜 목록 */}
-        <Link href="">
+        <Link href="/user/wishList">
           <IconButton aria-label="bookmark">
             <BookmarkBorderOutlinedIcon
               fontSize="large"
