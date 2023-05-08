@@ -45,6 +45,7 @@ public class StyleshotController {
 
     @DeleteMapping("{styleshotId}")
     public ResponseEntity<?> deleteStyleShot(@PathVariable long styleshotId, HttpServletRequest request) {
+        log.info("styleshot delete - styleshotId : {}", styleshotId);
         Map<String, Object> resMap = new HashMap<>();
         Claims claims = jwtUtils.getClaims(request);
         styleshotService.deleteStyleshot(styleshotId, claims);
@@ -55,6 +56,7 @@ public class StyleshotController {
 
     @PostMapping("{styleshotId}/like")
     public ResponseEntity<?> likeStyleshot(@PathVariable long styleshotId, HttpServletRequest request) {
+        log.info("styleshot like - styleshotId : {}", styleshotId);
         Map<String, Object> resMap = new HashMap<>();
         Claims claims = jwtUtils.getClaims(request);
         styleshotService.like(styleshotId, claims);
@@ -65,6 +67,7 @@ public class StyleshotController {
 
     @PostMapping("{styleshotId}/unlike")
     public ResponseEntity<?> unlikeStyleshot(@PathVariable long styleshotId, HttpServletRequest request) {
+        log.info("styleshot unlike - styleshotId : {}", styleshotId);
         Map<String, Object> resMap = new HashMap<>();
         Claims claims = jwtUtils.getClaims(request);
         styleshotService.unlike(styleshotId, claims);
