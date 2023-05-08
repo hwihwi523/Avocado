@@ -1,7 +1,7 @@
 spring:
   datasource:
-#    url: jdbc:mysql://a4231aa8b5f6f4c258756076545155f8-632431843.ap-northeast-2.elb.amazonaws.com:3306/payment?serverTimezone=UTC&characterEncoding=UTF-8
-    url: jdbc:mysql://localhost:3306/payment?serverTimezone=UTC&characterEncoding=UTF-8
+    url: jdbc:mysql://a07c6127933494883b1ce18e5a21f697-895151877.ap-northeast-2.elb.amazonaws.com:3306/payment?serverTimezone=UTC&characterEncoding=UTF-8
+#    url: jdbc:mysql://localhost:3306/payment?serverTimezone=UTC&characterEncoding=UTF-8
     username: yasim
     password: yasim506
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -20,9 +20,18 @@ server:
 
 kakao-pay:
   host: https://kapi.kakao.com
-  ready-url: /v1/payment/ready
   admin-key: 3c11e4e624e930df14f2c8618a2b454a
   cid: TC0ONETIME
-  approval-url: http://localhost:3000/approval/
-  cancel-url: http://localhost:3000/cancel/
-  fail-url: http://localhost:3000/fail/
+
+  url:
+    api:
+      ready: /v1/payment/ready
+      approve: /v1/payment/approve
+    handle:
+      approve: http://localhost:8080/payment/approval/
+      cancel: http://localhost:8080/payment/cancel/
+      fail: http://localhost:8080/payment/fail/
+    redirect:
+      approval: http://localhost:3000/approve
+      cancel: http://localhost:3000/cancel
+      fail: http://localhost:3000/fail
