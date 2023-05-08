@@ -45,7 +45,7 @@ class ConsumerService(
         val accessToken = jwtProvider.getAccessToken(consumer)
         val refreshToken = jwtProvider.getRefreshToken(consumer)
         println("accessToken: $accessToken, refreshToken: $refreshToken")
-        return oAuthUrlUtil.getFrontRedirectUrl(accessToken, refreshToken)
+        return oAuthUrlUtil.getFrontRedirectUrl(accessToken, refreshToken, consumer.auth)
     }
 
 

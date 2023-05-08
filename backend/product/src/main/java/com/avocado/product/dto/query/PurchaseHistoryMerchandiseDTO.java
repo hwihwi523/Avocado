@@ -10,12 +10,14 @@ import java.util.UUID;
 public class PurchaseHistoryMerchandiseDTO extends DefaultMerchandiseDTO {
     private final UUID purchaseId;
     private final LocalDateTime purchaseDate;
+    private final String size;
 
     @QueryProjection
     public PurchaseHistoryMerchandiseDTO(UUID purchaseId, String brandName, Long merchandiseId, String merchandiseCategory, String imageUrl,
-                                         String merchandiseName, Integer price, Integer discountedPrice, LocalDateTime purchaseDate) {
+                                         String merchandiseName, Integer price, Integer discountedPrice, LocalDateTime purchaseDate, String size) {
         super(brandName, merchandiseId, merchandiseCategory, imageUrl, merchandiseName, price, discountedPrice);
         this.purchaseId = purchaseId;
         this.purchaseDate = purchaseDate;
+        this.size = size;
     }
 }

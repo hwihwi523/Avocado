@@ -1,6 +1,5 @@
 package com.avocado.product.service;
 
-import com.avocado.product.dto.etc.MaxScoreDTO;
 import com.avocado.product.dto.query.*;
 import com.avocado.product.dto.response.*;
 import com.avocado.product.repository.ScoreRepository;
@@ -35,14 +34,14 @@ public class ScoreService {
         queryContent.forEach((myContent) -> myContentIds.add(myContent.getMerchandiseId()));
 
         // IN 쿼리로 퍼스널컬러, MBTI, 나이대 각각 한 번에 조회
-        List<ScoreDTO> personalColors = scoreRepository.findPersonalColors(myContentIds);
-        List<ScoreDTO> mbtis = scoreRepository.findMbtis(myContentIds);
-        List<ScoreDTO> ages = scoreRepository.findAges(myContentIds);
+        List<MaxTypeDTO> personalColors = scoreRepository.findPersonalColors(myContentIds);
+        List<MaxTypeDTO> mbtis = scoreRepository.findMbtis(myContentIds);
+        List<MaxTypeDTO> ages = scoreRepository.findAges(myContentIds);
 
         // 최대 점수를 갖는 퍼스널컬러, MBTI, 나이대 구하기
-        Map<Long, MaxScoreDTO> maxPersonalColors = getMaxScores(personalColors);
-        Map<Long, MaxScoreDTO> maxMbtis = getMaxScores(mbtis);
-        Map<Long, MaxScoreDTO> maxAges = getMaxScores(ages);
+        Map<Long, List<String>> maxPersonalColors = extractMaxInfos(personalColors);
+        Map<Long, List<String>> maxMbtis = extractMaxInfos(mbtis);
+        Map<Long, List<String>> maxAges = extractMaxInfos(ages);
 
         // 응답용 DTO 생성
         List<Return> respContent = new ArrayList<>();
@@ -67,11 +66,11 @@ public class ScoreService {
 
             Long merchandiseId = combined.getMerchandise_id();  // 상품 ID
             if (maxPersonalColors.get(merchandiseId) != null)
-                combined.updatePersonalColor(maxPersonalColors.get(merchandiseId).getType());  // 대표 퍼스널컬러
+                combined.updatePersonalColor(maxPersonalColors.get(merchandiseId).get(0));  // 대표 퍼스널컬러
             if (maxMbtis.get(merchandiseId) != null)
-                combined.updateMBTI(maxMbtis.get(merchandiseId).getType());  // 대표 MBTI
+                combined.updateMBTI(maxMbtis.get(merchandiseId).get(0));  // 대표 MBTI
             if (maxAges.get(merchandiseId) != null)
-                combined.updateAgeGroup(maxAges.get(merchandiseId).getType());  // 대표 나이대
+                combined.updateAgeGroup(maxAges.get(merchandiseId).get(0));  // 대표 나이대
             respContent.add(combined);
         }
 
@@ -99,24 +98,19 @@ public class ScoreService {
     }
 
     /**
-     * Map을 사용해 각 상품이 갖는 최댓값 DTO로 접근, 그리고 최댓값 확인 및 갱신 작업
-     * @param scoreInfos : (상품 ID, 개인화 정보 Type, 점수) 리스트
-     * @return : 각 상품마다 최대 점수를 갖는 Type을 저장한 Map
+     * 각 상품이 갖는 최대 행동점수 지표를 추출하는 메서드
+     * @param beforeExtracting : 최대 행동점수를 갖는 상품 ID와 개인화 정보 Type 리스트
+     * @return : 각 상품마다 최대 행동점수를 갖는 Type 리스트를 저장한 Map
      */
-    private Map<Long, MaxScoreDTO> getMaxScores(List<ScoreDTO> scoreInfos) {
-        Map<Long, MaxScoreDTO> maxScores = new HashMap<>();
-        scoreInfos.forEach((scoreInfo) -> {
+    private Map<Long, List<String>> extractMaxInfos(List<MaxTypeDTO> beforeExtracting) {
+        Map<Long, List<String>> maxInfos = new HashMap<>();
+        beforeExtracting.forEach((beforeInfo) -> {
             // 새로 등장한 상품일 경우 초기화
-            if (!maxScores.containsKey(scoreInfo.getMerchandiseId()))
-                maxScores.put(scoreInfo.getMerchandiseId(), new MaxScoreDTO());
-            // 최댓값 계산 및 갱신
-            MaxScoreDTO maxScoreDTO = maxScores.get(scoreInfo.getMerchandiseId());
-            Long originScore = maxScoreDTO.getMaxScore();
-            if (originScore == null || originScore < scoreInfo.getCount()) {
-                maxScoreDTO.setMaxScore(scoreInfo.getCount());
-                maxScoreDTO.setType(scoreInfo.getType());
-            }
+            if (!maxInfos.containsKey(beforeInfo.getMerchandiseId()))
+                maxInfos.put(beforeInfo.getMerchandiseId(), new ArrayList<>());
+            // 최대 행동점수를 갖는 지표 저장
+            maxInfos.get(beforeInfo.getMerchandiseId()).add(beforeInfo.getType());
         });
-        return maxScores;
+        return maxInfos;
     }
 }

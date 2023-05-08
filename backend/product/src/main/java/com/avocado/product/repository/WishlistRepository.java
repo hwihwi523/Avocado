@@ -1,10 +1,10 @@
 package com.avocado.product.repository;
 
-import com.avocado.product.dto.query.QSimpleMerchandiseDTO;
 import com.avocado.product.dto.query.QWishlistMerchandiseDTO;
-import com.avocado.product.dto.query.SimpleMerchandiseDTO;
 import com.avocado.product.dto.query.WishlistMerchandiseDTO;
 import com.avocado.product.entity.Wishlist;
+import com.avocado.product.exception.DataManipulationException;
+import com.avocado.product.exception.ErrorCode;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -12,11 +12,10 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-import static com.avocado.product.entity.QCart.cart;
 import static com.avocado.product.entity.QConsumer.consumer;
 import static com.avocado.product.entity.QMerchandise.merchandise;
 import static com.avocado.product.entity.QMerchandiseCategory.merchandiseCategory;
@@ -35,7 +34,11 @@ public class WishlistRepository {
      * 데이터 삽입 및 삭제
      */
     public void save(Wishlist wishlist) {
-        em.persist(wishlist);
+        try {
+            em.persist(wishlist);
+        } catch (PersistenceException e) {
+            throw new DataManipulationException(ErrorCode.INVALID_INSERT);
+        }
     }
     public void delete(Wishlist wishlist) {
         em.remove(wishlist);

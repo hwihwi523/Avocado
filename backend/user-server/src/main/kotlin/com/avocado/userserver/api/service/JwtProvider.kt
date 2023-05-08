@@ -46,10 +46,10 @@ class JwtProvider(
         var now = Date()
         return Jwts.builder()
             .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+            .setClaims(claims)
             .setIssuer(ISSUER)
             .setIssuedAt(now)
             .setExpiration(Date(now.time + ACCESS_EXPIRATION_TIME))
-            .setClaims(claims)
             .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
             .compact()
     }
@@ -67,10 +67,10 @@ class JwtProvider(
         var now = Date()
         return Jwts.builder()
             .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+            .setClaims(claims)
             .setIssuer(ISSUER)
             .setIssuedAt(now)
             .setExpiration(Date(now.time + REFRESH_EXPIRATION_TIME))
-            .setClaims(claims)
             .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
             .compact()
     }

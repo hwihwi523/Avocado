@@ -1,0 +1,28 @@
+spring:
+  datasource:
+#    url: jdbc:mysql://a4231aa8b5f6f4c258756076545155f8-632431843.ap-northeast-2.elb.amazonaws.com:3306/payment?serverTimezone=UTC&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/payment?serverTimezone=UTC&characterEncoding=UTF-8
+    username: yasim
+    password: yasim506
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+server:
+  servlet:
+    context-path: /payment
+
+kakao-pay:
+  host: https://kapi.kakao.com
+  ready-url: /v1/payment/ready
+  admin-key: 3c11e4e624e930df14f2c8618a2b454a
+  cid: TC0ONETIME
+  approval-url: http://localhost:3000/approval/
+  cancel-url: http://localhost:3000/cancel/
+  fail-url: http://localhost:3000/fail/

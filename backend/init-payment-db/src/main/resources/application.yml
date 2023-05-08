@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:mysql://a4231aa8b5f6f4c258756076545155f8-632431843.ap-northeast-2.elb.amazonaws.com:3306/payment?serverTimezone=UTC&characterEncoding=UTF-8
+    username: yasim
+    password: yasim506
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
