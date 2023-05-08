@@ -10,11 +10,15 @@ export default function Home() {
   }
   myFunction();
 
+  async function handleSignOut() {
+    await signOut();
+  }
+
   if (session) {
     return (
       <>
         {session.user?.name}님 반갑습니다 <br />
-        <button onClick={() => signOut()}>로그아웃</button>
+        <button onClick={handleSignOut}>로그아웃</button>
       </>
     );
   }
