@@ -100,7 +100,7 @@ const MainUserProfile = () => {
             </AvatarDiv>
           </Grid>
           <Grid item xs={5}>
-              <StyledSpan>{name}</StyledSpan>님 반갑습니다.
+            <StyledSpan>{name}</StyledSpan>님 반갑습니다.
           </Grid>
 
           {/* 하단 메뉴 */}
