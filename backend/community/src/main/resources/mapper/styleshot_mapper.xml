@@ -3,24 +3,29 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.avocado.community.db.mapper.ConsumerMapper">
+<mapper namespace="com.avocado.community.db.repository.StyleshotRepository">
 
-    <select id="getConsumerList" resultType="Consumer">
-        select * from consumer
+    <select id="getAll" resultType="StyleshotResp">
+        select id, content, picture_url, rating, created_at from styleshot
     </select>
 
-<!--    <select id="getMember" resultType="Member">-->
-<!--        select * from member where id = #{id}-->
-<!--    </select>-->
+    <select id="getById" resultType="StyleshotResp">
+        select id, content, picture_url, rating, created_at from styleshot where id = #{styleshotId}
+    </select>
 
-<!--    <insert id="createMember">-->
-<!--        insert into member(name, id) values(#{name}, #{id})-->
-<!--    </insert>-->
+    <select id="getByIdAndConsumerId" resultType="Long">
+        select id from styleshot where id = #{styleshotId} and consumer_id = #{consumerId}
+    </select>
 
-<!--    <delete id="deleteMember">-->
-<!--        delete from member-->
-<!--        where id = #{id}-->
-<!--    </delete>-->
+    <insert id="save" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        insert into styleshot(content, picture_url, rating, created_at, updated_at, consumer_id)
+        values(#{content}, #{pictureUrl}, #{rating}, now(), now(), #{consumerId})
+    </insert>
+
+    <delete id="deleteById">
+        delete from styleshot
+        where id = #{styleshotId}
+    </delete>
 
 <!--    <update id="updateMember">-->
 <!--        update member set name = #{name}-->

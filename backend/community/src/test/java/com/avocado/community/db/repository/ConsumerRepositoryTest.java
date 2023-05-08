@@ -1,9 +1,8 @@
-package com.avocado.community.db.mapper;
+package com.avocado.community.db.repository;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -12,13 +11,13 @@ import javax.annotation.Resource;
 @DisplayName("MyBatis ConsumerMapper 테스트")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class ConsumerMapperTest {
+public class ConsumerRepositoryTest {
 
     @Resource
-    ConsumerMapper consumerMapper;
+    ConsumerRepository consumerRepository;
 
     @Test
     public void 소비자조회() {
-        System.out.println(consumerMapper.getConsumerList());
+        System.out.println(consumerRepository.getConsumerList());
     }
 }
