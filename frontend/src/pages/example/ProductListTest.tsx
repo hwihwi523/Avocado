@@ -8,6 +8,7 @@ import { authApi } from "@/src/features/auth/authApi";
 import { wrapper } from "@/src/features/store";
 import { useStore } from "react-redux";
 import { productApi } from "@/src/features/product/productApi";
+import jwt from "jsonwebtoken";
 
 interface Props {
   products: Product[];
@@ -63,6 +64,20 @@ export const getServerSideProps = wrapper.getServerSideProps(
       })
     );
     console.log("SELLER LOGIN RESPONSE:", loginResponse);
+    console.log(
+      "SELLER LOGIN REFRESH_TOKEN:",
+      loginResponse.data.refresh_token
+    );
+    // 토큰 파싱
+    const token = loginResponse.data.refresh_token;
+    const secret = process.env.JWT_SECRET;
+    try {
+      const decoded = jwt.verify(token, secret);
+      console.log("JWT_TOKEN_PARSING:", decoded);
+    } catch (err) {
+      console.log("JWT_TOKEN_PARSING_ERR:", err);
+    }
+
     // store와 연동 예시 -> productList
     const productListResponse = await store.dispatch(
       productApi.endpoints.getProductList.initiate({
@@ -71,6 +86,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
         size: 3,
       })
     );
+
     let content: Product[] = [];
     if (productListResponse.data) {
       console.log(

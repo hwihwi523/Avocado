@@ -4,6 +4,10 @@ import { HYDRATE } from "next-redux-wrapper";
 
 const MEMBER_API_URL = process.env.NEXT_PUBLIC_MEMBER_API_URL;
 
+interface CheckAuthResponse {
+  isAuth: boolean;
+}
+
 interface LoginRequest {
   provider: string;
 }
@@ -55,7 +59,14 @@ export const authApi = createApi({
         body,
       }),
     }),
+    checkAuth: builder.query<CheckAuthResponse, void>({
+      query: () => ({
+        url: "",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useSellerLoginMutation } = authApi;
+export const { useLoginMutation, useSellerLoginMutation, useCheckAuthQuery } =
+  authApi;
