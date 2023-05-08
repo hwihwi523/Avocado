@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- mapper DTD 선언 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avocado.community.db.repository.WearRepository">
+
+
+    <insert id="save">
+        insert into wear(styleshot_id, merchandise_id)
+        values(#{styleshotId}, #{merchandiseId})
+    </insert>
+
+    <select id="getAllByStyleshotId" resultType="Long">
+        select merchandise_id from wear where styleshot_id = #{styleshotId}
+    </select>
+
+    <delete id="deleteAllByStyleshotId">
+        delete from wear
+        where styleshot_id = #{styleshotId}
+    </delete>
+
+<!--    <update id="updateMember">-->
+<!--        update member set name = #{name}-->
+<!--        where id = #{id}-->
+<!--    </update>-->
+
+</mapper>
