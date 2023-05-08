@@ -23,9 +23,9 @@ const MobileHeader = (props: any) => {
           </Link>
 
           {/* 장바구니  */}
-          <Link href="">
+          <Link href="/user/cartList">
             <IconButton>
-              <ShoppingCartOutlinedIcon fontSize="large" />
+              <ShoppingCartOutlinedIcon style={{fontSize:"1.8rem"}} />
             </IconButton>
           </Link>
         </Stack>
@@ -37,5 +37,5 @@ export default MobileHeader;
 
 const HeaderBackground = styled.div`
   width: 100%;
-  padding: 5px; 
+  padding: 10px 5px 0px 5px; 
 `;
