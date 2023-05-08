@@ -60,7 +60,6 @@ const ProductCard = (props: any) => {
                   style={{ fontSize: "8px" }}
                 />
               ))}
-              
             </Stack>
           </Grid>
 
@@ -78,7 +77,7 @@ const ProductCard = (props: any) => {
               color="grey"
               style={{ textDecorationLine: "line-through" }}
             >
-              {price}원
+              {formatCurrency(price)}
             </InlineText>
           </Grid>
 
@@ -126,7 +125,7 @@ export default ProductCard;
 
 const Background = styled.div`
   position: relative;
-  width:100%;
+  width: 100%;
 `;
 
 const Card = styled.div`

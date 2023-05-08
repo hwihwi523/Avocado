@@ -20,6 +20,13 @@ const ProductDetailImage = () => {
   const tags = ["ESTJ", "가을뮤트", "상의"];
   const discount = 10000;
   const price = 43000;
+  const remaining = 997;
+
+
+   //숫자 변환 함수 3000  => 3,000원
+   function formatCurrency(num: number) {
+    return num.toLocaleString("en-US") + "원";
+  }
 
   return (
     <>
@@ -73,18 +80,19 @@ const ProductDetailImage = () => {
           size="1.5rem"
             style={{ textDecoration: "line-through", color: "grey" }}
           >
-            {price}원
+            {formatCurrency(price)}
           </BlockText>
         </Grid>
 
         {/* 원가 + 할인률 */}
         <Grid item xs={12}>
           <Stack direction={"row"} justifyContent={"space-between"}>
-            <InlineText type="L" size="2rem">{price - discount}원</InlineText>
+            <InlineText type="L" size="2rem">{formatCurrency(price - discount)}</InlineText>
             <InlineText type="L"  size="2rem" color="red">
               {Math.ceil((discount / price) * 100)}%
             </InlineText>
           </Stack>
+          <BlockText size="1rem" type="L" color="grey" style={{marginTop:"20px"}}>남은 수량 : {remaining}</BlockText>
         </Grid>
       </Grid>
     </>
