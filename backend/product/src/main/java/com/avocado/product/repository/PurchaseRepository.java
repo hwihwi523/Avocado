@@ -82,7 +82,8 @@ public class PurchaseRepository {
                         merchandise.name,
                         merchandiseGroup.price,
                         merchandiseGroup.discountedPrice,
-                        purchase.createdAt
+                        purchase.createdAt,
+                        purchase.size
                 ))
                 .from(purchase)
                 .join(purchase.merchandise, merchandise)
