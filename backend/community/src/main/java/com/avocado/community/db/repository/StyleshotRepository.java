@@ -13,6 +13,8 @@ public interface StyleshotRepository {
 
     List<StyleshotResp> getAll();
 
+    List<StyleshotResp> getAllByConsumerId(UUID consumerId);
+
     Optional<StyleshotResp> getById(long styleshotId);
 
     void save(Styleshot styleshot);
@@ -20,6 +22,5 @@ public interface StyleshotRepository {
     void deleteById(long styleshotId);
 
     Optional<Long> getByIdAndConsumerId(long styleshotId, UUID consumerId);
-
 
 }

@@ -9,6 +9,10 @@
         select id, content, picture_url, rating, created_at from styleshot
     </select>
 
+    <select id="getAllByConsumerId" resultType="StyleshotResp">
+        select id, content, picture_url, rating, created_at from styleshot where consumer_id = #{consumerId}
+    </select>
+
     <select id="getById" resultType="StyleshotResp">
         select id, content, picture_url, rating, created_at from styleshot where id = #{styleshotId}
     </select>

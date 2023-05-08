@@ -6,6 +6,7 @@ import com.avocado.community.common.error.BaseException;
 import com.avocado.community.common.error.ResponseCode;
 import com.avocado.community.common.utils.JwtUtils;
 import com.avocado.community.db.entity.Styleshot;
+import com.avocado.community.db.repository.StyleshotLikeRepository;
 import com.avocado.community.db.repository.StyleshotRepository;
 import com.avocado.community.db.repository.WearRepository;
 import io.jsonwebtoken.Claims;
@@ -26,6 +27,7 @@ import java.util.UUID;
 public class StyleshotService {
 
     private final StyleshotRepository styleshotRepository;
+    private final StyleshotLikeRepository styleshotLikeRepository;
     private final WearRepository wearRepository;
     private final ImageService imageService;
     private final JwtUtils jwtUtils;
@@ -96,6 +98,48 @@ public class StyleshotService {
         resp.setWears(styleshotIdList);
 
         return resp;
+    }
+
+    public List<StyleshotResp> myStyleshotList(Claims claims) {
+        // 1. consumer 권한이 아닌 경우 에러 발생
+        if (!jwtUtils.getType(claims).equals("consumer")) {
+            throw new BaseException(ResponseCode.FORBIDDEN);
+        }
+
+        UUID consumerId = jwtUtils.getId(claims);
+
+        List<StyleshotResp> respList = styleshotRepository.getAllByConsumerId(consumerId);
+
+        for (StyleshotResp resp: respList) {
+            List<Long> styleshotIdList = wearRepository.getAllByStyleshotId(resp.getId());
+            resp.setWears(styleshotIdList);
+        }
+        return respList;
+
+    }
+
+    @Transactional
+    public void like(long styleshotId, Claims claims) {
+        // 1. consumer 권한이 아닌 경우 에러 발생
+        if (!jwtUtils.getType(claims).equals("consumer")) {
+            throw new BaseException(ResponseCode.FORBIDDEN);
+        }
+
+        UUID consumerId = jwtUtils.getId(claims);
+        styleshotLikeRepository.like(styleshotId, consumerId);
+
+    }
+
+    @Transactional
+    public void unlike(long styleshotId, Claims claims) {
+        // 1. consumer 권한이 아닌 경우 에러 발생
+        if (!jwtUtils.getType(claims).equals("consumer")) {
+            throw new BaseException(ResponseCode.FORBIDDEN);
+        }
+
+        UUID consumerId = jwtUtils.getId(claims);
+        styleshotLikeRepository.unlike(styleshotId, consumerId);
+
     }
 
 
