@@ -1,15 +1,24 @@
 package com.avocado.commercial.Service;
 
+import com.avocado.commercial.Dto.request.CommercialCancelReqDto;
+import com.avocado.commercial.Dto.request.CommercialReqDto;
+import com.avocado.commercial.Dto.response.Analysis;
+import com.avocado.commercial.Dto.response.RegistedCommercial;
 import com.avocado.commercial.Dto.response.item.Carousel;
 import com.avocado.commercial.Dto.response.CommercialRespDto;
-import com.avocado.commercial.Dto.response.item.Popup;
+import com.avocado.commercial.Dto.response.item.Click;
+import com.avocado.commercial.Dto.response.item.Exposure;
+import com.avocado.commercial.Dto.response.item.Purchase;
 import com.avocado.commercial.Entity.Commercial;
-import com.avocado.commercial.Exceptions.CommercialException;
-import com.avocado.commercial.Exceptions.ErrorCode;
 import com.avocado.commercial.Repository.CommercialRepository;
-import net.bytebuddy.TypeCache;
+import com.avocado.commercial.util.JwtUtil;
+import com.avocado.commercial.util.UUIDUtil;
+import io.jsonwebtoken.Jwt;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import java.net.http.HttpRequest;
 import java.util.*;
 
 @Service
@@ -17,12 +26,17 @@ import java.util.*;
 public class CommercialService {
 
     private CommercialRepository commercialRepository;
+    private ImageService imageService;
+    private JwtUtil jwtUtil;
 
     private final int TYPE_POPUP = 0;
     private final int TYPE_CAROUSEL = 1;
 
-    public CommercialService(CommercialRepository commercialRepository){
+    @Autowired
+    public CommercialService(CommercialRepository commercialRepository, ImageService imageService, JwtUtil jwtUtil){
         this.commercialRepository = commercialRepository;
+        this.imageService = imageService;
+        this.jwtUtil = jwtUtil;
     }
 
     // 리팩토링 해야할 듯
@@ -99,4 +113,85 @@ public class CommercialService {
         return commercialRespDto;
     }
 
+
+    // 순서대로
+    public List<Analysis> getAnlyses(int commercialId){
+        List<Analysis> analysisList = new ArrayList<>();
+
+        Commercial commercial = commercialRepository.findById(commercialId);
+        List<Exposure> exposureList = commercialRepository.countExposureByCommercialId(commercialId);
+        List<Click> clickList = commercialRepository.countClickByMerchandiseId(commercial.getMerchandiseId());
+        List<Purchase> purchaseList = commercialRepository.countPurchaseByMerchandiseId(commercial.getMerchandiseId());
+
+        Map<String,Analysis> analysisMap = new TreeMap<>();
+
+        for(Exposure e : exposureList){
+            Analysis analysis = new Analysis();
+            analysis.setDate(e.getDate());
+            analysis.setExposure_cnt(e.getExposure_Cnt());
+            analysisMap.put(e.getDate(),analysis);
+        }
+
+        for(Click c : clickList){
+            Analysis analysis;
+            if(analysisMap.containsKey(c.getDate())){
+                analysis = analysisMap.get(c.getDate());
+                analysis.setClick_cnt(c.getClick_Cnt());
+            }
+            else{
+                analysis = new Analysis();
+                analysis.setClick_cnt(c.getClick_Cnt());
+                analysis.setDate(c.getDate());
+                analysisMap.put(c.getDate(),analysis);
+            }
+
+        }
+
+        for(Purchase p : purchaseList){
+            Analysis analysis;
+            if(analysisMap.containsKey(p.getDate())){
+                analysis = analysisMap.get(p.getDate());
+                analysis.setPurchase_amount(p.getPurchase_Amount());
+                analysis.setQuantity(p.getQuantity());
+            }else{
+                analysis = new Analysis();
+                analysis.setDate(p.getDate());
+                analysis.setQuantity(p.getQuantity());
+                analysis.setPurchase_amount(p.getPurchase_Amount());
+                analysisMap.put(p.getDate(),analysis);
+            }
+
+        }
+
+        for(String key : analysisMap.keySet()){
+            System.out.println(analysisMap.get(key));
+            analysisList.add(analysisMap.get(key));
+        }
+
+        return analysisList;
+    }
+
+    public void saveCommercial(CommercialReqDto commercialReqDto, HttpServletRequest request){
+        String imgurl = imageService.createCommercialImages(commercialReqDto.getFile());
+        UUID uuid = jwtUtil.getId(request);
+        Commercial commercial = commercialReqDto.toEntity();
+        commercial.setProviderId(uuid);
+        commercial.setImgurl(imgurl);
+
+        commercialRepository.save(commercial);
+    }
+
+    public List<Commercial> getRegistedCommercial(HttpServletRequest request){
+        UUID uuid = jwtUtil.getId(request);
+
+        List<Commercial> commercialList = commercialRepository.findByProviderId(uuid);
+
+        return commercialList;
+    }
+
+    public void removeCommercial(CommercialCancelReqDto commercialCancelReqDto, HttpServletRequest request) {
+        System.out.println(commercialCancelReqDto);
+        commercialRepository.deleteById(commercialCancelReqDto.getCommercial_id());
+
+    }
 }

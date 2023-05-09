@@ -4,6 +4,10 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import Image from "next/image";
+import { BlockText } from "../atoms";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import IconButton from "@mui/material/IconButton";
+import router from 'next/router'
 
 const MainUserProfile = () => {
   // const {  mbti, personalColor, grade } = props;
@@ -80,10 +84,21 @@ const MainUserProfile = () => {
   const personalcolor = personalColors[1];
   const mbti = "ESTP";
 
+  function editHandler(){
+    router.push("/user/regist")
+  }
+
   return (
     <>
       <Background>
         <Grid container alignItems={"center"}>
+          <Grid item xs={12}>
+            <BlockText style={{ textAlign: "right" }}>
+              <IconButton onClick={editHandler}>
+                <EditOutlinedIcon />
+              </IconButton>
+            </BlockText>
+          </Grid>
           {/* 상단 이미지 */}
           <Grid item xs={7} style={{ marginBottom: "10px" }}>
             <AvatarDiv>
@@ -100,7 +115,7 @@ const MainUserProfile = () => {
             </AvatarDiv>
           </Grid>
           <Grid item xs={5}>
-              <StyledSpan>{name}</StyledSpan>님 반갑습니다.
+            <StyledSpan>{name}</StyledSpan>님 반갑습니다.
           </Grid>
 
           {/* 하단 메뉴 */}
@@ -154,7 +169,7 @@ const Background = styled.div`
   max-width: 390px;
   border: 1px solid #dddddd;
   border-radius: 10px;
-  padding: 30px 10px;
+  padding: 10px 10px 30px 10px;
   box-sizing: border-box;
 `;
 

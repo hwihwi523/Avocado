@@ -11,12 +11,6 @@ export default function ExamplePostList() {
   return (
     <ul>
       <li>이야아</li>
-      {posts.map((post: ExamplePost) => (
-        <li key={post.exampleId}>
-          <h3>{post.exampleTitle}</h3>
-          <p>{post.exampleBody}</p>
-        </li>
-      ))}
     </ul>
   );
 }

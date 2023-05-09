@@ -15,7 +15,7 @@ const MobileBottom = (props: any) => {
     <BackgroundDiv>
       {/* 홈 */}
       <Stack direction={"row"} justifyContent="space-around">
-        <Link href="">
+        <Link href="/">
           <IconButton aria-label="home">
             <HomeIconOutlinedIcon
               fontSize="large"
@@ -32,14 +32,14 @@ const MobileBottom = (props: any) => {
         </Link>
 
         {/* 스넵샷 */}
-        <Link href="">
+        <Link href="/snapshot">
           <IconButton aria-label="snapshot">
             <ImageIcon fontSize="large" style={{ fill: "#FFFFFF" }} />
           </IconButton>
         </Link>
 
         {/* 찜 목록 */}
-        <Link href="">
+        <Link href="/user/wishList">
           <IconButton aria-label="bookmark">
             <BookmarkBorderOutlinedIcon
               fontSize="large"
@@ -49,7 +49,7 @@ const MobileBottom = (props: any) => {
         </Link>
 
         {/* 마이페이지 */}
-        <Link href="">
+        <Link href="/user/mypage">
           <IconButton aria-label="mypage">
             <AccountCircleOutlinedIcon
               fontSize="large"

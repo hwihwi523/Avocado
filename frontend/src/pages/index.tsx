@@ -1,13 +1,13 @@
 import { Inter } from "next/font/google";
 import styled from "@emotion/styled";
 import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
+
 
 import {
   ProductCardsRow,
   Category,
   Commercials,
-  MainUserProfile,
+  UserProfile,
 } from "../components/oranisms";
 import { BlockText } from "../components/atoms";
 
@@ -23,7 +23,7 @@ export default function Home() {
       <Grid container gap={5}>
         {/* 사용자 프로필 */}
         <Grid item xs={12}>
-          <MainUserProfile />
+          <UserProfile/>
         </Grid>
 
         {/* 메뉴 카테고리 */}
@@ -71,6 +71,7 @@ export default function Home() {
 const BackgroundDiv = styled.div`
   padding: 10px;
   box-sizing: border-box;
+  margin-bottom:50px;
 `;
 
 const StyledSpan = styled.span`

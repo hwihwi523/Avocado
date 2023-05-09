@@ -1,67 +1,76 @@
 import styled from "@emotion/styled";
-import { useRouter } from "next/router";
-import { Stack } from "@mui/material";
-import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
-import Chip from "@mui/material/Chip";
-import Image from "next/image";
-import Rating from "@mui/material/Rating";
-
-import { useState } from "react";
-
-import { Pie, Doughnut } from "react-chartjs-2";
-import { Bubble } from "react-chartjs-2";
-import { IconButton } from "@mui/material";
-import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
-import BookmarkOutlinedIcon from "@mui/icons-material/BookmarkOutlined";
+// import { Stack, Chip, IconButton } from "@mui/material";
+// import Image from "next/image";
 import { BlockText, InlineText } from "../components/atoms";
-import { ProductDetailImage, ProductCardsRow } from "../components/oranisms";
-import { ChartPersonalColor } from "../components/oranisms/charts";
+// import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+// import FavoriteIcon from "@mui/icons-material/Favorite";
+// import { Button } from "@mui/material";
+import { useState } from "react";
+// import Grid from "@mui/material/Grid";
+// import AddIcon from "@mui/icons-material/Add";
+// import { CartItem, SnapshotItem } from "../components/molecues";
+// import router from "next/router";
+// import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
+// import TextField from "@mui/material/TextField";
+// import { useSnackbar } from "notistack";
+// import {
+//   ProductCardsRow,
+//   UserProfile,
+//   UserStateSummary,
+// } from "../components/oranisms";
+// import { ChartPersonalColor } from "../components/oranisms/charts";
+// import ClearIcon from "@mui/icons-material/Clear";
+// import StarIcon from "@mui/icons-material/Star";
+// import { InputAdornment, TextField } from "@mui/material";
+// import { AddressInput } from "../components/molecues";
+// import MapIcon from "@mui/icons-material/Map";
+// import Script from "next/script";
 
-import FormControl from "@mui/material";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import SendIcon from "@mui/icons-material/Send";
-import { useRef } from "react";
-import { ReviewInput, Review } from "../components/molecues";
+import {
+  MyProductsList,
+  MyCommercial,
+  StoreState,
+} from "../components/oranisms/seller";
+import * as React from "react";
+import Box from "@mui/material/Box";
+import Tab from "@mui/material/Tab";
+import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
+import TabPanel from "@mui/lab/TabPanel";
 
-import { Category, ProductCardsGrid } from "../components/oranisms";
+const Seller = () => {
+  const [page, setPage] = useState("통계");
 
-const Store = () => {
-  const img_url = "store_main_image";
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    setPage(newValue);
+  };
+
   return (
     <Background>
-      {/* 스토어 이미지 */}
-      <Stack spacing={3} direction={"column"}>
-        <Imagebox>
-          <Image
-            src={`/assets/exampleImage/${img_url}.png`}
-            alt="제품 이미지"
-            fill
-            style={{ objectFit: "cover" }}
-          />
-        </Imagebox>
-
-        {/* 카테고리 */}
-        <Category />
-
-        {/* 제품들 뭐 하기로 했는데 까먹음  */}
-        
-        <ProductCardsGrid />
-      </Stack>
+      <TabContext value={page}>
+        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <TabList onChange={handleChange} aria-label="lab API tabs example">
+            <Tab label="통계" value="통계" />
+            <Tab label="상품 목록" value="상품 목록" />
+            <Tab label="광고 전략" value="광고 전략" />
+          </TabList>
+        </Box>
+        <TabPanel value="통계">
+          <StoreState />
+        </TabPanel>
+        <TabPanel value="상품 목록">
+          <MyProductsList />
+        </TabPanel>
+        <TabPanel value="광고 전략">
+          <MyCommercial />
+        </TabPanel>
+      </TabContext>
     </Background>
   );
 };
-export default Store;
+
+export default Seller;
 
 const Background = styled.div`
   padding: 10px;
-  box-sizing: border-box;
-`;
-
-const Imagebox = styled.div`
-  position: relative;
-  width: 100%;
-  height: 30vh;
-  margin-bottom: 10px;
 `;

@@ -57,7 +57,7 @@ const Review = (props: any) => {
                   </div>
                 </Stack>
               </BlockText>
-              <Rating name="half-rating" defaultValue={rate} precision={1} />{" "}
+              <Rating readOnly name="half-rating" defaultValue={rate} precision={1} />{" "}
             </Stack>
           </Stack>
         </Grid>
