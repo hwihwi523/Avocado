@@ -3,6 +3,7 @@ package com.avocado.commercial.Controller;
 import com.avocado.commercial.Dto.request.CommercialReqDto;
 import com.avocado.commercial.Dto.response.RegistedCommercial;
 import com.avocado.commercial.Dto.response.item.Exposure;
+import com.avocado.commercial.Entity.Commercial;
 import com.avocado.commercial.Service.CommercialService;
 import com.avocado.commercial.Dto.response.CommercialRespDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class CommercialController {
         System.out.println(personalColorId);
         CommercialRespDto commercialRespDto = null;
 
-            commercialRespDto = commercialService.getCommercialExposure(mbtiId, age, personalColorId, gender);
+        commercialRespDto = commercialService.getCommercialExposure(mbtiId, age, personalColorId, gender);
         
         // 응답 환경 구성 필요
         return new ResponseEntity<CommercialRespDto>(commercialRespDto, HttpStatus.OK);
@@ -45,8 +46,6 @@ public class CommercialController {
     @GetMapping("/analyses/{merchandise_id}")
     public ResponseEntity<List<Exposure>> getAnalyses(@PathVariable("merchandise_id") int merchandiseId){
         List<Exposure> list = commercialService.getAnlyses(1);
-
-
 
         return new ResponseEntity<List<Exposure>>(list,HttpStatus.OK);
     }
@@ -60,10 +59,10 @@ public class CommercialController {
     }
 
     @GetMapping("/ads/registed")
-    public ResponseEntity<List<RegistedCommercial>> getRegistedCommercial(HttpServletRequest request){
-        List<RegistedCommercial> list = commercialService.getRegistedCommercial(request);
+    public ResponseEntity<List<Commercial>> getRegistedCommercial(HttpServletRequest request){
+        List<Commercial> list = commercialService.getRegistedCommercial(request);
 
-        return new ResponseEntity<List<RegistedCommercial>>(list,HttpStatus.OK);
+        return new ResponseEntity<List<Commercial>>(list,HttpStatus.OK);
     }
 
 }

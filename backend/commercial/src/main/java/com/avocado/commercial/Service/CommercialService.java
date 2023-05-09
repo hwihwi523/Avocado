@@ -127,13 +127,12 @@ public class CommercialService {
         commercialRepository.save(commercial);
     }
 
-    public List<RegistedCommercial> getRegistedCommercial(HttpServletRequest request){
+    public List<Commercial> getRegistedCommercial(HttpServletRequest request){
         UUID uuid = jwtUtil.getId(request);
 
         List<Commercial> commercialList = commercialRepository.findByProviderId(uuid);
-        List<RegistedCommercial> list = null;
 
-        return list;
+        return commercialList;
     }
 
 //    @PostMapping("/new")
