@@ -7,4 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class CommercialException extends RuntimeException {
     private final ErrorCode errorCode;
+
 }

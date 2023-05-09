@@ -1,12 +1,15 @@
 package com.avocado.commercial.Service;
 
 import com.avocado.commercial.Dto.request.CommercialReqDto;
-import com.avocado.commercial.Dto.response.Analysis;
+import com.avocado.commercial.Dto.response.RegistedCommercial;
 import com.avocado.commercial.Dto.response.item.Carousel;
 import com.avocado.commercial.Dto.response.CommercialRespDto;
 import com.avocado.commercial.Dto.response.item.Exposure;
 import com.avocado.commercial.Entity.Commercial;
 import com.avocado.commercial.Repository.CommercialRepository;
+import com.avocado.commercial.util.JwtUtil;
+import com.avocado.commercial.util.UUIDUtil;
+import io.jsonwebtoken.Jwt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,14 +23,16 @@ public class CommercialService {
 
     private CommercialRepository commercialRepository;
     private ImageService imageService;
+    private JwtUtil jwtUtil;
 
     private final int TYPE_POPUP = 0;
     private final int TYPE_CAROUSEL = 1;
 
     @Autowired
-    public CommercialService(CommercialRepository commercialRepository, ImageService imageService){
+    public CommercialService(CommercialRepository commercialRepository, ImageService imageService, JwtUtil jwtUtil){
         this.commercialRepository = commercialRepository;
         this.imageService = imageService;
+        this.jwtUtil = jwtUtil;
     }
 
     // 리팩토링 해야할 듯
@@ -115,10 +120,49 @@ public class CommercialService {
 
     public void saveCommercial(CommercialReqDto commercialReqDto, HttpServletRequest request){
         String str = imageService.createCommercialImages(commercialReqDto.getFile());
-        System.out.println(str);
+        UUID uuid = jwtUtil.getId(request);
         Commercial commercial = commercialReqDto.toEntity();
-        commercial.setImgurl(str);
+        commercial.setProviderId(uuid);
+
         commercialRepository.save(commercial);
     }
 
+    public List<RegistedCommercial> getRegistedCommercial(HttpServletRequest request){
+        UUID uuid = jwtUtil.getId(request);
+
+        List<Commercial> commercialList = commercialRepository.findByProviderId(uuid);
+        List<RegistedCommercial> list = null;
+
+        return list;
+    }
+
+//    @PostMapping("/new")
+//    @Operation(summary = "경매 게시글 생성 API", description = "경매 게시글을 작성한다.")
+//    public ResponseEntity<?> createAuction(AuctionRegisterReq req, HttpServletRequest request) {
+//        log.debug("POST /auction request : {}", req);
+//
+//        // 제목 검증
+//        if (req.getTitle().isBlank())
+//            return ResponseEntity.status(400).body(BaseResponseBody.of("제목을 입력해주세요."));
+//        // 시작가 검증
+//        if (req.getOffer_price() == null || req.getOffer_price() < 0)
+//            return ResponseEntity.status(400).body(BaseResponseBody.of("시작가를 0 이상 입력해주세요."));
+//        // 경매 단위 검증
+//        if (req.getPrice_size() == null || req.getPrice_size() < 1)
+//            return ResponseEntity.status(400).body(BaseResponseBody.of("경매 단위를 1 이상 입력해주세요."));
+//        // 종료 시간 검증
+//        if (req.getEnd_at() == null)
+//            return ResponseEntity.status(400).body(BaseResponseBody.of("종료 시간을 입력해주세요."));
+//        // 파일 타입 검증
+//        if (req.getFiles() != null) {  // 파일이 주어졌을 때만 검증
+//            for (MultipartFile multipartFile : req.getFiles())
+//                if (multipartFile.getContentType() == null || !multipartFile.getContentType().startsWith("image/"))
+//                    return ResponseEntity.status(400).body(BaseResponseBody.of("이미지 파일만 등록해주세요."));
+//        }
+//
+//        Long sellerId = jwtUtil.getUserId(request);
+//        auctionService.createAuction(req, sellerId);
+//
+//        return ResponseEntity.status(201).body(BaseResponseBody.of("경매 게시글이 작성되었습니다."));
+//    }
 }

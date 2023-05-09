@@ -34,6 +34,9 @@ public class Commercial {
     @Column(nullable = false)
     private String imgurl;
 
+    @Column(nullable = false)
+    private String merchandiseName;
+
     @Column(nullable = false,columnDefinition = "TINYINT")
     private int commercialTypeId;
 
