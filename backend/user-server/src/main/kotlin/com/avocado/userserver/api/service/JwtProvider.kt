@@ -103,7 +103,7 @@ class JwtProvider(
         claims["email"] = provider.email
         claims["picture_url"] = ""
         claims["gender"] = ""
-        claims["age"] = ""
+        claims["age_group"] = ""
         claims["height"] = ""
         claims["weight"] = ""
         claims["mbti_id"] = ""
