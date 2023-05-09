@@ -9,7 +9,7 @@ export interface Member {
   name: string;
   picture_url?: string;
   gender?: string;
-  age?: number;
+  age_group?: number;
   height?: number;
   weight?: number;
   mbti_id?: number;

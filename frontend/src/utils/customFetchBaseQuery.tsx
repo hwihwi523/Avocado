@@ -36,6 +36,7 @@ export const customFetchBaseQuery = (option: { baseUrl: string }) => {
           console.log("JWT_TOKEN_PARSING_ERR:", err);
         }
         const isExpired = new Date(exp).getTime() <= new Date().getTime();
+        // access token이 만료되었을 경우
         if (isExpired) {
           let refreshToken = appCookies.get("REFRESH_TOKEN");
           // refresh token을 헤더에 담아 요청하여 새로운 access token 가져오기

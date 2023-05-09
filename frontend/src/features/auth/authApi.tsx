@@ -3,8 +3,8 @@ import { Member } from "./authSlice";
 import { HYDRATE } from "next-redux-wrapper";
 import { customFetchBaseQuery } from "@/src/utils/customFetchBaseQuery";
 
-const MEMBER_API_URL = process.env.NEXT_PUBLIC_MEMBER_API_URL
-  ? process.env.NEXT_PUBLIC_MEMBER_API_URL
+const API_URL = process.env.NEXT_PUBLIC_API_URL
+  ? process.env.NEXT_PUBLIC_API_URL
   : "";
 
 interface CheckAuthResponse {
@@ -22,7 +22,7 @@ export interface DecodedToken {
   name: string;
   picture_url?: string;
   gender?: string;
-  age?: number;
+  age_group?: number;
   height?: number;
   weight?: number;
   mbti_id?: number;
@@ -45,10 +45,15 @@ export interface SellerLoginResponse {
   name: string;
 }
 
+export interface MemberLoginResponse {
+  provider: string;
+  url: string;
+}
+
 export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: customFetchBaseQuery({
-    baseUrl: MEMBER_API_URL,
+    baseUrl: API_URL + "/member",
   }),
   // next.js에서 rtk 쿼리를 사용하기 위한 hydrate 과정
   extractRehydrationInfo(action, { reducerPath }) {
@@ -59,11 +64,10 @@ export const authApi = createApi({
   // 태그
   tagTypes: [],
   endpoints: (builder) => ({
-    Login: builder.mutation<Member, LoginRequest>({
+    Login: builder.mutation<MemberLoginResponse, LoginRequest>({
       query: (body) => ({
-        url: "",
-        method: "POST",
-        body,
+        url: `/consumer/oauth2/${body.provider}`,
+        method: "GET",
       }),
     }),
     sellerLogin: builder.mutation<SellerLoginResponse, SellerLoginRequest>({
