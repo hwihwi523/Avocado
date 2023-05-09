@@ -2,6 +2,7 @@ package com.avocado.commercial.Controller;
 
 import com.avocado.commercial.Dto.request.CommercialCancelReqDto;
 import com.avocado.commercial.Dto.request.CommercialReqDto;
+import com.avocado.commercial.Dto.response.Analysis;
 import com.avocado.commercial.Dto.response.RegistedCommercial;
 import com.avocado.commercial.Dto.response.item.Exposure;
 import com.avocado.commercial.Entity.Commercial;
@@ -44,11 +45,11 @@ public class CommercialController {
         // 응답 환경 구성 필요
         return new ResponseEntity<CommercialRespDto>(commercialRespDto, HttpStatus.OK);
     }
-    @GetMapping("/analyses/{merchandise_id}")
-    public ResponseEntity<List<Exposure>> getAnalyses(@PathVariable("merchandise_id") int merchandiseId){
-        List<Exposure> list = commercialService.getAnlyses(1);
+    @GetMapping("/analyses/{commercial_id}")
+    public ResponseEntity<List<Analysis>> getAnalyses(@PathVariable("commercial_id") int commercialId){
+        List<Analysis> analysisList = commercialService.getAnlyses(commercialId);
 
-        return new ResponseEntity<List<Exposure>>(list,HttpStatus.OK);
+        return new ResponseEntity<List<Analysis>>(analysisList,HttpStatus.OK);
     }
 
 
