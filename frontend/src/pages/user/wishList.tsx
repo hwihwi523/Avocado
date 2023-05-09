@@ -46,7 +46,7 @@ const WishList = () => {
 
   return (
     <Background>
-        <BlockText type="B" size="1.5rem" style={{marginTop:"20px"}}>찜 목록</BlockText>
+        <BlockText type="B" size="1.2rem" style={{margin:"10px"}}>찜 목록</BlockText>
       <Stack spacing={2}>
         {data.map((item, i) => (
           <WishItem data={item} key={i} />

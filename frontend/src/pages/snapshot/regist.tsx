@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { Stack, Chip } from "@mui/material";
 import Image from "next/image";
-import { BlockText, InlineText } from "../../components/atoms";
+import {  InlineText } from "../../components/atoms";
 import { Button } from "@mui/material";
 import { useState, ChangeEvent } from "react";
 import { useSnackbar } from "notistack";
@@ -89,7 +89,7 @@ const SnapshotRegist = () => {
       });
       return;
     }
- 
+
     console.log({
       content,
       previewImage,
@@ -112,7 +112,7 @@ const SnapshotRegist = () => {
     console.log(products);
   };
 
-  //콘텐츠 핸들러
+  //내용 핸들러
   const handleContent = (event: ChangeEvent<HTMLInputElement>) => {
     const inputText = event.target.value;
     if (inputText.length <= 100) {
@@ -224,9 +224,8 @@ const SnapshotRegist = () => {
 export default SnapshotRegist;
 
 const Background = styled.div`
-  padding: 10px;
   background-color: #dddddd;
-  padding: 20% 10px 0 10px;
+  padding: 50px 10px 50px 10px;
   box-sizing: border-box;
   width: 100%;
   height: 100vh;

@@ -28,7 +28,7 @@ const Mypage = () => {
         <Box>
           <Stack direction={"row"} justifyContent={"space-between"}>
             <InlineText>구매 내역</InlineText>
-            <Link href="/user/cartList">
+            <Link href="/user/orderList">
             <InlineText>더보기 +</InlineText>
             </Link>
           </Stack>

@@ -1,6 +1,6 @@
-import MyCommercial from "./MyCommercial";
+import MyCommercial from "./MyCommercialList";
 import MyProductsList from "./MyProductsList";
 import StoreState from "./StoreState";
+import TotalCommercialGraph from "./TotalCommercialGraph";
 
-
-export {MyCommercial, MyProductsList, StoreState}
+export { MyCommercial, MyProductsList, StoreState, TotalCommercialGraph };

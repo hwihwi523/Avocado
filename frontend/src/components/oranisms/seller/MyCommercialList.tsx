@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import AddIcon from "@mui/icons-material/Add";
 import { Button, Stack, Divider } from "@mui/material";
 import { CommercialState } from "../../molecues";
+import router from 'next/router'
 
 //더미데이터
 const data = [
@@ -77,19 +78,25 @@ const data = [
   },
 ];
 
+function moveToRegist(){
+  router.push("/seller/regist")
+}
+
 const MyCommercial = () => {
   return (
     <Stack direction="column" spacing={5}>
       {data.map((item, i) => (
-        <>
-          <CommercialState data={item} key={i} />
-          <Divider />
-        </>
+        <div
+          key={i}
+          onClick={() => {
+            //모달 열어줘ㅓㅓ
+          }}
+        >
+          <CommercialState data={item} />
+        </div>
       ))}
 
-      <RegistButton>
-        <AddIcon />
-      </RegistButton>
+      <RegistButton onClick={moveToRegist}>광고등록 <AddIcon/></RegistButton>
     </Stack>
   );
 };
@@ -99,12 +106,12 @@ export default MyCommercial;
 const RegistButton = styled.button`
   position: fixed;
   border-radius: 50px;
-  width: 50px;
-  height: 50px;
   right: 30px;
   bottom: 10%;
   background-color: black;
   color: white;
-  font-size: 2rem;
+  font-size: 1rem;
   box-shadow: 3px 3px 10px grey;
+  padding: 20px;
+  box-sizing:border-box;
 `;
