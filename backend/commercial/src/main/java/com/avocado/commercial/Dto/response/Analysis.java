@@ -1,9 +1,17 @@
 package com.avocado.commercial.Dto.response;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+
+@Setter
+@Getter
+@ToString
 public class Analysis {
     private String date;
-    private int exposure_cnt;
-    private int click_cnt;
-    private int purchase_amount;
-    private int quantity;
+    private long exposure_cnt;
+    private long click_cnt;
+    private long purchase_amount;
+    private long quantity;
 }

@@ -1,10 +1,14 @@
 package com.avocado.commercial.Service;
 
+import com.avocado.commercial.Dto.request.CommercialCancelReqDto;
 import com.avocado.commercial.Dto.request.CommercialReqDto;
+import com.avocado.commercial.Dto.response.Analysis;
 import com.avocado.commercial.Dto.response.RegistedCommercial;
 import com.avocado.commercial.Dto.response.item.Carousel;
 import com.avocado.commercial.Dto.response.CommercialRespDto;
+import com.avocado.commercial.Dto.response.item.Click;
 import com.avocado.commercial.Dto.response.item.Exposure;
+import com.avocado.commercial.Dto.response.item.Purchase;
 import com.avocado.commercial.Entity.Commercial;
 import com.avocado.commercial.Repository.CommercialRepository;
 import com.avocado.commercial.util.JwtUtil;
@@ -110,59 +114,84 @@ public class CommercialService {
     }
 
 
-    public List<Exposure> getAnlyses(int merchandise_id){
-        List<Exposure> list = null;
-        List<Exposure> a = commercialRepository.countExByMerchandiseIdGroupBy(merchandise_id);
-        System.out.println(a.get(0).getExposure_Cnt());
+    // 순서대로
+    public List<Analysis> getAnlyses(int commercialId){
+        List<Analysis> analysisList = new ArrayList<>();
 
-        return list;
+        Commercial commercial = commercialRepository.findById(commercialId);
+        List<Exposure> exposureList = commercialRepository.countExposureByCommercialId(commercialId);
+        List<Click> clickList = commercialRepository.countClickByMerchandiseId(commercial.getMerchandiseId());
+        List<Purchase> purchaseList = commercialRepository.countPurchaseByMerchandiseId(commercial.getMerchandiseId());
+
+        Map<String,Analysis> analysisMap = new TreeMap<>();
+
+        for(Exposure e : exposureList){
+            Analysis analysis = new Analysis();
+            analysis.setDate(e.getDate());
+            analysis.setExposure_cnt(e.getExposure_Cnt());
+            analysisMap.put(e.getDate(),analysis);
+        }
+
+        for(Click c : clickList){
+            Analysis analysis;
+            if(analysisMap.containsKey(c.getDate())){
+                analysis = analysisMap.get(c.getDate());
+                analysis.setClick_cnt(c.getClick_Cnt());
+            }
+            else{
+                analysis = new Analysis();
+                analysis.setClick_cnt(c.getClick_Cnt());
+                analysis.setDate(c.getDate());
+                analysisMap.put(c.getDate(),analysis);
+            }
+
+        }
+
+        for(Purchase p : purchaseList){
+            Analysis analysis;
+            if(analysisMap.containsKey(p.getDate())){
+                analysis = analysisMap.get(p.getDate());
+                analysis.setPurchase_amount(p.getPurchase_Amount());
+                analysis.setQuantity(p.getQuantity());
+            }else{
+                analysis = new Analysis();
+                analysis.setDate(p.getDate());
+                analysis.setQuantity(p.getQuantity());
+                analysis.setPurchase_amount(p.getPurchase_Amount());
+                analysisMap.put(p.getDate(),analysis);
+            }
+
+        }
+
+        for(String key : analysisMap.keySet()){
+            System.out.println(analysisMap.get(key));
+            analysisList.add(analysisMap.get(key));
+        }
+
+        return analysisList;
     }
 
     public void saveCommercial(CommercialReqDto commercialReqDto, HttpServletRequest request){
-        String str = imageService.createCommercialImages(commercialReqDto.getFile());
+        String imgurl = imageService.createCommercialImages(commercialReqDto.getFile());
         UUID uuid = jwtUtil.getId(request);
         Commercial commercial = commercialReqDto.toEntity();
         commercial.setProviderId(uuid);
+        commercial.setImgurl(imgurl);
 
         commercialRepository.save(commercial);
     }
 
-    public List<RegistedCommercial> getRegistedCommercial(HttpServletRequest request){
+    public List<Commercial> getRegistedCommercial(HttpServletRequest request){
         UUID uuid = jwtUtil.getId(request);
 
         List<Commercial> commercialList = commercialRepository.findByProviderId(uuid);
-        List<RegistedCommercial> list = null;
 
-        return list;
+        return commercialList;
     }
 
-//    @PostMapping("/new")
-//    @Operation(summary = "경매 게시글 생성 API", description = "경매 게시글을 작성한다.")
-//    public ResponseEntity<?> createAuction(AuctionRegisterReq req, HttpServletRequest request) {
-//        log.debug("POST /auction request : {}", req);
-//
-//        // 제목 검증
-//        if (req.getTitle().isBlank())
-//            return ResponseEntity.status(400).body(BaseResponseBody.of("제목을 입력해주세요."));
-//        // 시작가 검증
-//        if (req.getOffer_price() == null || req.getOffer_price() < 0)
-//            return ResponseEntity.status(400).body(BaseResponseBody.of("시작가를 0 이상 입력해주세요."));
-//        // 경매 단위 검증
-//        if (req.getPrice_size() == null || req.getPrice_size() < 1)
-//            return ResponseEntity.status(400).body(BaseResponseBody.of("경매 단위를 1 이상 입력해주세요."));
-//        // 종료 시간 검증
-//        if (req.getEnd_at() == null)
-//            return ResponseEntity.status(400).body(BaseResponseBody.of("종료 시간을 입력해주세요."));
-//        // 파일 타입 검증
-//        if (req.getFiles() != null) {  // 파일이 주어졌을 때만 검증
-//            for (MultipartFile multipartFile : req.getFiles())
-//                if (multipartFile.getContentType() == null || !multipartFile.getContentType().startsWith("image/"))
-//                    return ResponseEntity.status(400).body(BaseResponseBody.of("이미지 파일만 등록해주세요."));
-//        }
-//
-//        Long sellerId = jwtUtil.getUserId(request);
-//        auctionService.createAuction(req, sellerId);
-//
-//        return ResponseEntity.status(201).body(BaseResponseBody.of("경매 게시글이 작성되었습니다."));
-//    }
+    public void removeCommercial(CommercialCancelReqDto commercialCancelReqDto, HttpServletRequest request) {
+        System.out.println(commercialCancelReqDto);
+        commercialRepository.deleteById(commercialCancelReqDto.getCommercial_id());
+
+    }
 }

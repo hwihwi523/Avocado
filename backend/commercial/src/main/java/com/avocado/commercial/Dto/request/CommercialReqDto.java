@@ -25,7 +25,6 @@ public class CommercialReqDto {
                 .commercialTypeId(this.commercial_type_id)
                 .age(this.age)
                 .gender(this.gender)
-                .imgurl("")
                 .personalColorId(this.personal_color_id)
                 .merchandiseId(this.merchandise_id)
                 .mbtiId(this.mbti_id)
