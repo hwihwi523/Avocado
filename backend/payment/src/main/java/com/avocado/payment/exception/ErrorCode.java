@@ -17,6 +17,7 @@ public enum ErrorCode {
 
     // Merchandise
     NO_MERCHANDISE(404, "NO_MERCHANDISE"),
+    NO_INVENTORY(400, "NO_INVENTORY"),
 
     // Purchasing
     NO_PURCHASING(500, "NO_WAIT_PURCHASE"),

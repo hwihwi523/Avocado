@@ -22,6 +22,8 @@ import java.util.List;
 public class PaymentController {
     private final KakaoPayService kakaoPayService;
 
+    @Value("${kakao-pay.url.redirect.host}")
+    private String completeHost;
     @Value("${kakao-pay.url.redirect.approval}")
     private String completeApproveUrl;
     @Value("${kakao-pay.url.redirect.cancel}")
@@ -49,7 +51,7 @@ public class PaymentController {
         if (paymentReq.getTotal_price() == null || !paymentReq.getTotal_price().equals(totalPrice))
             throw new InvalidValueException(ErrorCode.NOT_SAME_WITH_TOTAL_PRICE);
 
-        KakaoPayRedirectUrlResp kakaoPayRedirectUrlResp = kakaoPayService.ready(paymentReq);
+        KakaoPayRedirectUrlResp kakaoPayRedirectUrlResp = kakaoPayService.ready(paymentReq.getUser_id(), paymentReq);
         return ResponseEntity.ok(BaseResp.of("결제 요청이 완료되었습니다.", kakaoPayRedirectUrlResp));
     }
 
@@ -66,7 +68,7 @@ public class PaymentController {
         kakaoPayService.approve(purchasingId, pg_token);
 
         // 성공 페이지로 리다이렉트
-        response.sendRedirect(completeApproveUrl);
+        response.sendRedirect(completeHost + completeApproveUrl);
     }
 
     /**
@@ -80,7 +82,7 @@ public class PaymentController {
         kakaoPayService.cancel(purchasingId);
 
         // 취소 페이지로 리다이렉트
-        response.sendRedirect(completeCancelUrl);
+        response.sendRedirect(completeHost + completeCancelUrl);
     }
 
     /**
@@ -94,6 +96,6 @@ public class PaymentController {
         kakaoPayService.fail(purchasingId);
 
         // 실패 페이지로 리다이렉트
-        response.sendRedirect(completeFailUrl);
+        response.sendRedirect(completeHost + completeFailUrl);
     }
 }

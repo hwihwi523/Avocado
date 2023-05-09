@@ -8,14 +8,16 @@ import com.avocado.payment.dto.request.PurchaseMerchandiseReq;
 import com.avocado.payment.dto.request.ReadyForPaymentReq;
 import com.avocado.payment.dto.response.KakaoPayRedirectUrlResp;
 import com.avocado.payment.entity.*;
+import com.avocado.payment.entity.redis.Purchasing;
+import com.avocado.payment.entity.redis.PurchasingMerchandise;
 import com.avocado.payment.exception.ErrorCode;
 import com.avocado.payment.exception.InvalidValueException;
 import com.avocado.payment.exception.KakaoPayException;
-import com.avocado.payment.repository.ConsumerRepository;
-import com.avocado.payment.repository.MerchandiseRepository;
-import com.avocado.payment.repository.PurchasingMerchandiseRepository;
-import com.avocado.payment.repository.PurchasingRepository;
+import com.avocado.payment.exception.NoInventoryException;
+import com.avocado.payment.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
@@ -27,12 +29,9 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +45,8 @@ public class KakaoPayService {
     @Value("${kakao-pay.cid}")
     private String cid;
 
+    @Value("${kakao-pay.url.handle.host}")
+    private String handleHost;
     @Value("${kakao-pay.url.handle.approve}")
     private String handleApprovalUrl;
     @Value("${kakao-pay.url.handle.cancel}")
@@ -57,23 +58,25 @@ public class KakaoPayService {
     private final EntityManager em;
     private final RestTemplate restTemplate;
 
+    private final String LOCK_NAME = "PAY_LOCK";
+    private final RedissonClient redissonClient;
+
     private final MerchandiseRepository merchandiseRepository;
     private final PurchasingRepository purchasingRepository;
     private final ConsumerRepository consumerRepository;
-    private final PurchasingMerchandiseRepository purchasingMerchandiseRepository;
+    private final PurchaseRepository purchaseRepository;
 
     private final UUIDUtil uuidUtil;
     private final KakaoPayUtil kakaoPayUtil;
 
     @Transactional
-    public KakaoPayRedirectUrlResp ready(ReadyForPaymentReq paymentReq) {
+    public KakaoPayRedirectUrlResp ready(String consumerId, ReadyForPaymentReq paymentReq) {
         List<PurchaseMerchandiseReq> merchandiseReqs = paymentReq.getMerchandises();
 
         // 요청한 소비자가 존재하는지 확인
-        Optional<Consumer> optionalConsumer = consumerRepository.findById(uuidUtil.joinByHyphen(paymentReq.getUser_id()));
+        Optional<Consumer> optionalConsumer = consumerRepository.findById(uuidUtil.joinByHyphen(consumerId));
         if (optionalConsumer.isEmpty())
             throw new InvalidValueException(ErrorCode.NO_MEMBER);
-        Consumer consumer = optionalConsumer.get();
 
         // 구매할 상품 검색
         //  1. 구매할 상품들의 ID 취합
@@ -106,14 +109,14 @@ public class KakaoPayService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("cid", cid);
         body.add("partner_order_id", strPurchaseId);
-        body.add("partner_user_id", paymentReq.getUser_id());
+        body.add("partner_user_id", consumerId);
         body.add("item_name", name);
         body.add("quantity", String.valueOf(quantity));
         body.add("total_amount", String.valueOf(paymentReq.getTotal_price()));
         body.add("tax_free_amount", "0");
-        body.add("approval_url", handleApprovalUrl + strPurchaseId);
-        body.add("cancel_url", handleCancelUrl + strPurchaseId);
-        body.add("fail_url", handleFailUrl + strPurchaseId);
+        body.add("approval_url", handleHost + handleApprovalUrl + strPurchaseId);
+        body.add("cancel_url", handleHost + handleCancelUrl + strPurchaseId);
+        body.add("fail_url", handleHost + handleFailUrl + strPurchaseId);
 
         // body, headers 취합
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(body, kakaoPayUtil.getKakaoPayHeaders());
@@ -130,17 +133,35 @@ public class KakaoPayService {
             throw new KakaoPayException(ErrorCode.READY_ERROR);
         KakaoPayReadyResp kakaoPayReadyResp = response.getBody();
 
-        // 구매 대기 내역 등록
+        // 판매자 ID
+        Map<Long, UUID> providerIdMap = new HashMap<>();
+        for (Merchandise merchandise : merchandiseList)
+            providerIdMap.put(merchandise.getId(), merchandise.getStore().getProviderId());
+
+        // 구매 상품 리스트 취합
+        List<PurchasingMerchandise> purchasingMerchandises = new ArrayList<>();
+        for (PurchaseMerchandiseReq merchandiseReq : merchandiseReqs) {
+            String providerId = uuidUtil.removeHyphen(providerIdMap.get(merchandiseReq.getMerchandise_id()));
+            purchasingMerchandises.add(
+                    PurchasingMerchandise.builder()
+                            .merchandise_id(merchandiseReq.getMerchandise_id())
+                            .price(merchandiseReq.getPrice())
+                            .provider_id(providerId)
+                            .quantity(merchandiseReq.getQuantity())
+                            .size((System.currentTimeMillis() & 1) == 1 ? "L" : "XL")  // 사이즈는 제공하지 않으므로 랜덤 설정
+                            .build()
+            );
+        }
+
+        // 구매 대기 내역 등록 (Redis)
         Purchasing purchasing = Purchasing.builder()
-                .id(purchaseId)
+                .id(strPurchaseId)
                 .tid(kakaoPayReadyResp.getTid())
-                .consumer(consumer)
-                .totalPrice(paymentReq.getTotal_price())
+                .consumer_id(consumerId)
+                .total_price(paymentReq.getTotal_price())
+                .merchandises(purchasingMerchandises)
                 .build();
         purchasingRepository.save(purchasing);
-
-        // 구매 대기 상품 등록 (Native Query Bulk)
-        bulkInsert("purchasing_merchandise", strPurchaseId, merchandiseIds);
 
         // Response 생성 및 반환
         KakaoPayRedirectUrlResp kakaoPayRedirectUrlResp = KakaoPayRedirectUrlResp.builder()
@@ -152,50 +173,75 @@ public class KakaoPayService {
 
     @Transactional
     public void approve(String purchasingId, String pgToken) {
-        UUID uuidPurchasingId = uuidUtil.joinByHyphen(purchasingId);
-
         // 구매 대기 내역 조회
-        Optional<Purchasing> optionalPurchasing = purchasingRepository.findById(uuidPurchasingId);
+        Optional<Purchasing> optionalPurchasing = purchasingRepository.findById(purchasingId);
         if (optionalPurchasing.isEmpty())
             throw new InvalidValueException(ErrorCode.NO_PURCHASING);
         Purchasing purchasing = optionalPurchasing.get();
-        String consumerId = uuidUtil.removeHyphen(purchasing.getConsumer().getId());
+        String consumerId = purchasing.getConsumer_id();
 
-        // body 생성
-        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("cid", cid);
-        body.add("tid", purchasing.getTid());
-        body.add("partner_order_id", purchasingId);
-        body.add("partner_user_id", consumerId);
-        body.add("pg_token", pgToken);
-        body.add("total_amount", String.valueOf(purchasing.getTotalPrice()));
+        // 분산 락으로 동시성 처리
+        RLock lock = redissonClient.getLock(LOCK_NAME);
 
-        // headers와 취합하여 entity 생성
-        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(body, kakaoPayUtil.getKakaoPayHeaders());
+        try {
+            // Lock 획득 시도
+            if (!(lock.tryLock(1, 3, TimeUnit.SECONDS)))
+                throw new RuntimeException("Failed to get lock");
 
-        // 카카오페이에 승인 요청
-        ResponseEntity<KakaoPayApproveResp> response = restTemplate.postForEntity(
-                host + apiApproveUrl,
-                httpEntity,
-                KakaoPayApproveResp.class
-        );
+            // 재고 확인
+            if (!isEnoughInventory(purchasing))
+                throw new NoInventoryException(ErrorCode.NO_INVENTORY);
 
-        // 정상 응답이 아니라면 예외 던지기
-        if (response.getStatusCodeValue() != 200)
-            throw new KakaoPayException(ErrorCode.APPROVE_ERROR);
+            // body 생성
+            MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+            body.add("cid", cid);
+            body.add("tid", purchasing.getTid());
+            body.add("partner_order_id", purchasingId);
+            body.add("partner_user_id", consumerId);
+            body.add("pg_token", pgToken);
+            body.add("total_amount", String.valueOf(purchasing.getTotal_price()));
 
-        // 구매 완료 내역 업데이트
-//        Purchase purchase = Purchase.builder()
-//                .id(purchasing.getId())
-//                .consumer(purchasing.getConsumer())
-//                .
-//                .build();
+            // headers와 취합하여 entity 생성
+            HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(body, kakaoPayUtil.getKakaoPayHeaders());
 
-        // 구매 완료된 상품 테이블 업데이트
-//        List<Long> merchandiseIds = purchasingMerchandiseRepository.findMerchandiseIdsByPurchasing_Id(purchasing.getId());
-//        bulkInsert("purchased_merchandise", purchasingId, merchandiseIds);
+            // 카카오페이에 승인 요청
+            ResponseEntity<KakaoPayApproveResp> response = restTemplate.postForEntity(
+                    host + apiApproveUrl,
+                    httpEntity,
+                    KakaoPayApproveResp.class
+            );
 
-        System.out.println(response.getBody());
+            // 정상 응답이 아니라면 예외 던지기
+            if (response.getStatusCodeValue() != 200)
+                throw new KakaoPayException(ErrorCode.APPROVE_ERROR);
+            KakaoPayApproveResp approveResp = response.getBody();
+
+            // 구매 완료 내역 업데이트
+            Purchase purchase = Purchase.builder()
+                    .id(uuidUtil.joinByHyphen(purchasingId))
+                    .consumerId(uuidUtil.joinByHyphen(consumerId))
+                    .tid(purchasing.getTid())
+                    .totalPrice(purchasing.getTotal_price())
+                    .createdAt(LocalDateTime.parse(approveResp.getApproved_at()))
+                    .build();
+            purchaseRepository.save(purchase);
+
+            // 구매 완료된 상품 테이블 업데이트
+            bulkInsert(purchasing);
+
+            // Redis 데이터 삭제
+            purchasingRepository.delete(purchasing);
+
+            // 재고 감소
+            bulkUpdate(purchasing.getMerchandises());
+
+            System.out.println(response.getBody());
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Lock Interrupted Exception");
+        } finally {
+            // Lock 해제
+            lock.unlock();
+        }
     }
 
     @Transactional
@@ -208,13 +254,67 @@ public class KakaoPayService {
 
     }
 
+    /**
+     * 구매 완료 상품 bulk insert
+     */
     @Transactional
-    public void bulkInsert(String table, String purchaseId, List<Long> merchandiseIds) {
+    public void bulkInsert(Purchasing purchasing) {
+        List<PurchasingMerchandise> merchandises = purchasing.getMerchandises();
+
         // 상품 ID, 구매대기내역 ID 모두 내부 데이터를 사용하기 때문에 sql injection 문제 없을 듯 (아마)
-        String bulkQuery = "INSERT INTO " + table + " (merchandise_id, purchasing_id) " +
-                "VALUES (" + merchandiseIds.get(0) + ", UNHEX(\"" + purchaseId + "\"))";
-        for (int i = 1; i < merchandiseIds.size(); i++)
-            bulkQuery += ", (" + merchandiseIds.get(i) + ", UNHEX(\"" + purchaseId + "\"))";
+        String bulkQuery = "INSERT INTO purchased_merchandise (merchandise_id, purchase_id, provider_id, price, quantity, size) " +
+                "VALUES " + getValue(purchasing.getId(), merchandises.get(0));
+        for (int i = 1; i < merchandises.size(); i++)
+            bulkQuery += ", " + getValue(purchasing.getId(), merchandises.get(i));
         em.createNativeQuery(bulkQuery).executeUpdate();
+    }
+    private String getValue(String purchaseId, PurchasingMerchandise merchandise) {
+        return "("+ merchandise.getMerchandise_id()
+                + ", UNHEX(\"" + purchaseId + "\")"
+                + ", UNHEX(\"" + merchandise.getProvider_id() + "\")"
+                + ", " + merchandise.getPrice()
+                + ", " + merchandise.getQuantity()
+                + ", \"" + merchandise.getSize() + "\""
+                +")";
+    }
+
+    /**
+     * 재고 bulk update
+     */
+    @Transactional
+    public void bulkUpdate(List<PurchasingMerchandise> merchandises) {
+        String bulkUpdate = "update merchandise m set m.inventory = m.inventory - case m.id";
+        for (PurchasingMerchandise merchandise : merchandises)
+            bulkUpdate += " when " + merchandise.getMerchandise_id()
+                    + " then " + merchandise.getQuantity();
+        bulkUpdate += " end";
+        // 업데이트
+        em.createNativeQuery(bulkUpdate).executeUpdate();
+    }
+
+    /**
+     * 결제 승인 직전 재고가 충분한지 확인하는 메서드
+     * @param purchasing : 구매 대기중인 내역
+     * @return : 재고의 충분 여부
+     */
+    @Transactional(readOnly = true)
+    boolean isEnoughInventory(Purchasing purchasing) {
+        // 상품 ID 취합, Map<상품 ID, 구매수량> 생성
+        List<Long> merchandiseIds = new ArrayList<>();
+        Map<Long, Integer> quantityOf = new HashMap<>();
+        for (PurchasingMerchandise merchandise : purchasing.getMerchandises()) {
+            merchandiseIds.add(merchandise.getMerchandise_id());
+            quantityOf.put(merchandise.getMerchandise_id(), merchandise.getQuantity());
+        }
+
+        // 상품 검색 및 재고 확인
+        List<Merchandise> merchandises = merchandiseRepository.findByIdIn(merchandiseIds);
+        for (Merchandise merchandise : merchandises) {
+            // 구매수량이 재고보다 많으면 False 반환
+            if (merchandise.getInventory() < quantityOf.get(merchandise.getId()))
+                return false;
+        }
+
+        return true;
     }
 }

@@ -8,11 +8,16 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
         format_sql: true
+
+  redis:
+    host: a57b7bdd07e984044bce6a0784fa0b62-8549102.ap-northeast-2.elb.amazonaws.com/payment
+    port: 6379
+    password: yasim506
 
 server:
   servlet:
@@ -28,10 +33,12 @@ kakao-pay:
       ready: /v1/payment/ready
       approve: /v1/payment/approve
     handle:
-      approve: http://localhost:8080/payment/approval/
-      cancel: http://localhost:8080/payment/cancel/
-      fail: http://localhost:8080/payment/fail/
+      host: http://k8s-avocado-c6c0ca3c6e-209771398.ap-northeast-2.elb.amazonaws.com
+      approve: /payment/approval/
+      cancel: /payment/cancel/
+      fail: /payment/fail/
     redirect:
-      approval: http://localhost:3000/approve
-      cancel: http://localhost:3000/cancel
-      fail: http://localhost:3000/fail
+      host: http://k8s-avocado-c6c0ca3c6e-209771398.ap-northeast-2.elb.amazonaws.com
+      approval: /
+      cancel: /user/cartList
+      fail: /404
