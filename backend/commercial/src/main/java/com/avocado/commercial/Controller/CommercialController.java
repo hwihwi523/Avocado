@@ -1,5 +1,6 @@
 package com.avocado.commercial.Controller;
 
+import com.avocado.commercial.Dto.request.CommercialCancelReqDto;
 import com.avocado.commercial.Dto.request.CommercialReqDto;
 import com.avocado.commercial.Dto.response.RegistedCommercial;
 import com.avocado.commercial.Dto.response.item.Exposure;
@@ -64,5 +65,14 @@ public class CommercialController {
 
         return new ResponseEntity<List<Commercial>>(list,HttpStatus.OK);
     }
+
+    @DeleteMapping("/ads")
+    public ResponseEntity<String> cancelCommercial(@RequestBody CommercialCancelReqDto commercialCancelReqDto, HttpServletRequest request){
+
+        commercialService.removeCommercial(commercialCancelReqDto,request);
+
+        return new ResponseEntity<String>("success",HttpStatus.ACCEPTED);
+    }
+
 
 }

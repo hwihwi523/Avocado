@@ -1,5 +1,6 @@
 package com.avocado.commercial.Service;
 
+import com.avocado.commercial.Dto.request.CommercialCancelReqDto;
 import com.avocado.commercial.Dto.request.CommercialReqDto;
 import com.avocado.commercial.Dto.response.RegistedCommercial;
 import com.avocado.commercial.Dto.response.item.Carousel;
@@ -133,6 +134,12 @@ public class CommercialService {
         List<Commercial> commercialList = commercialRepository.findByProviderId(uuid);
 
         return commercialList;
+    }
+
+    public void removeCommercial(CommercialCancelReqDto commercialCancelReqDto, HttpServletRequest request) {
+        System.out.println(commercialCancelReqDto);
+        commercialRepository.deleteById(commercialCancelReqDto.getCommercial_id());
+
     }
 
 //    @PostMapping("/new")

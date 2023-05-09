@@ -31,6 +31,5 @@ public interface CommercialRepository extends Repository<Commercial,Long> {
     List<Exposure> countExByMerchandiseIdGroupBy(int merchandise_id);
 
 
-
-
+    void deleteById(long commercial_id);
 }
