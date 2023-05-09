@@ -1,4 +1,4 @@
-package com.avocado.commercial.Exceptions;
+package com.avocado.search.search.error;
 
 import lombok.Builder;
 import lombok.Getter;

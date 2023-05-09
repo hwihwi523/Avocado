@@ -1,10 +1,10 @@
-package com.avocado.commercial.Exceptions;
+package com.avocado.search.search.error;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class CommercialException extends RuntimeException {
+public class SearchException extends RuntimeException {
     private final ErrorCode errorCode;
 }
