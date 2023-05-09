@@ -58,7 +58,7 @@ const ProductReview = () =>{
     {
       data ? (
         data.map((item:any, i:number)=>(
-          <Review name={item.name} avatar={item.avatar} mbti={item.mbti} personal_color={item.personal_color} rate={item.rate} content={item.content} key={i}/>
+          <Review {...item} key={i}/>
       ))
         ):(
           <BlockText color="grey" type="L">리뷰가 없습니다.</BlockText>

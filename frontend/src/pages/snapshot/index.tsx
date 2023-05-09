@@ -1,19 +1,11 @@
 import styled from "@emotion/styled";
-import { Stack, Chip, IconButton } from "@mui/material";
-import Image from "next/image";
-import { BlockText, InlineText } from "../../components/atoms";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import { Button } from "@mui/material";
-import { useState } from "react";
+import { Stack } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
 import { SnapshotItem } from "../../components/molecues";
-import router from 'next/router'
-
+import router from "next/router";
+import Link from "next/link";
 const Snapshot = () => {
-
-
   //더미 데이터
   const data = [
     {
@@ -78,8 +70,6 @@ const Snapshot = () => {
     },
   ];
 
-
-
   return (
     <Background>
       <Stack direction={"column"} spacing={10}>
@@ -88,10 +78,12 @@ const Snapshot = () => {
         ))}
       </Stack>
 
-      <RegistButton onClick={()=>{
-        router.push("") //snapshot regist로 이동해야함 
-      }}>
-        <AddIcon/>
+      <RegistButton
+        onClick={() => {
+          router.push("/snapshot/regist"); //snapshot regist로 이동해야함
+        }}
+      >
+        <AddIcon />
       </RegistButton>
     </Background>
   );

@@ -26,6 +26,9 @@ import { TransitionProps } from "@mui/material/transitions";
 import { useState } from "react";
 import { Button } from "@mui/material";
 
+
+import router from 'next/router'
+
 const ProductDetail = () => {
   const [size, setSize] = useState("M");
   const [count, setCount] = useState(1);
@@ -66,6 +69,9 @@ const ProductDetail = () => {
       size,
       count,
     })
+
+    router.push("/billing")
+    
   }
 
   // 장바구니에 담기

@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 // import { Stack, Chip, IconButton } from "@mui/material";
 // import Image from "next/image";
-import { BlockText, InlineText } from "../components/atoms";
+import { BlockText, InlineText } from "../../components/atoms";
 // import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 // import FavoriteIcon from "@mui/icons-material/Favorite";
 // import { Button } from "@mui/material";
@@ -30,7 +30,7 @@ import {
   MyProductsList,
   MyCommercial,
   StoreState,
-} from "../components/oranisms/seller";
+} from "../../components/oranisms/seller";
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
@@ -49,19 +49,25 @@ const Seller = () => {
     <Background>
       <TabContext value={page}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <TabList onChange={handleChange} aria-label="lab API tabs example">
+          <TabList onChange={handleChange} aria-label="lab API tabs example"  centered>
             <Tab label="통계" value="통계" />
             <Tab label="상품 목록" value="상품 목록" />
             <Tab label="광고 전략" value="광고 전략" />
           </TabList>
         </Box>
-        <TabPanel value="통계">
+
+        {/* 통계 */}
+        <TabPanel style={{padding:"10px 0px 90px 0px" , margin:0}} value="통계">
           <StoreState />
         </TabPanel>
-        <TabPanel value="상품 목록">
+
+        {/* 상품 목록 */}
+        <TabPanel style={{padding:"10px 0px 90px 0px" , margin:0}} value="상품 목록">
           <MyProductsList />
         </TabPanel>
-        <TabPanel value="광고 전략">
+
+        {/* 광고 전략 */}
+        <TabPanel style={{padding:"10px 0px 90px 0px" , margin:0}} value="광고 전략">
           <MyCommercial />
         </TabPanel>
       </TabContext>

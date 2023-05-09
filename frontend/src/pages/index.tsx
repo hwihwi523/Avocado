@@ -1,7 +1,7 @@
 import { Inter } from "next/font/google";
 import styled from "@emotion/styled";
 import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
+
 
 import {
   ProductCardsRow,

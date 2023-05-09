@@ -1,15 +1,15 @@
 import styled from "@emotion/styled";
-import { Stack } from "@mui/material";
+import { Stack, Button } from "@mui/material";
 import { BlockText, InlineText } from "../components/atoms";
 import { useState } from "react";
 import { InputAdornment, TextField } from "@mui/material";
 import { AddressInput } from "../components/molecues";
 import MapIcon from "@mui/icons-material/Map";
-
+import { useSnackbar } from "notistack";
 
 const BillingPage = () => {
   const [addressInputVisible, setAddressInputVisible] = useState(false);
-
+  const { enqueueSnackbar } = useSnackbar();
   //주문자 정보
   const [address, setAddress] = useState("");
   const name = "김싸피";
@@ -75,9 +75,25 @@ const BillingPage = () => {
     return formatCurrency(result);
   }
 
+  function paymantHandler(){
+    if(!address){
+        enqueueSnackbar(`주소를 입력해 주세요 `, {
+            variant: "error",
+            anchorOrigin: {
+              horizontal: "center",
+              vertical: "bottom",
+            },
+          });
+          return;
+    }
+    console.log("결제 했다~")
+  }
+
+
+
   return (
     <Background>
-      <Stack spacing={2}>
+      <Stack spacing={2} style={{ marginBottom:"50px"}}>
         {/* 주문자정보 */}
         <Box>
           <BlockText size="1.5rem" style={{ marginBottom: "20px" }}>
@@ -173,9 +189,18 @@ const BillingPage = () => {
             </BlockText>
           </Stack>
         </Box>
+        <Button
+          fullWidth
+          style={{
+            backgroundColor: "black",
+            color: "white",
+            padding: "20px",
+          }}
+          onClick={paymantHandler}
+        >
+          결제하기
+        </Button>
       </Stack>
-
-      
     </Background>
   );
 };
@@ -185,9 +210,8 @@ export default BillingPage;
 const Background = styled.div`
   background-color: #dddddd;
   width: 100%;
-  height: 100vh;
-  padding: 10px;
-  padding-top: 20%;
+  
+  padding: 20% 10px 20% 10px;
   box-sizing: border-box;
 `;
 
