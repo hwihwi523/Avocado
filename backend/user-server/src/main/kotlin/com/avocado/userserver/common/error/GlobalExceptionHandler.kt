@@ -41,11 +41,12 @@ class GlobalExceptionHandler {
             .body(ErrorResp(e.status, e.msg))
     }
 
-//    @ExceptionHandler(Exception::class)
-//    protected fun handleException(e:Exception): ResponseEntity<ErrorResp> {
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//            .body(ErrorResp(ResponseCode.INTERNAL_SERVER_ERROR))
-//    }
+    @ExceptionHandler(Exception::class)
+    protected fun handleException(e:Exception): ResponseEntity<ErrorResp> {
+        e.printStackTrace()
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(ErrorResp(ResponseCode.INTERNAL_SERVER_ERROR))
+    }
 
 
 }

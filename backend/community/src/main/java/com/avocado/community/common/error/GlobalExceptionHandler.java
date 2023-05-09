@@ -52,10 +52,11 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResp(e.status, e.msg));
     }
 
-//    @ExceptionHandler(Exception.class)
-//    protected ResponseEntity<ErrorResp> handleException(Exception e)  {
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                .body(new ErrorResp(ResponseCode.INTERNAL_SERVER_ERROR));
-//    }
+    @ExceptionHandler(Exception.class)
+    protected ResponseEntity<ErrorResp> handleException(Exception e)  {
+        e.printStackTrace();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResp(ResponseCode.INTERNAL_SERVER_ERROR));
+    }
 
 }
