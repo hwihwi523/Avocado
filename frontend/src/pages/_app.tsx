@@ -8,7 +8,9 @@ import { MobileBottom, MobileHeader } from "../components/oranisms";
 import { SnackbarProvider } from "notistack";
 // 토큰 관리, 자동 로그인, '오늘 더 이상 이 창을 보지 않음', 장바구니(우리 프로젝트 X) 등을 위해 사용
 import { Cookies, CookiesProvider } from "react-cookie";
-export const appCookies = new Cookies(); // 앱에서 사용할 쿠키 생성
+import { createCookiesInstance } from "../utils/createCookiesInstance";
+
+export const appCookies = createCookiesInstance(); // 앱에서 사용할 쿠키 생성
 
 const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
   console.log("rest: ", pageProps);

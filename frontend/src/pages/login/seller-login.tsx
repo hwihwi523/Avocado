@@ -91,7 +91,7 @@ export default function SellerLogin() {
   const handleLogout = () => {
     console.log("로그아웃 버튼이 클릭되었습니다.");
     removeTokenAll();
-    clearAuth();
+    dispatch(clearAuth());
   };
 
   return (
