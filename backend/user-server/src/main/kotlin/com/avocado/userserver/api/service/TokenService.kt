@@ -1,6 +1,5 @@
 package com.avocado.userserver.api.service
 
-import com.avocado.userserver.api.controller.OauthController
 import com.avocado.userserver.api.response.TokenRefreshResp
 import com.avocado.userserver.common.error.BaseException
 import com.avocado.userserver.common.error.ResponseCode
@@ -40,12 +39,12 @@ class TokenService (
     }
 
     private suspend fun getConsumerToken(id: ByteArray): TokenRefreshResp {
-        val consumer = consumerRepository.findById(id)?: throw BaseException(ResponseCode.NOT_FOUND)
+        val consumer = consumerRepository.findById(id)?: throw BaseException(ResponseCode.NOT_FOUND_VALUE)
         return TokenRefreshResp(jwtProvider.getAccessToken(consumer), jwtProvider.getRefreshToken(consumer))
     }
 
     private suspend fun getProviderToken(id: ByteArray): TokenRefreshResp {
-        val provider = providerRepository.findById(id)?: throw BaseException(ResponseCode.NOT_FOUND)
+        val provider = providerRepository.findById(id)?: throw BaseException(ResponseCode.NOT_FOUND_VALUE)
         return TokenRefreshResp(jwtProvider.getAccessToken(provider), jwtProvider.getRefreshToken(provider))
     }
 
