@@ -35,7 +35,7 @@ const Commercials = (props: any) => {
           <div
             key={i}
             onClick={() => {
-              router.push("product/detail/" + item.id);
+              router.push("product/" + item.id);
             }}
           >
             <img src={item.img_url} alt="광고 이미지" width={"100%"} height={"200px"} />

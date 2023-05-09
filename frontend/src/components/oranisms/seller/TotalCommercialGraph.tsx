@@ -1,10 +1,12 @@
 import styled from "@emotion/styled";
 import AddIcon from "@mui/icons-material/Add";
 import { Button, Stack, Divider } from "@mui/material";
-import { ChartCommercialState } from "../components/oranisms/charts";
+import { ChartCommercialState } from "../charts";
 import MouseOutlinedIcon from "@mui/icons-material/MouseOutlined";
-import { InlineText } from "../components/atoms";
-InlineText;
+import { InlineText } from "../../atoms";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import PaidOutlinedIcon from "@mui/icons-material/PaidOutlined";
+import SellOutlinedIcon from "@mui/icons-material/SellOutlined";
 const CommercialState = () => {
   const data = [
     {
@@ -71,34 +73,38 @@ const CommercialState = () => {
         <Stack direction={"column"} spacing={1}>
           <Stack spacing={1} direction={"row"}>
             <IconBox>
-              <MouseOutlinedIcon />
-              <InlineText size="0.9rem" color="grey">
+              <MouseOutlinedIcon  />
+              <InlineText size="0.9rem" >
                 총 클릭 수
               </InlineText>
-              <InlineText color="red">{totalAmount(click_cnt)}</InlineText>
+              <InlineText color="red">{totalAmount(click_cnt)} 번</InlineText>
             </IconBox>
             <IconBox>
-              <MouseOutlinedIcon />
+              <VisibilityOutlinedIcon />
               <InlineText size="0.9rem" color="grey">
                 총 노출 수
               </InlineText>
-              <InlineText color="green">{totalAmount(exposure_cnt)}</InlineText>
+              <InlineText color="green">
+                {totalAmount(exposure_cnt)} 번
+              </InlineText>
             </IconBox>
           </Stack>
           <Stack spacing={1} direction={"row"}>
             <IconBox>
-              <MouseOutlinedIcon />
+              <PaidOutlinedIcon />
               <InlineText size="0.9rem" color="grey">
                 총 판매 액수
               </InlineText>
-              <InlineText color="blue">{totalAmount(purchase_amount)}</InlineText>
+              <InlineText color="blue">
+                {totalAmount(purchase_amount)} 원
+              </InlineText>
             </IconBox>
             <IconBox>
-              <MouseOutlinedIcon />
+              <SellOutlinedIcon />
               <InlineText size="0.9rem" color="grey">
                 총 판매 수
               </InlineText>
-              <InlineText color="orange">{totalAmount(quantity)}</InlineText>
+              <InlineText color="orange">{totalAmount(quantity)} 개</InlineText>
             </IconBox>
           </Stack>
         </Stack>
@@ -141,11 +147,10 @@ const Background = styled.div`
 const IconBox = styled.div`
   border: 1px solid #dddddd;
   border-radius: 10px;
-  height: 80px;
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding:10px;
+  padding: 10px;
 `;

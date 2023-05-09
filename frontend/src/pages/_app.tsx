@@ -23,7 +23,7 @@ const MyApp: FC<AppProps<{ session: Session }>> = ({
   return (
     <SessionProvider session={pageProps.session}>
       <Provider store={store}>
-        <SnackbarProvider maxSnack={3}>
+        <SnackbarProvider maxSnack={3} autoHideDuration={1000}>
           <MobileHeader />
           {/* 여기서 pageProps를 컴포넌트에 내려주지 않으면 SSR 불가 */}
           <Component {...pageProps} />

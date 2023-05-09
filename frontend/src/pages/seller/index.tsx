@@ -1,30 +1,6 @@
 import styled from "@emotion/styled";
-// import { Stack, Chip, IconButton } from "@mui/material";
-// import Image from "next/image";
-import { BlockText, InlineText } from "../../components/atoms";
-// import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-// import FavoriteIcon from "@mui/icons-material/Favorite";
-// import { Button } from "@mui/material";
 import { useState } from "react";
-// import Grid from "@mui/material/Grid";
-// import AddIcon from "@mui/icons-material/Add";
-// import { CartItem, SnapshotItem } from "../components/molecues";
-// import router from "next/router";
-// import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
-// import TextField from "@mui/material/TextField";
-// import { useSnackbar } from "notistack";
-// import {
-//   ProductCardsRow,
-//   UserProfile,
-//   UserStateSummary,
-// } from "../components/oranisms";
-// import { ChartPersonalColor } from "../components/oranisms/charts";
-// import ClearIcon from "@mui/icons-material/Clear";
-// import StarIcon from "@mui/icons-material/Star";
-// import { InputAdornment, TextField } from "@mui/material";
-// import { AddressInput } from "../components/molecues";
-// import MapIcon from "@mui/icons-material/Map";
-// import Script from "next/script";
+
 
 import {
   MyProductsList,
