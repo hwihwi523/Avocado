@@ -18,28 +18,27 @@ public class Purchase {
     @Column(columnDefinition = "BINARY(16)")
     private UUID id;
 
-    // 구매자
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "consumer_id")
-    private Consumer consumer;
+    @Column(columnDefinition = "VARCHAR(20)")
+    private String tid;
 
-    // 판매자
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "provider_id")
-    private Store provider;
+    // 구매자
+    @Column(columnDefinition = "BINARY(16)")
+    private UUID consumerId;
 
     // 합계 가격
-    private Long total_price;
+    private Long totalPrice;
 
     // 거래시간
     private LocalDateTime createdAt;
 
     @Builder
-    public Purchase(UUID id, Consumer consumer, Store provider, Long total_price) {
+    public Purchase(UUID id, String tid, UUID consumerId, Long totalPrice, LocalDateTime createdAt) {
         this.id = id;
-        this.consumer = consumer;
-        this.provider = provider;
-        this.total_price = total_price;
-        this.createdAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        this.tid = tid;
+        this.consumerId = consumerId;
+        this.totalPrice = totalPrice;
+        this.createdAt = createdAt != null
+                ? createdAt
+                : LocalDateTime.now(ZoneId.of("Asia/Seoul"));
     }
 }

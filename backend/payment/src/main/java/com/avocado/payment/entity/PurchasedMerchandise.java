@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -14,14 +15,16 @@ public class PurchasedMerchandise {
     private Long id;
 
     // 구매상품
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "merchandise_id")
-    private Merchandise merchandise;
+    private Long merchandiseId;
 
     // 구매내역
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "purchase_id")
     private Purchase purchase;
+
+    // 판매자
+    @Column(columnDefinition = "BINARY(16)")
+    private UUID providerId;
 
     // 수량
     private Integer quantity;

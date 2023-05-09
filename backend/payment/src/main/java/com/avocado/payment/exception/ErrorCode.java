@@ -17,10 +17,15 @@ public enum ErrorCode {
 
     // Merchandise
     NO_MERCHANDISE(404, "NO_MERCHANDISE"),
+    NO_INVENTORY(400, "NO_INVENTORY"),
+
+    // Purchasing
+    NO_PURCHASING(500, "NO_WAIT_PURCHASE"),
 
     // Pay
     NOT_SAME_WITH_TOTAL_PRICE(400, "NOT_SAME_WITH_TOTAL_PRICE"),
-    UNKNOWN_ERROR(500, "UNKNOWN_ERROR"),
+    READY_ERROR(500, "READY_ERROR"),
+    APPROVE_ERROR(500, "APPROVE_ERROR"),
     ;
 
     final int status;
