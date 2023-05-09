@@ -28,8 +28,8 @@ jwt:
   refresh_expiration: 1296000000
 
 front:
-#  redirect_uri: http://localhost:8080/member/redirect
-  redirect_uri: http://a38e577e39a114a1ca68e6cc57d19636-137764516.ap-northeast-2.elb.amazonaws.com/member/redirect
+  redirect_uri: http://localhost:3000/login/oauth-redirect
+#  redirect_uri: http://a38e577e39a114a1ca68e6cc57d19636-137764516.ap-northeast-2.elb.amazonaws.com/member/redirect
 
 logging:
   level:
