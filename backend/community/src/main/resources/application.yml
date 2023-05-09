@@ -13,7 +13,7 @@ mybatis:
   mapper-locations:
     - classpath:mapper/**/*.xml
   type-aliases-package: com.avocado.community.api.response, com.avocado.community.db.entity
-  type-handlers-package: com.avocado.community.config.
+  type-handlers-package: com.avocado.community.config.handler
 cloud:
   aws:
     s3:
