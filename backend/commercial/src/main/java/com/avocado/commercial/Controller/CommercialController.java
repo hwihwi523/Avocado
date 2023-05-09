@@ -57,7 +57,7 @@ public class CommercialController {
     @PostMapping( "/ads")
     public ResponseEntity<String> registCommercial(CommercialReqDto commercial, HttpServletRequest request){
 
-        commercialService.saveCommercial(commercial);
+        commercialService.saveCommercial(commercial, request);
 
         return new ResponseEntity<String>("success",HttpStatus.CREATED);
     }

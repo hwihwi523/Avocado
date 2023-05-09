@@ -8,6 +8,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @EntityListeners(AuditingEntityListener.class)
 @Getter
@@ -48,6 +49,9 @@ public class Commercial {
 
     @Column(nullable = false)
     private long merchandiseId;
+
+    @Column(columnDefinition = "BINARY(16)")
+    private UUID providerId;
 
     public Carousel toCarousel(){
         Carousel carousel = Carousel.builder()

@@ -10,6 +10,8 @@ import com.avocado.commercial.Repository.CommercialRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import java.net.http.HttpRequest;
 import java.util.*;
 
 @Service
@@ -111,9 +113,12 @@ public class CommercialService {
         return list;
     }
 
-    public void saveCommercial(CommercialReqDto commercialReqDto){
+    public void saveCommercial(CommercialReqDto commercialReqDto, HttpServletRequest request){
         String str = imageService.createCommercialImages(commercialReqDto.getFile());
         System.out.println(str);
+        Commercial commercial = commercialReqDto.toEntity();
+        commercial.setImgurl(str);
+        commercialRepository.save(commercial);
     }
 
 }

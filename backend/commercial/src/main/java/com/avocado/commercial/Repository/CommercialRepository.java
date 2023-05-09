@@ -19,6 +19,8 @@ public interface CommercialRepository extends Repository<Commercial,Long> {
             (int age, int commercialTypeId, char gender);
     List<Commercial> findByCommercialTypeId(int commercialTypeId);
 
+    void save(Commercial commercial);
+
     @Query(nativeQuery = true, value = "SELECT DATE(created_at) as date, COUNT(*) AS exposure_cnt\n" +
             "FROM commercial_exposure\n" +
             "GROUP BY DATE(created_at)")

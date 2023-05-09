@@ -25,6 +25,13 @@ public class SearchService {
         this.elasticsearchClient = elasticsearchClient;
     }
 
+    private boolean checkCategory(String category){
+
+
+        return false;
+    }
+
+
     public List<Product> searchProduct(String category, String keyword){
 
         SearchResponse<Product> search;
@@ -67,7 +74,8 @@ public class SearchService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(products);
+
+
         return products;
     }
 }
