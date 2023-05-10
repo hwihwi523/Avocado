@@ -15,7 +15,7 @@ spring:
 
 server:
   servlet:
-    context-path: /merchandise
+    context-path: /api/merchandise
   tomcat:
     accesslog:
       enabled: true
