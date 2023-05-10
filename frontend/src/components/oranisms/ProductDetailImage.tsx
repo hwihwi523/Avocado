@@ -1,13 +1,12 @@
 import styled from "@emotion/styled";
-import { useRouter } from "next/router";
 import { Stack } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
 import Carousel from "react-material-ui-carousel";
-import { ProductCard } from "../molecues";
 import Image from "next/image";
+import Link from "next/link";
 import Chip from "@mui/material/Chip";
 import { BlockText, InlineText } from "../atoms";
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 
 const ProductDetailImage = () => {
   const images = [
@@ -22,14 +21,20 @@ const ProductDetailImage = () => {
   const price = 43000;
   const remaining = 997;
 
-
-   //숫자 변환 함수 3000  => 3,000원
-   function formatCurrency(num: number) {
+  //숫자 변환 함수 3000  => 3,000원
+  function formatCurrency(num: number) {
     return num.toLocaleString("en-US") + "원";
   }
 
   return (
     <>
+      <Stack direction="row-reverse" justifyContent="space-between">
+        <Link href="/store/123">
+          <BlockText type="L" size="1.2rem" style={{ margin: "30px 0 10px 0" }}>
+            {brand} STORE <ArrowRightIcon />
+          </BlockText>
+        </Link>
+      </Stack>
       <Carousel animation="slide" autoPlay={true}>
         {images.map((url: string, i) => (
           <Imagebox key={i}>
@@ -45,16 +50,19 @@ const ProductDetailImage = () => {
       <Grid container mb={5}>
         {/* 브랜드 */}
         <Grid item xs={12}>
-          <BlockText color="grey" size="1.2rem" style={{ margin: "30px 0 0 0"}}>
-          {brand}
+          <BlockText
+            color="grey"
+            size="1.2rem"
+            style={{ margin: "30px 0 0 0" }}
+          >
+            {brand}
           </BlockText>
         </Grid>
 
         {/* 제품명 */}
         <Grid item xs={12}>
-          
           <BlockText type="B" size="1.8rem">
-          {product_name}
+            {product_name}
           </BlockText>
         </Grid>
 
@@ -76,8 +84,8 @@ const ProductDetailImage = () => {
         {/* 원래 가격 */}
         <Grid item xs={12}>
           <BlockText
-          type="L"
-          size="1.5rem"
+            type="L"
+            size="1.5rem"
             style={{ textDecoration: "line-through", color: "grey" }}
           >
             {formatCurrency(price)}
@@ -87,12 +95,21 @@ const ProductDetailImage = () => {
         {/* 원가 + 할인률 */}
         <Grid item xs={12}>
           <Stack direction={"row"} justifyContent={"space-between"}>
-            <InlineText type="L" size="2rem">{formatCurrency(price - discount)}</InlineText>
-            <InlineText type="L"  size="2rem" color="red">
+            <InlineText type="L" size="2rem">
+              {formatCurrency(price - discount)}
+            </InlineText>
+            <InlineText type="L" size="2rem" color="red">
               {Math.ceil((discount / price) * 100)}%
             </InlineText>
           </Stack>
-          <BlockText size="1rem" type="L" color="grey" style={{marginTop:"20px"}}>남은 수량 : {remaining}</BlockText>
+          <BlockText
+            size="1rem"
+            type="L"
+            color="grey"
+            style={{ marginTop: "20px" }}
+          >
+            남은 수량 : {remaining}
+          </BlockText>
         </Grid>
       </Grid>
     </>

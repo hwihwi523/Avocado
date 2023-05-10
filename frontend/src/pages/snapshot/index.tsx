@@ -4,7 +4,7 @@ import { Stack } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { SnapshotItem } from "../../components/molecues";
 import router from "next/router";
-import Link from "next/link";
+import Head from "next/head";
 const Snapshot = () => {
   //더미 데이터
   const data = [
@@ -72,6 +72,22 @@ const Snapshot = () => {
 
   return (
     <Background>
+      <Head>
+        <title>Avocado : snapshot</title>
+        <meta
+          name="description"
+          content="snapshot 페이지"
+        />
+        <meta
+          name="keywords"
+          content={`mbit, 퍼스널컬러, 상의, 하의, 원피스, 신발, 가방, 악세서리`}
+        />
+        <meta property="og:title" content="snapshot" />
+        <meta
+          property="og:description"
+          content="snapshot 페이지"
+        />
+      </Head>
       <Stack direction={"column"} spacing={10}>
         {data.map((item, i) => (
           <SnapshotItem {...item} key={i} />

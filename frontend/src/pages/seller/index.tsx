@@ -13,7 +13,7 @@ import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-
+import Head from "next/head"
 const Seller = () => {
   const [page, setPage] = useState("통계");
 
@@ -23,6 +23,9 @@ const Seller = () => {
 
   return (
     <Background>
+      <Head>
+        <title>판매자 전용 페이지</title>
+      </Head>
       <TabContext value={page}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <TabList onChange={handleChange} aria-label="lab API tabs example"  variant="fullWidth" centered>

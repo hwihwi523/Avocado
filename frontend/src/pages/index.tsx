@@ -1,7 +1,7 @@
 import { Inter } from "next/font/google";
 import styled from "@emotion/styled";
 import Grid from "@mui/material/Grid";
-
+import Head from 'next/head'
 
 import {
   ProductCardsRow,
@@ -20,6 +20,21 @@ export default function Home() {
 
   return (
     <BackgroundDiv>
+            <Head>
+        <title>Avocado</title>
+        <meta name="description" content="mbti와 personal color를 기반으로 하는 개인화 추천 쇼핑몰"/>
+        <meta
+          name="keywords"
+          content={`mbit, 퍼스널컬러, 상의, 하의, 원피스, 신발, 가방, 악세서리`}
+        />
+        <meta property="og:title" content="Avocado" />
+        <meta property="og:description" content="mbti와 personal color를 기반으로 하는 개인화 추천 쇼핑몰" />
+      </Head>
+
+
+
+
+ 
       <Grid container gap={5}>
         {/* 사용자 프로필 */}
         <Grid item xs={12}>

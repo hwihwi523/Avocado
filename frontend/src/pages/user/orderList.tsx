@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import { Stack } from "@mui/material";
 import { BlockText } from "../../components/atoms";
 import { OrderItem } from "../../components/molecues";
+import Head from "next/head";
 
 const OrderList = () => {
   //더미 데이터
@@ -49,7 +50,10 @@ const OrderList = () => {
 
   return (
     <Background>
-      <BlockText type="B" size="1.2rem" style={{margin:"10px"}}>
+      <Head>
+        <title>구매 목록</title>
+      </Head>
+      <BlockText type="B" size="1.2rem" style={{ margin: "10px" }}>
         구매 목록
       </BlockText>
       <Stack spacing={2}>
