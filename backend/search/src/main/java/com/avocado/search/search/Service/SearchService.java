@@ -6,6 +6,7 @@ import java.util.List;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import com.avocado.search.search.Dto.response.KeywordRespDto;
 import com.avocado.search.search.Entity.Keyword;
 import com.avocado.search.search.Entity.Product;
 import com.avocado.search.search.error.ErrorCode;
@@ -93,11 +94,12 @@ public class SearchService {
         return products;
     }
 
-    public List<Keyword> searchKeyword(String category, String keyword) {
+    public List<KeywordRespDto> searchKeyword(String category, String keyword) {
         checkData(category,keyword);
 
         SearchResponse<Keyword> search;
         List<Keyword> keywordList = new ArrayList<>();
+        List<KeywordRespDto> keywordRespDtoList = new ArrayList<>();
 
         //조건
         Query byName = MatchQuery.of(m -> m
@@ -140,7 +142,10 @@ public class SearchService {
             throw new SearchException(ErrorCode.UNCOVERED_ERROR);
         }
 
+        for(Keyword key : keywordList){
+            keywordRespDtoList.add(key.toDto());
+        }
 
-        return keywordList;
+        return keywordRespDtoList;
     }
 }
