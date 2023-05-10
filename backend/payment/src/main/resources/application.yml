@@ -20,7 +20,7 @@ spring:
 
 server:
   servlet:
-    context-path: /payment
+    context-path: /api/payment
 
 kakao-pay:
   host: https://kapi.kakao.com

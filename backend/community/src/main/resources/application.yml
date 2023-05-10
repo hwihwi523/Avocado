@@ -1,6 +1,6 @@
 server:
   servlet:
-    context-path: /community
+    context-path: /api/community
 spring:
   datasource:
     username: root
