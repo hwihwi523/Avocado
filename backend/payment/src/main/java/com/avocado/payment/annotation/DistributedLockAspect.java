@@ -16,7 +16,7 @@ public class DistributedLockAspect {
 
     @Around(value = "@annotation(distributedLock)")
     public Object around(ProceedingJoinPoint joinPoint, DistributedLock distributedLock) throws Throwable {
-        String lockName = distributedLock.key();
+        String lockName = distributedLock.key().name();
         RLock rLock = redissonClient.getLock(lockName);
 
         try {

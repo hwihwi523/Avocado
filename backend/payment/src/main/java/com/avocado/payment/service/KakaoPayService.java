@@ -11,6 +11,7 @@ import com.avocado.payment.dto.response.KakaoPayRedirectUrlResp;
 import com.avocado.payment.entity.*;
 import com.avocado.payment.entity.redis.Purchasing;
 import com.avocado.payment.entity.redis.PurchasingMerchandise;
+import com.avocado.payment.enums.DistributedLockName;
 import com.avocado.payment.exception.ErrorCode;
 import com.avocado.payment.exception.InvalidValueException;
 import com.avocado.payment.exception.KakaoPayException;
@@ -180,7 +181,7 @@ public class KakaoPayService {
      * @param consumerId : 구매자 ID
      * @param pgToken : 카카오페이로부터 전달받은 결제 토큰
      */
-    @DistributedLock(key = "PAY")
+    @DistributedLock(key = DistributedLockName.PAY)
     private void completeKakaoPay(Purchasing purchasing, String consumerId, String pgToken) {
         String purchasingId = purchasing.getId();
 
