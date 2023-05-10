@@ -5,14 +5,16 @@ spring:
 
   datasource:
     url: jdbc:mysql://a07c6127933494883b1ce18e5a21f697-895151877.ap-northeast-2.elb.amazonaws.com:3306/member?serverTimezone=UTC&characterEncoding=UTF-8
-    username: yasim
+    username: root
     password: yasim506
     driver-class-name: com.mysql.cj.jdbc.Driver
 
     redis:
-      host: a57b7bdd07e984044bce6a0784fa0b62-8549102.ap-northeast-2.elb.amazonaws.com
+#      host: a57b7bdd07e984044bce6a0784fa0b62-8549102.ap-northeast-2.elb.amazonaws.com
+#      port: 6379
+#      password: yasim506
+      host: 127.0.0.1
       port: 6379
-      password: yasim506
 
 mybatis:
   configuration:
