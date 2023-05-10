@@ -25,7 +25,7 @@ const MobileBottom = (props: any) => {
         </Link>
 
         {/* 찾기 */}
-        <Link href="">
+        <Link href="/search">
           <IconButton aria-label="search">
             <SearchIcon fontSize="large" style={{ fill: "#FFFFFF" }} />
           </IconButton>

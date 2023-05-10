@@ -8,10 +8,14 @@ import {
 } from "../../components/oranisms";
 import { ChartPersonalColor } from "../../components/oranisms/charts";
 import Link from 'next/link'
+import Head from 'next/head'
 
 const Mypage = () => {
   return (
     <Background>
+      <Head>
+        <title>마이페이지</title>
+      </Head>
       <Stack direction={"column"} spacing={2}>
         <UserProfile />
         <UserStateSummary />
@@ -20,7 +24,6 @@ const Mypage = () => {
         <Box>
           <Stack direction={"row"} justifyContent={"space-between"}>
             <InlineText>최근 본 상품</InlineText>
-            <InlineText>더보기 +</InlineText>
           </Stack>
           <ProductCardsRow />
         </Box>
@@ -28,7 +31,7 @@ const Mypage = () => {
         <Box>
           <Stack direction={"row"} justifyContent={"space-between"}>
             <InlineText>구매 내역</InlineText>
-            <Link href="/user/cartList">
+            <Link href="/user/orderList">
             <InlineText>더보기 +</InlineText>
             </Link>
           </Stack>

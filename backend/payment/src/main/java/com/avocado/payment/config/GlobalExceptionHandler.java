@@ -4,15 +4,27 @@ import com.avocado.payment.dto.response.BaseResp;
 import com.avocado.payment.exception.ErrorCode;
 import com.avocado.payment.exception.InvalidValueException;
 import com.avocado.payment.exception.KakaoPayException;
+import com.avocado.payment.exception.NoInventoryException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.view.RedirectView;
 
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+    /**
+     * 재고 없을 경우 재고 없음 페이지로 이동
+     */
+    @ExceptionHandler(NoInventoryException.class)
+    protected RedirectView handleNoInventoryException(NoInventoryException e) {
+        log.error(e.getMessage() + " >> " + e.getErrorCode().getMessage());
+        RedirectView redirectView = new RedirectView("https://naver.com");
+        return redirectView;
+    }
+
     /**
      * 유효하지 않은 값으로 발생하는 예외 처리
      */

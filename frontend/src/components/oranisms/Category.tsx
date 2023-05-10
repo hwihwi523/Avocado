@@ -10,7 +10,7 @@ const iconStyle = {
 };
 
 const Category = (props: any) => {
-  const icons = ["메뉴", "상의", "하의", "원피스", "신발", "백", "액세서리"];
+  const icons = ["전체", "상의", "하의", "원피스", "신발", "백", "액세서리"];
 
   return (
     <IconBox>

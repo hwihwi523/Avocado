@@ -59,28 +59,28 @@ class ConsumerService(
 
     @Transactional
     suspend fun putRequiredInfo(req: ConsumerRequiredInfoReq, claims: Claims) {
-        val consumer = consumerRepository.findById(jwtProvider.getId(claims))?:throw BaseException(ResponseCode.NOT_FOUND)
+        val consumer = consumerRepository.findById(jwtProvider.getId(claims))?:throw BaseException(ResponseCode.NOT_FOUND_VALUE)
         val updatedConsumer = consumer.updateRequiredInfo(req)
         consumerRepository.save(updatedConsumer)
     }
 
     @Transactional
     suspend fun putNotRequiredInfo(req: ConsumerNotRequiredInfoReq, claims: Claims) {
-        val consumer = consumerRepository.findById(jwtProvider.getId(claims))?:throw BaseException(ResponseCode.NOT_FOUND)
+        val consumer = consumerRepository.findById(jwtProvider.getId(claims))?:throw BaseException(ResponseCode.NOT_FOUND_VALUE)
         val updatedConsumer = consumer.updateNotRequiredInfo(req)
         consumerRepository.save(updatedConsumer)
     }
 
     @Transactional
     suspend fun updatePersonalColor(req: ConsumerPersonalColorReq, claims: Claims) {
-        val consumer = consumerRepository.findById(jwtProvider.getId(claims))?:throw BaseException(ResponseCode.NOT_FOUND)
+        val consumer = consumerRepository.findById(jwtProvider.getId(claims))?:throw BaseException(ResponseCode.NOT_FOUND_VALUE)
         val updatedConsumer = consumer.updatePersonalColor(req)
         consumerRepository.save(updatedConsumer)
     }
 
     @Transactional
     suspend fun updateInfo(req: ConsumerUpdateReq, claims: Claims) {
-        val consumer = consumerRepository.findById(jwtProvider.getId(claims))?:throw BaseException(ResponseCode.NOT_FOUND)
+        val consumer = consumerRepository.findById(jwtProvider.getId(claims))?:throw BaseException(ResponseCode.NOT_FOUND_VALUE)
         val updatedConsumer = consumer.updateInfo(req)
         consumerRepository.save(updatedConsumer)
     }

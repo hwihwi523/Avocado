@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { Stack } from "@mui/material";
 import { BlockText } from "../../components/atoms";
 import { WishItem } from "../../components/molecues";
-
+import Head from "next/head"
 const WishList = () => {
   //더미 데이터
   const data = [
@@ -46,7 +46,10 @@ const WishList = () => {
 
   return (
     <Background>
-        <BlockText type="B" size="1.5rem" style={{marginTop:"20px"}}>찜 목록</BlockText>
+      <Head>
+        <title>찜 목록</title>
+      </Head>
+        <BlockText type="B" size="1.2rem" style={{margin:"10px"}}>찜 목록</BlockText>
       <Stack spacing={2}>
         {data.map((item, i) => (
           <WishItem data={item} key={i} />

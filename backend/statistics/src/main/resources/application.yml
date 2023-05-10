@@ -1,0 +1,31 @@
+spring:
+  server:
+    servlet:
+      context-path: /api/statistics
+
+  datasource:
+    url: jdbc:mysql://a07c6127933494883b1ce18e5a21f697-895151877.ap-northeast-2.elb.amazonaws.com:3306/member?serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
+    password: yasim506
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+    redis:
+#      host: a57b7bdd07e984044bce6a0784fa0b62-8549102.ap-northeast-2.elb.amazonaws.com
+#      port: 6379
+#      password: yasim506
+      host: 127.0.0.1
+      port: 6379
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations:
+    - classpath:mapper/**/*.xml
+  type-aliases-package: com.avocado.statistics.api.response, com.avocado.statistics.db.entity
+  type-handlers-package: com.avocado.statistics.config.handler
+
+jwt:
+  issuer: avocado.com
+  secret: e52713a2bd59e655ffd78ed74fafc5b29a2001d586949e55792e2f1a5b1f3d8ffb9d132354932bdf
+  access_expiration: 21600000
+  refresh_expiration: 1296000000

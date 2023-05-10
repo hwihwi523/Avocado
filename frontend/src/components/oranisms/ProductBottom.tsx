@@ -4,7 +4,7 @@ import { useState } from "react";
 import { IconButton } from "@mui/material";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
 import BookmarkOutlinedIcon from "@mui/icons-material/BookmarkOutlined";
-import { BlockText, InlineText } from "../atoms";
+
 import Button from "@mui/material/Button";
 
 const ProductBottom: React.FC<{ openModal: () => void }> = (props) => {
@@ -32,16 +32,21 @@ const ProductBottom: React.FC<{ openModal: () => void }> = (props) => {
             }}
           >
             {isBookmark ? (
-              <BookmarkOutlinedIcon />
+              <BookmarkOutlinedIcon fontSize="large" />
             ) : (
-              <BookmarkBorderOutlinedIcon />
+              <BookmarkBorderOutlinedIcon fontSize="large" />
             )}
           </IconButton>
         </Grid>
         <Grid item xs={10}>
           {/* 검은색바탕에 흰색글씨 */}
           <Button
-            style={{ color: "white", width: "100%", backgroundColor: "black" }}
+            style={{
+              color: "white",
+              width: "100%",
+              backgroundColor: "black",
+              padding: "10px",
+            }}
             onClick={openModal}
           >
             구매하기
@@ -60,7 +65,7 @@ const Background = styled.div`
   z-index: 1000;
   position: fixed;
   bottom: 0px;
-  height: 55px;
+  height: 70px;
   width: 100%;
   padding: 0 10px;
 `;

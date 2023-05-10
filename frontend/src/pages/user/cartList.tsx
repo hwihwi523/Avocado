@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
-import { Stack } from "@mui/material";
+import { Stack, Button } from "@mui/material";
 import { BlockText } from "../../components/atoms";
 import { CartItem } from "../../components/molecues";
-
+import Head from "next/head"
 const CartList = () => {
   //더미 데이터
   const data = [
@@ -60,19 +60,30 @@ const CartList = () => {
 
   return (
     <Background>
-        <BlockText type="B" size="1.5rem" style={{marginTop:"20px"}}>장바구니</BlockText>
+      <Head>
+        <title>장바구니</title>
+      </Head>
+      <BlockText type="B" size="1.2rem" style={{ margin: "10px" }}>
+        장바구니
+      </BlockText>
       <Stack spacing={2}>
         {data.map((item, i) => (
           <CartItem data={item} key={i} />
         ))}
+        <Total>
+          <BlockText size="1.2rem">총 금액 :</BlockText>
+          <BlockText size="1.8rem" color="red">
+            {" "}
+            {formatCurrency(totalPrice())}
+          </BlockText>
+        </Total>
+        <Button
+          style={{ padding: "10px", backgroundColor: "black", color: "white" }}
+          fullWidth
+        >
+          결제하기
+        </Button>
       </Stack>
-      <Total>
-        <BlockText size="1.2rem">총 금액 :</BlockText>
-        <BlockText size="1.8rem" color="red">
-          {" "}
-          {formatCurrency(totalPrice())}
-        </BlockText>
-      </Total>
     </Background>
   );
 };

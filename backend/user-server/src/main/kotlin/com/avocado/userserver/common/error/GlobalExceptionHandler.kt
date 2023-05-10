@@ -6,10 +6,18 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
+import org.springframework.web.server.ResponseStatusException
 import java.net.BindException
 
 @ControllerAdvice
 class GlobalExceptionHandler {
+
+
+    @ExceptionHandler(ResponseStatusException::class)
+    protected fun handleResponseStatusException(e: ResponseStatusException): ResponseEntity<ErrorResp> {
+        return ResponseEntity.status(e.statusCode)
+            .body(ErrorResp(ResponseCode.NOT_FOUND))
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     protected fun handleMethodArgumentNotValidException(e: MethodArgumentNotValidException): ResponseEntity<ErrorResp> {
@@ -43,6 +51,7 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception::class)
     protected fun handleException(e:Exception): ResponseEntity<ErrorResp> {
+        e.printStackTrace()
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(ErrorResp(ResponseCode.INTERNAL_SERVER_ERROR))
     }
