@@ -9,13 +9,6 @@ spring:
     password: yasim506
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-    redis:
-#      host: a57b7bdd07e984044bce6a0784fa0b62-8549102.ap-northeast-2.elb.amazonaws.com
-#      port: 6379
-#      password: yasim506
-      host: 127.0.0.1
-      port: 6379
-
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
