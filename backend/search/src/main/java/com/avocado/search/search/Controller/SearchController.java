@@ -1,6 +1,7 @@
 package com.avocado.search.search.Controller;
 
 import com.avocado.search.search.Dto.response.KeywordRespDto;
+import com.avocado.search.search.Dto.response.ProductRespDto;
 import com.avocado.search.search.Entity.Keyword;
 import com.avocado.search.search.Entity.Product;
 import com.avocado.search.search.Service.SearchService;
@@ -24,8 +25,8 @@ public class SearchController {
     }
 
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> search(@RequestParam(name = "category", defaultValue = "All")String category, @RequestParam(name = "keyword", defaultValue = " ")String keyword){
-        return new ResponseEntity<List<Product>>(searchService.searchProduct(category,keyword), HttpStatus.OK);
+    public ResponseEntity<List<ProductRespDto>> search(@RequestParam(name = "category", defaultValue = "All")String category, @RequestParam(name = "keyword", defaultValue = " ")String keyword){
+        return new ResponseEntity<List<ProductRespDto>>(searchService.searchProduct(category,keyword), HttpStatus.OK);
     }
 
     @GetMapping("/recommands")

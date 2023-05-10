@@ -1,6 +1,7 @@
 package com.avocado.search.search.Entity;
 
 
+import com.avocado.search.search.Dto.response.ProductRespDto;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -19,7 +20,7 @@ public class Product {
 
     @Id
     @Field(type = FieldType.Keyword)
-    private String id;
+    private int id;
 
     @Field(type = FieldType.Integer)
     private int group_id;
@@ -101,4 +102,40 @@ public class Product {
 
     @Field(type = FieldType.Text)
     private String category_eng;
+
+    public ProductRespDto toDto(){
+        ProductRespDto productRespDto =
+                ProductRespDto.builder()
+                        .id(this.id)
+                        .group_id(this.group_id)
+                        .name(this.name)
+                        .imgurl(this.imgurl)
+                        .inventory(this.inventory)
+                        .created_at(this.created_at)
+                        .updated_at(this.updated_at)
+                        .type_kor(this.type_kor)
+                        .type_eng(this.type_eng)
+                        .age_gender_group_kor(this.age_gender_group_kor)
+                        .age_gender_group_eng(this.age_gender_group_eng)
+                        .usage_kor(this.usage_kor)
+                        .usage_eng(this.usage_eng)
+                        .price(this.price)
+                        .discounted_price(this.discounted_price)
+                        .season(this.season)
+                        .store_name(this.store_name)
+                        .fashion_year(this.fashion_year)
+                        .color_kor(this.color_kor)
+                        .color_eng(this.color_eng)
+                        .sub_color1_kor(this.sub_color1_kor)
+                        .sub_color1_eng(this.sub_color1_eng)
+                        .sub_color2_eng(this.sub_color2_eng)
+                        .sub_color2_kor(this.sub_color2_kor)
+                        .total_score(this.review_count == 0 ? this.total_score : this.total_score/this.review_count)
+                        .review_count(this.review_count)
+                        .category_kor(this.category_kor)
+                        .category_eng(this.category_eng)
+                        .build();
+        return productRespDto;
+    }
+
 }
