@@ -34,7 +34,7 @@ public class SearchService {
         if(keyword == null){
             throw new SearchException(ErrorCode.KEYWORD_NULL_EXCEPTIOIN);
         }
-        if(category.equals("Bottomwear")||category.equals("Dress")||category.equals("Footwear")||category.equals("Bags")||category.equals("Accessories")||category.equals("All")){
+        if(!(category.equals("Bottomwear")||category.equals("Dress")||category.equals("Footwear")||category.equals("Bags")||category.equals("Accessories")||category.equals("All"))){
             throw new SearchException(ErrorCode.INVALID_CATEGORY);
         }
     }
