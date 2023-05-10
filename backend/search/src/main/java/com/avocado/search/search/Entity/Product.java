@@ -1,5 +1,6 @@
 package com.avocado.search.search.Entity;
 
+
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;

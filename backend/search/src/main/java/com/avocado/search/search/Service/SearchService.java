@@ -6,6 +6,7 @@ import java.util.List;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import com.avocado.search.search.Entity.Keyword;
 import com.avocado.search.search.Entity.Product;
 import com.avocado.search.search.error.ErrorCode;
 import com.avocado.search.search.error.SearchException;
@@ -85,7 +86,61 @@ public class SearchService {
             throw new SearchException(ErrorCode.UNCOVERED_ERROR);
         }
 
+        if(products.size() == 0){
+            throw new SearchException(ErrorCode.PRODUCT_NOT_FOUND);
+        }
 
         return products;
+    }
+
+    public List<Keyword> searchKeyword(String category, String keyword) {
+        checkData(category,keyword);
+
+        SearchResponse<Keyword> search;
+        List<Keyword> keywordList = new ArrayList<>();
+
+        //조건
+        Query byName = MatchQuery.of(m -> m
+                .field("name")
+                .query(keyword)
+
+        )._toQuery();
+        Query byCategory = MatchQuery.of(r -> r
+                .field("category_eng")
+                .query(category)
+        )._toQuery();
+
+        try {
+            if(category.equals("All")){
+                search = elasticsearchClient.search(s -> s
+                                .index("keywords")
+                                .query(q -> q
+                                        .bool(b -> b
+                                                .must(byName)
+                                        )).size(5),
+                        Keyword.class);
+            }else {
+                search = elasticsearchClient.search(s -> s
+                                .index("keywords")
+                                .query(q -> q
+                                        .bool(b -> b
+                                                .must(byName)
+                                                .must(byCategory)
+                                        )).size(5),
+                        Keyword.class);
+            }
+            for (Hit<Keyword> hit: search.hits().hits()) {
+                keywordList.add(hit.source());
+            }
+        } catch (ElasticsearchException e) {
+            e.printStackTrace();
+            throw new SearchException(ErrorCode.UNCOVERED_ELASTIC_SEARCH_ERROR);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new SearchException(ErrorCode.UNCOVERED_ERROR);
+        }
+
+
+        return keywordList;
     }
 }
