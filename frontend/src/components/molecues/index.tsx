@@ -6,7 +6,7 @@ import CartItem from "./CartItem";
 import WishItem from "./WishItem";
 import OrderItem from "./OrderItem";
 import AddressInput from "./AddressInput";
-import CommercialState from "./CommercialItem";
+import CommercialItem from "./CommercialItem";
 
 export {
   ProductCard,
@@ -17,5 +17,5 @@ export {
   WishItem,
   OrderItem,
   AddressInput,
-  CommercialState,
+  CommercialItem,
 };

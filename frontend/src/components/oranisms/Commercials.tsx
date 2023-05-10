@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import Carousel from "react-material-ui-carousel";
-
+import Image from "next/image";
 const Commercials = (props: any) => {
   const router = useRouter();
 
@@ -30,16 +30,21 @@ const Commercials = (props: any) => {
 
   return (
     <Commercial>
-      <Carousel animation="slide" indicators={false}>
+      <Carousel animation="slide" indicators={false} interval={2000}>
         {items.map((item, i) => (
-          <div
+          <ImageBox
             key={i}
             onClick={() => {
               router.push("product/" + item.id);
             }}
           >
-            <img src={item.img_url} alt="광고 이미지" width={"100%"} height={"200px"} />
-          </div>
+            <Image
+              src={item.img_url}
+              alt="광고 이미지"
+              fill
+              style={{ objectFit: "cover" }}
+            />
+          </ImageBox>
         ))}
       </Carousel>
     </Commercial>
@@ -50,4 +55,9 @@ export default Commercials;
 
 const Commercial = styled.div`
   width: 100%;
+`;
+
+const ImageBox = styled.div`
+  width: 100vw;
+  height: 30vh;
 `;

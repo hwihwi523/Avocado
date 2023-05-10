@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import AddIcon from "@mui/icons-material/Add";
 import { Button, Stack, Divider } from "@mui/material";
-import { CommercialState } from "../../molecues";
+import { CommercialItem } from "../../molecues";
 import router from 'next/router'
 
 //더미데이터
@@ -89,10 +89,9 @@ const MyCommercial = () => {
         <div
           key={i}
           onClick={() => {
-            //모달 열어줘ㅓㅓ
           }}
         >
-          <CommercialState data={item} />
+          <CommercialItem data={item} />
         </div>
       ))}
 

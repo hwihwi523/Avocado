@@ -73,38 +73,38 @@ const CommercialState = () => {
         <Stack direction={"column"} spacing={1}>
           <Stack spacing={1} direction={"row"}>
             <IconBox>
-              <MouseOutlinedIcon  />
-              <InlineText size="0.9rem" >
+              <MouseOutlinedIcon color="error"/>
+              <InlineText size="0.9rem" color="grey">
                 총 클릭 수
               </InlineText>
-              <InlineText color="red">{totalAmount(click_cnt)} 번</InlineText>
+              <InlineText>{totalAmount(click_cnt)} 번</InlineText>
             </IconBox>
             <IconBox>
-              <VisibilityOutlinedIcon />
+              <VisibilityOutlinedIcon color="success"/>
               <InlineText size="0.9rem" color="grey">
                 총 노출 수
               </InlineText>
-              <InlineText color="green">
+              <InlineText>
                 {totalAmount(exposure_cnt)} 번
               </InlineText>
             </IconBox>
           </Stack>
           <Stack spacing={1} direction={"row"}>
             <IconBox>
-              <PaidOutlinedIcon />
+              <PaidOutlinedIcon color="primary"/>
               <InlineText size="0.9rem" color="grey">
                 총 판매 액수
               </InlineText>
-              <InlineText color="blue">
+              <InlineText>
                 {totalAmount(purchase_amount)} 원
               </InlineText>
             </IconBox>
             <IconBox>
-              <SellOutlinedIcon />
+              <SellOutlinedIcon color="warning" />
               <InlineText size="0.9rem" color="grey">
                 총 판매 수
               </InlineText>
-              <InlineText color="orange">{totalAmount(quantity)} 개</InlineText>
+              <InlineText>{totalAmount(quantity)} 개</InlineText>
             </IconBox>
           </Stack>
         </Stack>
