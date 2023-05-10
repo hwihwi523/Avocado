@@ -32,6 +32,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -52,6 +53,12 @@ public class KakaoPayService {
     private final UUIDUtil uuidUtil;
     private final KakaoPayUtil kakaoPayUtil;
 
+    /**
+     * 결제 준비 요청. 구매 요청 정보를 저장하고, 카카오페이로 거래 정보를 보내 거래 시작을 알리는 메서드
+     * @param consumerId : 구매자 ID
+     * @param paymentReq : 구매 정보
+     * @return : 카카오페이 결제 URL
+     */
     @Transactional
     public KakaoPayRedirectUrlResp ready(String consumerId, ReadyForPaymentReq paymentReq) {
         List<PurchaseMerchandiseReq> merchandiseReqs = paymentReq.getMerchandises();
@@ -134,6 +141,11 @@ public class KakaoPayService {
         return kakaoPayRedirectUrlResp;
     }
 
+    /**
+     * 결제 승인 요청. 구매 대기 정보를 받아 결제 승인을 처리하는 메서드.
+     * @param purchasingId : 구매 대기 정보 ID
+     * @param pgToken : 카카오페이로부터 받은 결제 토큰
+     */
     @Transactional
     public void approve(String purchasingId, String pgToken) {
         // 구매 대기 내역 조회
@@ -220,6 +232,92 @@ public class KakaoPayService {
     }
 
     /**
+     * 테스트 결제
+     * @param consumerId : 구매자 ID
+     * @param paymentReq : 구매 정보
+     */
+    @DistributedLock(key = DistributedLockName.PAY)
+    @Transactional
+    public void testPay(String consumerId, ReadyForPaymentReq paymentReq) {
+        List<PurchaseMerchandiseReq> merchandiseReqs = paymentReq.getMerchandises();
+
+        // 요청한 소비자가 존재하는지 확인
+        Optional<Consumer> optionalConsumer = consumerRepository.findById(uuidUtil.joinByHyphen(consumerId));
+        if (optionalConsumer.isEmpty())
+            throw new InvalidValueException(ErrorCode.NO_MEMBER);
+
+        // 구매할 상품 검색
+        //  1. 구매할 상품들의 ID 취합
+        List<Long> merchandiseIds = new ArrayList<>();
+        merchandiseReqs.forEach((merchandiseReq) -> merchandiseIds.add(merchandiseReq.getMerchandise_id()));
+
+        //  2. 상품 검색
+        List<Merchandise> merchandiseList = merchandiseRepository.findByIdIn(merchandiseIds);
+
+        //  3. 모두 유효한 상품인지 확인
+        if (merchandiseList.size() != merchandiseReqs.size())
+            throw new InvalidValueException(ErrorCode.NO_MERCHANDISE);
+
+        // 결제할 품목의 개수에 따라 요청 데이터 가공
+        UUID purchaseId = UUID.randomUUID();  // 구매내역 ID
+        String strPurchaseId = uuidUtil.removeHyphen(purchaseId);  // 하이픈 제거한 구매내역 ID
+
+        // 판매자 ID
+        Map<Long, UUID> providerIdMap = new HashMap<>();
+        for (Merchandise merchandise : merchandiseList)
+            providerIdMap.put(merchandise.getId(), merchandise.getStore().getProviderId());
+
+        // 구매 상품 리스트 취합
+        List<PurchasingMerchandise> purchasingMerchandises = new ArrayList<>();
+        for (PurchaseMerchandiseReq merchandiseReq : merchandiseReqs) {
+            String providerId = uuidUtil.removeHyphen(providerIdMap.get(merchandiseReq.getMerchandise_id()));
+            purchasingMerchandises.add(
+                    PurchasingMerchandise.builder()
+                            .merchandise_id(merchandiseReq.getMerchandise_id())
+                            .price(merchandiseReq.getPrice())
+                            .provider_id(providerId)
+                            .quantity(merchandiseReq.getQuantity())
+                            .size((System.currentTimeMillis() & 1) == 1 ? "L" : "XL")  // 사이즈는 제공하지 않으므로 랜덤 설정
+                            .build()
+            );
+        }
+
+        // 구매 대기 내역 등록 (Redis)
+        Purchasing purchasing = Purchasing.builder()
+                .id(strPurchaseId)
+                .consumer_id(consumerId)
+                .total_price(paymentReq.getTotal_price())
+                .merchandises(purchasingMerchandises)
+                .build();
+        purchasingRepository.save(purchasing);
+
+        String purchasingId = purchasing.getId();
+
+        // 재고 확인
+        if (!isEnoughInventory(purchasing))
+            throw new NoInventoryException(ErrorCode.NO_INVENTORY);
+
+        // 구매 완료 내역 업데이트
+        Purchase purchase = Purchase.builder()
+                .id(uuidUtil.joinByHyphen(purchasingId))
+                .consumerId(uuidUtil.joinByHyphen(consumerId))
+                .tid(purchasing.getTid())
+                .totalPrice(purchasing.getTotal_price())
+                .createdAt(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
+                .build();
+        purchaseRepository.save(purchase);
+
+        // 구매 완료된 상품 테이블 업데이트
+        bulkInsert(purchasing);
+
+        // Redis 데이터 삭제
+        purchasingRepository.delete(purchasing);
+
+        // 재고 감소
+        bulkUpdate(purchasing.getMerchandises());
+    }
+
+    /**
      * 구매 완료 상품 bulk insert
      */
     @Transactional
@@ -249,10 +347,14 @@ public class KakaoPayService {
     @Transactional
     public void bulkUpdate(List<PurchasingMerchandise> merchandises) {
         String bulkUpdate = "update merchandise m set m.inventory = m.inventory - case m.id";
-        for (PurchasingMerchandise merchandise : merchandises)
+        String whereClause = " where m.id in (null";
+        for (PurchasingMerchandise merchandise : merchandises) {
             bulkUpdate += " when " + merchandise.getMerchandise_id()
                     + " then " + merchandise.getQuantity();
-        bulkUpdate += " end";
+            whereClause += ", " + merchandise.getMerchandise_id();
+        }
+        whereClause += ")";
+        bulkUpdate += " else 0 end" + whereClause;
         // 업데이트
         em.createNativeQuery(bulkUpdate).executeUpdate();
     }

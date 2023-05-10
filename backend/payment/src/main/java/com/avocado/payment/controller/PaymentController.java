@@ -98,4 +98,24 @@ public class PaymentController {
         // 실패 페이지로 리다이렉트
         response.sendRedirect(completeHost + completeFailUrl);
     }
+
+    @PostMapping("/test")
+    public String test(@RequestBody ReadyForPaymentReq paymentReq) {
+        List<PurchaseMerchandiseReq> merchandises = paymentReq.getMerchandises();
+
+        // 구매 요청한 상품이 없을 때
+        if (merchandises == null || merchandises.isEmpty())
+            throw new InvalidValueException(ErrorCode.NO_MERCHANDISE);
+
+        // 총 금액과 각 상품의 합계가 다를 때
+        long totalPrice = 0L;
+        for (PurchaseMerchandiseReq merchandiseReq : merchandises)
+            totalPrice += merchandiseReq.getPrice() * merchandiseReq.getQuantity();
+        if (paymentReq.getTotal_price() == null || !paymentReq.getTotal_price().equals(totalPrice))
+            throw new InvalidValueException(ErrorCode.NOT_SAME_WITH_TOTAL_PRICE);
+
+        kakaoPayService.testPay(paymentReq.getUser_id(), paymentReq);
+
+        return "결제 끗~";
+    }
 }
