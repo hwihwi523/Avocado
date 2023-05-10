@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { HYDRATE } from "next-redux-wrapper";
 import { Product } from "./productSlice";
+import { customFetchBaseQuery } from "@/src/utils/customFetchBaseQuery";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 

@@ -10,12 +10,8 @@ import {
   UserProfile,
 } from "../components/oranisms";
 import { BlockText } from "../components/atoms";
-import { Member, clearAuth, setMember } from "../features/auth/authSlice";
 import { wrapper } from "../features/store";
-import { appCookies } from "./_app";
-import { DecodedToken } from "../features/auth/authApi";
-import jwt from "jsonwebtoken";
-import authenticateMemberInPages from "../utils/authenticateMemberInPages";
+import { authenticateTokenInPages } from "../utils/authenticateTokenInPages";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -82,20 +78,17 @@ const StyledSpan = styled.span`
 // 서버에서 Redux Store를 초기화하고, wrapper.useWrappedStore()를 사용해
 // 클라이언트에서도 동일한 store를 사용하도록 설정
 export const getServerSideProps = wrapper.getServerSideProps(
-  (store) =>
-    async ({ req }) => {
-      // 쿠키를 받아와 로그인 상태인지 확인
-      const cookie = req?.headers.cookie;
-      const refreshToken = cookie
-        ?.split(";")
-        .find((c) => c.trim().startsWith("REFRESH_TOKEN="))
-        ?.split("=")[1];
-      console.log("SERVER_REFRESH_TOKEN:", refreshToken);
-      // 토큰이 있다면 member를 store에 저장
-      authenticateMemberInPages(store, refreshToken);
+  (store) => async (context) => {
+    // 쿠키의 토큰을 통해 로그인 확인, 토큰 리프레시, 실패 시 로그아웃 처리 등
+    await authenticateTokenInPages(
+      { req: context.req, res: context.res },
+      store
+    );
 
-      return {
-        props: {},
-      };
-    }
+    // 필요한 내용 작성
+
+    return {
+      props: {},
+    };
+  }
 );

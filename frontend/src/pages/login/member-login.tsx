@@ -3,10 +3,12 @@ import { AppState, wrapper } from "@/src/features/store";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
-import { removeTokenAll } from "@/src/utils/tokenManager";
+import { removeToken, removeTokenAll } from "@/src/utils/tokenManager";
 import { clearAuth } from "@/src/features/auth/authSlice";
 import authenticateMemberInPages from "@/src/utils/authenticateMemberInPages";
 import { useEffect } from "react";
+import { authenticateTokenInPages } from "@/src/utils/authenticateTokenInPages";
+import { appCookies } from "../_app";
 
 const SECRET = process.env.NEXT_PUBLIC_JWT_SECRET
   ? process.env.NEXT_PUBLIC_JWT_SECRET
@@ -41,10 +43,11 @@ export default function MemberLogin() {
 
   const handleLogout = () => {
     console.log("로그아웃 버튼이 클릭되었습니다.");
-    removeTokenAll();
-    dispatch(clearAuth());
+    removeToken("ACCESS_TOKEN");
+    // removeTokenAll();
+    // dispatch(clearAuth());
     // 로그인 페이지로 이동
-    router.push("/login");
+    // router.push("/login");
   };
 
   return (
@@ -64,23 +67,18 @@ export default function MemberLogin() {
   );
 }
 
+// 서버에서 Redux Store를 초기화하고, wrapper.useWrappedStore()를 사용해
+// 클라이언트에서도 동일한 store를 사용하도록 설정
 export const getServerSideProps = wrapper.getServerSideProps(
-  (store) =>
-    async ({ req }) => {
-      const cookie = req?.headers.cookie;
-      const refreshToken = cookie
-        ?.split(";")
-        .find((c) => c.trim().startsWith("REFRESH_TOKEN="))
-        ?.split("=")[1];
-      if (refreshToken) {
-        console.log("SERVER_REFRESH_TOKEN:", refreshToken);
-        authenticateMemberInPages(store, refreshToken);
-      } else {
-        console.log("SERVER_REFRESH_TOKEN: No REFRESH_TOKEN");
-      }
+  (store) => async (context) => {
+    // 쿠키의 토큰을 통해 로그인 확인, 토큰 리프레시, 실패 시 로그아웃 처리 등
+    await authenticateTokenInPages(
+      { res: context.res, req: context.req },
+      store
+    );
 
-      return {
-        props: {},
-      };
-    }
+    return {
+      props: {},
+    };
+  }
 );

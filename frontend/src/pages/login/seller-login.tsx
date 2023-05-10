@@ -14,6 +14,7 @@ import { removeTokenAll, setToken } from "@/src/utils/tokenManager";
 import { Member, clearAuth, setMember } from "@/src/features/auth/authSlice";
 import { appCookies } from "../_app";
 import authenticateMemberInPages from "@/src/utils/authenticateMemberInPages";
+import { authenticateTokenInPages } from "@/src/utils/authenticateTokenInPages";
 
 const SECRET = process.env.NEXT_PUBLIC_JWT_SECRET
   ? process.env.NEXT_PUBLIC_JWT_SECRET
@@ -23,7 +24,6 @@ export default function SellerLogin() {
   const dispatch = useDispatch();
   const member = useSelector((state: AppState) => state.auth.member);
   const router = useRouter();
-  console.log("router query: ", router.query);
   // // 로그인 상태인 경우 메인 페이지로 이동하는 예제
   // useEffect(() => {
   //   if (member) {
@@ -136,23 +136,18 @@ export default function SellerLogin() {
   );
 }
 
+// 서버에서 Redux Store를 초기화하고, wrapper.useWrappedStore()를 사용해
+// 클라이언트에서도 동일한 store를 사용하도록 설정
 export const getServerSideProps = wrapper.getServerSideProps(
-  (store) =>
-    async ({ req }) => {
-      const cookie = req?.headers.cookie;
-      const refreshToken = cookie
-        ?.split(";")
-        .find((c) => c.trim().startsWith("REFRESH_TOKEN="))
-        ?.split("=")[1];
-      if (refreshToken) {
-        console.log("SERVER_REFRESH_TOKEN:", refreshToken);
-        authenticateMemberInPages(store, refreshToken);
-      } else {
-        console.log("SERVER_REFRESH_TOKEN: No REFRESH_TOKEN");
-      }
+  (store) => async (context) => {
+    // 쿠키의 토큰을 통해 로그인 확인, 토큰 리프레시, 실패 시 로그아웃 처리 등
+    await authenticateTokenInPages(
+      { res: context.res, req: context.req },
+      store
+    );
 
-      return {
-        props: {},
-      };
-    }
+    return {
+      props: {},
+    };
+  }
 );
