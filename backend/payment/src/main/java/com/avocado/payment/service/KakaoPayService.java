@@ -1,5 +1,6 @@
 package com.avocado.payment.service;
 
+import com.avocado.payment.annotation.DistributedLock;
 import com.avocado.payment.config.KakaoPayUtil;
 import com.avocado.payment.config.UUIDUtil;
 import com.avocado.payment.dto.kakaopay.KakaoPayApproveResp;
@@ -141,54 +142,8 @@ public class KakaoPayService {
         Purchasing purchasing = optionalPurchasing.get();
         String consumerId = purchasing.getConsumer_id();
 
-        // 분산 락으로 동시성 처리
-        RLock lock = redissonClient.getLock(LOCK_NAME);
-
-        try {
-            // Lock 획득 시도
-            if (!(lock.tryLock(1, 3, TimeUnit.SECONDS)))
-                throw new RuntimeException("Failed to get lock");
-
-            // 재고 확인
-            if (!isEnoughInventory(purchasing))
-                throw new NoInventoryException(ErrorCode.NO_INVENTORY);
-
-            // 카카오페이에 승인 요청
-            ResponseEntity<KakaoPayApproveResp> response = kakaoPayUtil.getApprove(
-                    purchasing.getTid(), purchasingId, consumerId, pgToken, purchasing.getTotal_price()
-            );
-
-            // 정상 응답이 아니라면 예외 던지기
-            if (response.getStatusCodeValue() != 200)
-                throw new KakaoPayException(ErrorCode.APPROVE_ERROR);
-            KakaoPayApproveResp approveResp = response.getBody();
-
-            // 구매 완료 내역 업데이트
-            Purchase purchase = Purchase.builder()
-                    .id(uuidUtil.joinByHyphen(purchasingId))
-                    .consumerId(uuidUtil.joinByHyphen(consumerId))
-                    .tid(purchasing.getTid())
-                    .totalPrice(purchasing.getTotal_price())
-                    .createdAt(LocalDateTime.parse(approveResp.getApproved_at()))
-                    .build();
-            purchaseRepository.save(purchase);
-
-            // 구매 완료된 상품 테이블 업데이트
-            bulkInsert(purchasing);
-
-            // Redis 데이터 삭제
-            purchasingRepository.delete(purchasing);
-
-            // 재고 감소
-            bulkUpdate(purchasing.getMerchandises());
-
-            System.out.println(response.getBody());
-        } catch (InterruptedException e) {
-            throw new RuntimeException("Lock Interrupted Exception");
-        } finally {
-            // Lock 해제
-            lock.unlock();
-        }
+        // 재고를 파악한 뒤 카카오페이 서버로 승인 요청을 보내 결제 완료 처리
+        completeKakaoPay(purchasing, consumerId, pgToken);
     }
 
     /**
@@ -216,6 +171,51 @@ public class KakaoPayService {
             purchasingRepository.delete(purchasing);
         }
         throw new KakaoPayException(ErrorCode.APPROVE_ERROR);
+    }
+
+    /**
+     * 카카오페이 서버로 결제 승인 요청을 보낸 뒤 결제를 마무리하는 메서드
+     * (분산 락 적용하여 재고 동시성 처리)
+     * @param purchasing : 구매 대기 정보
+     * @param consumerId : 구매자 ID
+     * @param pgToken : 카카오페이로부터 전달받은 결제 토큰
+     */
+    @DistributedLock(key = "PAY")
+    private void completeKakaoPay(Purchasing purchasing, String consumerId, String pgToken) {
+        String purchasingId = purchasing.getId();
+
+        // 재고 확인
+        if (!isEnoughInventory(purchasing))
+            throw new NoInventoryException(ErrorCode.NO_INVENTORY);
+
+        // 카카오페이에 승인 요청
+        ResponseEntity<KakaoPayApproveResp> response = kakaoPayUtil.getApprove(
+                purchasing.getTid(), purchasingId, consumerId, pgToken, purchasing.getTotal_price()
+        );
+
+        // 정상 응답이 아니라면 예외 던지기
+        if (response.getStatusCodeValue() != 200)
+            throw new KakaoPayException(ErrorCode.APPROVE_ERROR);
+        KakaoPayApproveResp approveResp = response.getBody();
+
+        // 구매 완료 내역 업데이트
+        Purchase purchase = Purchase.builder()
+                .id(uuidUtil.joinByHyphen(purchasingId))
+                .consumerId(uuidUtil.joinByHyphen(consumerId))
+                .tid(purchasing.getTid())
+                .totalPrice(purchasing.getTotal_price())
+                .createdAt(LocalDateTime.parse(approveResp.getApproved_at()))
+                .build();
+        purchaseRepository.save(purchase);
+
+        // 구매 완료된 상품 테이블 업데이트
+        bulkInsert(purchasing);
+
+        // Redis 데이터 삭제
+        purchasingRepository.delete(purchasing);
+
+        // 재고 감소
+        bulkUpdate(purchasing.getMerchandises());
     }
 
     /**
