@@ -27,7 +27,7 @@ interface Data {
 
 export const productApi = createApi({
   reducerPath: "productApi",
-  baseQuery: fetchBaseQuery({ baseUrl: API_URL + "/merchandise" }),
+  baseQuery: customFetchBaseQuery({ baseUrl: API_URL + "/merchandise" }),
   extractRehydrationInfo(action, { reducerPath }) {
     if (action.type === HYDRATE) {
       return action.payload[reducerPath];

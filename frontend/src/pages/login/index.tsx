@@ -4,9 +4,11 @@ import { useRouter } from "next/router";
 import authenticateMemberInPages from "@/src/utils/authenticateMemberInPages";
 import { wrapper } from "@/src/features/store";
 import { authenticateTokenInPages } from "@/src/utils/authenticateTokenInPages";
+import { useGetProductListQuery } from "@/src/features/product/productApi";
 
 export default function Login() {
   const router = useRouter();
+  const { data, error, isLoading } = useGetProductListQuery({});
 
   const handleSellerLoginClick = () => {
     router.push("/login/seller-login"); // 셀러 로그인 페이지 URL
@@ -38,10 +40,10 @@ export default function Login() {
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) => async (context) => {
     // 쿠키의 토큰을 통해 로그인 확인, 토큰 리프레시, 실패 시 로그아웃 처리 등
-    await authenticateTokenInPages(
-      { res: context.res, req: context.req },
-      store
-    );
+    // await authenticateTokenInPages(
+    //   { res: context.res, req: context.req },
+    //   store
+    // );
 
     return {
       props: {},

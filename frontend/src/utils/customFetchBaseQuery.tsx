@@ -6,8 +6,8 @@ import { removeTokenAll, setToken } from "./tokenManager";
 import { clearAuth } from "../features/auth/authSlice";
 import { useDispatch } from "react-redux";
 
-const API_URL = process.env.NEXT_PUBLIC_MEMBER_API_URL
-  ? process.env.NEXT_PUBLIC_MEMBER_API_URL
+const API_URL = process.env.NEXT_PUBLIC_API_URL
+  ? process.env.NEXT_PUBLIC_API_URL
   : "";
 const SECRET = process.env.NEXT_PUBLIC_JWT_SECRET
   ? process.env.NEXT_PUBLIC_JWT_SECRET
@@ -39,7 +39,7 @@ export const customFetchBaseQuery = (option: {
         // refresh token이 아직 만료되지 않았다면 요청
         if (refreshToken) {
           // refresh token을 헤더에 담아 요청하여 새로운 tokens 가져오기
-          const response = await fetch(API_URL + "/refresh", {
+          const response = await fetch(API_URL + "/member/refresh", {
             method: "GET",
             headers: {
               Authorization: `Bearer ${refreshToken}`,

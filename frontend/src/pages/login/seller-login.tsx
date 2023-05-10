@@ -10,7 +10,11 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import jwt from "jsonwebtoken";
-import { removeTokenAll, setToken } from "@/src/utils/tokenManager";
+import {
+  removeToken,
+  removeTokenAll,
+  setToken,
+} from "@/src/utils/tokenManager";
 import { Member, clearAuth, setMember } from "@/src/features/auth/authSlice";
 import { appCookies } from "../_app";
 import authenticateMemberInPages from "@/src/utils/authenticateMemberInPages";
@@ -90,7 +94,8 @@ export default function SellerLogin() {
 
   const handleLogout = () => {
     console.log("로그아웃 버튼이 클릭되었습니다.");
-    removeTokenAll();
+    removeToken("ACCESS_TOKEN");
+    // removeTokenAll();
     dispatch(clearAuth());
   };
 
