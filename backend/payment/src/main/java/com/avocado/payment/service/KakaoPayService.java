@@ -152,7 +152,7 @@ public class KakaoPayService {
             // 재고 확인
             if (!isEnoughInventory(purchasing))
                 throw new NoInventoryException(ErrorCode.NO_INVENTORY);
-            
+
             // 카카오페이에 승인 요청
             ResponseEntity<KakaoPayApproveResp> response = kakaoPayUtil.getApprove(
                     purchasing.getTid(), purchasingId, consumerId, pgToken, purchasing.getTotal_price()
@@ -191,14 +191,31 @@ public class KakaoPayService {
         }
     }
 
+    /**
+     * Redis 저장하던 구매 대기 정보 삭제
+     * @param purchasingId : 구매 대기 내역 ID
+     */
     @Transactional
     public void cancel(String purchasingId) {
-
+        Optional<Purchasing> optionalPurchasing = purchasingRepository.findById(purchasingId);
+        if (optionalPurchasing.isPresent()) {
+            Purchasing purchasing = optionalPurchasing.get();
+            purchasingRepository.delete(purchasing);
+        }
     }
 
+    /**
+     * Redis 저장하던 구매 대기 정보 삭제하고 결제 실패 예외 던지기
+     * @param purchasingId : 구매 대기 내역 ID
+     */
     @Transactional
     public void fail(String purchasingId) {
-
+        Optional<Purchasing> optionalPurchasing = purchasingRepository.findById(purchasingId);
+        if (optionalPurchasing.isPresent()) {
+            Purchasing purchasing = optionalPurchasing.get();
+            purchasingRepository.delete(purchasing);
+        }
+        throw new KakaoPayException(ErrorCode.APPROVE_ERROR);
     }
 
     /**
