@@ -130,7 +130,6 @@ public class CommercialService {
     }
 
 
-    // 순서대로
     public List<Analysis> getAnlyses(int commercialId){
         List<Analysis> analysisList = new ArrayList<>();
 
@@ -199,7 +198,6 @@ public class CommercialService {
 
     public List<Commercial> getRegistedCommercial(HttpServletRequest request){
         UUID uuid = jwtUtil.getId(request);
-
         List<Commercial> commercialList = commercialRepository.findByProviderId(uuid);
 
         return commercialList;

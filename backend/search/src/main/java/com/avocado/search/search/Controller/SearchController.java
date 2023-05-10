@@ -23,8 +23,7 @@ public class SearchController {
 
 
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> search(@RequestParam(name = "category", defaultValue = "All")String category, @RequestParam("keyword")String keyword){
-        return new ResponseEntity<List<Product>>(searchService.searchProduct(category,keyword), HttpStatus.ACCEPTED);
-
+    public ResponseEntity<List<Product>> search(@RequestParam(name = "category", defaultValue = "All")String category, @RequestParam(name = "keyword", defaultValue = " ")String keyword){
+        return new ResponseEntity<List<Product>>(searchService.searchProduct(category,keyword), HttpStatus.OK);
     }
 }
