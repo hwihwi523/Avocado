@@ -7,6 +7,8 @@ import java.util.List;
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import com.avocado.search.search.Entity.Product;
+import com.avocado.search.search.error.ErrorCode;
+import com.avocado.search.search.error.SearchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,14 +27,20 @@ public class SearchService {
         this.elasticsearchClient = elasticsearchClient;
     }
 
-    private boolean checkCategory(String category){
-
-
-        return false;
+    private void checkData(String category, String keyword){
+        if(category == null){
+            throw new SearchException(ErrorCode.CATEGORY_NULL_EXCEPTION);
+        }
+        if(keyword == null){
+            throw new SearchException(ErrorCode.KEYWORD_NULL_EXCEPTIOIN);
+        }
+        if(category.equals("Bottomwear")||category.equals("Dress")||category.equals("Footwear")||category.equals("Bags")||category.equals("Accessories")||category.equals("All")){
+            throw new SearchException(ErrorCode.INVALID_CATEGORY);
+        }
     }
 
-
     public List<Product> searchProduct(String category, String keyword){
+        checkData(category,keyword);
 
         SearchResponse<Product> search;
         List<Product> products = new ArrayList<>();
@@ -71,8 +79,10 @@ public class SearchService {
             }
         } catch (ElasticsearchException e) {
             e.printStackTrace();
+            throw new SearchException(ErrorCode.UNCOVERED_ELASTIC_SEARCH_ERROR);
         } catch (IOException e) {
             e.printStackTrace();
+            throw new SearchException(ErrorCode.UNCOVERED_ERROR);
         }
 
 

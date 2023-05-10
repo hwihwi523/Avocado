@@ -10,6 +10,8 @@ import com.avocado.commercial.Dto.response.item.Click;
 import com.avocado.commercial.Dto.response.item.Exposure;
 import com.avocado.commercial.Dto.response.item.Purchase;
 import com.avocado.commercial.Entity.Commercial;
+import com.avocado.commercial.Entity.CommercialExposure;
+import com.avocado.commercial.Repository.CommercialExposureRepository;
 import com.avocado.commercial.Repository.CommercialRepository;
 import com.avocado.commercial.util.JwtUtil;
 import com.avocado.commercial.util.UUIDUtil;
@@ -26,6 +28,7 @@ import java.util.*;
 public class CommercialService {
 
     private CommercialRepository commercialRepository;
+    private CommercialExposureRepository commercialExposureRepository;
     private ImageService imageService;
     private JwtUtil jwtUtil;
 
@@ -33,8 +36,9 @@ public class CommercialService {
     private final int TYPE_CAROUSEL = 1;
 
     @Autowired
-    public CommercialService(CommercialRepository commercialRepository, ImageService imageService, JwtUtil jwtUtil){
+    public CommercialService(CommercialRepository commercialRepository, CommercialExposureRepository commercialExposureRepository, ImageService imageService, JwtUtil jwtUtil){
         this.commercialRepository = commercialRepository;
+        this.commercialExposureRepository = commercialExposureRepository;
         this.imageService = imageService;
         this.jwtUtil = jwtUtil;
     }
@@ -84,7 +88,13 @@ public class CommercialService {
 
         // 광고를 하나 뽑아 popup으로 넣는다
         if(0 <popupEntityList.size()) {
-            commercialRespDto.setPopup((popupEntityList.get(random.nextInt(popupEntityList.size())).toPopup()));
+            Commercial commercial = popupEntityList.get(random.nextInt(popupEntityList.size()));
+            CommercialExposure commercialExposure = new CommercialExposure();
+            commercialExposure.setCommercialId(commercial.getId());
+            commercialRespDto.setPopup(commercial.toPopup());
+            System.out.println(commercialRespDto);
+            System.out.println(commercialExposure);
+            commercialExposureRepository.save(commercialExposure);
         }
         
         
@@ -92,6 +102,9 @@ public class CommercialService {
         if(carouselEntityList.size() < 5) {
             for (Commercial commercial : carouselEntityList) {
                 carouselList.add(commercial.toCarousel());
+                CommercialExposure commercialExposure = new CommercialExposure();
+                commercialExposure.setCommercialId(commercial.getId());
+                commercialExposureRepository.save(commercialExposure);
             }
             commercialRespDto.setCarousel_list(carouselList);
             return commercialRespDto;
@@ -106,6 +119,9 @@ public class CommercialService {
         }
         for (Commercial commercial : commercialSet) {
             carouselList.add(commercial.toCarousel());
+            CommercialExposure commercialExposure = new CommercialExposure();
+            commercialExposure.setCommercialId(commercial.getId());
+            commercialExposureRepository.save(commercialExposure);
         }
         commercialRespDto.setCarousel_list(carouselList);
 
@@ -114,7 +130,6 @@ public class CommercialService {
     }
 
 
-    // 순서대로
     public List<Analysis> getAnlyses(int commercialId){
         List<Analysis> analysisList = new ArrayList<>();
 
@@ -183,7 +198,6 @@ public class CommercialService {
 
     public List<Commercial> getRegistedCommercial(HttpServletRequest request){
         UUID uuid = jwtUtil.getId(request);
-
         List<Commercial> commercialList = commercialRepository.findByProviderId(uuid);
 
         return commercialList;
