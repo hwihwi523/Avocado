@@ -6,7 +6,7 @@ import { InputAdornment, TextField } from "@mui/material";
 import { AddressInput } from "../components/molecues";
 import MapIcon from "@mui/icons-material/Map";
 import { useSnackbar } from "notistack";
-
+import Head from "next/head"
 const BillingPage = () => {
   const [addressInputVisible, setAddressInputVisible] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
@@ -93,6 +93,9 @@ const BillingPage = () => {
 
   return (
     <Background>
+      <Head>
+        <title>계산서</title>
+      </Head>
       <Stack spacing={2} style={{ marginBottom:"50px"}}>
         {/* 주문자정보 */}
         <Box>

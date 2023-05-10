@@ -13,6 +13,7 @@ import {
 } from "../../components/molecues/form";
 import router from "next/router";
 import { BlockText } from "@/src/components/atoms";
+import Head from "next/head"
 
 const UserInputForm = () => {
   const [page, setPage] = useState(0);
@@ -27,6 +28,9 @@ const UserInputForm = () => {
 
   return (
     <Stack spacing={2}>
+      <Head>
+        <title>개인정보 등록</title>
+      </Head>
 
       <div style={{ marginTop: "20px", display: page == 0 ? "none" : "" }}>
         <IconButton

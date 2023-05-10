@@ -25,14 +25,17 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import { TransitionProps } from "@mui/material/transitions";
 import { useState } from "react";
 import { Button } from "@mui/material";
-
-
-import router from 'next/router'
+import Head from "next/head";
+import router from "next/router";
 
 const ProductDetail = () => {
   const [size, setSize] = useState("M");
   const [count, setCount] = useState(1);
   const [open, setOpen] = React.useState(false);
+
+
+
+  
 
   //모달 오픈
   const handleClickOpen = () => {
@@ -61,46 +64,63 @@ const ProductDetail = () => {
     }
   }
 
-
   //구매하기 함수
-  function purchaseHandler(){
+  function purchaseHandler() {
     console.log({
-      id:123123,
+      id: 123123,
       size,
       count,
-    })
+    });
 
-    router.push("/billing")
-    
+    router.push("/billing");
   }
 
   // 장바구니에 담기
-  function addToCart(){
+  function addToCart() {
     console.log({
-      id:123123,
+      id: 123123,
       size,
       count,
-    })
+    });
   }
 
   return (
     <>
+      <Head>
+        <title>제품이름</title>
+        <meta name="description" content="스토어 설명"/>
+        <meta
+          name="keywords"
+          content={`제품카테고리, 제품 종류 , 등등`}
+        />
+        <meta property="og:title" content="스토어 이름" />
+        <meta property="og:description" content="스토어 설명" />
+      </Head>
       <Background>
         <Grid container gap={2}>
+          {/* 제품 이미지 */}
           <Grid item xs={12}>
             <ProductDetailImage />
             <DividerBar />
           </Grid>
+
+          {/* mbti chart */}
           <Grid item xs={12}>
             <ChartMbti />
           </Grid>
+
+          {/* personal color chart */}
           <Grid item xs={12}>
             <ChartPersonalColor />
           </Grid>
+
+          {/* 상품 설명 */}
           <Grid item xs={12}>
             <ProductDescription />
             <DividerBar />
           </Grid>
+
+          {/* 연관 상품 */}
           <Grid item xs={12}>
             <BlockText type="B" size="1.3rem" style={{ marginBottom: "10px" }}>
               연관 상품
@@ -108,6 +128,8 @@ const ProductDetail = () => {
             <ProductCardsRow />
             <DividerBar />
           </Grid>
+
+          {/* 리뷰작성 */}
           <Grid item xs={12}>
             <BlockText type="B" size="1.3rem" style={{ marginBottom: "10px" }}>
               리뷰 작성하기
@@ -174,7 +196,7 @@ const ProductDetail = () => {
                 구매하기
               </Button>
               <Button
-              onClick={addToCart}
+                onClick={addToCart}
                 fullWidth
                 style={{
                   backgroundColor: "white",

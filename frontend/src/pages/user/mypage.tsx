@@ -8,10 +8,14 @@ import {
 } from "../../components/oranisms";
 import { ChartPersonalColor } from "../../components/oranisms/charts";
 import Link from 'next/link'
+import Head from 'next/head'
 
 const Mypage = () => {
   return (
     <Background>
+      <Head>
+        <title>마이페이지</title>
+      </Head>
       <Stack direction={"column"} spacing={2}>
         <UserProfile />
         <UserStateSummary />
