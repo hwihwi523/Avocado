@@ -25,7 +25,7 @@ const Seller = () => {
     <Background>
       <TabContext value={page}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <TabList onChange={handleChange} aria-label="lab API tabs example"  centered>
+          <TabList onChange={handleChange} aria-label="lab API tabs example"  variant="fullWidth" centered>
             <Tab label="통계" value="통계" />
             <Tab label="상품 목록" value="상품 목록" />
             <Tab label="광고 전략" value="광고 전략" />
@@ -40,6 +40,7 @@ const Seller = () => {
         {/* 상품 목록 */}
         <TabPanel style={{padding:"10px 0px 90px 0px" , margin:0}} value="상품 목록">
           <MyProductsList />
+          
         </TabPanel>
 
         {/* 광고 전략 */}

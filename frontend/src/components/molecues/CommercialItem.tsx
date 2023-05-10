@@ -32,7 +32,7 @@ type Item = {
   provider_id: number;
 };
 
-const CommercialState: React.FC<{ data: Item }> = (props) => {
+const CommercialItem: React.FC<{ data: Item }> = (props) => {
   const {
     id,
     age,
@@ -128,7 +128,7 @@ const CommercialState: React.FC<{ data: Item }> = (props) => {
   );
 };
 
-export default CommercialState;
+export default CommercialItem;
  
 const Background = styled.div`
   padding: 10px;

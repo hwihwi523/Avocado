@@ -50,7 +50,7 @@ const ReviewInput = (props: any) => {
             />
           </Grid>
           <Grid item xs={12}>
-            <Button variant="outlined" fullWidth style={{height:"50px"}} >댓글 입력</Button>
+            <Button  fullWidth style={{height:"50px", backgroundColor:"black", color:"white"}} >댓글 입력</Button>
           </Grid>
         </Grid>
       </form>

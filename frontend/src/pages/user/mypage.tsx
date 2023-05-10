@@ -20,7 +20,6 @@ const Mypage = () => {
         <Box>
           <Stack direction={"row"} justifyContent={"space-between"}>
             <InlineText>최근 본 상품</InlineText>
-            <InlineText>더보기 +</InlineText>
           </Stack>
           <ProductCardsRow />
         </Box>

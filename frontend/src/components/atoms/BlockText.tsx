@@ -29,7 +29,7 @@ const BlockText = ({
 };
 
 const StyledP = styled.p<Style>`
-  font-family: SeoulNamsan ${(props) => props.type};
+  font-family: SeoulNamsan${(props) => props.type};
   font-size: ${(props) => props.size};
   font-weight: ${(props) => props.fontWeight};
   color: ${(props) => props.color};
