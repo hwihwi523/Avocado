@@ -36,27 +36,8 @@ import java.util.concurrent.TimeUnit;
 @Service
 @RequiredArgsConstructor
 public class KakaoPayService {
-    @Value("${kakao-pay.host}")
-    private String host;
-    @Value("${kakao-pay.url.api.ready}")
-    private String apiReadyUrl;
-    @Value("${kakao-pay.url.api.approve}")
-    private String apiApproveUrl;
-    @Value("${kakao-pay.cid}")
-    private String cid;
-
-    @Value("${kakao-pay.url.handle.host}")
-    private String handleHost;
-    @Value("${kakao-pay.url.handle.approve}")
-    private String handleApprovalUrl;
-    @Value("${kakao-pay.url.handle.cancel}")
-    private String handleCancelUrl;
-    @Value("${kakao-pay.url.handle.fail}")
-    private String handleFailUrl;
-
     @PersistenceContext
     private final EntityManager em;
-    private final RestTemplate restTemplate;
 
     private final String LOCK_NAME = "PAY_LOCK";
     private final RedissonClient redissonClient;
@@ -105,28 +86,8 @@ public class KakaoPayService {
                     " 외 " + (merchandiseList.size() - 1) + "건";
         }
 
-        // 데이터 취합하여 body 생성
-        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("cid", cid);
-        body.add("partner_order_id", strPurchaseId);
-        body.add("partner_user_id", consumerId);
-        body.add("item_name", name);
-        body.add("quantity", String.valueOf(quantity));
-        body.add("total_amount", String.valueOf(paymentReq.getTotal_price()));
-        body.add("tax_free_amount", "0");
-        body.add("approval_url", handleHost + handleApprovalUrl + strPurchaseId);
-        body.add("cancel_url", handleHost + handleCancelUrl + strPurchaseId);
-        body.add("fail_url", handleHost + handleFailUrl + strPurchaseId);
-
-        // body, headers 취합
-        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(body, kakaoPayUtil.getKakaoPayHeaders());
-
         // API 요청
-        ResponseEntity<KakaoPayReadyResp> response = restTemplate.postForEntity(
-                host + apiReadyUrl,
-                entity,
-                KakaoPayReadyResp.class
-        );
+        ResponseEntity<KakaoPayReadyResp> response = kakaoPayUtil.getReady(strPurchaseId, consumerId, name, quantity, paymentReq.getTotal_price());
 
         // 오류 발생 시 예외 던지기
         if (response.getStatusCodeValue() != 200)
@@ -191,24 +152,10 @@ public class KakaoPayService {
             // 재고 확인
             if (!isEnoughInventory(purchasing))
                 throw new NoInventoryException(ErrorCode.NO_INVENTORY);
-
-            // body 생성
-            MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-            body.add("cid", cid);
-            body.add("tid", purchasing.getTid());
-            body.add("partner_order_id", purchasingId);
-            body.add("partner_user_id", consumerId);
-            body.add("pg_token", pgToken);
-            body.add("total_amount", String.valueOf(purchasing.getTotal_price()));
-
-            // headers와 취합하여 entity 생성
-            HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(body, kakaoPayUtil.getKakaoPayHeaders());
-
+            
             // 카카오페이에 승인 요청
-            ResponseEntity<KakaoPayApproveResp> response = restTemplate.postForEntity(
-                    host + apiApproveUrl,
-                    httpEntity,
-                    KakaoPayApproveResp.class
+            ResponseEntity<KakaoPayApproveResp> response = kakaoPayUtil.getApprove(
+                    purchasing.getTid(), purchasingId, consumerId, pgToken, purchasing.getTotal_price()
             );
 
             // 정상 응답이 아니라면 예외 던지기
