@@ -1,7 +1,16 @@
+buildscript {
+    ext {
+        queryDslVersion = "5.0.0"
+    }
+}
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.11'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+
+    // QueryDSL
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'com.avocado'
@@ -13,6 +22,7 @@ configurations {
         extendsFrom annotationProcessor
     }
 }
+
 
 repositories {
     mavenCentral()
@@ -31,8 +41,19 @@ dependencies {
     implementation 'org.redisson:redisson-spring-boot-starter:3.17.0'
 
     // mysql
-    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.3'
     runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // mybatis
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.3'
+
+    // jpa
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // QueryDSL
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}" // QueryDSL 라이브러리
+    annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}" //  QueryDSL 관련 코드 생성 기능 제공
+
+
 
     // jwt
     implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
@@ -47,4 +68,23 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+//QueryDSL 추가
+def querydslDir = "$buildDir/generated/querydsl"
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+
+sourceSets { // IDE 소스 폴더에 자동으로 넣어준다.
+    main.java.srcDir querydslDir
+}
+
+configurations {
+    querydsl.extendsFrom compileClasspath // 컴파일이 될때 같이 수행
+}
+
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl // Q 파일을 생성해준다.
 }

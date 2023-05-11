@@ -56,15 +56,15 @@ public class ScoreRepository {
         }
     }
 
-    public void save(CategoryType cType, Type resType, int id) {
-        RMap<Integer, Long> map = redisson.getMap(getKey(id, cType, resType));
+    public void save(CategoryType cType, Type resType, Long merchandiseId, int id) {
+        RMap<Integer, Long> map = redisson.getMap(getKey(merchandiseId, cType, resType));
         map.putIfAbsent(id, 0L);
         Long cnt = map.get(id);
         map.put(id, cnt + 1);
     }
 
-    public long[] getById(CategoryType cType, Type resType, long id) {
-        RMap<Integer, Long> map = redisson.getMap(getKey(id, cType, resType));
+    public long[] getByMerchandiseId(CategoryType cType, Type resType, Long merchandiseId) {
+        RMap<Integer, Long> map = redisson.getMap(getKey(merchandiseId, cType, resType));
         int varSize = getVarSize(cType);
 
         long[] resArr = new long[varSize];
