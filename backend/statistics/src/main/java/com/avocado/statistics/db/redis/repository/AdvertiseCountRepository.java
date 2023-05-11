@@ -9,6 +9,10 @@ import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Map;
 
 @Component
@@ -18,27 +22,28 @@ public class AdvertiseCountRepository {
     private final RedisKeys redisKeys;
     private final RedissonClient redisson;
 
-    public void save(Type resType, Long merchandiseId) {
-        RMap<Long, Long> map = redisson.getMap(getKey(resType));
-        map.putIfAbsent(merchandiseId, 0L);
-        Long cnt = map.get(merchandiseId);
+    public void save(Type resType, String date, Long merchandiseId) {
+        RMap<Long, Integer> map = redisson.getMap(getKey(resType, date));
+        map.putIfAbsent(merchandiseId, 0);
+        Integer cnt = map.get(merchandiseId);
         map.put(merchandiseId, cnt + 1);
     }
 
-    public Map<Long, Long> getMap(Type resType) {
-        RMap<Long, Long> map = redisson.getMap(getKey(resType));
+    public Map<Long, Integer> getMap(Type resType, String date) {
+        RMap<Long, Integer> map = redisson.getMap(getKey(resType, date));
         return map.readAllMap();
     }
 
-    public boolean deleteMap(Type resType) {
-        RMap<Long, Long> map = redisson.getMap(getKey(resType));
+    public boolean deleteMap(Type resType, String date) {
+        RMap<Long, Integer> map = redisson.getMap(getKey(resType, date));
         return map.delete();
     }
 
-    private String getKey(Type resType) {
+    private String getKey(Type resType, String date) {
         StringBuilder sb =  new StringBuilder();
         sb.append(redisKeys.commPrefix)
-        .append(redisKeys.adPrefix);
+        .append(redisKeys.adPrefix)
+        .append(date).append("-");
         switch (resType) {
             case AD_VIEW:
                 sb.append(redisKeys.viewPrefix);
@@ -54,6 +59,4 @@ public class AdvertiseCountRepository {
         }
         return sb.toString();
     }
-
-
 }

@@ -1,10 +1,14 @@
 package com.avocado.statistics.kafka.dto;
 
+import lombok.Builder;
+import lombok.Data;
+import lombok.ToString;
+
+import java.util.List;
+
+@Builder
+@ToString
 public class AdStatus {
-    Long merchandiseId;
-    String date;
-    Integer exposureCnt;
-    Integer clickCnt;
-    Integer purchaseAmount;
-    Integer quantity;
+    private String date;
+    private List<Status> statusList;
 }

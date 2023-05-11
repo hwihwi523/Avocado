@@ -2,6 +2,7 @@ package com.avocado.statistics.api.service;
 
 import com.avocado.statistics.common.error.BaseException;
 import com.avocado.statistics.common.error.ResponseCode;
+import com.avocado.statistics.common.utils.DateUtil;
 import com.avocado.statistics.db.mysql.repository.ConsumerRepository;
 import com.avocado.statistics.db.mysql.entity.Consumer;
 import com.avocado.statistics.db.redis.repository.AdvertiseCountRepository;
@@ -26,6 +27,7 @@ public class StreamService {
     private final MerchandiseIdSetRepository merchandiseIdSetRepository;
     private final ConsumerRepository consumerRepository;
     private final AdvertiseCountRepository advertiseCountRepository;
+    private final DateUtil dateUtil;
 
     public void consumeResult(Result result) {
         Long merchandiseId = result.getMerchandiseId();
@@ -36,7 +38,8 @@ public class StreamService {
 
         // 광고 처리하기
         if (resType.equals(Type.AD_CLICK) || resType.equals(Type.AD_VIEW) || resType.equals(Type.AD_PAYMENT)) {
-            advertiseCountRepository.save(resType, merchandiseId);
+            String date = dateUtil.getNowDate();
+            advertiseCountRepository.save(resType, date, merchandiseId);
         }
         // 점수 저장하기
         else {
