@@ -43,11 +43,10 @@ export default function MemberLogin() {
 
   const handleLogout = () => {
     console.log("로그아웃 버튼이 클릭되었습니다.");
-    removeToken("ACCESS_TOKEN");
-    // removeTokenAll();
-    // dispatch(clearAuth());
-    // 로그인 페이지로 이동
-    // router.push("/login");
+    removeTokenAll();
+    dispatch(clearAuth());
+    //로그인 페이지로 이동
+    router.push("/login");
   };
 
   return (

@@ -1,6 +1,8 @@
 import { useRouter } from "next/router";
+import querystring from "querystring";
 
 export function useQueryParams() {
   const router = useRouter();
-  return new URLSearchParams(router.query);
+  const params = querystring.stringify(router.query);
+  return new URLSearchParams(params);
 }
