@@ -236,7 +236,6 @@ public class KakaoPayService {
      * @param consumerId : 구매자 ID
      * @param paymentReq : 구매 정보
      */
-    @DistributedLock(key = DistributedLockName.PAY)
     @Transactional
     public void testPay(String consumerId, ReadyForPaymentReq paymentReq) {
         List<PurchaseMerchandiseReq> merchandiseReqs = paymentReq.getMerchandises();
@@ -291,7 +290,13 @@ public class KakaoPayService {
                 .build();
         purchasingRepository.save(purchasing);
 
+        // 구매내역 등록 및 재고 감소 등 실거래 완료 처리
+        testApprove(purchasing);
+    }
+    @DistributedLock(key = DistributedLockName.PAY)
+    public void testApprove(Purchasing purchasing) {
         String purchasingId = purchasing.getId();
+        String consumerId = purchasing.getConsumer_id();
 
         // 재고 확인
         if (!isEnoughInventory(purchasing))
