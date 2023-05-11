@@ -1,7 +1,6 @@
 package com.avocado.product.controller;
 
 import com.avocado.product.config.JwtUtil;
-import com.avocado.product.config.UUIDUtil;
 import com.avocado.product.dto.request.AddReviewReq;
 import com.avocado.product.dto.request.RemoveReviewReq;
 import com.avocado.product.dto.response.BaseResp;
@@ -12,7 +11,6 @@ import com.avocado.product.service.MerchandiseService;
 import com.avocado.product.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
