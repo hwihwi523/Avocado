@@ -1,22 +1,17 @@
 package com.avocado.statistics.db.mysql.entity;
 
-import java.time.LocalDateTime;
+import lombok.Data;
+
 import java.util.UUID;
 
+@Data
 public class Consumer {
 
     UUID id;
     String name;
-    String email;
     String pictureUrl;
     String gender;
-    Integer ageGroup;
-    LocalDateTime createdAt;
-    LocalDateTime updatedAt;
-    Integer height;
-    Integer weight;
-    Integer mbtiId;
+    Integer age;
     Integer personalColorId;
-    int auth;
-
+    Integer mbtiId;
 }

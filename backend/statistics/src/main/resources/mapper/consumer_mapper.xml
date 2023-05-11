@@ -6,7 +6,8 @@
 <mapper namespace="com.avocado.community.db.repository.ConsumerRepository">
 
     <select id="getById" resultType="Consumer">
-        select id, content, picture_url, rating, created_at from styleshot
+        select id, age, gender, name, picture_url, mbti_id, personal_color_id from cosumer
+        where id = #{consumerId}
     </select>
 
 <!--    <select id="getAllByConsumerId" resultType="StyleshotResp">-->

@@ -20,7 +20,7 @@ public class MerchandiseIdSetRepository {
         this.bitSet = redisson.getBitSet(key);
     }
 
-    public void setUse(int merchandiseId) {
+    public void setUse(Long merchandiseId) {
         bitSet.set(merchandiseId);
     }
 
