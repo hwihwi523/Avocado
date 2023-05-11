@@ -7,6 +7,7 @@ import com.avocado.product.dto.request.RemoveReviewReq;
 import com.avocado.product.dto.response.BaseResp;
 import com.avocado.product.dto.response.DetailMerchandiseResp;
 import com.avocado.product.dto.response.ReviewResp;
+import com.avocado.product.exception.BusinessLogicException;
 import com.avocado.product.service.MerchandiseService;
 import com.avocado.product.service.ReviewService;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +25,18 @@ import java.util.UUID;
 public class DetailMerchandiseController {
     private final MerchandiseService merchandiseService;
     private final ReviewService reviewService;
-    private final UUIDUtil uuidUtil;
     private final JwtUtil jwtUtil;
 
     @GetMapping("")
-    public ResponseEntity<BaseResp> showDetailMerchandise(@PathVariable Long merchandise_id, @RequestParam @Nullable String user_id) {
-        UUID consumerId = user_id != null ? uuidUtil.joinByHyphen(user_id) : null;
+    public ResponseEntity<BaseResp> showDetailMerchandise(@PathVariable Long merchandise_id,
+                                                          HttpServletRequest request) {
+        UUID consumerId;
+        try {  // 토큰이 있을 경우
+            consumerId = jwtUtil.getId(request);
+        } catch (BusinessLogicException e) {  // 토큰이 없을 경우
+            consumerId = null;
+        }
+
         DetailMerchandiseResp detailMerchandiseResp = merchandiseService.showDetailMerchandise(consumerId, merchandise_id);
         return ResponseEntity.ok(BaseResp.of("상품 상세정보 조회 성공", detailMerchandiseResp));
     }
