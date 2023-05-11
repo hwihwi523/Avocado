@@ -27,15 +27,15 @@ import { useState } from "react";
 import { Button } from "@mui/material";
 import Head from "next/head";
 import router from "next/router";
+import { wrapper } from "@/src/features/store";
+import { authenticateTokenInPages } from "@/src/utils/authenticateTokenInPages";
+import { productApi } from "@/src/features/product/productApi";
+import { authApi } from "@/src/features/auth/authApi";
 
 const ProductDetail = () => {
   const [size, setSize] = useState("M");
   const [count, setCount] = useState(1);
   const [open, setOpen] = React.useState(false);
-
-
-
-  
 
   //모달 오픈
   const handleClickOpen = () => {
@@ -85,14 +85,11 @@ const ProductDetail = () => {
   }
 
   return (
-    <>
+    <div>
       <Head>
         <title>제품이름</title>
-        <meta name="description" content="스토어 설명"/>
-        <meta
-          name="keywords"
-          content={`제품카테고리, 제품 종류 , 등등`}
-        />
+        <meta name="description" content="스토어 설명" />
+        <meta name="keywords" content={`제품카테고리, 제품 종류 , 등등`} />
         <meta property="og:title" content="스토어 이름" />
         <meta property="og:description" content="스토어 설명" />
       </Head>
@@ -213,7 +210,7 @@ const ProductDetail = () => {
       </Dialog>
 
       <ProductBottom openModal={handleClickOpen} />
-    </>
+    </div>
   );
 };
 
@@ -240,3 +237,31 @@ const DividerBar = styled.div`
   height: 1px;
   margin: 20px 0px;
 `;
+
+// SSR
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) => async (context) => {
+    // 쿠키의 토큰을 통해 로그인 확인, 토큰 리프레시, 실패 시 로그아웃 처리 등
+    await authenticateTokenInPages(
+      { res: context.res, req: context.req },
+      store
+    );
+
+    // URL에서 마지막 경로 세그먼트 가져오기
+    const resolvedUrl = context.resolvedUrl;
+    const segments = resolvedUrl.split("/");
+    const lastSegment = segments[segments.length - 1];
+
+    // lastSegment를 활용하여 필요한 데이터를 가져와서 페이지 렌더링에 활용
+    const response = await store.dispatch(
+      productApi.endpoints.getProductDetail.initiate(lastSegment)
+    );
+
+    // 응답을 변환하여 store에 저장
+    const productDetail = response.data;
+
+    return {
+      props: {},
+    };
+  }
+);
