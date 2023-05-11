@@ -54,10 +54,14 @@ public class JwtUtil {
         throw new BusinessLogicException(ErrorCode.WRONG_HEADER);
     }
 
-    private Claims parseClaims(String token) throws ExpiredJwtException {
-        Claims claims = Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).getBody();
-        log.info("claims: {}", claims);
-        return claims;
+    private Claims parseClaims(String token) {
+        try {
+            Claims claims = Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).getBody();
+            log.info("claims: {}", claims);
+            return claims;
+        } catch (ExpiredJwtException e) {
+            throw new BusinessLogicException(ErrorCode.EXPIRED_TOKEN);
+        }
     }
 
     public Claims getClaims(HttpServletRequest request) {
