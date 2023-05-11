@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { HYDRATE } from "next-redux-wrapper";
-import { Product } from "./productSlice";
+import { Product, ProductDetail } from "./productSlice";
 import { customFetchBaseQuery } from "@/src/utils/customFetchBaseQuery";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -25,6 +25,12 @@ interface Data {
   content: Product[];
 }
 
+// /merchandises/{merchandise_id}?user_id={user_id}
+interface ProductDetailResponse {
+  message: string;
+  data: ProductDetail;
+}
+
 export const productApi = createApi({
   reducerPath: "productApi",
   baseQuery: customFetchBaseQuery({ baseUrl: API_URL + "/merchandise" }),
@@ -42,7 +48,10 @@ export const productApi = createApi({
         params,
       }),
     }),
+    getProductDetail: builder.query<ProductDetailResponse, string>({
+      query: (id) => `/merchandises/${id}`,
+    }),
   }),
 });
 
-export const { useGetProductListQuery } = productApi;
+export const { useGetProductListQuery, useGetProductDetailQuery } = productApi;
