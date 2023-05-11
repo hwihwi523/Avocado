@@ -34,10 +34,10 @@ public class JwtUtil {
 
     @Autowired
     private JwtUtil(@Value("${jwt.secret}") String secretKey,
-                     @Value("${jwt.access_expiration}") long eccExpirationTime,
-                     @Value("${jwt.refresh_expiration}") long refExpirationTime,
-                     @Value("${jwt.issuer}") String issuer,
-                     UUIDUtil uuidUtil) {
+                    @Value("${jwt.access_expiration}") long eccExpirationTime,
+                    @Value("${jwt.refresh_expiration}") long refExpirationTime,
+                    @Value("${jwt.issuer}") String issuer,
+                    UUIDUtil uuidUtil) {
         this.SECRET_KEY = Keys.hmacShaKeyFor(secretKey.getBytes());
         this.ACCESS_EXPIRATION_TIME = eccExpirationTime;
         this.REFRESH_EXPIRATION_TIME = refExpirationTime;
@@ -59,6 +59,11 @@ public class JwtUtil {
     }
 
     private Claims parseClaims(String token) throws ExpiredJwtException {
+
+        if(2 !=  token.chars().filter(c -> c == '.').count()){
+            throw new CommercialException(ErrorCode.INVALID_AUTH_TOKEN);
+        }
+
         Claims claims = Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).getBody();
         log.info("claims: {}", claims);
         return claims;

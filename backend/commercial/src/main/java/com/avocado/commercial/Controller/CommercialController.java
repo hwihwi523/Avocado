@@ -20,7 +20,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-////ads?age={age}&gender={gender}mbti_id={mbti_id}&commercial_type_id={commercial_type_id}&personal_color_id={personal_color_id}
 public class CommercialController {
 
     private CommercialService commercialService;

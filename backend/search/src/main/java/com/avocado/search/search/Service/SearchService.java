@@ -88,10 +88,6 @@ public class SearchService {
             throw new SearchException(ErrorCode.UNCOVERED_ERROR);
         }
 
-        if(products.size() == 0){
-            throw new SearchException(ErrorCode.PRODUCT_NOT_FOUND);
-        }
-
         return products;
     }
 
