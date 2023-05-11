@@ -11,7 +11,12 @@ import static org.springframework.http.HttpStatus.*;
 public enum ErrorCode {
 
     /* 400 BAD_REQUEST : 잘못된 요청 */
-    //INVALID_REFRESH_TOKEN(BAD_REQUEST, "리프레시 토큰이 유효하지 않습니다"),
+    BAD_FILE_FORMAT(BAD_REQUEST, "파일 형식을 다시 확인해주세요"),
+    BAD_MBTI_ID(BAD_REQUEST,"잘못된 MBTI 식별자입니다"),
+    BAD_COMMERCIAL_TYPE(BAD_REQUEST,"잘못된 광고 타입입니다"),
+    BAD_PERSONAL_COLOR(BAD_REQUEST,"잘못된 퍼스널 컬러 타입입니다"),
+    BAD_AGE(BAD_REQUEST,"잘못된 연령값입니다"),
+    BAD_GENDER_TYPE(BAD_REQUEST,"잘못된 성별 식별자입니다(M 또는 F 사용)"),
 
     /* 401 UNAUTHORIZED : 인증되지 않은 사용자 */
     INVALID_AUTH_TOKEN(UNAUTHORIZED, "권한 정보가 없는 토큰입니다"),
