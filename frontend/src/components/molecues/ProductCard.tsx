@@ -1,7 +1,5 @@
 import styled from "@emotion/styled";
 import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
-
 import Stack from "@mui/material/Stack";
 import Chip from "@mui/material/Chip";
 import Tooltip from "@mui/material/Tooltip";
@@ -96,27 +94,29 @@ const ProductCard = (props: any) => {
       </Card>
 
       {/* 북마크 버튼 */}
-      <IconButton
-        style={{
-          position: "absolute",
-          right: "20px",
-          bottom: "45%",
-          backgroundColor: "black",
-          color: "white",
-          opacity: "0.5",
-        }}
-        onClick={() => {
-          setBookmark(!bookmark);
-        }}
-      >
-        <Tooltip title="찜하기" placement="top">
-          {bookmark ? (
-            <BookmarkOutlinedIcon fontSize="small" />
-          ) : (
-            <BookmarkBorderOutlinedIcon fontSize="small" />
-          )}
-        </Tooltip>
-      </IconButton>
+      {isBookmark && (
+        <IconButton
+          style={{
+            position: "absolute",
+            right: "20px",
+            bottom: "45%",
+            backgroundColor: "black",
+            color: "white",
+            opacity: "0.5",
+          }}
+          onClick={() => {
+            setBookmark(!bookmark);
+          }}
+        >
+          <Tooltip title="찜하기" placement="top">
+            {bookmark ? (
+              <BookmarkOutlinedIcon fontSize="small" />
+            ) : (
+              <BookmarkBorderOutlinedIcon fontSize="small" />
+            )}
+          </Tooltip>
+        </IconButton>
+      )}
     </Background>
   );
 };
