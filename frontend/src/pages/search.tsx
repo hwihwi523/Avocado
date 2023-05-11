@@ -1,5 +1,10 @@
 import styled from "@emotion/styled";
-import { Stack, TextField, InputAdornment, dividerClasses } from "@mui/material";
+import {
+  Stack,
+  TextField,
+  InputAdornment,
+  dividerClasses,
+} from "@mui/material";
 import { useRef, useState, ChangeEvent, useCallback } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import { ProductCardsGrid } from "../components/oranisms";
@@ -17,9 +22,9 @@ const Search = () => {
   const [keyword, setKeyword] = useState("");
 
   const { data: recommands, isLoading: recommandsLoading } =
-    useGetRecommandsQuery(keyword );
+    useGetRecommandsQuery(keyword);
   const { data: productList, isLoading: productListLoading } =
-    useGetProductListQuery( keyword );
+    useGetProductListQuery(keyword);
 
   // 제출 함수
   const submitHandler = (event: any) => {
@@ -66,16 +71,16 @@ const Search = () => {
         />
       </form>
       {/* 추천 검색어 */}
-      {recommands && recommands.map((item,i)=>(
-        <div key={i}>{item.name} </div>
-      ))}
+      {recommands &&
+        recommands.map((item, i) => <div key={i}>{item.name} </div>)}
 
       {keyword && (
         <BlockText style={{ margin: "10px" }} color="grey" size="0.9rem">
           검색어: {keyword}
         </BlockText>
       )}
-      {productList && productList.map((item,i)=><div key={i}>나온다ㅏㅏ</div>)}
+      {productList &&
+        productList.map((item, i) => <div key={i}>{item.name}</div>)}
     </Background>
   );
 };
