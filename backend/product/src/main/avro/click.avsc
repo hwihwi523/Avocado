@@ -1,0 +1,8 @@
+{
+  "name": "Click",
+  "namespace": "com.avocado.product",
+  "type": "record",
+  "fields": [
+    {"name": "merchandiseId", "type": "long"}
+  ]
+}

@@ -11,6 +11,10 @@ plugins {
 
 	// QueryDSL
 	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+
+	// avro
+	id "com.github.davidmc24.gradle.plugin.avro" version "1.7.1"
+
 }
 
 group = 'com.avocado'
@@ -39,6 +43,13 @@ dependencies {
 	// QueryDSL
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}" // QueryDSL 라이브러리
 	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}" //  QueryDSL 관련 코드 생성 기능 제공
+
+	// kafka
+	implementation 'org.springframework.kafka:spring-kafka' // 버전을 명시하지 않아 Boot가 compatible version을 찾게 하는 것이 좋음
+	testImplementation 'org.springframework.kafka:spring-kafka-test'
+
+	// avro
+	implementation "org.apache.avro:avro:1.11.1"
 }
 
 tasks.named('test') {

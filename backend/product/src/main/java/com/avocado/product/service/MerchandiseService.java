@@ -1,10 +1,12 @@
 package com.avocado.product.service;
 
+import com.avocado.product.Click;
 import com.avocado.product.dto.query.ClickMerchandiseDTO;
 import com.avocado.product.dto.query.DetailMerchandiseDTO;
 import com.avocado.product.dto.query.PurchaseHistoryMerchandiseDTO;
 import com.avocado.product.dto.query.SimpleMerchandiseDTO;
 import com.avocado.product.dto.response.*;
+import com.avocado.product.kafka.KafkaProducer;
 import com.avocado.product.repository.MerchandiseRepository;
 import com.avocado.product.repository.PurchaseRepository;
 import com.avocado.product.repository.ReviewRepository;
@@ -27,6 +29,8 @@ public class MerchandiseService {
 
     // 대표 퍼스널컬러, MBTI, 나이대 등 개인화 정보 조회를 위한 service
     private final ScoreService scoreService;
+
+    private final KafkaProducer kafkaProducer;
 
     /**
      * 상품 목록을 카테고리와 브랜드 이름으로 조회한 데이터를 제공하는 서비스
@@ -89,6 +93,12 @@ public class MerchandiseService {
                 respContent.updateIsReviewed(isReviewed);
             }
         }
+
+        UUID consumerID1 = UUID.randomUUID();
+        Click click1 = Click.newBuilder()
+                .setMerchandiseId(merchandiseId)
+                .build();
+        kafkaProducer.sendClick(click1, consumerID1);
 
         return respContent;
     }
