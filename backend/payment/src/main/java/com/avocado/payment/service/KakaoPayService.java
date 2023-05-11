@@ -1,5 +1,6 @@
 package com.avocado.payment.service;
 
+import com.avocado.payment.annotation.DistributedLock;
 import com.avocado.payment.config.KakaoPayUtil;
 import com.avocado.payment.config.UUIDUtil;
 import com.avocado.payment.dto.kakaopay.KakaoPayApproveResp;
@@ -10,6 +11,7 @@ import com.avocado.payment.dto.response.KakaoPayRedirectUrlResp;
 import com.avocado.payment.entity.*;
 import com.avocado.payment.entity.redis.Purchasing;
 import com.avocado.payment.entity.redis.PurchasingMerchandise;
+import com.avocado.payment.enums.DistributedLockName;
 import com.avocado.payment.exception.ErrorCode;
 import com.avocado.payment.exception.InvalidValueException;
 import com.avocado.payment.exception.KakaoPayException;
@@ -30,33 +32,15 @@ import org.springframework.web.client.RestTemplate;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
 public class KakaoPayService {
-    @Value("${kakao-pay.host}")
-    private String host;
-    @Value("${kakao-pay.url.api.ready}")
-    private String apiReadyUrl;
-    @Value("${kakao-pay.url.api.approve}")
-    private String apiApproveUrl;
-    @Value("${kakao-pay.cid}")
-    private String cid;
-
-    @Value("${kakao-pay.url.handle.host}")
-    private String handleHost;
-    @Value("${kakao-pay.url.handle.approve}")
-    private String handleApprovalUrl;
-    @Value("${kakao-pay.url.handle.cancel}")
-    private String handleCancelUrl;
-    @Value("${kakao-pay.url.handle.fail}")
-    private String handleFailUrl;
-
     @PersistenceContext
     private final EntityManager em;
-    private final RestTemplate restTemplate;
 
     private final String LOCK_NAME = "PAY_LOCK";
     private final RedissonClient redissonClient;
@@ -69,6 +53,12 @@ public class KakaoPayService {
     private final UUIDUtil uuidUtil;
     private final KakaoPayUtil kakaoPayUtil;
 
+    /**
+     * 결제 준비 요청. 구매 요청 정보를 저장하고, 카카오페이로 거래 정보를 보내 거래 시작을 알리는 메서드
+     * @param consumerId : 구매자 ID
+     * @param paymentReq : 구매 정보
+     * @return : 카카오페이 결제 URL
+     */
     @Transactional
     public KakaoPayRedirectUrlResp ready(String consumerId, ReadyForPaymentReq paymentReq) {
         List<PurchaseMerchandiseReq> merchandiseReqs = paymentReq.getMerchandises();
@@ -105,28 +95,8 @@ public class KakaoPayService {
                     " 외 " + (merchandiseList.size() - 1) + "건";
         }
 
-        // 데이터 취합하여 body 생성
-        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("cid", cid);
-        body.add("partner_order_id", strPurchaseId);
-        body.add("partner_user_id", consumerId);
-        body.add("item_name", name);
-        body.add("quantity", String.valueOf(quantity));
-        body.add("total_amount", String.valueOf(paymentReq.getTotal_price()));
-        body.add("tax_free_amount", "0");
-        body.add("approval_url", handleHost + handleApprovalUrl + strPurchaseId);
-        body.add("cancel_url", handleHost + handleCancelUrl + strPurchaseId);
-        body.add("fail_url", handleHost + handleFailUrl + strPurchaseId);
-
-        // body, headers 취합
-        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(body, kakaoPayUtil.getKakaoPayHeaders());
-
         // API 요청
-        ResponseEntity<KakaoPayReadyResp> response = restTemplate.postForEntity(
-                host + apiReadyUrl,
-                entity,
-                KakaoPayReadyResp.class
-        );
+        ResponseEntity<KakaoPayReadyResp> response = kakaoPayUtil.getReady(strPurchaseId, consumerId, name, quantity, paymentReq.getTotal_price());
 
         // 오류 발생 시 예외 던지기
         if (response.getStatusCodeValue() != 200)
@@ -171,6 +141,11 @@ public class KakaoPayService {
         return kakaoPayRedirectUrlResp;
     }
 
+    /**
+     * 결제 승인 요청. 구매 대기 정보를 받아 결제 승인을 처리하는 메서드.
+     * @param purchasingId : 구매 대기 정보 ID
+     * @param pgToken : 카카오페이로부터 받은 결제 토큰
+     */
     @Transactional
     public void approve(String purchasingId, String pgToken) {
         // 구매 대기 내역 조회
@@ -180,78 +155,171 @@ public class KakaoPayService {
         Purchasing purchasing = optionalPurchasing.get();
         String consumerId = purchasing.getConsumer_id();
 
-        // 분산 락으로 동시성 처리
-        RLock lock = redissonClient.getLock(LOCK_NAME);
+        // 재고를 파악한 뒤 카카오페이 서버로 승인 요청을 보내 결제 완료 처리
+        completeKakaoPay(purchasing, consumerId, pgToken);
+    }
 
-        try {
-            // Lock 획득 시도
-            if (!(lock.tryLock(1, 3, TimeUnit.SECONDS)))
-                throw new RuntimeException("Failed to get lock");
-
-            // 재고 확인
-            if (!isEnoughInventory(purchasing))
-                throw new NoInventoryException(ErrorCode.NO_INVENTORY);
-
-            // body 생성
-            MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-            body.add("cid", cid);
-            body.add("tid", purchasing.getTid());
-            body.add("partner_order_id", purchasingId);
-            body.add("partner_user_id", consumerId);
-            body.add("pg_token", pgToken);
-            body.add("total_amount", String.valueOf(purchasing.getTotal_price()));
-
-            // headers와 취합하여 entity 생성
-            HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(body, kakaoPayUtil.getKakaoPayHeaders());
-
-            // 카카오페이에 승인 요청
-            ResponseEntity<KakaoPayApproveResp> response = restTemplate.postForEntity(
-                    host + apiApproveUrl,
-                    httpEntity,
-                    KakaoPayApproveResp.class
-            );
-
-            // 정상 응답이 아니라면 예외 던지기
-            if (response.getStatusCodeValue() != 200)
-                throw new KakaoPayException(ErrorCode.APPROVE_ERROR);
-            KakaoPayApproveResp approveResp = response.getBody();
-
-            // 구매 완료 내역 업데이트
-            Purchase purchase = Purchase.builder()
-                    .id(uuidUtil.joinByHyphen(purchasingId))
-                    .consumerId(uuidUtil.joinByHyphen(consumerId))
-                    .tid(purchasing.getTid())
-                    .totalPrice(purchasing.getTotal_price())
-                    .createdAt(LocalDateTime.parse(approveResp.getApproved_at()))
-                    .build();
-            purchaseRepository.save(purchase);
-
-            // 구매 완료된 상품 테이블 업데이트
-            bulkInsert(purchasing);
-
-            // Redis 데이터 삭제
+    /**
+     * Redis 저장하던 구매 대기 정보 삭제
+     * @param purchasingId : 구매 대기 내역 ID
+     */
+    @Transactional
+    public void cancel(String purchasingId) {
+        Optional<Purchasing> optionalPurchasing = purchasingRepository.findById(purchasingId);
+        if (optionalPurchasing.isPresent()) {
+            Purchasing purchasing = optionalPurchasing.get();
             purchasingRepository.delete(purchasing);
-
-            // 재고 감소
-            bulkUpdate(purchasing.getMerchandises());
-
-            System.out.println(response.getBody());
-        } catch (InterruptedException e) {
-            throw new RuntimeException("Lock Interrupted Exception");
-        } finally {
-            // Lock 해제
-            lock.unlock();
         }
     }
 
-    @Transactional
-    public void cancel(String purchasingId) {
-
-    }
-
+    /**
+     * Redis 저장하던 구매 대기 정보 삭제하고 결제 실패 예외 던지기
+     * @param purchasingId : 구매 대기 내역 ID
+     */
     @Transactional
     public void fail(String purchasingId) {
+        Optional<Purchasing> optionalPurchasing = purchasingRepository.findById(purchasingId);
+        if (optionalPurchasing.isPresent()) {
+            Purchasing purchasing = optionalPurchasing.get();
+            purchasingRepository.delete(purchasing);
+        }
+        throw new KakaoPayException(ErrorCode.APPROVE_ERROR);
+    }
 
+    /**
+     * 카카오페이 서버로 결제 승인 요청을 보낸 뒤 결제를 마무리하는 메서드
+     * (분산 락 적용하여 재고 동시성 처리)
+     * @param purchasing : 구매 대기 정보
+     * @param consumerId : 구매자 ID
+     * @param pgToken : 카카오페이로부터 전달받은 결제 토큰
+     */
+    @DistributedLock(key = DistributedLockName.PAY)
+    private void completeKakaoPay(Purchasing purchasing, String consumerId, String pgToken) {
+        String purchasingId = purchasing.getId();
+
+        // 재고 확인
+        if (!isEnoughInventory(purchasing))
+            throw new NoInventoryException(ErrorCode.NO_INVENTORY);
+
+        // 카카오페이에 승인 요청
+        ResponseEntity<KakaoPayApproveResp> response = kakaoPayUtil.getApprove(
+                purchasing.getTid(), purchasingId, consumerId, pgToken, purchasing.getTotal_price()
+        );
+
+        // 정상 응답이 아니라면 예외 던지기
+        if (response.getStatusCodeValue() != 200)
+            throw new KakaoPayException(ErrorCode.APPROVE_ERROR);
+        KakaoPayApproveResp approveResp = response.getBody();
+
+        // 구매 완료 내역 업데이트
+        Purchase purchase = Purchase.builder()
+                .id(uuidUtil.joinByHyphen(purchasingId))
+                .consumerId(uuidUtil.joinByHyphen(consumerId))
+                .tid(purchasing.getTid())
+                .totalPrice(purchasing.getTotal_price())
+                .createdAt(LocalDateTime.parse(approveResp.getApproved_at()))
+                .build();
+        purchaseRepository.save(purchase);
+
+        // 구매 완료된 상품 테이블 업데이트
+        bulkInsert(purchasing);
+
+        // Redis 데이터 삭제
+        purchasingRepository.delete(purchasing);
+
+        // 재고 감소
+        bulkUpdate(purchasing.getMerchandises());
+    }
+
+    /**
+     * 테스트 결제
+     * @param consumerId : 구매자 ID
+     * @param paymentReq : 구매 정보
+     */
+    @Transactional
+    public void testPay(String consumerId, ReadyForPaymentReq paymentReq) {
+        List<PurchaseMerchandiseReq> merchandiseReqs = paymentReq.getMerchandises();
+
+        // 요청한 소비자가 존재하는지 확인
+        Optional<Consumer> optionalConsumer = consumerRepository.findById(uuidUtil.joinByHyphen(consumerId));
+        if (optionalConsumer.isEmpty())
+            throw new InvalidValueException(ErrorCode.NO_MEMBER);
+
+        // 구매할 상품 검색
+        //  1. 구매할 상품들의 ID 취합
+        List<Long> merchandiseIds = new ArrayList<>();
+        merchandiseReqs.forEach((merchandiseReq) -> merchandiseIds.add(merchandiseReq.getMerchandise_id()));
+
+        //  2. 상품 검색
+        List<Merchandise> merchandiseList = merchandiseRepository.findByIdIn(merchandiseIds);
+
+        //  3. 모두 유효한 상품인지 확인
+        if (merchandiseList.size() != merchandiseReqs.size())
+            throw new InvalidValueException(ErrorCode.NO_MERCHANDISE);
+
+        // 결제할 품목의 개수에 따라 요청 데이터 가공
+        UUID purchaseId = UUID.randomUUID();  // 구매내역 ID
+        String strPurchaseId = uuidUtil.removeHyphen(purchaseId);  // 하이픈 제거한 구매내역 ID
+
+        // 판매자 ID
+        Map<Long, UUID> providerIdMap = new HashMap<>();
+        for (Merchandise merchandise : merchandiseList)
+            providerIdMap.put(merchandise.getId(), merchandise.getStore().getProviderId());
+
+        // 구매 상품 리스트 취합
+        List<PurchasingMerchandise> purchasingMerchandises = new ArrayList<>();
+        for (PurchaseMerchandiseReq merchandiseReq : merchandiseReqs) {
+            String providerId = uuidUtil.removeHyphen(providerIdMap.get(merchandiseReq.getMerchandise_id()));
+            purchasingMerchandises.add(
+                    PurchasingMerchandise.builder()
+                            .merchandise_id(merchandiseReq.getMerchandise_id())
+                            .price(merchandiseReq.getPrice())
+                            .provider_id(providerId)
+                            .quantity(merchandiseReq.getQuantity())
+                            .size((System.currentTimeMillis() & 1) == 1 ? "L" : "XL")  // 사이즈는 제공하지 않으므로 랜덤 설정
+                            .build()
+            );
+        }
+
+        // 구매 대기 내역 등록 (Redis)
+        Purchasing purchasing = Purchasing.builder()
+                .id(strPurchaseId)
+                .consumer_id(consumerId)
+                .total_price(paymentReq.getTotal_price())
+                .merchandises(purchasingMerchandises)
+                .build();
+        purchasingRepository.save(purchasing);
+
+        // 구매내역 등록 및 재고 감소 등 실거래 완료 처리
+        testApprove(purchasing);
+    }
+    @DistributedLock(key = DistributedLockName.PAY)
+    public void testApprove(Purchasing purchasing) {
+        String purchasingId = purchasing.getId();
+        String consumerId = purchasing.getConsumer_id();
+
+        // 재고 확인
+        if (!isEnoughInventory(purchasing))
+            throw new NoInventoryException(ErrorCode.NO_INVENTORY);
+
+        // 구매 완료 내역 업데이트
+        Purchase purchase = Purchase.builder()
+                .id(uuidUtil.joinByHyphen(purchasingId))
+                .consumerId(uuidUtil.joinByHyphen(consumerId))
+                .tid(purchasing.getTid())
+                .totalPrice(purchasing.getTotal_price())
+                .createdAt(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
+                .build();
+        purchaseRepository.save(purchase);
+
+        // 구매 완료된 상품 테이블 업데이트
+        bulkInsert(purchasing);
+
+        // Redis 데이터 삭제
+        purchasingRepository.delete(purchasing);
+
+        // 재고 감소
+        bulkUpdate(purchasing.getMerchandises());
     }
 
     /**
@@ -284,10 +352,14 @@ public class KakaoPayService {
     @Transactional
     public void bulkUpdate(List<PurchasingMerchandise> merchandises) {
         String bulkUpdate = "update merchandise m set m.inventory = m.inventory - case m.id";
-        for (PurchasingMerchandise merchandise : merchandises)
+        String whereClause = " where m.id in (null";
+        for (PurchasingMerchandise merchandise : merchandises) {
             bulkUpdate += " when " + merchandise.getMerchandise_id()
                     + " then " + merchandise.getQuantity();
-        bulkUpdate += " end";
+            whereClause += ", " + merchandise.getMerchandise_id();
+        }
+        whereClause += ")";
+        bulkUpdate += " else 0 end" + whereClause;
         // 업데이트
         em.createNativeQuery(bulkUpdate).executeUpdate();
     }
