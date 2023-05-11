@@ -1,7 +1,6 @@
 package com.avocado.product.controller;
 
 import com.avocado.product.config.JwtUtil;
-import com.avocado.product.config.UUIDUtil;
 import com.avocado.product.dto.response.*;
 import com.avocado.product.service.MerchandiseService;
 import lombok.RequiredArgsConstructor;

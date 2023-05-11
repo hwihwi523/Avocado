@@ -2,7 +2,6 @@ package com.avocado.product.repository;
 
 import com.avocado.product.dto.query.PurchaseHistoryMerchandiseDTO;
 import com.avocado.product.dto.query.QPurchaseHistoryMerchandiseDTO;
-import com.avocado.product.entity.QPurchasedMerchandise;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;

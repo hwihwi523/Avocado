@@ -1,7 +1,6 @@
 package com.avocado.product.controller;
 
 import com.avocado.product.config.JwtUtil;
-import com.avocado.product.config.UUIDUtil;
 import com.avocado.product.dto.request.AddCartReq;
 import com.avocado.product.dto.request.RemoveCartReq;
 import com.avocado.product.dto.response.BaseResp;
@@ -18,7 +17,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CartController {
     private final CartService cartService;
-    private final UUIDUtil uuidUtil;
     private final JwtUtil jwtUtil;
 
     @PostMapping("")
