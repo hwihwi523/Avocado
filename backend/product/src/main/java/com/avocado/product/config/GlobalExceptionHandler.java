@@ -1,10 +1,7 @@
 package com.avocado.product.config;
 
 import com.avocado.product.dto.response.BaseResp;
-import com.avocado.product.exception.AccessDeniedException;
-import com.avocado.product.exception.DataManipulationException;
-import com.avocado.product.exception.ErrorCode;
-import com.avocado.product.exception.InvalidValueException;
+import com.avocado.product.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -16,6 +13,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+    @ExceptionHandler(BusinessLogicException.class)
+    protected ResponseEntity<BaseResp> handleRedirectBusinessLogicException(BusinessLogicException e) {
+        log.error(e.getMessage() + " >> " + e.getErrorCode().getMessage());
+        ErrorCode errorCode = e.getErrorCode();
+        return ResponseEntity
+                .status(HttpStatus.valueOf(errorCode.getStatus()))
+                .body(BaseResp.of(errorCode.getMessage()));
+    }
+
     /**
      * 찜 관련 기능 예외 처리
      */
