@@ -13,15 +13,24 @@ spring:
       hibernate:
         format_sql: true
 
+  kafka:
+    bootstrap-servers: a62e5b172168c40419f9a1af18763a94-214776296.ap-northeast-2.elb.amazonaws.com:9094
+    view-config:
+      topic: test-view
+    click-config:
+      topic: test-click
+
+
+
 server:
   servlet:
     context-path: /api/merchandise
-  tomcat:
-    accesslog:
-      enabled: true
-      directory: tomcat
-      suffix: .log
-      prefix: access_log
-      file-date-format: .yyyy-MM-dd
-      pattern: '%{yyyy-MM-dd HH:mm:ss}t %s %r %l %u'
-    basedir: /var/log
+#  tomcat:
+#    accesslog:
+#      enabled: true
+#      directory: tomcat
+#      suffix: .log
+#      prefix: access_log
+#      file-date-format: .yyyy-MM-dd
+#      pattern: '%{yyyy-MM-dd HH:mm:ss}t %s %r %l %u'
+#    basedir: /var/log
