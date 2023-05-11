@@ -65,7 +65,7 @@ public class SearchService {
                                 .query(q -> q
                                         .bool(b -> b
                                                 .must(byName)
-                                        )).size(50),
+                                        )).size(20),
                         Product.class);
             }else {
                 search = elasticsearchClient.search(s -> s
@@ -74,7 +74,7 @@ public class SearchService {
                                         .bool(b -> b
                                                 .must(byName)
                                                 .must(byCategory)
-                                        )).size(50),
+                                        )).size(20),
                         Product.class);
             }
             for (Hit<Product> hit: search.hits().hits()) {
