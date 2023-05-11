@@ -1,9 +1,10 @@
 package com.avocado.statistics.kafka.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
+@AllArgsConstructor
 public class Result {
     private String userId;
     private Long merchandiseId;
