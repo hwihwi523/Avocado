@@ -34,3 +34,9 @@ server:
 #      file-date-format: .yyyy-MM-dd
 #      pattern: '%{yyyy-MM-dd HH:mm:ss}t %s %r %l %u'
 #    basedir: /var/log
+
+jwt:
+  issuer: avocado.com
+  secret: e52713a2bd59e655ffd78ed74fafc5b29a2001d586949e55792e2f1a5b1f3d8ffb9d132354932bdf
+  access_expiration: 21600000
+  refresh_expiration: 1296000000
