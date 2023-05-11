@@ -1,5 +1,6 @@
 package com.avocado.payment.controller;
 
+import com.avocado.payment.config.JwtUtil;
 import com.avocado.payment.dto.request.PurchaseMerchandiseReq;
 import com.avocado.payment.dto.request.ReadyForPaymentReq;
 import com.avocado.payment.dto.response.BaseResp;
@@ -12,15 +13,19 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("")
 public class PaymentController {
     private final KakaoPayService kakaoPayService;
+
+    private final JwtUtil jwtUtil;
 
     @Value("${kakao-pay.url.redirect.host}")
     private String completeHost;
@@ -37,7 +42,11 @@ public class PaymentController {
      * @return : 모바일 및 PC 결제 URL
      */
     @PostMapping("/ready")
-    public ResponseEntity<BaseResp> ready(@RequestBody ReadyForPaymentReq paymentReq) {
+    public ResponseEntity<BaseResp> ready(@RequestBody ReadyForPaymentReq paymentReq,
+                                          HttpServletRequest request) {
+        // 토큰 파싱
+        UUID consumerUuid = jwtUtil.getId(request);
+
         List<PurchaseMerchandiseReq> merchandises = paymentReq.getMerchandises();
 
         // 구매 요청한 상품이 없을 때
@@ -51,7 +60,7 @@ public class PaymentController {
         if (paymentReq.getTotal_price() == null || !paymentReq.getTotal_price().equals(totalPrice))
             throw new InvalidValueException(ErrorCode.NOT_SAME_WITH_TOTAL_PRICE);
 
-        KakaoPayRedirectUrlResp kakaoPayRedirectUrlResp = kakaoPayService.ready(paymentReq.getUser_id(), paymentReq);
+        KakaoPayRedirectUrlResp kakaoPayRedirectUrlResp = kakaoPayService.ready(consumerUuid, paymentReq);
         return ResponseEntity.ok(BaseResp.of("결제 요청이 완료되었습니다.", kakaoPayRedirectUrlResp));
     }
 
@@ -100,7 +109,11 @@ public class PaymentController {
     }
 
     @PostMapping("/test")
-    public String test(@RequestBody ReadyForPaymentReq paymentReq) {
+    public String test(@RequestBody ReadyForPaymentReq paymentReq,
+                       HttpServletRequest request) {
+        // 토큰 파싱
+        UUID consumerUuid = jwtUtil.getId(request);
+
         List<PurchaseMerchandiseReq> merchandises = paymentReq.getMerchandises();
 
         // 구매 요청한 상품이 없을 때
@@ -114,7 +127,7 @@ public class PaymentController {
         if (paymentReq.getTotal_price() == null || !paymentReq.getTotal_price().equals(totalPrice))
             throw new InvalidValueException(ErrorCode.NOT_SAME_WITH_TOTAL_PRICE);
 
-        kakaoPayService.testPay(paymentReq.getUser_id(), paymentReq);
+        kakaoPayService.testPay(consumerUuid, paymentReq);
 
         return "결제 끗~";
     }
