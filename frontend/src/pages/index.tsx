@@ -79,6 +79,8 @@ export default function Home() {
   );
 }
 
+
+
 const BackgroundDiv = styled.div`
   padding: 10px;
   box-sizing: border-box;

@@ -38,6 +38,15 @@ type PostsList =  {
   "category_eng": string
 }
 
+type ProductInfo = {
+  id: number;  // id
+  img_url: string; // imgurl
+  price: number; // price
+  discount: number; // discounted_price
+  isBookmark: boolean; // x
+  tags: string[]; // season, age_gender_group_kor, category_kor
+  brand: string; // store_name
+};
 
 
 
@@ -46,7 +55,7 @@ export const searchApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: API_URL }),
   tagTypes: ["products","recommands"],
   endpoints: (build) => ({
-    getProductList: build.query<PostsList[], string>({
+    getProductList: build.query<ProductInfo[], string>({
       query: (keyword) => ({
         url:"/products",
         method:"GET",
@@ -54,6 +63,17 @@ export const searchApi = createApi({
           keyword,
         }
       }),
+      transformResponse: (response:any) => {
+        // 응답을 가공하고 반환
+        return response.map((item:any) => ({
+          id: item.id,
+          img_url: item.imgurl, 
+          price: item.price, 
+          discount: item.price - item.discounted_price,
+          tags:[item.season, item.age_gender_group_kor, item.category_kor], 
+          brand: item.store_name,
+        }));
+      },
       //테그 설정
       providesTags: (result) =>
         result
@@ -82,6 +102,7 @@ export const searchApi = createApi({
           : // 실패시 설정할 태그
             [{ type: "recommands", id: "LIST" }],
     }),
+   
   }),
 });
 
