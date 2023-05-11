@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ErrorCode {
     // Common
+    WRONG_HEADER(400, "WRONG_HEADER"),
     INVALID_INPUT_VALUE(400, "INVALID_INPUT_VALUE"),
     INVALID_INSERT(500, "INVALID_SAVE"),
     INVALID_UPDATE(500, "INVALID_UPDATE"),
