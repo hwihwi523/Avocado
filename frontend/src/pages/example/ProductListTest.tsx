@@ -8,6 +8,7 @@ import { authApi } from "@/src/features/auth/authApi";
 import { wrapper } from "@/src/features/store";
 import { useStore } from "react-redux";
 import { productApi } from "@/src/features/product/productApi";
+import jwt from "jsonwebtoken";
 
 interface Props {
   products: Product[];
@@ -16,7 +17,7 @@ interface Props {
 export default function Home({ products }: Props) {
   // console.log(products);
 
-  console.log("State on render", useStore().getState());
+  // console.log("State on render", useStore().getState());
 
   return (
     <>
@@ -55,14 +56,28 @@ export const getServerSideProps = wrapper.getServerSideProps(
     // const content = res.data.data.content;
     // console.log(content);
 
-    // store와 연동 예시 -> 판매자 로그인
-    const loginResponse = await store.dispatch(
-      authApi.endpoints.sellerLogin.initiate({
-        email: "avocado1@gmail.com",
-        password: "avocado506",
-      })
-    );
-    console.log("SELLER LOGIN RESPONSE:", loginResponse);
+    // // store와 연동 예시 -> 판매자 로그인
+    // const loginResponse = await store.dispatch(
+    //   authApi.endpoints.sellerLogin.initiate({
+    //     email: "avocado1@gmail.com",
+    //     password: "avocado506",
+    //   })
+    // );
+    // console.log("SELLER LOGIN RESPONSE:", loginResponse);
+    // console.log(
+    //   "SELLER LOGIN REFRESH_TOKEN:",
+    //   loginResponse.data.refresh_token
+    // );
+    // // 토큰 파싱
+    // const token = loginResponse.data.refresh_token;
+    // const secret = process.env.JWT_SECRET;
+    // try {
+    //   const decoded = jwt.verify(token, secret);
+    //   console.log("JWT_TOKEN_PARSING:", decoded);
+    // } catch (err) {
+    //   console.log("JWT_TOKEN_PARSING_ERR:", err);
+    // }
+
     // store와 연동 예시 -> productList
     const productListResponse = await store.dispatch(
       productApi.endpoints.getProductList.initiate({
@@ -71,6 +86,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
         size: 3,
       })
     );
+
     let content: Product[] = [];
     if (productListResponse.data) {
       console.log(

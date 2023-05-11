@@ -1,8 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { HYDRATE } from "next-redux-wrapper";
 import { Product } from "./productSlice";
+import { customFetchBaseQuery } from "@/src/utils/customFetchBaseQuery";
 
-const PRODUCT_API_URL = process.env.NEXT_PUBLIC_PRODUCT_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 //store={store_name}&category={category_id}&last={merchandise_id}&size={size}
 interface ProductListRequest {
@@ -26,7 +27,7 @@ interface Data {
 
 export const productApi = createApi({
   reducerPath: "productApi",
-  baseQuery: fetchBaseQuery({ baseUrl: PRODUCT_API_URL }),
+  baseQuery: customFetchBaseQuery({ baseUrl: API_URL + "/merchandise" }),
   extractRehydrationInfo(action, { reducerPath }) {
     if (action.type === HYDRATE) {
       return action.payload[reducerPath];

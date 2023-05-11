@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import { Stack,IconButton,Button } from "@mui/material";
-import Link from 'next/link'
+import { Stack, IconButton, Button } from "@mui/material";
+import Link from "next/link";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import Image from "next/image";
 const MobileHeader = (props: any) => {
@@ -15,20 +15,17 @@ const MobileHeader = (props: any) => {
         <ImageBox>
           <Link href="/">
             <Image
-            alt="로고 이미지"
+              alt="로고 이미지"
               src="/assets/images/logo.png"
               fill
               style={{ objectFit: "cover" }}
             />
           </Link>
         </ImageBox>
-        
-      <Button style={{backgroundColor:"black", color:"white"}}>
-        <Link href="/seller">
-        판매자 페이지
-        </Link>
-      </Button>
 
+        <Button style={{ backgroundColor: "black", color: "white" }}>
+          <Link href="/seller">판매자 페이지</Link>
+        </Button>
 
         {/* 장바구니  */}
         <Link href="/user/cartList">

@@ -9,7 +9,7 @@ export interface Member {
   name: string;
   picture_url?: string;
   gender?: string;
-  age?: number;
+  age_group?: number;
   height?: number;
   weight?: number;
   mbti_id?: number;
@@ -41,7 +41,7 @@ export const authSlice = createSlice({
     setRefreshToken: (state, action: PayloadAction<string>) => {
       state.refreshToken = action.payload;
     },
-    clearMember: (state) => {
+    clearAuth: (state) => {
       state.member = null;
       state.accessToken = "";
       state.refreshToken = "";
@@ -58,4 +58,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setMember, setAccessToken, setRefreshToken } = authSlice.actions;
+export const { setMember, setAccessToken, setRefreshToken, clearAuth } =
+  authSlice.actions;
