@@ -1,6 +1,6 @@
 package com.avocado.product.controller;
 
-import com.avocado.product.config.UUIDUtil;
+import com.avocado.product.config.JwtUtil;
 import com.avocado.product.dto.response.*;
 import com.avocado.product.service.MerchandiseService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -20,7 +21,7 @@ import java.util.UUID;
 @RequestMapping("/merchandises")
 public class MerchandiseListController {
     private final MerchandiseService merchandiseService;
-    private final UUIDUtil uuidUtil;
+    private final JwtUtil jwtUtil;
 
     /**
      * 카테고리와 브랜드 이름을 기준으로 상품을 조회하고 상품 ID 내림차순 정렬
@@ -42,28 +43,26 @@ public class MerchandiseListController {
 
     /**
      * 최근 본 상품을 조회하는 기능
-     * @param user_id : 요청한 사용자 (로그인 구현 시 삭제 예정)
      * @return : 해당 사용자가 조회한 상품 목록
      */
     @GetMapping("/recents")
-    public ResponseEntity<BaseResp> showRecentMerchandises(@RequestParam String user_id) {
-        UUID consumerId = uuidUtil.joinByHyphen(user_id);
+    public ResponseEntity<BaseResp> showRecentMerchandises(HttpServletRequest request) {
+        UUID consumerId = jwtUtil.getId(request);
         List<ClickMerchandiseResp> result = merchandiseService.showRecentMerchandises(consumerId);
         return ResponseEntity.ok(BaseResp.of("최근 본 상품 조회 성공", result));
     }
 
     /**
      * 구매내역 조회하기
-     * @param user_id : 조회할 사용자
      * @param last_date : (더보기 형식의 페이징 용도) 특정 시점
      * @param size : 조회할 데이터 개수
      * @return : 구매내역 리스트, 메시지, Http Status
      */
     @GetMapping("/histories")
-    public ResponseEntity<BaseResp> showPurchaseHistories(@RequestParam String user_id,
-                                                          @RequestParam @Nullable String last_date,
-                                                          @RequestParam @Nullable Integer size) {
-        UUID consumerId = uuidUtil.joinByHyphen(user_id);
+    public ResponseEntity<BaseResp> showPurchaseHistories(@RequestParam @Nullable String last_date,
+                                                          @RequestParam @Nullable Integer size,
+                                                          HttpServletRequest request) {
+        UUID consumerId = jwtUtil.getId(request);
         LocalDateTime purchaseDate = last_date != null ? LocalDateTime.parse(last_date) : null;
         PageResp result = merchandiseService.showPurchaseMerchandises(consumerId, purchaseDate, size);
         return ResponseEntity.ok(BaseResp.of("구매내역 조회 성공", result));

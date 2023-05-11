@@ -12,6 +12,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+    open-in-view: false
 
   redis:
     host: a57b7bdd07e984044bce6a0784fa0b62-8549102.ap-northeast-2.elb.amazonaws.com
@@ -32,7 +33,7 @@ kakao-pay:
       ready: /v1/payment/ready
       approve: /v1/payment/approve
     handle:
-      host: http://k8s-avocado-c6c0ca3c6e-209771398.ap-northeast-2.elb.amazonaws.com/api/payment
+      host: http://localhost:8080/api/payment #http://k8s-avocado-c6c0ca3c6e-209771398.ap-northeast-2.elb.amazonaws.com/api/payment
       approve: /approval/
       cancel: /cancel/
       fail: /fail/
@@ -41,3 +42,9 @@ kakao-pay:
       approval: /user/orderList
       cancel: /user/cartList
       fail: /404
+
+jwt:
+  issuer: avocado.com
+  secret: e52713a2bd59e655ffd78ed74fafc5b29a2001d586949e55792e2f1a5b1f3d8ffb9d132354932bdf
+  access_expiration: 21600000
+  refresh_expiration: 1296000000

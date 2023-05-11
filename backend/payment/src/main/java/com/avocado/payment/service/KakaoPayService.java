@@ -12,29 +12,19 @@ import com.avocado.payment.entity.*;
 import com.avocado.payment.entity.redis.Purchasing;
 import com.avocado.payment.entity.redis.PurchasingMerchandise;
 import com.avocado.payment.enums.DistributedLockName;
-import com.avocado.payment.exception.ErrorCode;
-import com.avocado.payment.exception.InvalidValueException;
-import com.avocado.payment.exception.KakaoPayException;
-import com.avocado.payment.exception.NoInventoryException;
+import com.avocado.payment.exception.*;
 import com.avocado.payment.repository.*;
 import lombok.RequiredArgsConstructor;
-import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -55,18 +45,20 @@ public class KakaoPayService {
 
     /**
      * 결제 준비 요청. 구매 요청 정보를 저장하고, 카카오페이로 거래 정보를 보내 거래 시작을 알리는 메서드
-     * @param consumerId : 구매자 ID
+     * @param consumerUuid : 구매자 ID
      * @param paymentReq : 구매 정보
      * @return : 카카오페이 결제 URL
      */
     @Transactional
-    public KakaoPayRedirectUrlResp ready(String consumerId, ReadyForPaymentReq paymentReq) {
+    public KakaoPayRedirectUrlResp ready(UUID consumerUuid, ReadyForPaymentReq paymentReq) {
+        // 소비자 ID in String
+        String consumerId = uuidUtil.removeHyphen(consumerUuid);
+
         List<PurchaseMerchandiseReq> merchandiseReqs = paymentReq.getMerchandises();
 
         // 요청한 소비자가 존재하는지 확인
-        Optional<Consumer> optionalConsumer = consumerRepository.findById(uuidUtil.joinByHyphen(consumerId));
-        if (optionalConsumer.isEmpty())
-            throw new InvalidValueException(ErrorCode.NO_MEMBER);
+        consumerRepository.findById(consumerUuid)
+                .orElseThrow(() -> new InvalidValueException(ErrorCode.NO_MEMBER));
 
         // 구매할 상품 검색
         //  1. 구매할 상품들의 ID 취합
@@ -96,7 +88,9 @@ public class KakaoPayService {
         }
 
         // API 요청
-        ResponseEntity<KakaoPayReadyResp> response = kakaoPayUtil.getReady(strPurchaseId, consumerId, name, quantity, paymentReq.getTotal_price());
+        ResponseEntity<KakaoPayReadyResp> response = kakaoPayUtil.getReady(
+                strPurchaseId, consumerId, name, quantity, paymentReq.getTotal_price()
+        );
 
         // 오류 발생 시 예외 던지기
         if (response.getStatusCodeValue() != 200)
@@ -153,10 +147,9 @@ public class KakaoPayService {
         if (optionalPurchasing.isEmpty())
             throw new InvalidValueException(ErrorCode.NO_PURCHASING);
         Purchasing purchasing = optionalPurchasing.get();
-        String consumerId = purchasing.getConsumer_id();
 
         // 재고를 파악한 뒤 카카오페이 서버로 승인 요청을 보내 결제 완료 처리
-        completeKakaoPay(purchasing, consumerId, pgToken);
+        completeKakaoPay(purchasing, purchasing.getConsumer_id(), pgToken);
     }
 
     /**
@@ -233,17 +226,19 @@ public class KakaoPayService {
 
     /**
      * 테스트 결제
-     * @param consumerId : 구매자 ID
+     * @param consumerUuid : 구매자 ID
      * @param paymentReq : 구매 정보
      */
     @Transactional
-    public void testPay(String consumerId, ReadyForPaymentReq paymentReq) {
+    public void testPay(UUID consumerUuid, ReadyForPaymentReq paymentReq) {
+        // 소비자 ID in String
+        String consumerId = uuidUtil.removeHyphen(consumerUuid);
+
         List<PurchaseMerchandiseReq> merchandiseReqs = paymentReq.getMerchandises();
 
         // 요청한 소비자가 존재하는지 확인
-        Optional<Consumer> optionalConsumer = consumerRepository.findById(uuidUtil.joinByHyphen(consumerId));
-        if (optionalConsumer.isEmpty())
-            throw new InvalidValueException(ErrorCode.NO_MEMBER);
+        consumerRepository.findById(uuidUtil.joinByHyphen(consumerId))
+                .orElseThrow(() -> new InvalidValueException(ErrorCode.NO_MEMBER));
 
         // 구매할 상품 검색
         //  1. 구매할 상품들의 ID 취합
