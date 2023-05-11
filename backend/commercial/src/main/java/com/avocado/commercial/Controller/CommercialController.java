@@ -46,7 +46,7 @@ public class CommercialController {
     }
     @GetMapping("/analyses/{commercial_id}")
     public ResponseEntity<List<Analysis>> getAnalyses(@PathVariable("commercial_id") int commercialId){
-        List<Analysis> analysisList = commercialService.getAnlyses(commercialId);
+        List<Analysis> analysisList = commercialService.getAnalyses(commercialId);
 
         return new ResponseEntity<List<Analysis>>(analysisList,HttpStatus.OK);
     }

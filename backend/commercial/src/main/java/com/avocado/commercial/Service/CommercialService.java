@@ -116,6 +116,7 @@ public class CommercialService {
             return commercialRespDto;
         }
 
+
         // 광고 수가 5보다 크면 SET을 이용해 랜덥한 광고를 5개 선출
         Set<Commercial> commercialSet = new HashSet<>();
         while (carouselEntityList.size() < 5) {
@@ -135,7 +136,7 @@ public class CommercialService {
     }
 
 
-    public List<Analysis> getAnlyses(int commercialId){
+    public List<Analysis> getAnalyses(int commercialId){
         List<Analysis> analysisList = new ArrayList<>();
 
         Commercial commercial = commercialRepository.findById(commercialId);
@@ -195,6 +196,7 @@ public class CommercialService {
 
         return analysisList;
     }
+    
 
     public void saveCommercial(CommercialReqDto commercialReqDto, HttpServletRequest request){
         checkCommercialRequest(commercialReqDto);
@@ -232,6 +234,8 @@ public class CommercialService {
 
 
     }
+
+
 
     public void checkCommercialRequest(CommercialReqDto commercialReqDto){
         if(commercialReqDto.getAge() < 0){
