@@ -3,6 +3,7 @@ package com.avocado.userserver.api.service
 import com.avocado.userserver.common.error.BaseException
 import com.avocado.userserver.common.error.ResponseCode
 import com.avocado.userserver.common.utils.ConvertIdUtil
+import com.avocado.userserver.db.entity.Consumer
 import com.avocado.userserver.db.entity.Provider
 import com.avocado.userserver.db.repository.ProviderRepository
 import io.jsonwebtoken.Claims
@@ -21,7 +22,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 internal class JwtProviderTest @Autowired constructor(
     private val jwtProvider: JwtProvider,
     private val providerRepository: ProviderRepository,
-    private val convertIdUtil: ConvertIdUtil
+    private val convertIdUtil: ConvertIdUtil,
+    private val consumerService: ConsumerService
 ) {
 
     @Test
@@ -31,6 +33,15 @@ internal class JwtProviderTest @Autowired constructor(
             val member: Provider = providerRepository.findById(id)?: throw BaseException(ResponseCode.INVALID_VALUE)
             println(jwtProvider.getAccessToken(member))
         }
+    }
+
+    @Test
+    fun `access token 생성`() {
+        runBlocking {
+            val consumer = consumerService.getConsumerFromSubAndSocial("2771365526", SocialType.KAKAO)?:BaseException(ResponseCode.INVALID_VALUE);
+            println(jwtProvider.getAccessToken(consumer))
+        }
+
     }
 
     @Test
@@ -44,8 +55,8 @@ internal class JwtProviderTest @Autowired constructor(
     @Test
     fun `parseClaim`() {
         runBlocking {
-            jwtProvider.parseClaims("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjI0ZTI1OGFmNWIzMTRiZjE4MjY4OGYwZWZhY2IxZjA0IiwidHlwZSI6ImNvbnN1bWVyIiwiaXNzIjoiYXZvY2Fkby5jb20iLCJpYXQiOjE2ODM0NjA3MDMsImV4cCI6MTY4MzQ4MjMwM30.umNdT6Acuq1bedI5nj2tIhbT9PiwccaayCANyHkYUoQ");
-            jwtProvider.parseClaims("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwZXJzb25hbF9jb2xvcl9pZCI6LTEsInBpY3R1cmVfdXJsIjoiaHR0cDovL2sua2FrYW9jZG4ubmV0L2RuL1V3c1U2L2J0cjBSSko5OGd2L25jd2RmT3hDSjdxdmxLczhaaTBpSzEvaW1nXzExMHgxMTAuanBnIiwiZ2VuZGVyIjoiTkFOIiwibWJ0aV9pZCI6LTEsImFnZV9ncm91cCI6LTEsIm5hbWUiOiLsnoTtmJzsp4QiLCJ3ZWlnaHQiOi0xLCJpZCI6IjI0ZTI1OGFmNWIzMTRiZjE4MjY4OGYwZWZhY2IxZjA0IiwidHlwZSI6ImNvbnN1bWVyIiwiZW1haWwiOiJoZWxlbmFsaW03QG5hdmVyLmNvbSIsImhlaWdodCI6LTEsImlzcyI6ImF2b2NhZG8uY29tIiwiaWF0IjoxNjgzNDYwNzAzLCJleHAiOjE2ODQ3NTY3MDN9.QfJ_evQDLDJbrqWZbnrQ3-fijJM26ucGboK3-6K2INM");
+            jwtProvider.parseClaims("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjI0ZTI1OGFmNWIzMTRiZjE4MjY4OGYwZWZhY2IxZjA0IiwidHlwZSI6ImNvbnN1bWVyIiwiaXNzIjoiYXZvY2Fkby5jb20iLCJpYXQiOjE2ODM3Nzk4NzgsImV4cCI6MTY4NTA3NTg3OH0.yfU10Gt52b4sSGkGKyv-voF5agLhVMuHlFAQfE1Oznc");
+            jwtProvider.parseClaims("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjI0ZTI1OGFmNWIzMTRiZjE4MjY4OGYwZWZhY2IxZjA0IiwidHlwZSI6ImNvbnN1bWVyIiwiaXNzIjoiYXZvY2Fkby5jb20iLCJpYXQiOjE2ODM3Nzk5NDAsImV4cCI6MTY4Mzc3OTk0MH0.OZyj2ltJl-yZ2fjICOIbKp2kFLqVF8dkoPVOEw4oTZ4");
         }
     }
 }

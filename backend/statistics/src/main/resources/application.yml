@@ -4,7 +4,7 @@ spring:
       context-path: /api/statistics
 
   datasource:
-    url: jdbc:mysql://a07c6127933494883b1ce18e5a21f697-895151877.ap-northeast-2.elb.amazonaws.com:3306/member?serverTimezone=UTC&characterEncoding=UTF-8
+    url: jdbc:mysql://a07c6127933494883b1ce18e5a21f697-895151877.ap-northeast-2.elb.amazonaws.com:3306/product?serverTimezone=UTC&characterEncoding=UTF-8
     username: root
     password: yasim506
     driver-class-name: com.mysql.cj.jdbc.Driver

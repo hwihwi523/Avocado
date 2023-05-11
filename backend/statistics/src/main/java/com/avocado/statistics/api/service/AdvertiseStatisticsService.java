@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ProviderStatisticsService {
+public class AdvertiseStatisticsService {
+
+    private final AdvertiseCountRepository advertiseCountRepository;
 
 
 

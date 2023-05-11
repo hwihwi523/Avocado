@@ -5,8 +5,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class RedisKeys {
 
-    public final String commPrefix = "st-";
     public final String merchandiseIdSet = "st-mc-ids";
+
+    // Common Prefix
+    public final String commPrefix = "st-";
+
+    // Advertise Prefix
+    public final String adPrefix = "ad-";
 
     // Category Type
     public final String ageGenderPrefix = "ag-";
