@@ -24,7 +24,7 @@ const MobileHeader = (props: any) => {
         </ImageBox>
 
         <Button style={{ backgroundColor: "black", color: "white" }}>
-          <Link href="/login">판매자 페이지</Link>
+          <Link href="/seller">판매자 페이지</Link>
         </Button>
 
         {/* 장바구니  */}
