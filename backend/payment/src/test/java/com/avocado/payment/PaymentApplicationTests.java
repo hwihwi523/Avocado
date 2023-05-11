@@ -1,5 +1,6 @@
 package com.avocado.payment;
 
+import com.avocado.payment.config.UUIDUtil;
 import com.avocado.payment.dto.request.PurchaseMerchandiseReq;
 import com.avocado.payment.dto.request.ReadyForPaymentReq;
 import com.avocado.payment.entity.Merchandise;
@@ -31,6 +32,8 @@ class PaymentApplicationTests {
     private KakaoPayService kakaoPayService;
     @Autowired
     private MerchandiseRepository merchandiseRepository;
+    @Autowired
+    private UUIDUtil uuidUtil;
     @Test
     void 동시성_재고100개_1개씩() throws InterruptedException {
         int maxCount = 300;
@@ -48,7 +51,6 @@ class PaymentApplicationTests {
         );
         ReadyForPaymentReq req = ReadyForPaymentReq.builder()
                 .merchandises(merchandises)
-                .user_id("2fe2b6febfbf40d49517b2af0d6e0052")
                 .total_price(3000L)
                 .build();
 
@@ -59,7 +61,7 @@ class PaymentApplicationTests {
         // 쓰레드 실행
         for (int i = 0; i < threadCount; i++) {
             executorService.execute(() -> {
-                kakaoPayService.testPay("2fe2b6febfbf40d49517b2af0d6e0052", req);
+                kakaoPayService.testPay(uuidUtil.joinByHyphen("2fe2b6febfbf40d49517b2af0d6e0052"), req);
                 latch.countDown();
             });
         } latch.await();
