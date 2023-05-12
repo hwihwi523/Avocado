@@ -87,11 +87,18 @@ public class StyleshotService {
 
     }
 
-    public List<StyleshotResp> styleshotList() {
-        List<StyleshotResp> respList = styleshotRepository.getAll();
+    public List<StyleshotResp> styleshotList(Long lastId, Integer resultSize) {
+        List<StyleshotResp> respList;
+        if (lastId == null) {
+            respList = styleshotRepository.getAllFirstPageable(resultSize);
+        } else {
+            respList = styleshotRepository.getAllPageable(lastId, resultSize);
+        }
+
         for (StyleshotResp resp: respList) {
             List<MerchandiseResp> wearList = merchandiseRepository.getWearById(resp.getId());
             resp.setWears(wearList);
+            resp.setTotalLikes(styleshotLikeRepository.countTotal(resp.getId()));
         }
 
         return respList;
@@ -105,6 +112,7 @@ public class StyleshotService {
         List<MerchandiseResp> wearList = merchandiseRepository.getWearById(styleshotId);
         StyleshotResp resp = styleshotO.get();
         resp.setWears(wearList);
+        resp.setTotalLikes(styleshotLikeRepository.countTotal(resp.getId()));
         return resp;
     }
 
@@ -121,9 +129,9 @@ public class StyleshotService {
         for (StyleshotResp resp: respList) {
             List<MerchandiseResp> wearList = merchandiseRepository.getWearById(resp.getId());
             resp.setWears(wearList);
+            resp.setTotalLikes(styleshotLikeRepository.countTotal(resp.getId()));
         }
         return respList;
-
     }
 
     @Transactional

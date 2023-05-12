@@ -16,4 +16,9 @@
         where styleshot_id = #{styleshotId} and consumer_id = #{consumerId}
     </delete>
 
+    <select id="countTotal" resultType="int">
+        select count(*) from styleshot_like
+        where styleshot_id = #{styleshotId}
+    </select>
+
 </mapper>

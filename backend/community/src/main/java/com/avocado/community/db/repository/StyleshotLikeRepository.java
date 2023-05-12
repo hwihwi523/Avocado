@@ -11,4 +11,6 @@ public interface StyleshotLikeRepository {
     void like(long styleshotId, @Param("consumerId") UUID consumerId);
 
     void unlike(long styleshotId, @Param("consumerId") UUID consumerId);
+
+    int countTotal(long styleshotId);
 }

@@ -13,7 +13,7 @@ public class StyleshotResp {
     long id;
     String content;
     String pictureUrl;
-    int rating;
+    int totalLikes;
     LocalDateTime createdAt;
     List<MerchandiseResp> wears;
 }
