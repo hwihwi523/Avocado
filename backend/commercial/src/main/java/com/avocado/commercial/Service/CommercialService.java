@@ -3,7 +3,6 @@ package com.avocado.commercial.Service;
 import com.avocado.commercial.Dto.request.CommercialCancelReqDto;
 import com.avocado.commercial.Dto.request.CommercialReqDto;
 import com.avocado.commercial.Dto.response.Analysis;
-import com.avocado.commercial.Dto.response.RegistedCommercial;
 import com.avocado.commercial.Dto.response.item.Carousel;
 import com.avocado.commercial.Dto.response.CommercialRespDto;
 import com.avocado.commercial.Dto.response.item.Click;
@@ -19,6 +18,8 @@ import com.avocado.commercial.util.JwtUtil;
 import com.avocado.commercial.util.UUIDUtil;
 import io.jsonwebtoken.Jwt;
 import net.bytebuddy.agent.builder.AgentBuilder;
+import com.avocado.commercial.kafka.KafkaProducer;
+import com.avocado.commercial.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -36,16 +37,17 @@ public class CommercialService {
     private CommercialExposureRepository commercialExposureRepository;
     private ImageService imageService;
     private JwtUtil jwtUtil;
-
+    private final KafkaProducer kafkaproducer;
     private final int TYPE_POPUP = 0;
     private final int TYPE_CAROUSEL = 1;
 
     @Autowired
-    public CommercialService(CommercialRepository commercialRepository, CommercialExposureRepository commercialExposureRepository, ImageService imageService, JwtUtil jwtUtil){
+    public CommercialService(CommercialRepository commercialRepository, CommercialExposureRepository commercialExposureRepository, ImageService imageService, JwtUtil jwtUtil, KafkaProducer kafkaproducer){
         this.commercialRepository = commercialRepository;
         this.commercialExposureRepository = commercialExposureRepository;
         this.imageService = imageService;
         this.jwtUtil = jwtUtil;
+        this.kafkaproducer = kafkaproducer;
     }
 
     // 리팩토링 해야할 듯
@@ -111,8 +113,11 @@ public class CommercialService {
                 CommercialExposure commercialExposure = new CommercialExposure();
                 commercialExposure.setCommercialId(commercial.getId());
                 commercialExposureRepository.save(commercialExposure);
+                // produce to kafka
+                kafkaproducer.sendAdview(commercial.getMerchandiseId(), UUID.randomUUID());
             }
             commercialRespDto.setCarousel_list(carouselList);
+
             return commercialRespDto;
         }
 
@@ -127,9 +132,10 @@ public class CommercialService {
             CommercialExposure commercialExposure = new CommercialExposure();
             commercialExposure.setCommercialId(commercial.getId());
             commercialExposureRepository.save(commercialExposure);
+            // produce to kafka
+            kafkaproducer.sendAdview(commercial.getMerchandiseId(), UUID.randomUUID());
         }
         commercialRespDto.setCarousel_list(carouselList);
-
 
         return commercialRespDto;
     }
