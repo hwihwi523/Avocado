@@ -20,7 +20,7 @@ const ProductCardsGrid:React.FC<{data : ProductInfo[]}> = (props) => {
   return (
     <Grid container>
       {props.data &&
-        props.data?.map((item: ProductInfo, i) => (
+        props.data?.map((item: ProductInfo, i:number) => (
           <Grid item lg={3} md={3} sm={4} xs={6} key={i}>
             <ProductCard data={item} key={i} />
           </Grid>
