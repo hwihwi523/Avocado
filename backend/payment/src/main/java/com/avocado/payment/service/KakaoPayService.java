@@ -69,7 +69,10 @@ public class KakaoPayService {
         List<Merchandise> merchandiseList = merchandiseRepository.findByIdIn(merchandiseIds);
 
         //  3. 모두 유효한 상품인지 확인
-        if (merchandiseList.size() != merchandiseReqs.size())
+        Set<Long> requestMerchandiseSet = new HashSet<>();  // 구매 요청한 상품의 품목 수 구하기
+        for (PurchaseMerchandiseReq merchandiseReq : merchandiseReqs)
+            requestMerchandiseSet.add(merchandiseReq.getMerchandise_id());
+        if (merchandiseList.size() != requestMerchandiseSet.size())  // 요청한 상품의 품목 수와 조회한 품목 수가 다르다면 유효 X
             throw new InvalidValueException(ErrorCode.NO_MERCHANDISE);
 
         // 결제할 품목의 개수에 따라 요청 데이터 가공
@@ -97,7 +100,7 @@ public class KakaoPayService {
             throw new KakaoPayException(ErrorCode.READY_ERROR);
         KakaoPayReadyResp kakaoPayReadyResp = response.getBody();
 
-        // 판매자 ID
+        // 상품별 판매자 ID
         Map<Long, UUID> providerIdMap = new HashMap<>();
         for (Merchandise merchandise : merchandiseList)
             providerIdMap.put(merchandise.getId(), merchandise.getStore().getProviderId());
@@ -112,7 +115,7 @@ public class KakaoPayService {
                             .price(merchandiseReq.getPrice())
                             .provider_id(providerId)
                             .quantity(merchandiseReq.getQuantity())
-                            .size((System.currentTimeMillis() & 1) == 1 ? "L" : "XL")  // 사이즈는 제공하지 않으므로 랜덤 설정
+                            .size(merchandiseReq.getSize())
                             .build()
             );
         }
@@ -249,7 +252,10 @@ public class KakaoPayService {
         List<Merchandise> merchandiseList = merchandiseRepository.findByIdIn(merchandiseIds);
 
         //  3. 모두 유효한 상품인지 확인
-        if (merchandiseList.size() != merchandiseReqs.size())
+        Set<Long> requestMerchandiseSet = new HashSet<>();  // 구매 요청한 상품의 품목 수 구하기
+        for (PurchaseMerchandiseReq merchandiseReq : merchandiseReqs)
+            requestMerchandiseSet.add(merchandiseReq.getMerchandise_id());
+        if (merchandiseList.size() != requestMerchandiseSet.size())  // 요청한 상품의 품목 수와 조회한 품목 수가 다르다면 유효 X
             throw new InvalidValueException(ErrorCode.NO_MERCHANDISE);
 
         // 결제할 품목의 개수에 따라 요청 데이터 가공
@@ -271,7 +277,7 @@ public class KakaoPayService {
                             .price(merchandiseReq.getPrice())
                             .provider_id(providerId)
                             .quantity(merchandiseReq.getQuantity())
-                            .size((System.currentTimeMillis() & 1) == 1 ? "L" : "XL")  // 사이즈는 제공하지 않으므로 랜덤 설정
+                            .size(merchandiseReq.getSize())
                             .build()
             );
         }
