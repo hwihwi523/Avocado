@@ -5,7 +5,7 @@ const API_URL = process.env.NEXT_PUBLIC_MEMBER_API_URL;
 
 
 type ResponseType = {
-  msf : string,
+  msg : string,
   status : number,
 }
 

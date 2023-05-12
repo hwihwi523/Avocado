@@ -8,6 +8,7 @@ const nextConfig = {
       "www.dior.com", // 테스트 상품 목록
       "d3t32hsnjxo7q6.cloudfront.net", // 테스트 상품 목록
       "assets.myntassets.com",
+      "k.kakaocdn.net",
     ],
   },
 };
