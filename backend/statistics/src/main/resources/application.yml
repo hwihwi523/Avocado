@@ -1,8 +1,4 @@
 spring:
-  server:
-    servlet:
-      context-path: /api/statistics
-
   datasource:
     url: jdbc:mysql://a07c6127933494883b1ce18e5a21f697-895151877.ap-northeast-2.elb.amazonaws.com:3306/product?serverTimezone=UTC&characterEncoding=UTF-8
     username: root
@@ -22,3 +18,7 @@ jwt:
   secret: e52713a2bd59e655ffd78ed74fafc5b29a2001d586949e55792e2f1a5b1f3d8ffb9d132354932bdf
   access_expiration: 21600000
   refresh_expiration: 1296000000
+
+server:
+  servlet:
+    context-path: /api/statistics
