@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import * as React from "react";
-import FilledInput from "@mui/material/FilledInput";
+import { mbti_list } from "../../atoms/data";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -13,18 +13,30 @@ import Button from "@mui/material/Button";
 import { ChangeEvent } from "react";
 import { BlockText } from "../../atoms";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import {enqueueSnackbar} from 'notistack'
-const MbtiAndWeightHeightForm: React.FC<{ pageHandler: () => void }> = (
-  props
-) => {
-  const { pageHandler } = props;
-  const [mbti, setMbti] = useState("");
+import { enqueueSnackbar } from "notistack";
+
+//memberInfo의 타입
+type RequestType = {
+  gender: String;
+  age_group: number; // 10, 20, 30, 40, 50, 60, 70. null 불가
+  height: number | null; // 0 이상. null 가능
+  weight: number | null; // 0 이상. null 가능
+  mbti_id: number | null; // 0 이상 15이하
+  personal_color_id: number | null; // 0이상 9이하
+};
+
+const MbtiAndWeightHeightForm: React.FC<{
+  pageHandler: () => void;
+  setMemberInfo: any;
+}> = (props) => {
+  const { pageHandler, setMemberInfo } = props;
+  const [mbti, setMbti] = useState("16");
   const [height, setHeight] = useState(0);
   const [weight, setWeight] = useState(0);
 
   //mbti 선택 핸들러
   const handleChange = (event: SelectChangeEvent) => {
-    setMbti(event.target.value as string);
+    setMbti(event.target.value);
   };
 
   //키 선택 핸들러
@@ -44,7 +56,7 @@ const MbtiAndWeightHeightForm: React.FC<{ pageHandler: () => void }> = (
   };
 
   const submitHandler = () => {
-    if(mbti === ""){
+    if (mbti === "16") {
       enqueueSnackbar(`mbti를 입력하지 않았습니다. `, {
         variant: "error",
         anchorOrigin: {
@@ -52,17 +64,15 @@ const MbtiAndWeightHeightForm: React.FC<{ pageHandler: () => void }> = (
           vertical: "bottom",
         },
       });
-      return
+      return;
     }
 
-    
-
-
-    console.log({
-      mbti,
-      height: height,
-      weight: weight,
-    });
+    setMemberInfo((preState: RequestType) => ({
+      ...preState,
+      mbti_id: Number(mbti) !== -1 ? Number(mbti) : null,
+      height: height !== 0 ? height : null,
+      weight: weight !== 0 ? weight : null,
+    }));
 
     pageHandler(); //다음페이지로 이동하는 함수
   };
@@ -70,6 +80,7 @@ const MbtiAndWeightHeightForm: React.FC<{ pageHandler: () => void }> = (
   return (
     <Background>
       <Stack spacing={2}>
+        {/* mbti 선택 */}
         <FormControl fullWidth>
           <InputLabel id="demo-simple-select-label">mbti</InputLabel>
           <Select
@@ -79,29 +90,25 @@ const MbtiAndWeightHeightForm: React.FC<{ pageHandler: () => void }> = (
             label="mbti"
             onChange={handleChange}
           >
-            <MenuItem value={"INTJ"}>INTJ</MenuItem>
-            <MenuItem value={"INFJ"}>INFJ</MenuItem>
-            <MenuItem value={"ISTJ"}>ISTJ</MenuItem>
-            <MenuItem value={"ISTP"}>ISTP</MenuItem>
-            <MenuItem value={"INTP"}>INTP</MenuItem>
-            <MenuItem value={"INFP"}>INFP</MenuItem>
-            <MenuItem value={"ISFJ"}>ISFJ</MenuItem>
-            <MenuItem value={"ISFP"}>ISFP</MenuItem>
-            <MenuItem value={"ENTJ"}>ENTJ</MenuItem>
-            <MenuItem value={"ENFJ"}>ENFJ</MenuItem>
-            <MenuItem value={"ESTJ"}>ESTJ</MenuItem>
-            <MenuItem value={"ESTP"}>ESTP</MenuItem>
-            <MenuItem value={"ESFJ"}>ESFJ</MenuItem>
-            <MenuItem value={"ESFP"}>ESFP</MenuItem>
+            <MenuItem value={"16"}>선택 안함</MenuItem>
+            {mbti_list.map((item, i) => (
+              <MenuItem value={i.toString()} key={i}>
+                {item}
+              </MenuItem>
+            ))}
           </Select>
           <BlockText color="#1875d2" style={{ padding: "10px" }}>
-            <a href="https://www.16personalities.com/ko/%EB%AC%B4%EB%A3%8C-%EC%84%B1%EA%B2%A9-%EC%9C%A0%ED%98%95-%EA%B2%80%EC%82%AC" target="_blank">
+            <a
+              href="https://www.16personalities.com/ko/%EB%AC%B4%EB%A3%8C-%EC%84%B1%EA%B2%A9-%EC%9C%A0%ED%98%95-%EA%B2%80%EC%82%AC"
+              target="_blank"
+            >
               나의 mbti 알아보러 가기
             </a>
             <ArrowForwardIcon fontSize="small" />
           </BlockText>
         </FormControl>
 
+        {/* 몸무게 선택 */}
         <FormControl variant="outlined" fullWidth>
           <OutlinedInput
             onChange={weightChange}
@@ -114,6 +121,8 @@ const MbtiAndWeightHeightForm: React.FC<{ pageHandler: () => void }> = (
             }}
           />
         </FormControl>
+
+        {/* 키 선택 */}
         <FormControl variant="outlined" fullWidth>
           <OutlinedInput
             onChange={heightChange}

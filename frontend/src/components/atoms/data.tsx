@@ -23,6 +23,7 @@ const personal_color_list:string[] = [
   "summer_cool_light",
   "summer_cool_bright",
   "summer_cool_mute",
+  "autumn_warm_mute",
   "autumn_warm_strong",
   "autumn_warm_deep",
   "winter_cool_bright",

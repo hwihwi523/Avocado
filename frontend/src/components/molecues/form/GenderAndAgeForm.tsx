@@ -9,21 +9,32 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { InlineText } from "../../atoms";
 import { useSnackbar } from "notistack";
 
-const GenderAndAgeForm: React.FC<{ pageHandler: () => void }> = (props) => {
-  const { pageHandler } = props;
+//memberInfo의 타입
+type RequestType={
+	gender:String ;
+	age_group:number; // 10, 20, 30, 40, 50, 60, 70. null 불가
+	height:number|null; // 0 이상. null 가능
+	weight:number|null; // 0 이상. null 가능
+	mbti_id:number|null;// 0 이상 15이하
+	personal_color_id:number|null; // 0이상 9이하
+}
+
+
+const GenderAndAgeForm: React.FC<{ pageHandler: () => void, setMemberInfo:any}> = (props) => {
+  const { pageHandler, setMemberInfo } = props;
 
   const { enqueueSnackbar } = useSnackbar();
   const [man, setMan] = useState(false);
   const [woman, setWoman] = useState(false);
   const [age, setAge] = useState("");
 
-  const [open, setOpen] = useState(false);
 
+  //나이 선택 핸들러
   const handleChange = (event: SelectChangeEvent) => {
     setAge(event.target.value as string);
   };
 
-  //여기서 제출 함수 만들면 될 것 같음
+  //유저정보 셋팅
   function submitHandler() {
     if (man === woman) {
       enqueueSnackbar(`성별을 선택해 주세요 `, {
@@ -46,10 +57,17 @@ const GenderAndAgeForm: React.FC<{ pageHandler: () => void }> = (props) => {
       });
     }
 
-    console.log({
-      gender: man ? "man" : "woman",
-      age: age,
-    });
+    //유저정보 셋팅
+    setMemberInfo((preState:RequestType) =>({
+      ...preState,
+      gender :man? "M": "F",
+      age_group : age,
+    }))
+
+  
+
+ 
+    
     pageHandler(); // 다음페이지로 이동하는 함수
   }
 

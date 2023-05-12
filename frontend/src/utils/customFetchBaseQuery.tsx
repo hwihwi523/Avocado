@@ -80,7 +80,7 @@ export const customFetchBaseQuery = (option: {
         }
       } else {
         // 만약 accessToken이 존재하면 이 토큰을 헤더에 담아 보내기
-        headers.set("Authorization", token);
+        headers.set("Authorization", `Bearer ${token}`);
       }
       // 액세스, 리프레시 토큰 모두 없다면 일반 헤더로 보냄.
       // headers에 지정된 헤더값들을 추가
