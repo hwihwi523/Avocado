@@ -51,7 +51,7 @@ type ProductInfo = {
 
 
 export const searchApi = createApi({
-  reducerPath: "searchApi", //이게 뭐지..?
+  reducerPath: "searchApi",
   baseQuery: fetchBaseQuery({ baseUrl: API_URL }),
   tagTypes: ["products","recommands"],
   endpoints: (build) => ({
@@ -63,7 +63,7 @@ export const searchApi = createApi({
           keyword,
         }
       }),
-      transformResponse: (response:any) => {
+    transformResponse: (response:PostsList[]) => {
         // 응답을 가공하고 반환
         return response.map((item:any) => ({
           id: item.id,
@@ -72,7 +72,7 @@ export const searchApi = createApi({
           discount: item.price - item.discounted_price,
           tags:[item.season, item.age_gender_group_kor, item.category_kor], 
           brand: item.store_name,
-        }));
+        } as ProductInfo));
       },
       //테그 설정
       providesTags: (result) =>

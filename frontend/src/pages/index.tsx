@@ -1,7 +1,7 @@
 import { Inter } from "next/font/google";
 import styled from "@emotion/styled";
 import Grid from "@mui/material/Grid";
-import Head from 'next/head'
+import Head from "next/head";
 
 import {
   ProductCardsRow,
@@ -10,8 +10,10 @@ import {
   UserProfile,
 } from "../components/oranisms";
 import { BlockText } from "../components/atoms";
-import { wrapper } from "../features/store";
+import { AppState, useAppSelector, wrapper } from "../features/store";
 import { authenticateTokenInPages } from "../utils/authenticateTokenInPages";
+import { productApi } from "../features/product/productApi";
+import { setProductListBySearch } from "../features/product/productSlice";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,26 +22,31 @@ export default function Home() {
   const mbti = "estp";
   const personalColor = "spring bright";
 
+  const member = useAppSelector((state: AppState) => state.auth.member);
+
   return (
     <BackgroundDiv>
-            <Head>
+      <Head>
         <title>Avocado</title>
-        <meta name="description" content="mbti와 personal color를 기반으로 하는 개인화 추천 쇼핑몰"/>
+        <meta
+          name="description"
+          content="mbti와 personal color를 기반으로 하는 개인화 추천 쇼핑몰"
+        />
         <meta
           name="keywords"
           content={`mbit, 퍼스널컬러, 상의, 하의, 원피스, 신발, 가방, 악세서리`}
         />
         <meta property="og:title" content="Avocado" />
-        <meta property="og:description" content="mbti와 personal color를 기반으로 하는 개인화 추천 쇼핑몰" />
+        <meta
+          property="og:description"
+          content="mbti와 personal color를 기반으로 하는 개인화 추천 쇼핑몰"
+        />
       </Head>
 
-
-
-
- 
       <Grid container gap={5}>
         {/* 사용자 프로필 */}
         <Grid item xs={12}>
+          <div>{member?.email}</div>
           <UserProfile />
         </Grid>
 
@@ -79,8 +86,6 @@ export default function Home() {
   );
 }
 
-
-
 const BackgroundDiv = styled.div`
   padding: 10px;
   box-sizing: border-box;
@@ -103,9 +108,23 @@ export const getServerSideProps = wrapper.getServerSideProps(
     );
 
     // 필요한 내용 작성
+//유저정보 가져오기
+    // console.log(">>>>>>>>>>>",store.getState().auth.member);
 
+//함수 불러오기
+    // store.dispatch(
+    //   productApi.endpoints.getProductDetail.initiate(lastSegment)
+    // );
+
+    //store에 집어 넣기 
+      // store.dispatch(setProductListBySearch());
+
+//
     return {
       props: {},
     };
   }
 );
+function useSelector() {
+  throw new Error("Function not implemented.");
+}
