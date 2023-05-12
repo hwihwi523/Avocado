@@ -69,6 +69,11 @@ public class StyleshotService {
 
     @Transactional
     public void deleteStyleshot(long styleshotId, Claims claims) {
+        // 1. consumer 권한이 아닌 경우 에러 발생
+        if (!jwtUtils.getType(claims).equals("consumer")) {
+            throw new BaseException(ResponseCode.FORBIDDEN);
+        }
+
         UUID consumerId = jwtUtils.getId(claims);
         Optional<Long> check = styleshotRepository.getByIdAndConsumerId(styleshotId, consumerId);
 
