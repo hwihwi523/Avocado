@@ -27,20 +27,20 @@ public class KafkaProducer {
     }
 
     public void sendClick(Long merchandiseID, UUID consumerID) {
-        Click click = Click.newBuilder()
-                .setUserId(String.valueOf(consumerID))
-                .build();
-        ListenableFuture<SendResult<Long, Click>> future = clickKafkaTemplate.send(clickTopic, merchandiseID, click);
-        future.addCallback(new ListenableFutureCallback<>() {
-            @Override
-            public void onFailure(Throwable ex) {
-                log.warn("Unable to send message: [{}] due to : {}", click, ex.getMessage());
-            }
-
-            @Override
-            public void onSuccess(SendResult<Long, Click> result) {
-                log.info("click sent: [{}] with partition = [{}] offset=[{}]", click, result.getRecordMetadata().partition(), result.getRecordMetadata().offset());
-            }
-        });
+//        Click click = Click.newBuilder()
+//                .setUserId(String.valueOf(consumerID))
+//                .build();
+//        ListenableFuture<SendResult<Long, Click>> future = clickKafkaTemplate.send(clickTopic, merchandiseID, click);
+//        future.addCallback(new ListenableFutureCallback<>() {
+//            @Override
+//            public void onFailure(Throwable ex) {
+//                log.warn("Unable to send message: [{}] due to : {}", click, ex.getMessage());
+//            }
+//
+//            @Override
+//            public void onSuccess(SendResult<Long, Click> result) {
+//                log.info("click sent: [{}] with partition = [{}] offset=[{}]", click, result.getRecordMetadata().partition(), result.getRecordMetadata().offset());
+//            }
+//        });
     }
 }
