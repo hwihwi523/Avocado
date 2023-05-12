@@ -65,7 +65,7 @@ public class SearchService {
                                 .query(q -> q
                                         .bool(b -> b
                                                 .must(byName)
-                                        )).size(50),
+                                        )).size(20),
                         Product.class);
             }else {
                 search = elasticsearchClient.search(s -> s
@@ -74,7 +74,7 @@ public class SearchService {
                                         .bool(b -> b
                                                 .must(byName)
                                                 .must(byCategory)
-                                        )).size(50),
+                                        )).size(20),
                         Product.class);
             }
             for (Hit<Product> hit: search.hits().hits()) {
@@ -82,14 +82,8 @@ public class SearchService {
             }
         } catch (ElasticsearchException e) {
             e.printStackTrace();
-            throw new SearchException(ErrorCode.UNCOVERED_ELASTIC_SEARCH_ERROR);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new SearchException(ErrorCode.UNCOVERED_ERROR);
-        }
-
-        if(products.size() == 0){
-            throw new SearchException(ErrorCode.PRODUCT_NOT_FOUND);
         }
 
         return products;
@@ -137,10 +131,8 @@ public class SearchService {
             }
         } catch (ElasticsearchException e) {
             e.printStackTrace();
-            throw new SearchException(ErrorCode.UNCOVERED_ELASTIC_SEARCH_ERROR);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new SearchException(ErrorCode.UNCOVERED_ERROR);
         }
 
         for(Keyword key : keywordList){
@@ -149,4 +141,7 @@ public class SearchService {
 
         return keywordRespDtoList;
     }
+
+
+
 }

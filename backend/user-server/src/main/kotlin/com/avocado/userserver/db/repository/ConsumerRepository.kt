@@ -10,6 +10,8 @@ interface ConsumerRepository : CoroutineCrudRepository<Consumer, ByteArray> {
 
     suspend fun findBySubAndSocial(sub:String, social:SocialType): Consumer?
 
+    suspend fun findByConsumerId(id:ByteArray): Consumer?
+
     suspend fun save(consumer: Consumer): Consumer
 
 }

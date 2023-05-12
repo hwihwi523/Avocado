@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.avocado.product.entity.QClick.click;
-import static com.avocado.product.entity.QConsumer.consumer;
 import static com.avocado.product.entity.QMerchandise.merchandise;
 import static com.avocado.product.entity.QMerchandiseAdditionalImg.merchandiseAdditionalImg;
 import static com.avocado.product.entity.QMerchandiseCategory.merchandiseCategory;
@@ -168,6 +167,7 @@ public class MerchandiseRepository {
                         merchandise.name,
                         merchandiseGroup.price,
                         merchandiseGroup.discountedPrice,
+                        merchandise.inventory,
                         merchandise.totalScore.divide(merchandise.reviewCount).floatValue(),
                         merchandiseGroup.description
                 ))

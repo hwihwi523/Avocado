@@ -10,20 +10,32 @@ import { useSnackbar } from "notistack";
 import { Button } from "@mui/material";
 import { BlockText } from "../../atoms";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import router from 'next/router'
+import { personal_color_list } from "../../atoms/data";
 
-const PersonalColorForm: React.FC<{ pageHandler: () => void }> = (props) => {
+//memberInfo의 타입
+type RequestType = {
+  gender: String;
+  age_group: number; // 10, 20, 30, 40, 50, 60, 70. null 불가
+  height: number | null; // 0 이상. null 가능
+  weight: number | null; // 0 이상. null 가능
+  mbti_id: number | null; // 0 이상 15이하
+  personal_color_id: number | null; // 0이상 9이하
+};
 
-  const{pageHandler} = props;
-  const [personalColor, setPersonalColor] = useState("");
+const PersonalColorForm: React.FC<{
+  pageHandler: () => void;
+  setMemberInfo: any;
+}> = (props) => {
+  const { pageHandler, setMemberInfo } = props;
+  const [personalColor, setPersonalColor] = useState("10");
 
   const { enqueueSnackbar } = useSnackbar();
   const handleChange = (event: SelectChangeEvent) => {
-    setPersonalColor(event.target.value as string);
+    setPersonalColor(event.target.value);
   };
 
   function submitHandler() {
-    if (personalColor === "") {
+    if (personalColor === "10") {
       enqueueSnackbar(`퍼스널 컬러를 선택하지 않았습니다. `, {
         variant: "error",
         anchorOrigin: {
@@ -34,33 +46,19 @@ const PersonalColorForm: React.FC<{ pageHandler: () => void }> = (props) => {
       return;
     }
 
-    console.log({
-      personalColor,
-    });
-    pageHandler()
-    
+    setMemberInfo((preState: RequestType) => ({
+      ...preState,
+      personal_color_id:
+        Number(personalColor) !== -1 ? Number(personalColor) : null,
+    }));
+
+    pageHandler();
   }
 
   return (
     <>
       <Stack spacing={3}>
-        {/* <div>
-          <label htmlFor="imageInput">
-            <UploadButtonImg>
-              <CameraAltIcon />
-            </UploadButtonImg>
-          </label>
-          <UploadInput
-            id="imageInput"
-            type="file"
-            accept="image/*"
-            // accept=".jpg,.jpeg,.png"
-            multiple
-          />
-            <BlockText type="L" color="grey" size="0.9rem">* 얼굴이 정면으로 잘 드러나는 사진을 등록해 주세요</BlockText>
-            <BlockText type="L" color="grey" size="0.9rem">* 이 사진은 퍼스널 컬러 테스트에만 사용됩니다.</BlockText>
-        </div> */}
-
+        {/* 퍼스널 컬러 선택 */}
         <FormControl fullWidth>
           <InputLabel id="demo-simple-select-label">퍼스널 컬러</InputLabel>
           <Select
@@ -70,18 +68,14 @@ const PersonalColorForm: React.FC<{ pageHandler: () => void }> = (props) => {
             label="mbti"
             onChange={handleChange}
           >
-            <MenuItem value={"spring_warm_light"}>spring warm light</MenuItem>
-            <MenuItem value={"spring_warm_bright"}>spring warm bright</MenuItem>
-            <MenuItem value={"summer_cool_light"}>summer cool light</MenuItem>
-            <MenuItem value={"summer_cool_bright"}>summer cool bright</MenuItem>
-            <MenuItem value={"summer_cool-mute"}>summer cool mute</MenuItem>
-            <MenuItem value={"autumn_warm_mute"}>autumn warm mute</MenuItem>
-            <MenuItem value={"autumn_warm_strong"}>autumn warm strong</MenuItem>
-            <MenuItem value={"autumn_warmdeep"}>autumn warm deep</MenuItem>
-            <MenuItem value={"winter_cool_bright"}>winter cool brignt</MenuItem>
-            <MenuItem value={"winter_cool_deep"}>winter cool deep</MenuItem>
+            <MenuItem value={"10"}>선택안함</MenuItem>
+            {personal_color_list.map((item, i) => (
+              <MenuItem value={i.toString()} key={i}>
+                {item}
+              </MenuItem>
+            ))}
           </Select>
-          <BlockText color="#1875d2" style={{marginTop:"10px"}}> 
+          <BlockText color="#1875d2" style={{ marginTop: "10px" }}>
             <a href="https://mycolor.kr/" target="_blank">
               퍼스널 컬러 확인하러 가기{" "}
             </a>
@@ -89,6 +83,7 @@ const PersonalColorForm: React.FC<{ pageHandler: () => void }> = (props) => {
           </BlockText>
         </FormControl>
 
+        {/* 셋팅 버튼 */}
         <Button
           fullWidth
           style={{

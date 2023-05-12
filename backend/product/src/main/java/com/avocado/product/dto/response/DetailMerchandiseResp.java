@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class DetailMerchandiseResp extends DefaultMerchandiseResp {
     private List<String> images;
+    private Integer inventory;
     private Float score;
     private String description;
 
@@ -27,6 +28,7 @@ public class DetailMerchandiseResp extends DefaultMerchandiseResp {
         super.updateDefault(detailMerchandiseDTO);
         this.images = new ArrayList<>();
         this.images.add(detailMerchandiseDTO.getImageUrl());
+        this.inventory = detailMerchandiseDTO.getInventory();
         this.score = detailMerchandiseDTO.getScore() != null ? detailMerchandiseDTO.getScore() : 0;
         this.description = detailMerchandiseDTO.getDescription();
         this.is_purchased = false;

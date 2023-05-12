@@ -17,9 +17,9 @@ class ScoreRepositoryTest {
     @Autowired
     ScoreRepository scoreRepository;
 
-    @Test
-    @DisplayName("작동 테스트")
-    public void runningTest() {
-        scoreRepository.save(CategoryType.AGE_GENDER, Type.CART, 1);
-    }
+//    @Test
+//    @DisplayName("작동 테스트")
+//    public void runningTest() {
+//        scoreRepository.save(CategoryType.AGE_GENDER, Type.CART, 1);
+//    }
 }

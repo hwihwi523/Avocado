@@ -2,15 +2,15 @@ package com.avocado.product.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class AddWishlistReq {
-    private final Long merchandise_id;
-    private final String user_id;
+    private Long merchandise_id;
 
     @Builder
-    public AddWishlistReq(String user_id, Long merchandise_id) {
-        this.user_id = user_id;
+    public AddWishlistReq(Long merchandise_id) {
         this.merchandise_id = merchandise_id;
     }
 }

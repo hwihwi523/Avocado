@@ -2,19 +2,19 @@ package com.avocado.product.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class AddReviewReq {
-    private final Long id;
-    private final Byte score;
-    private final String content;
-    private final String user_id;  // 추후 삭제 예정
+    private Long id;
+    private Byte score;
+    private String content;
 
     @Builder
-    public AddReviewReq(Long id, Byte score, String content, String user_id) {
+    public AddReviewReq(Long id, Byte score, String content) {
         this.id = id;
         this.score = score;
         this.content = content;
-        this.user_id = user_id;
     }
 }

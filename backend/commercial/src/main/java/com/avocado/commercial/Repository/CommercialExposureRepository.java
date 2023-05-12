@@ -7,4 +7,6 @@ import org.springframework.data.repository.Repository;
 public interface CommercialExposureRepository  extends Repository<CommercialExposure,Long> {
 
     void save(CommercialExposure commercialExposure);
+
+    void deleteByCommercialId(long commercialId);
 }

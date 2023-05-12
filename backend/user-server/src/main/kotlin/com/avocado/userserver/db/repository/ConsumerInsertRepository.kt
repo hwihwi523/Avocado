@@ -26,5 +26,15 @@ class ConsumerInsertRepository (
             .fetch()
             .rowsUpdated()
             .awaitFirst()
+
+    }
+
+    @Transactional
+    suspend fun insertWallet(consumer: Consumer) {
+        client.sql("INSERT INTO wallet (consumer_id) VALUES (:id)")
+            .bind("id", consumer.consumerId)
+            .fetch()
+            .rowsUpdated()
+            .awaitFirst()
     }
 }

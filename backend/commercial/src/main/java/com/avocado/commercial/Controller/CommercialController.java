@@ -20,7 +20,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-////ads?age={age}&gender={gender}mbti_id={mbti_id}&commercial_type_id={commercial_type_id}&personal_color_id={personal_color_id}
 public class CommercialController {
 
     private CommercialService commercialService;
@@ -47,7 +46,7 @@ public class CommercialController {
     }
     @GetMapping("/analyses/{commercial_id}")
     public ResponseEntity<List<Analysis>> getAnalyses(@PathVariable("commercial_id") int commercialId){
-        List<Analysis> analysisList = commercialService.getAnlyses(commercialId);
+        List<Analysis> analysisList = commercialService.getAnalyses(commercialId);
 
         return new ResponseEntity<List<Analysis>>(analysisList,HttpStatus.OK);
     }

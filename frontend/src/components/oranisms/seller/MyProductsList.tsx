@@ -8,7 +8,7 @@ const MyProductsList = () =>{
     return (
         <>
         <Category/>
-        <ProductCardsGrid/>
+        {/* <ProductCardsGrid/> */}
         </>
     )
 }

@@ -1,6 +1,5 @@
 package com.avocado.community.api.controller;
 
-import com.avocado.community.api.request.PostStyleshotReq;
 import com.avocado.community.api.service.StyleshotService;
 import com.avocado.community.common.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
@@ -10,8 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
+
 
 @Slf4j
 @RestController
