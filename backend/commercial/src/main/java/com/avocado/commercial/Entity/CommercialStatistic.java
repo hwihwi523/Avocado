@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
-@Table(name="commercial")
+@Table(name="commercial_statistic")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -32,7 +32,7 @@ public class CommercialStatistic {
     @Column(nullable = false, columnDefinition = "BIGINT")
     private long quantity;
 
-    @Column(nullable = false, columnDefinition = "BIGINT")
+    @Column(nullable = false, columnDefinition = "INT UNSIGNED")
     private long commercialId;
 
     @Column(nullable = false, columnDefinition = "DATE")

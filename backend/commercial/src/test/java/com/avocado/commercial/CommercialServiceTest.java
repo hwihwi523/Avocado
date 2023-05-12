@@ -31,7 +31,7 @@ public class CommercialServiceTest {
     private CommercialService commercialService;
     @Test
     public void getCommercialExposure(){
-
+//        System.out.println(commercialService.getCommercialExposure(1,22,1,'M'));
     }
 
 

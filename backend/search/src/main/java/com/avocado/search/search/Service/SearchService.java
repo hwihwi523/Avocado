@@ -82,10 +82,8 @@ public class SearchService {
             }
         } catch (ElasticsearchException e) {
             e.printStackTrace();
-            throw new SearchException(ErrorCode.UNCOVERED_ELASTIC_SEARCH_ERROR);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new SearchException(ErrorCode.UNCOVERED_ERROR);
         }
 
         return products;
@@ -133,10 +131,8 @@ public class SearchService {
             }
         } catch (ElasticsearchException e) {
             e.printStackTrace();
-            throw new SearchException(ErrorCode.UNCOVERED_ELASTIC_SEARCH_ERROR);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new SearchException(ErrorCode.UNCOVERED_ERROR);
         }
 
         for(Keyword key : keywordList){
@@ -145,4 +141,7 @@ public class SearchService {
 
         return keywordRespDtoList;
     }
+
+
+
 }
