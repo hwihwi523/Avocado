@@ -20,7 +20,7 @@ public class ProducerConfig {
 
 
     @Bean
-    public KafkaTemplate<String, Adview> AdviewKafkaTemplate() {
+    public KafkaTemplate<Long, Adview> AdviewKafkaTemplate() {
         Map<String, Object> props = new HashMap<>();
         props.put(org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         props.put(org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class);
@@ -28,7 +28,7 @@ public class ProducerConfig {
 //        props.put(JsonSerializer.TYPE_MAPPINGS,
 //                "bid:com.dokidoki.bid.kafka.dto.KafkaBidDTO");
 
-        ProducerFactory<String, Adview> AdviewProducerFactory = new DefaultKafkaProducerFactory<>(props);
+        ProducerFactory<Long, Adview> AdviewProducerFactory = new DefaultKafkaProducerFactory<>(props);
 
         return new KafkaTemplate<>(AdviewProducerFactory);
     }
