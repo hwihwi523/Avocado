@@ -2,18 +2,17 @@ package com.avocado.community.api.response;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class StyleshotResp {
-    long id;
-    String content;
-    String pictureUrl;
-    int totalLikes;
-    LocalDateTime createdAt;
-    List<MerchandiseResp> wears;
+public class StyleshotPagingResp {
+    private boolean isLastPage;
+    private Long lastId;
+    private List<StyleshotResp> styleshotList;
+
 }

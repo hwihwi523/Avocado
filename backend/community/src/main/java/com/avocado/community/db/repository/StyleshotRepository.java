@@ -5,6 +5,7 @@ import com.avocado.community.db.entity.Styleshot;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import javax.swing.text.Style;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -13,6 +14,10 @@ import java.util.UUID;
 public interface StyleshotRepository {
 
     List<StyleshotResp> getAll();
+
+    List<StyleshotResp> getAllPageable(Long lastId, Integer resultSize);
+
+    List<StyleshotResp> getAllFirstPageable(Integer resultSize);
 
     List<StyleshotResp> getAllByConsumerId(@Param("consumerId") UUID consumerId);
 

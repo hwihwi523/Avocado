@@ -2,6 +2,7 @@ package com.avocado.community.api.service;
 
 import com.avocado.community.api.request.PostStyleshotReq;
 import com.avocado.community.api.response.MerchandiseResp;
+import com.avocado.community.api.response.StyleshotPagingResp;
 import com.avocado.community.api.response.StyleshotResp;
 import com.avocado.community.common.error.BaseException;
 import com.avocado.community.common.error.ResponseCode;
@@ -18,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -87,14 +87,40 @@ public class StyleshotService {
 
     }
 
-    public List<StyleshotResp> styleshotList() {
-        List<StyleshotResp> respList = styleshotRepository.getAll();
+    public StyleshotPagingResp styleshotList(Long lastId, Integer resultSize) {
+        List<StyleshotResp> respList;
+        if (lastId == null) {
+            respList = styleshotRepository.getAllFirstPageable(resultSize);
+        } else {
+            respList = styleshotRepository.getAllPageable(lastId, resultSize);
+        }
+
         for (StyleshotResp resp: respList) {
             List<MerchandiseResp> wearList = merchandiseRepository.getWearById(resp.getId());
             resp.setWears(wearList);
+            resp.setTotalLikes(styleshotLikeRepository.countTotal(resp.getId()));
+        }
+        int listSize = respList.size();
+        Long newLastId = null;
+
+        if (listSize != 0) {
+            newLastId = respList.get(listSize - 1).getId();
         }
 
-        return respList;
+        boolean isLastPage = false;
+
+        List<StyleshotResp> nextStyle = styleshotRepository.getAllPageable(newLastId, 1);
+        if (nextStyle.isEmpty()) {
+            isLastPage = true;
+        }
+
+        StyleshotPagingResp resp = StyleshotPagingResp.builder()
+                .styleshotList(respList)
+                .lastId(newLastId)
+                .isLastPage(isLastPage)
+                .build();
+
+        return resp;
     }
 
     public StyleshotResp showStyleshotDetail(long styleshotId) {
@@ -105,6 +131,7 @@ public class StyleshotService {
         List<MerchandiseResp> wearList = merchandiseRepository.getWearById(styleshotId);
         StyleshotResp resp = styleshotO.get();
         resp.setWears(wearList);
+        resp.setTotalLikes(styleshotLikeRepository.countTotal(resp.getId()));
         return resp;
     }
 
@@ -121,9 +148,9 @@ public class StyleshotService {
         for (StyleshotResp resp: respList) {
             List<MerchandiseResp> wearList = merchandiseRepository.getWearById(resp.getId());
             resp.setWears(wearList);
+            resp.setTotalLikes(styleshotLikeRepository.countTotal(resp.getId()));
         }
         return respList;
-
     }
 
     @Transactional
@@ -131,6 +158,12 @@ public class StyleshotService {
         // 1. consumer 권한이 아닌 경우 에러 발생
         if (!jwtUtils.getType(claims).equals("consumer")) {
             throw new BaseException(ResponseCode.FORBIDDEN);
+        }
+
+        int check = styleshotLikeRepository.checkExist(styleshotId, jwtUtils.getId(claims));
+
+        if (check != 0) {
+            throw new BaseException(HttpStatus.BAD_REQUEST, "이미 좋아요를 눌렀습니다.");
         }
 
         UUID consumerId = jwtUtils.getId(claims);
@@ -143,6 +176,12 @@ public class StyleshotService {
         // 1. consumer 권한이 아닌 경우 에러 발생
         if (!jwtUtils.getType(claims).equals("consumer")) {
             throw new BaseException(ResponseCode.FORBIDDEN);
+        }
+
+        int check = styleshotLikeRepository.checkExist(styleshotId, jwtUtils.getId(claims));
+
+        if (check == 0) {
+            throw new BaseException(HttpStatus.BAD_REQUEST, "좋아요를 한 적이 없습니다.");
         }
 
         UUID consumerId = jwtUtils.getId(claims);
