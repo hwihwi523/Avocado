@@ -74,7 +74,7 @@ data class Consumer (
             consumerId, name, email, pictureUrl, checkGender(req.gender),
             checkAgeGroup(ageGroup),
             createdAt, LocalDateTime.now(ZoneId.of("Asia/Seoul")), cHeight, cWeight,
-            sub, social, cMbtiId, cPersonalColorId, auth
+            sub, social, cMbtiId, cPersonalColorId, 1
         )
     }
 
