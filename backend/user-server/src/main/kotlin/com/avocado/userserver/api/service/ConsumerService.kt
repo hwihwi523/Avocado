@@ -58,6 +58,7 @@ class ConsumerService(
         val consumer = kakaoUserInfo.toConsumer()
         log.info("카카오 정보를 바탕으로 소비자 정보 구성. consumer: {}", consumer)
         consumerInsertRepository.insert(consumer)
+        consumerInsertRepository.insertWallet(consumer)
         return consumer
     }
 
