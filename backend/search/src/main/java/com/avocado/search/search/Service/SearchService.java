@@ -6,6 +6,7 @@ import java.util.List;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import com.avocado.search.search.Dto.request.ProductReqDto;
 import com.avocado.search.search.Dto.response.KeywordRespDto;
 import com.avocado.search.search.Dto.response.ProductRespDto;
 import com.avocado.search.search.Entity.Keyword;
@@ -142,6 +143,24 @@ public class SearchService {
         return keywordRespDtoList;
     }
 
+    public void modifyProduct(){
+        
+        // 카프카로 데이터 받아오면 데이터 교체할 것
+        ProductReqDto product = new ProductReqDto();
+        product.setInventory(88);
+        product.setId(1);
+        product.setTotal_score(150);
+        product.setReview_count(30);
+        try {
+            elasticsearchClient.update(u -> u
+                            .index("products")
+                            .id("1")
+                            .doc(product)
+                    , ProductReqDto.class);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
 
+    }
 
 }

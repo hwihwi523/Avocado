@@ -118,6 +118,7 @@ public class CommercialService {
             commercialExposure.setCommercialId(carouselEntityList.get(index).getId());
             commercialExposureRepository.save(commercialExposure);
             // produce to kafka
+            System.out.println(carouselEntityList.get(index));
             kafkaproducer.sendAdview(carouselEntityList.get(index).getMerchandiseId(), UUID.randomUUID());
         }
         commercialRespDto.setCarousel_list(carouselList);

@@ -17,8 +17,8 @@ public class ElasticSearchClientConfig {
     private ElasticsearchTransport transport;
     private ElasticsearchClient elasticsearchClient;
 
-    private String eIp = "acc46369d4d4c4626934bf2a21423d47-659575785.ap-northeast-2.elb.amazonaws.com";
-//    private String eIp = "localhost";
+//    private String eIp = "acc46369d4d4c4626934bf2a21423d47-659575785.ap-northeast-2.elb.amazonaws.com";
+    private String eIp = "localhost";
     private int ePort = 9200;
 
     @Bean
