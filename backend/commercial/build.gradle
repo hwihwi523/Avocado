@@ -19,6 +19,9 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven {
+        url "https://packages.confluent.io/maven"
+    }
 }
 
 dependencies {
@@ -46,6 +49,7 @@ dependencies {
 
     // avro
     implementation "org.apache.avro:avro:1.11.1"
+    implementation 'io.confluent:kafka-avro-serializer:7.3.3'
 }
 
 tasks.named('test') {

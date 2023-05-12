@@ -19,7 +19,7 @@ spring:
     view-config:
       topic: test-view
     click-config:
-      topic: test-click
+      topic: test-click1
 
 
 
