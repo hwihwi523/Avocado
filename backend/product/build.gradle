@@ -29,6 +29,9 @@ configurations {
 
 repositories {
 	mavenCentral()
+	maven {
+		url "https://packages.confluent.io/maven"
+	}
 }
 
 dependencies {
@@ -48,8 +51,9 @@ dependencies {
 	implementation 'org.springframework.kafka:spring-kafka' // 버전을 명시하지 않아 Boot가 compatible version을 찾게 하는 것이 좋음
 	testImplementation 'org.springframework.kafka:spring-kafka-test'
 
-	// avro
+	// avro, schema
 	implementation "org.apache.avro:avro:1.11.1"
+	implementation 'io.confluent:kafka-avro-serializer:7.3.3'
 
 	// jwt
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
