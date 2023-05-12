@@ -31,18 +31,6 @@ public class SearchService {
         this.elasticsearchClient = elasticsearchClient;
     }
 
-    private void checkData(String category, String keyword){
-        if(category == null){
-            throw new SearchException(ErrorCode.CATEGORY_NULL_EXCEPTION);
-        }
-        if(keyword == null){
-            throw new SearchException(ErrorCode.KEYWORD_NULL_EXCEPTIOIN);
-        }
-        if(!(category.equals("Bottomwear")||category.equals("Dress")||category.equals("Footwear")||category.equals("Bags")||category.equals("Accessories")||category.equals("All"))){
-            throw new SearchException(ErrorCode.INVALID_CATEGORY);
-        }
-    }
-
     public List<ProductRespDto> searchProduct(String category, String keyword){
         checkData(category,keyword);
 
@@ -161,6 +149,18 @@ public class SearchService {
             e.printStackTrace();
         }
 
+    }
+
+    private void checkData(String category, String keyword){
+        if(category == null){
+            throw new SearchException(ErrorCode.CATEGORY_NULL_EXCEPTION);
+        }
+        if(keyword == null){
+            throw new SearchException(ErrorCode.KEYWORD_NULL_EXCEPTIOIN);
+        }
+        if(!(category.equals("Bottomwear")||category.equals("Dress")||category.equals("Footwear")||category.equals("Bags")||category.equals("Accessories")||category.equals("All"))){
+            throw new SearchException(ErrorCode.INVALID_CATEGORY);
+        }
     }
 
 }

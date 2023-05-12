@@ -86,6 +86,7 @@ public class CommercialService {
 
         // 팝업을 사용하게 되면 스트림도 넘겨야한다.
         commercialRespDto.setPopup(popupEntityList.size() == 0 ? null : popupEntityList.get(0).toPopup());
+
         for(Commercial commercial : carouselEntityList){
             CommercialExposure commercialExposure = new CommercialExposure();
             carouselList.add(commercial.toCarousel());
