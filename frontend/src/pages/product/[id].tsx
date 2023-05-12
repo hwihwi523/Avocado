@@ -23,16 +23,33 @@ import Slide from "@mui/material/Slide";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { TransitionProps } from "@mui/material/transitions";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import Head from "next/head";
 import router from "next/router";
-import { wrapper } from "@/src/features/store";
+import { AppState, useAppSelector, wrapper } from "@/src/features/store";
 import { authenticateTokenInPages } from "@/src/utils/authenticateTokenInPages";
 import { productApi } from "@/src/features/product/productApi";
 import { authApi } from "@/src/features/auth/authApi";
+import { useSelector } from "react-redux";
+import {
+  ProductDetail,
+  setProductReviews,
+  setSelectedProductDetail,
+} from "@/src/features/product/productSlice";
 
-const ProductDetail = () => {
+const ProductDetailPage = () => {
+  const product = useAppSelector(
+    (state: AppState) => state.product.selectedProductDetail
+  );
+  const reviews = useAppSelector(
+    (state: AppState) => state.product.productReiews
+  );
+
+  useEffect(() => {
+    console.log(product);
+  }, [product]);
+
   const [size, setSize] = useState("M");
   const [count, setCount] = useState(1);
   const [open, setOpen] = React.useState(false);
@@ -97,7 +114,7 @@ const ProductDetail = () => {
         <Grid container gap={2}>
           {/* 제품 이미지 */}
           <Grid item xs={12}>
-            <ProductDetailImage />
+            <ProductDetailImage product={product} />
             <DividerBar />
           </Grid>
 
@@ -113,7 +130,7 @@ const ProductDetail = () => {
 
           {/* 상품 설명 */}
           <Grid item xs={12}>
-            <ProductDescription />
+            <ProductDescription description={product?.description} />
             <DividerBar />
           </Grid>
 
@@ -131,7 +148,7 @@ const ProductDetail = () => {
             <BlockText type="B" size="1.3rem" style={{ marginBottom: "10px" }}>
               리뷰 작성하기
             </BlockText>
-            <ProductReview />
+            <ProductReview reviews={reviews} />
           </Grid>
         </Grid>
       </Background>
@@ -214,7 +231,7 @@ const ProductDetail = () => {
   );
 };
 
-export default ProductDetail;
+export default ProductDetailPage;
 
 // 모달창 애니메이션 옵션
 const Transition = React.forwardRef(function Transition(
@@ -223,7 +240,11 @@ const Transition = React.forwardRef(function Transition(
   },
   ref: React.Ref<unknown>
 ) {
-  return <Slide direction="up" ref={ref} {...props} />;
+  return (
+    <div>
+      <Slide direction="up" ref={ref} {...props} />;
+    </div>
+  );
 });
 
 const Background = styled.div`
@@ -253,13 +274,28 @@ export const getServerSideProps = wrapper.getServerSideProps(
     const lastSegment = segments[segments.length - 1];
 
     // lastSegment를 활용하여 필요한 데이터를 가져와서 페이지 렌더링에 활용
-    const response = await store.dispatch(
+    const productDetailResponse = await store.dispatch(
       productApi.endpoints.getProductDetail.initiate(lastSegment)
     );
 
     // 응답을 변환하여 store에 저장
-    const productDetail = response.data;
+    const productDetail = productDetailResponse.data;
+    if (productDetail) {
+      store.dispatch(setSelectedProductDetail(productDetail));
+    } else {
+      console.log("SERVER_NO_PRODUCT_DETAIL: ", productDetailResponse);
+    }
 
+    // 상품에 대한 리뷰 데이터 불러오기
+    const productReviewsResponse = await store.dispatch(
+      productApi.endpoints.getProductReviews.initiate(lastSegment)
+    );
+    const reviews = productReviewsResponse.data;
+    if (reviews) {
+      store.dispatch(setProductReviews(reviews));
+    } else {
+      console.log("SERVER_NO_REVIEWS: ", productReviewsResponse);
+    }
     return {
       props: {},
     };

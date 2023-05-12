@@ -6,6 +6,7 @@ import Rating from "@mui/material/Rating";
 import { BlockText, InlineText } from "../atoms";
 import { IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { ProductReview } from "@/src/features/product/productSlice";
 
 //임시로 만든 날짜 반환 함수
 function dateFormat() {
@@ -24,8 +25,21 @@ function dateFormat() {
   return `${year}.${month}.${date}`;
 }
 
-const Review = (props: any) => {
-  const { name, avatar, mbti, personal_color, rate, content } = props;
+type ReviewProps = {
+  review: ProductReview;
+};
+
+const Review: React.FC<ReviewProps> = ({ review }) => {
+  const {
+    reviewer,
+    picture_url,
+    mbti,
+    personal_color,
+    score,
+    content,
+    created_at,
+    id,
+  } = review;
 
   return (
     <Background>
@@ -35,21 +49,25 @@ const Review = (props: any) => {
             <Image
               width={50}
               height={50}
-              alt="아바타 이미지"
-              src={`/assets/avatar/${avatar}.png`}
+              alt="사용자 프로필 이미지"
+              src={picture_url ? picture_url : ""}
             />
             <Stack style={{ color: "gray", width: "100%" }}>
               <BlockText>
-                <Stack direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
+                <Stack
+                  direction={"row"}
+                  justifyContent={"space-between"}
+                  alignItems={"center"}
+                >
                   <div>
-                    <InlineText>{name} </InlineText>
+                    <InlineText>{reviewer} </InlineText>
                     <InlineText color="grey" type="L" size="12px">
                       {mbti} / {personal_color}
                     </InlineText>
                   </div>
                   <div>
                     <InlineText color="grey" type="L" size="12px">
-                      {dateFormat()}
+                      {created_at}
                     </InlineText>
                     <IconButton aria-label="delete">
                       <CloseIcon />
@@ -57,7 +75,12 @@ const Review = (props: any) => {
                   </div>
                 </Stack>
               </BlockText>
-              <Rating readOnly name="half-rating" defaultValue={rate} precision={1} />{" "}
+              <Rating
+                readOnly
+                name="half-rating"
+                defaultValue={score}
+                precision={1}
+              />{" "}
             </Stack>
           </Stack>
         </Grid>

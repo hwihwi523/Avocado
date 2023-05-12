@@ -25,6 +25,7 @@ export interface ProductDetail {
   merchandise_name: string;
   price: number;
   discounted_price: number;
+  inventory: number;
   score: number;
   description: string;
   mbti?: string | null;
@@ -34,11 +35,23 @@ export interface ProductDetail {
   is_reviewed: boolean; // 사용자가 해당 상품에 리뷰를 남겼는지 여부 (로그인 안 했으면 false)
 }
 
+export interface ProductReview {
+  id: number;
+  reviewer: string;
+  picture_url?: string | null; // 없으면 null
+  mbti?: string | null; // 없으면 null
+  personal_color?: string | null; // 없으면 null
+  score: number;
+  content: string;
+  created_at: string;
+}
+
 interface ProductState {
   selectedProductDetail: ProductDetail | null;
   productListBySearch: Product[];
   productListByMbti: Product[];
   productListByPersonalColor: Product[];
+  productReiews: ProductReview[];
 }
 
 const initialState: ProductState = {
@@ -46,6 +59,7 @@ const initialState: ProductState = {
   productListBySearch: [],
   productListByMbti: [],
   productListByPersonalColor: [],
+  productReiews: [],
 };
 
 export const productSlice = createSlice({
@@ -67,6 +81,9 @@ export const productSlice = createSlice({
     ) => {
       state.productListByPersonalColor = action.payload;
     },
+    setProductReviews: (state, action: PayloadAction<ProductReview[]>) => {
+      state.productReiews = action.payload;
+    },
     clearSelectedProductDetail: (state) => {
       state.selectedProductDetail = null;
     },
@@ -74,6 +91,9 @@ export const productSlice = createSlice({
       state.productListBySearch = [];
       state.productListByMbti = [];
       state.productListByPersonalColor = [];
+    },
+    clearProductReviews: (state) => {
+      state.productReiews = [];
     },
   },
   extraReducers: {
@@ -92,6 +112,8 @@ export const {
   setProductListBySearch,
   setProductListByMbti,
   setProductListByPersonalColor,
+  setProductReviews,
   clearSelectedProductDetail,
   clearProductListAll,
+  clearProductReviews,
 } = productSlice.actions;

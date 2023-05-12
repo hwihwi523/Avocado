@@ -1,10 +1,10 @@
 import styled from "@emotion/styled";
-import { Grid, TextField, Rating } from "@mui/material";
+import { Grid, TextField, Rating, Stack } from "@mui/material";
 import { useRef, useState } from "react";
-import {Button} from "@mui/material";
+import { Button } from "@mui/material";
 
 const ReviewInput = (props: any) => {
-  const [rating, setRating] = useState(2);
+  const [rating, setRating] = useState(0);
   const inputRef = useRef<HTMLInputElement>();
 
   function submitHandler(e: any) {
@@ -21,36 +21,50 @@ const ReviewInput = (props: any) => {
     <Background>
       <form onSubmit={submitHandler}>
         <Grid container alignItems={"center"}>
-          <Grid item xs={8}>
-            <TextField
-              fullWidth
-              id="standard-basic"
-              label="리뷰작성"
-              variant="outlined"
-              inputRef={inputRef}
-            />
+          <Grid item xs={12} style={{ marginBottom: "2%" }}>
+            <Stack
+              spacing={1}
+              direction={"row"}
+              justifyContent={"space-between"}
+            >
+              <TextField
+                fullWidth
+                id="standard-basic"
+                label="리뷰작성"
+                variant="outlined"
+                inputRef={inputRef}
+              />
+              <Rating
+                size="small"
+                name="simple-controlled"
+                value={rating}
+                onChange={(event, newValue) => {
+                  setRating(newValue ? newValue : 0);
+                }}
+                style={{
+                  border: "1px solid #dddddd",
+                  boxSizing: "border-box",
+                  padding: "18px 0px 18px 10px",
+                  width: "50%",
+                  textAlign: "center",
+                  borderRadius: "5px",
+                }}
+              />
+            </Stack>
           </Grid>
-          <Grid item xs={4}>
-            <Rating
-              size="small"
-              name="simple-controlled"
-              value={rating}
-              onChange={(event, newValue) => {
-                setRating(newValue ? newValue : 0);
-              }}
-              style={{
 
-                border: "1px solid #dddddd",
-                boxSizing: "border-box",
-                padding: "18px 0px 18px 10px",
-                width:"100%",
-                textAlign:"center",
-                borderRadius: "5px",
-              }}
-            />
-          </Grid>
           <Grid item xs={12}>
-            <Button  fullWidth style={{height:"50px", backgroundColor:"black", color:"white"}} >댓글 입력</Button>
+            <Button
+              fullWidth
+              style={{
+                height: "50px",
+                backgroundColor: "black",
+                color: "white",
+              }}
+              onClick={submitHandler}
+            >
+              등록하기
+            </Button>
           </Grid>
         </Grid>
       </form>
@@ -60,7 +74,7 @@ const ReviewInput = (props: any) => {
 
 //여기는 SeoulNamsan 적용 안되서 기본 sens-self로 함
 const Background = styled.div`
-    margin-bottom:10px;
+  margin-bottom: 10px;
 `;
 
 export default ReviewInput;
