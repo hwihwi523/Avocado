@@ -11,6 +11,6 @@ public class SellCountTotalRevenueDTO {
     @QueryProjection
     public SellCountTotalRevenueDTO(Long sellCount, Long totalRevenue) {
         this.sellCount = sellCount;
-        this.totalRevenue = totalRevenue;
+        this.totalRevenue = totalRevenue != null ? totalRevenue : 0L;
     }
 }
