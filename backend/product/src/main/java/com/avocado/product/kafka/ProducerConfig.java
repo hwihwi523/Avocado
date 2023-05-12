@@ -23,7 +23,7 @@ public class ProducerConfig {
 
 
     @Bean
-    public KafkaTemplate<String, Click> ClickKafkaTemplate() {
+    public KafkaTemplate<Long, Click> ClickKafkaTemplate() {
         Map<String, Object> props = new HashMap<>();
         props.put(org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         props.put(org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -32,7 +32,7 @@ public class ProducerConfig {
 //        props.put(JsonSerializer.TYPE_MAPPINGS,
 //                "bid:com.dokidoki.bid.kafka.dto.KafkaBidDTO");
 
-        ProducerFactory<String, Click> ClickProducerFactory = new DefaultKafkaProducerFactory<>(props);
+        ProducerFactory<Long, Click> ClickProducerFactory = new DefaultKafkaProducerFactory<>(props);
 
         return new KafkaTemplate<>(ClickProducerFactory);
     }
