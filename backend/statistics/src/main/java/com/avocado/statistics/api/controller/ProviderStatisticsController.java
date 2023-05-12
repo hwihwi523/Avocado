@@ -1,5 +1,7 @@
 package com.avocado.statistics.api.controller;
 
+import com.avocado.statistics.api.response.BaseResp;
+import com.avocado.statistics.api.response.ProviderStatisticsResp;
 import com.avocado.statistics.api.service.ProviderStatisticsService;
 import com.avocado.statistics.common.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
@@ -18,8 +20,9 @@ public class ProviderStatisticsController {
     private final ProviderStatisticsService providerStatisticsService;
 
     @GetMapping("/provider")
-    public ResponseEntity<?> getProviderStatisticsInfo(HttpServletRequest request) {
+    public ResponseEntity<BaseResp> getProviderStatisticsInfo(HttpServletRequest request) {
         Claims claims = jwtUtils.getClaims(request);
-        return ResponseEntity.ok(providerStatisticsService.getStatisticsInfo(claims));
+        ProviderStatisticsResp resp = providerStatisticsService.getStatisticsInfo(claims);
+        return ResponseEntity.ok(BaseResp.of("판매자 통계 정보 조회 성공", resp));
     }
 }
