@@ -11,6 +11,7 @@ import com.avocado.userserver.common.utils.OAuthUrlUtil
 import com.avocado.userserver.db.entity.Consumer
 import com.avocado.userserver.db.repository.ConsumerInsertRepository
 import com.avocado.userserver.db.repository.ConsumerRepository
+import com.avocado.userserver.db.repository.WalletRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import io.jsonwebtoken.Claims
@@ -22,6 +23,7 @@ import java.net.URI
 class ConsumerService(
     private val consumerRepository: ConsumerRepository,
     private val consumerInsertRepository: ConsumerInsertRepository,
+    private val walletRepository: WalletRepository,
     private val oauthService: OauthService,
     private val oAuthUrlUtil: OAuthUrlUtil,
     private val jwtProvider: JwtProvider,
@@ -32,6 +34,8 @@ class ConsumerService(
     suspend fun getConsumerFromSubAndSocial(sub: String, type: SocialType): Consumer? {
         return consumerRepository.findBySubAndSocial(sub, type)
     }
+
+
 
     suspend fun loginOrSignUp(code: String): URI {
         // 1. 카카오 서버에서 유저 정보 가져오기

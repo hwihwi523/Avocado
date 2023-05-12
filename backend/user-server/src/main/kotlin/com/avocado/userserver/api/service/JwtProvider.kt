@@ -6,6 +6,7 @@ import com.avocado.userserver.common.error.ResponseCode
 import com.avocado.userserver.common.utils.ConvertIdUtil
 import com.avocado.userserver.db.entity.Consumer
 import com.avocado.userserver.db.entity.Provider
+import com.avocado.userserver.db.repository.WalletRepository
 import io.jsonwebtoken.*
 import io.jsonwebtoken.security.Keys
 import org.slf4j.Logger
@@ -28,6 +29,8 @@ class JwtProvider(
     val REFRESH_EXPIRATION_TIME: Long,
     @Value("\${jwt.issuer}")
     val ISSUER: String,
+
+    val walletRepository: WalletRepository,
 
     val convertIdUtil: ConvertIdUtil
 ) {
@@ -102,12 +105,13 @@ class JwtProvider(
         claims["id"] = convertIdUtil.hex(provider.id)
         claims["email"] = provider.email
         claims["picture_url"] = ""
-        claims["gender"] = ""
-        claims["age_group"] = ""
-        claims["height"] = ""
-        claims["weight"] = ""
-        claims["mbti_id"] = ""
-        claims["personal_color_id"] = ""
+        claims["gender"] = "NAN"
+        claims["age_group"] = -1
+        claims["height"] = -1
+        claims["weight"] = -1
+        claims["mbti_id"] = -1
+        claims["personal_color_id"] = -1
+        claims["grade"] = -1
 
         return claims
     }
@@ -125,6 +129,7 @@ class JwtProvider(
         claims["weight"] = consumer.weight?:-1
         claims["mbti_id"] = consumer.mbtiId?:-1
         claims["personal_color_id"] = consumer.personalColorId?:-1
+        claims["grade"] = getGrade(consumer.consumerId)
 
         return claims
     }
@@ -155,6 +160,29 @@ class JwtProvider(
 
     suspend fun getId(claims: Claims):ByteArray {
         return convertIdUtil.unHex(claims["id"]?.toString()?:throw BaseException(ResponseCode.WRONG_TOKEN))
+    }
+
+    suspend fun getGrade(consumerId:ByteArray):Int {
+        val wallet = walletRepository.findByConsumerId(consumerId)?:throw BaseException(ResponseCode.INVALID_VALUE)
+        val totalExpense = wallet.totalExpense
+
+        if (totalExpense <= 20_000) {
+            return 1
+        } else if (totalExpense <= 100_000) {
+            return 2
+        } else if (totalExpense <= 1_000_000) {
+            return 3
+        } else if (totalExpense <= 2_000_000) {
+            return 4
+        } else if (totalExpense <= 5_000_000) {
+            return 5
+        } else if (totalExpense <= 10_000_000) {
+            return 6
+        } else if (totalExpense <= 20_000_000) {
+            return 7
+        } else {
+            return 8
+        }
     }
 
 }
