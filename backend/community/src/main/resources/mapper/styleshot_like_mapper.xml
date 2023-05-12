@@ -21,4 +21,10 @@
         where styleshot_id = #{styleshotId}
     </select>
 
+    <select id="checkExist" resultType="int">
+        select count(*) from styleshot_like
+        where styleshot_id = #{styleshotId}
+        and consumer_id = #{consumerId}
+    </select>
+
 </mapper>

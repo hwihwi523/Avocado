@@ -13,4 +13,6 @@ public interface StyleshotLikeRepository {
     void unlike(long styleshotId, @Param("consumerId") UUID consumerId);
 
     int countTotal(long styleshotId);
+
+    int checkExist(long styleshotId, @Param("consumerId") UUID consumerId);
 }
