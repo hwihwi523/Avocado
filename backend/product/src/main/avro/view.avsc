@@ -1,8 +1,8 @@
 {
   "name": "View",
-  "namespace": "com.avocado.product.",
+  "namespace": "com.avocado.product",
   "type": "record",
   "fields": [
-    {"name": "merchandiseIds", "type": {"type": "array", "items":  "long"}, "default": []}
+    {"name": "userId", "type": "string"}
   ]
 }

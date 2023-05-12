@@ -19,15 +19,18 @@ public class KafkaProducer {
     @Value(value = "${spring.kafka.click-config.topic}")
     private String clickTopic;
 
-    private final KafkaTemplate<String, Click> clickKafkaTemplate;
+    private final KafkaTemplate<Long, Click> clickKafkaTemplate;
 
     @Autowired
-    public KafkaProducer(KafkaTemplate<String, Click> clickKafkaTemplate) {
+    public KafkaProducer(KafkaTemplate<Long, Click> clickKafkaTemplate) {
         this.clickKafkaTemplate = clickKafkaTemplate;
     }
 
-    public void sendClick(Click click, UUID consumerId) {
-        ListenableFuture<SendResult<String, Click>> future = clickKafkaTemplate.send(clickTopic, click);
+    public void sendClick(Long merchandiseID, UUID consumerID) {
+        Click click = Click.newBuilder()
+                .setUserId(String.valueOf(consumerID))
+                .build();
+        ListenableFuture<SendResult<Long, Click>> future = clickKafkaTemplate.send(clickTopic, merchandiseID, click);
         future.addCallback(new ListenableFutureCallback<>() {
             @Override
             public void onFailure(Throwable ex) {
@@ -35,7 +38,7 @@ public class KafkaProducer {
             }
 
             @Override
-            public void onSuccess(SendResult<String, Click> result) {
+            public void onSuccess(SendResult<Long, Click> result) {
                 log.info("click sent: [{}] with partition = [{}] offset=[{}]", click, result.getRecordMetadata().partition(), result.getRecordMetadata().offset());
             }
         });

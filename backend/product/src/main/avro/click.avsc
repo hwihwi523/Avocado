@@ -3,6 +3,6 @@
   "namespace": "com.avocado.product",
   "type": "record",
   "fields": [
-    {"name": "merchandiseId", "type": "long"}
+    {"name": "userId", "type": "string"}
   ]
 }
