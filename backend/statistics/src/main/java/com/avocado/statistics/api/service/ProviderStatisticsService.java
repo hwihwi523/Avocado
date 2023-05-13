@@ -1,9 +1,11 @@
 package com.avocado.statistics.api.service;
 
+import com.avocado.statistics.api.response.PersonalColorDistributionResp;
 import com.avocado.statistics.api.response.ProviderStatisticsResp;
 import com.avocado.statistics.common.error.BaseException;
 import com.avocado.statistics.common.error.ResponseCode;
 import com.avocado.statistics.common.utils.JwtUtils;
+import com.avocado.statistics.db.mysql.repository.dto.ChartDistributionDTO;
 import com.avocado.statistics.db.mysql.repository.dto.SellCountTotalRevenueDTO;
 import com.avocado.statistics.db.mysql.repository.jpa.StatisticsRepository;
 import com.avocado.statistics.db.redis.repository.AdvertiseCountRepository;
@@ -11,6 +13,8 @@ import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -33,13 +37,22 @@ public class ProviderStatisticsService {
                 .getSellCountTotalRevenue(providerId);  // 판매수, 총 판매액
         Long merchandiseCount = jpaStatisticsRepository.getMerchandiseCount(providerId);
 
+        // 퍼스널컬러 분포 조회
+        List<ChartDistributionDTO> personalColorDist = jpaStatisticsRepository
+                .getPersonalColorDistribution(providerId);
+        // Response 생성
+        List<PersonalColorDistributionResp> personalColors = new ArrayList<>();
+        for (ChartDistributionDTO data : personalColorDist)
+            personalColors.add(PersonalColorDistributionResp.from(data));
+
         // Response DTO 생성
         ProviderStatisticsResp providerStatisticsResp = new ProviderStatisticsResp();
         providerStatisticsResp.updateNumericStatistics(
                 clickCount,
                 sellCountTotalRevenueDTO.getSellCount(),
                 sellCountTotalRevenueDTO.getTotalRevenue(),
-                merchandiseCount
+                merchandiseCount,
+                personalColors
         );
 
         return providerStatisticsResp;
