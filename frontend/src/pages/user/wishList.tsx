@@ -3,7 +3,25 @@ import { Stack } from "@mui/material";
 import { BlockText } from "../../components/atoms";
 import { WishItem } from "../../components/molecues";
 import Head from "next/head"
+import { AppState, useAppSelector, wrapper } from "../../features/store";
+import { authenticateTokenInPages } from "../../utils/authenticateTokenInPages";
+import router from 'next/router'
+import {useEffect} from 'react'
+
+
 const WishList = () => {
+
+  const member = useAppSelector((state: AppState) => state.auth.member);
+
+
+  //로그인 정보 없으면 로그인 화면으로 보내기
+  useEffect(()=>{
+    if(!member){
+      router.push("/login")
+    }
+  },[])
+
+  
   //더미 데이터
   const data = [
     {
@@ -60,6 +78,25 @@ const WishList = () => {
 };
 
 export default WishList;
+
+
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) => async (context) => {
+    // 쿠키의 토큰을 통해 로그인 확인, 토큰 리프레시, 실패 시 로그아웃 처리 등
+    await authenticateTokenInPages(
+      { req: context.req, res: context.res },
+      store
+    );
+
+
+    return {
+      props: {},
+    };
+  }
+);
+
+
+
 
 const Background = styled.div`
   padding: 10px;

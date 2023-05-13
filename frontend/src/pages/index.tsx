@@ -10,11 +10,13 @@ import {
   UserProfile,
 } from "../components/oranisms";
 import { useRouter } from "next/router";
-import { BlockText } from "../components/atoms";
+import { BlockText, InlineText } from "../components/atoms";
 import { AppState, useAppSelector, wrapper } from "../features/store";
 import { authenticateTokenInPages } from "../utils/authenticateTokenInPages";
 import { productApi } from "../features/product/productApi";
 import { setProductListBySearch } from "../features/product/productSlice";
+
+import { mbti_list, personal_color_list } from "../components/atoms/data";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,7 +24,6 @@ export default function Home() {
   const router = useRouter();
 
   const member = useAppSelector((state: AppState) => state.auth.member);
-  
 
   const name = "김싸피";
   return (
@@ -51,12 +52,20 @@ export default function Home() {
             <UserProfile member={member} />
           ) : (
             <Button
-            fullWidth
-            style={{backgroundColor:"black",color:"white", padding:"20px", marginTop:"20px"}}
+              fullWidth
+              style={{
+                backgroundColor: "white",
+                color: "black",
+                padding: "80px 20px",
+                border: "1px solid black",
+                marginTop: "20px",
+              }}
               onClick={() => {
                 router.push("/login");
               }}
-            >로그인 하기</Button>
+            >
+              3초 간편 로그인 하기
+            </Button>
           )}
         </Grid>
 
@@ -67,29 +76,43 @@ export default function Home() {
 
         {/* 개인화 추천 제품 */}
         <Grid item xs={12}>
-          <BlockText>
-            <StyledSpan>{name}</StyledSpan>
+          <BlockText color="grey" type="L">
+            <InlineText size="1.2rem" color="black" type="B">
+              {name}
+            </InlineText>
             님을 위한 추천 아이템
           </BlockText>
-          <ProductCardsRow />
+          <ProductCardsRow isLogin={!!member} />
         </Grid>
 
         {/* 브랜드 광고 */}
         <Grid item xs={12}>
-          <BlockText>지금 Hot한 브랜드 모음</BlockText>
+          <BlockText>맞춤형 광고</BlockText>
           <Commercials />
         </Grid>
 
         {/* 펄스널 컬러별 추천 */}
         <Grid item xs={12}>
-          <BlockText>퍼스널 컬러 “???” 사용자들을 위한 추천 아이템</BlockText>
-          <ProductCardsRow />
+          <BlockText color="grey" type="L">
+            <InlineText size="1.2rem" color="black" type="B">
+              {member?.personal_color_id
+                ? personal_color_list[member?.personal_color_id]
+                : "???"}{" "}
+            </InlineText>
+            사용자들을 위한 추천 아이템
+          </BlockText>
+          <ProductCardsRow isLogin={!!member} />
         </Grid>
 
         {/* mbti별 추천 */}
         <Grid item xs={12}>
-          <BlockText>MBTI “???” 사용자들을 위한 추천 아이템</BlockText>
-          <ProductCardsRow />
+          <BlockText color="grey" type="L">
+            <InlineText size="1.2rem" color="black" type="B">
+              {member?.mbti_id ? mbti_list[member?.mbti_id] : "???"}{" "}
+            </InlineText>
+            사용자들을 위한 추천 아이템
+          </BlockText>
+          <ProductCardsRow isLogin={!!member} />
         </Grid>
       </Grid>
     </BackgroundDiv>
@@ -136,5 +159,3 @@ export const getServerSideProps = wrapper.getServerSideProps(
     };
   }
 );
-
-
