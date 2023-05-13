@@ -15,13 +15,31 @@ import { AppState, useAppSelector, wrapper } from "../features/store";
 import { authenticateTokenInPages } from "../utils/authenticateTokenInPages";
 import { productApi } from "../features/product/productApi";
 import { setProductListBySearch } from "../features/product/productSlice";
-
+import {useState, useEffect} from 'react'
 import { mbti_list, personal_color_list } from "../components/atoms/data";
+import PopupCommercial from "../components/oranisms/PopupCommercial";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const router = useRouter();
+  const [popup, setPopup] = useState<boolean>(false)
+
+  useEffect(()=>{
+    let expiration = localStorage.getItem("commercial_expiration_time")
+    console.log("expiration >>> ",expiration)
+    if(expiration){
+      const currentTime = new Date().getTime();
+      if(currentTime < Number(expiration)){
+        setPopup(false);
+      }else{
+        setPopup(true);
+      }
+    }else{
+      setPopup(true);
+    }
+  },[])
 
   const member = useAppSelector((state: AppState) => state.auth.member);
 
@@ -115,6 +133,12 @@ export default function Home() {
           <ProductCardsRow isLogin={!!member} />
         </Grid>
       </Grid>
+
+
+<PopupCommercial open={popup} setOpen={setPopup}/>
+
+              
+
     </BackgroundDiv>
   );
 }
