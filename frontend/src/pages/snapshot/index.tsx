@@ -5,93 +5,53 @@ import AddIcon from "@mui/icons-material/Add";
 import { SnapshotItem } from "../../components/molecues";
 import router from "next/router";
 import Head from "next/head";
+import { useState, useEffect } from "react";
+import { useGetSnapshotListQuery } from "@/src/features/snapshot/snapshotApi";
+import { BlockText } from "@/src/components/atoms";
+import { SnapshotItem as snapshotItemType } from "@/src/features/snapshot/snapshotApi";
+
+
+
+
 const Snapshot = () => {
-  //더미 데이터
-  const data = [
-    {
-      like: true,
-      img_url:
-        "https://cdn.pixabay.com/photo/2023/04/28/14/35/dog-7956828_640.jpg",
-      name: "김싸피",
-      products: ["제품1", "제품2", "제품3"],
-      avatar: "summer_woman",
-      mbti: "ISTP",
-      personal_color: "spring bright",
-      content:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting.",
-    },
-    {
-      like: true,
-      img_url:
-        "https://cdn.pixabay.com/photo/2023/04/28/14/35/dog-7956828_640.jpg",
-      name: "김싸피",
-      products: ["제품1", "제품2", "제품3"],
-      avatar: "summer_woman",
-      mbti: "ISTP",
-      personal_color: "spring bright",
-      content:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting.",
-    },
-    {
-      like: true,
-      img_url:
-        "https://cdn.pixabay.com/photo/2023/04/28/14/35/dog-7956828_640.jpg",
-      name: "김싸피",
-      products: ["제품1", "제품2", "제품3"],
-      avatar: "summer_woman",
-      mbti: "ISTP",
-      personal_color: "spring bright",
-      content:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting.",
-    },
-    {
-      like: true,
-      img_url:
-        "https://cdn.pixabay.com/photo/2023/04/28/14/35/dog-7956828_640.jpg",
-      name: "김싸피",
-      products: ["제품1", "제품2", "제품3"],
-      avatar: "summer_woman",
-      mbti: "ISTP",
-      personal_color: "spring bright",
-      content:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting.",
-    },
-    {
-      like: true,
-      img_url:
-        "https://cdn.pixabay.com/photo/2023/04/28/14/35/dog-7956828_640.jpg",
-      name: "김싸피",
-      products: ["제품1", "제품2", "제품3"],
-      avatar: "summer_woman",
-      mbti: "ISTP",
-      personal_color: "spring bright",
-      content:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting.",
-    },
-  ];
+  const { data, isLoading, error } = useGetSnapshotListQuery();
+  const [snapshotList, setSnapshotList] = useState<snapshotItemType[]>([]);
+
+  
+  useEffect(()=>{
+    if (data) {
+      setSnapshotList((preValue) => [...preValue, ...data.styleshot_list]);
+    }
+    
+  },[data])
+
+  console.log("snapshotList >> ", snapshotList);
 
   return (
     <Background>
       <Head>
         <title>Avocado : snapshot</title>
-        <meta
-          name="description"
-          content="snapshot 페이지"
-        />
+        <meta name="description" content="snapshot 페이지" />
         <meta
           name="keywords"
           content={`mbit, 퍼스널컬러, 상의, 하의, 원피스, 신발, 가방, 악세서리`}
         />
         <meta property="og:title" content="snapshot" />
-        <meta
-          property="og:description"
-          content="snapshot 페이지"
-        />
+        <meta property="og:description" content="snapshot 페이지" />
       </Head>
       <Stack direction={"column"} spacing={10}>
-        {data.map((item, i) => (
-          <SnapshotItem {...item} key={i} />
-        ))}
+        {snapshotList ? (
+          snapshotList.map((item, i) => <SnapshotItem data={item} key={i} />)
+        ) : (
+          <BlockText
+            color="grey"
+            size="1.2rem"
+            style={{ textAlign: "center", marginTop: "20%" }}
+          >
+            {" "}
+            등록된 게시물이 없습니다.{" "}
+          </BlockText>
+        )}
       </Stack>
 
       <RegistButton
@@ -99,7 +59,7 @@ const Snapshot = () => {
           router.push("/snapshot/regist"); //snapshot regist로 이동해야함
         }}
       >
-        <AddIcon />
+        글 쓰기 <AddIcon />
       </RegistButton>
     </Background>
   );
@@ -115,12 +75,11 @@ const Background = styled.div`
 const RegistButton = styled.button`
   position: fixed;
   border-radius: 50px;
-  width: 50px;
+  width: 110px;
   height: 50px;
   right: 10px;
   bottom: 10%;
   background-color: black;
   color: white;
-  font-size: 2rem;
   box-shadow: 3px 3px 10px grey;
 `;
