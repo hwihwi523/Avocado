@@ -43,12 +43,13 @@ export default function SellerLogin() {
   const dispatch = useDispatch();
   const member = useSelector((state: AppState) => state.auth.member);
   const router = useRouter();
-  // // 로그인 상태인 경우 메인 페이지로 이동하는 예제
-  // useEffect(() => {
-  //   if (member) {
-  //     router.replace("/");
-  //   }
-  // }, [member, router]);
+
+  // 로그인 상태인 경우 메인 페이지로 이동하는 예제
+  useEffect(() => {
+    if (member) {
+      router.replace("/");
+    }
+  }, [member, router]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -102,6 +103,7 @@ export default function SellerLogin() {
       setToken("REFRESH_TOKEN", res.refresh_token, refreshExp);
       // store에 멤버 저장
       dispatch(setMember(member));
+      router.push("/seller")
     } catch (error) {
       console.error("로그인 실패:", error);
     }

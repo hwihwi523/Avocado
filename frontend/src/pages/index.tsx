@@ -15,31 +15,31 @@ import { AppState, useAppSelector, wrapper } from "../features/store";
 import { authenticateTokenInPages } from "../utils/authenticateTokenInPages";
 import { productApi } from "../features/product/productApi";
 import { setProductListBySearch } from "../features/product/productSlice";
-import {useState, useEffect} from 'react'
+import { useState, useEffect } from "react";
 import { mbti_list, personal_color_list } from "../components/atoms/data";
 import PopupCommercial from "../components/oranisms/PopupCommercial";
-
+import ProviderProfile from "../components/oranisms/ProviderProfile";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const router = useRouter();
-  const [popup, setPopup] = useState<boolean>(false)
+  const [popup, setPopup] = useState<boolean>(false);
 
-  useEffect(()=>{
-    let expiration = localStorage.getItem("commercial_expiration_time")
-    console.log("expiration >>> ",expiration)
-    if(expiration){
+  useEffect(() => {
+    let expiration = localStorage.getItem("commercial_expiration_time");
+    console.log("expiration >>> ", expiration);
+    if (expiration) {
       const currentTime = new Date().getTime();
-      if(currentTime < Number(expiration)){
+      if (currentTime < Number(expiration)) {
         setPopup(false);
-      }else{
+      } else {
         setPopup(true);
       }
-    }else{
+    } else {
       setPopup(true);
     }
-  },[])
+  }, []);
 
   const member = useAppSelector((state: AppState) => state.auth.member);
 
@@ -66,9 +66,8 @@ export default function Home() {
       <Grid container gap={5}>
         {/* 사용자 프로필 */}
         <Grid item xs={12}>
-          {member ? (
-            <UserProfile member={member} />
-          ) : (
+          {/* 로그인 안했을 때 */}
+          {!member && (
             <Button
               fullWidth
               style={{
@@ -84,6 +83,16 @@ export default function Home() {
             >
               3초 간편 로그인 하기
             </Button>
+          )}
+
+          {/* 판매자로 로그인 했을 경우 */}
+          {member && member.type === "provider" && (
+            <ProviderProfile member={member} />
+          )}
+
+          {/* 구매자로 로그인 했을 경우 */}
+          {member && member.type === "consumer" && (
+            <UserProfile member={member} />
           )}
         </Grid>
 
@@ -134,11 +143,7 @@ export default function Home() {
         </Grid>
       </Grid>
 
-
-<PopupCommercial open={popup} setOpen={setPopup}/>
-
-              
-
+      <PopupCommercial open={popup} setOpen={setPopup} />
     </BackgroundDiv>
   );
 }
