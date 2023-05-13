@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { Button, Stack } from "@mui/material";
 import { InlineText } from "../../components/atoms";
+import { useEffect } from "react";
 import {
   ProductCardsRow,
   UserProfile,
@@ -21,6 +22,14 @@ const Mypage = () => {
   const dispatch = useDispatch();
   const router = useRouter();
 
+  //로그인 안했다면 로그인 페이지로 보내버리기
+  useEffect(() => {
+    if (!member) {
+      router.push("/login");
+    }
+  }, []);
+
+  //로그아웃 핸들러
   const handleLogout = () => {
     console.log("로그아웃 버튼이 클릭되었습니다.");
     removeTokenAll();

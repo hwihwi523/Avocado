@@ -78,9 +78,7 @@ const Snapshot = () => {
       </Stack>
 
       <RegistButton
-        onClick={() => {
-          router.push("/snapshot/regist"); //snapshot regist로 이동해야함
-        }}
+        onClick={redirectToRegistrationPage}
       >
         글 쓰기 <AddIcon />
       </RegistButton>
