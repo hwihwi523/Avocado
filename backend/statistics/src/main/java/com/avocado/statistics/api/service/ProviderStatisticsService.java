@@ -1,5 +1,6 @@
 package com.avocado.statistics.api.service;
 
+import com.avocado.statistics.api.response.MBTIDistributionResp;
 import com.avocado.statistics.api.response.PersonalColorDistributionResp;
 import com.avocado.statistics.api.response.ProviderStatisticsResp;
 import com.avocado.statistics.common.error.BaseException;
@@ -8,7 +9,6 @@ import com.avocado.statistics.common.utils.JwtUtils;
 import com.avocado.statistics.db.mysql.repository.dto.ChartDistributionDTO;
 import com.avocado.statistics.db.mysql.repository.dto.SellCountTotalRevenueDTO;
 import com.avocado.statistics.db.mysql.repository.jpa.StatisticsRepository;
-import com.avocado.statistics.db.redis.repository.AdvertiseCountRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,6 +37,14 @@ public class ProviderStatisticsService {
                 .getSellCountTotalRevenue(providerId);  // 판매수, 총 판매액
         Long merchandiseCount = jpaStatisticsRepository.getMerchandiseCount(providerId);
 
+        // MBTI 분포 조회
+        List<ChartDistributionDTO> mbtiDist = jpaStatisticsRepository
+                .getMBTIDistribution(providerId);
+        // Response 생성
+        List<MBTIDistributionResp> mbtis = new ArrayList<>();
+        for (ChartDistributionDTO data : mbtiDist)
+            mbtis.add(MBTIDistributionResp.from(data));
+
         // 퍼스널컬러 분포 조회
         List<ChartDistributionDTO> personalColorDist = jpaStatisticsRepository
                 .getPersonalColorDistribution(providerId);
@@ -52,6 +60,7 @@ public class ProviderStatisticsService {
                 sellCountTotalRevenueDTO.getSellCount(),
                 sellCountTotalRevenueDTO.getTotalRevenue(),
                 merchandiseCount,
+                mbtis,
                 personalColors
         );
 
