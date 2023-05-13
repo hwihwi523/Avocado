@@ -13,7 +13,6 @@ public class Styleshot {
     long id;
     String content;
     String pictureUrl;
-    int rating;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
     UUID consumerId;
@@ -22,7 +21,6 @@ public class Styleshot {
         return Styleshot.builder()
                 .content(req.getContent())
                 .pictureUrl(imgUrl)
-                .rating(req.getRating())
                 .consumerId(consumerId).build();
     }
 }

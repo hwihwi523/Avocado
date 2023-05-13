@@ -16,6 +16,5 @@ import java.util.List;
 public class PostStyleshotReq {
     String content;
     MultipartFile[] picture;
-    int rating;
     List<Long> wears;
 }

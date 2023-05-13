@@ -5,93 +5,76 @@ import AddIcon from "@mui/icons-material/Add";
 import { SnapshotItem } from "../../components/molecues";
 import router from "next/router";
 import Head from "next/head";
+import { useState, useEffect } from "react";
+import { useGetSnapshotListQuery } from "@/src/features/snapshot/snapshotApi";
+import { BlockText } from "@/src/components/atoms";
+import { SnapshotItem as snapshotItemType } from "@/src/features/snapshot/snapshotApi";
+import { AppState, useAppSelector, wrapper } from "../../features/store";
+import { authenticateTokenInPages } from "../../utils/authenticateTokenInPages";
+import { useSnackbar } from "notistack";
+
+
 const Snapshot = () => {
-  //더미 데이터
-  const data = [
-    {
-      like: true,
-      img_url:
-        "https://cdn.pixabay.com/photo/2023/04/28/14/35/dog-7956828_640.jpg",
-      name: "김싸피",
-      products: ["제품1", "제품2", "제품3"],
-      avatar: "summer_woman",
-      mbti: "ISTP",
-      personal_color: "spring bright",
-      content:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting.",
-    },
-    {
-      like: true,
-      img_url:
-        "https://cdn.pixabay.com/photo/2023/04/28/14/35/dog-7956828_640.jpg",
-      name: "김싸피",
-      products: ["제품1", "제품2", "제품3"],
-      avatar: "summer_woman",
-      mbti: "ISTP",
-      personal_color: "spring bright",
-      content:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting.",
-    },
-    {
-      like: true,
-      img_url:
-        "https://cdn.pixabay.com/photo/2023/04/28/14/35/dog-7956828_640.jpg",
-      name: "김싸피",
-      products: ["제품1", "제품2", "제품3"],
-      avatar: "summer_woman",
-      mbti: "ISTP",
-      personal_color: "spring bright",
-      content:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting.",
-    },
-    {
-      like: true,
-      img_url:
-        "https://cdn.pixabay.com/photo/2023/04/28/14/35/dog-7956828_640.jpg",
-      name: "김싸피",
-      products: ["제품1", "제품2", "제품3"],
-      avatar: "summer_woman",
-      mbti: "ISTP",
-      personal_color: "spring bright",
-      content:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting.",
-    },
-    {
-      like: true,
-      img_url:
-        "https://cdn.pixabay.com/photo/2023/04/28/14/35/dog-7956828_640.jpg",
-      name: "김싸피",
-      products: ["제품1", "제품2", "제품3"],
-      avatar: "summer_woman",
-      mbti: "ISTP",
-      personal_color: "spring bright",
-      content:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting.",
-    },
-  ];
+  //화면에 에러표시
+  const { enqueueSnackbar } = useSnackbar();
+  //데이터 불러오기 
+  const { data, isLoading, error } = useGetSnapshotListQuery();
+  //유저정보 가져오기 => 글쓰기를 할 수 있냐 없냐 판별하기 위해서
+  const member = useAppSelector((state: AppState) => state.auth.member);
+
+  //무한스크롤을 위해 게시글을 담아둘 객체
+  const [snapshotList, setSnapshotList] = useState<snapshotItemType[]>([]);
+
+  function redirectToRegistrationPage(){
+    if(!member){
+      enqueueSnackbar(`로그인이 필요한 서비스 입니다.`, {
+        variant: "error",
+        anchorOrigin: {
+          horizontal: "center",
+          vertical: "bottom",
+        },
+      });
+      return;
+    } 
+    router.push("/snapshot/regist")
+
+  }
+  
+  
+  useEffect(()=>{   //data 안에 변하지 않는 변수가 있을거임 그거 찾으셈 
+    if (data) {
+      setSnapshotList((preValue) => [...preValue, ...data.styleshot_list]);
+    }
+    
+  },[data])
+
+  console.log("snapshotList >> ", snapshotList);
 
   return (
     <Background>
       <Head>
         <title>Avocado : snapshot</title>
-        <meta
-          name="description"
-          content="snapshot 페이지"
-        />
+        <meta name="description" content="snapshot 페이지" />
         <meta
           name="keywords"
           content={`mbit, 퍼스널컬러, 상의, 하의, 원피스, 신발, 가방, 악세서리`}
         />
         <meta property="og:title" content="snapshot" />
-        <meta
-          property="og:description"
-          content="snapshot 페이지"
-        />
+        <meta property="og:description" content="snapshot 페이지" />
       </Head>
       <Stack direction={"column"} spacing={10}>
-        {data.map((item, i) => (
-          <SnapshotItem {...item} key={i} />
-        ))}
+        {snapshotList ? (
+          snapshotList.map((item, i) => <SnapshotItem data={item} key={i} />)
+        ) : (
+          <BlockText
+            color="grey"
+            size="1.2rem"
+            style={{ textAlign: "center", marginTop: "20%" }}
+          >
+            {" "}
+            등록된 게시물이 없습니다.{" "}
+          </BlockText>
+        )}
       </Stack>
 
       <RegistButton
@@ -99,7 +82,7 @@ const Snapshot = () => {
           router.push("/snapshot/regist"); //snapshot regist로 이동해야함
         }}
       >
-        <AddIcon />
+        글 쓰기 <AddIcon />
       </RegistButton>
     </Background>
   );
@@ -115,12 +98,26 @@ const Background = styled.div`
 const RegistButton = styled.button`
   position: fixed;
   border-radius: 50px;
-  width: 50px;
+  width: 110px;
   height: 50px;
   right: 10px;
   bottom: 10%;
   background-color: black;
   color: white;
-  font-size: 2rem;
   box-shadow: 3px 3px 10px grey;
 `;
+
+
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) => async (context) => {
+    // 쿠키의 토큰을 통해 로그인 확인, 토큰 리프레시, 실패 시 로그아웃 처리 등
+    await authenticateTokenInPages(
+      { req: context.req, res: context.res },
+      store
+    );
+
+    return {
+      props: {},
+    };
+  }
+);

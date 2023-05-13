@@ -167,6 +167,7 @@ public class MerchandiseRepository {
                         merchandise.name,
                         merchandiseGroup.price,
                         merchandiseGroup.discountedPrice,
+                        merchandise.inventory,
                         merchandise.totalScore.divide(merchandise.reviewCount).floatValue(),
                         merchandiseGroup.description
                 ))

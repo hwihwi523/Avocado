@@ -6,31 +6,14 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
 import { useState } from "react";
+import { SnapshotItem as snapshotItemType } from "@/src/features/snapshot/snapshotApi";
 
-type Item = {
-  img_url: string;
-  like: boolean;
-  name: string;
-  products: string[];
-  avatar: string;
-  mbti: string;
-  personal_color: string;
-  content: string;
-  
-};
 
-const SnapshotItem:React.FC<Item> = ({
-    like,
-    name,
-    products,
-    avatar,
-    mbti,
-    personal_color,
-    content,
-    img_url,
-  }) => {
+const SnapshotItem:React.FC<{data:snapshotItemType}> = (props) => {
+  const item = props.data;
 
-  const [isLike, setIsLike] = useState(like);
+
+  const [isLike, setIsLike] = useState(false);
 
 
   function likeHandler() {
@@ -42,7 +25,7 @@ const SnapshotItem:React.FC<Item> = ({
       {/* 스넵샷 이미지 */}
       <Imagebox>
         <Image
-          src={img_url}
+          src={item.picture_url}
           alt="제품 이미지"
           fill
           style={{ objectFit: "cover" }}
@@ -50,9 +33,9 @@ const SnapshotItem:React.FC<Item> = ({
       </Imagebox>
 
       {/* 제품 링크 */}
-      <Stack direction={"row"} spacing={1} margin={"10px 0"}>
-        {products.map((item, i) => (
-          <Chip key={i} label={item} variant="outlined" />
+      <Stack  spacing={1} margin={"10px 0"}>
+        {item.wears.map((item, i) => (
+          <Chip key={i} label={item.name} variant="outlined" />
         ))}
       </Stack>
 
@@ -62,19 +45,19 @@ const SnapshotItem:React.FC<Item> = ({
           width={50}
           height={50}
           alt="아바타 이미지"
-          src={`/assets/avatar/${avatar}.png`}
+          src={`/assets/avatar/${"winter_man"}.png`}
         />
         <Stack style={{ color: "gray", width: "100%" }}>
-          <BlockText>
+          <div>
             <Stack
               direction={"row"}
               justifyContent={"space-between"}
               alignItems={"center"}
             >
               <Stack>
-                <InlineText>{name} </InlineText>
+                <InlineText>{"김싸피"} </InlineText>
                 <InlineText color="grey" type="L" size="0.8rem">
-                  {mbti} / {personal_color}
+                  {"ISTP"} / {"가을뮤트"}
                 </InlineText>
               </Stack>
               <div>
@@ -87,13 +70,13 @@ const SnapshotItem:React.FC<Item> = ({
                 </IconButton>
               </div>
             </Stack>
-          </BlockText>
+          </div>
         </Stack>
       </Stack>
 
-      {/* 글 내용 100자 제한임  */}
-      <BlockText style={{ padding: "10px", textAlign: "justify" }}>
-        {content}
+      {/* 글 내용 300자 제한임  */}
+      <BlockText style={{ padding: "10px", textAlign: "justify", wordWrap:"break-word" }}>
+        {item.content}
       </BlockText>
     </Stack>
   );

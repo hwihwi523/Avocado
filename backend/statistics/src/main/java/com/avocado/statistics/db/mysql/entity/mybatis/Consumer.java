@@ -1,4 +1,4 @@
-package com.avocado.statistics.db.mysql.entity;
+package com.avocado.statistics.db.mysql.entity.mybatis;
 
 import lombok.Data;
 

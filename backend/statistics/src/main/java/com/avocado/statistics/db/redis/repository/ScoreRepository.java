@@ -9,6 +9,9 @@ import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class ScoreRepository {
@@ -63,15 +66,15 @@ public class ScoreRepository {
         map.put(id, cnt + 1);
     }
 
-    public long[] getByMerchandiseId(CategoryType cType, Type resType, Long merchandiseId) {
+    public List<Long> getByMerchandiseId(CategoryType cType, Type resType, Long merchandiseId) {
         RMap<Integer, Long> map = redisson.getMap(getKey(merchandiseId, cType, resType));
         int varSize = getVarSize(cType);
 
-        long[] resArr = new long[varSize];
+        List<Long> resList = new ArrayList<>();
         for (int i = 0; i < varSize; i++) {
-            resArr[i] = map.getOrDefault(i, 0L);
+            resList.add(map.getOrDefault(i, 0L));
         }
-        return resArr;
+        return resList;
     }
 
     private int getVarSize(CategoryType cType) {

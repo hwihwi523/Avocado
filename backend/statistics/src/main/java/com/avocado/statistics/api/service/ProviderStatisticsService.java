@@ -4,6 +4,8 @@ import com.avocado.statistics.api.response.ProviderStatisticsResp;
 import com.avocado.statistics.common.error.BaseException;
 import com.avocado.statistics.common.error.ResponseCode;
 import com.avocado.statistics.common.utils.JwtUtils;
+import com.avocado.statistics.db.mysql.repository.dto.SellCountTotalRevenueDTO;
+import com.avocado.statistics.db.mysql.repository.jpa.StatisticsRepository;
 import com.avocado.statistics.db.redis.repository.AdvertiseCountRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +16,8 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class ProviderStatisticsService {
-
     private final JwtUtils jwtUtils;
+    private final StatisticsRepository jpaStatisticsRepository;
 
     public ProviderStatisticsResp getStatisticsInfo(Claims claims) {
         String type = jwtUtils.getType(claims);
@@ -24,13 +26,22 @@ public class ProviderStatisticsService {
             throw new BaseException(ResponseCode.FORBIDDEN);
         }
 
-        UUID id = jwtUtils.getId(claims);
+        // 조회수, 판매수, 총 판매액, 상품수 조회
+        UUID providerId = jwtUtils.getId(claims);
+        Long clickCount = jpaStatisticsRepository.getClickCount(providerId);  // 조회수
+        SellCountTotalRevenueDTO sellCountTotalRevenueDTO = jpaStatisticsRepository
+                .getSellCountTotalRevenue(providerId);  // 판매수, 총 판매액
+        Long merchandiseCount = jpaStatisticsRepository.getMerchandiseCount(providerId);
 
+        // Response DTO 생성
+        ProviderStatisticsResp providerStatisticsResp = new ProviderStatisticsResp();
+        providerStatisticsResp.updateNumericStatistics(
+                clickCount,
+                sellCountTotalRevenueDTO.getSellCount(),
+                sellCountTotalRevenueDTO.getTotalRevenue(),
+                merchandiseCount
+        );
 
-        return null;
+        return providerStatisticsResp;
     }
-
-
-
-
 }

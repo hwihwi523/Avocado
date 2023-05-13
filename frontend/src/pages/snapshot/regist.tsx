@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
-import { Stack, Chip } from "@mui/material";
+import { Stack, Chip, Box } from "@mui/material";
 import Image from "next/image";
-import {  InlineText } from "../../components/atoms";
+import { BlockText } from "../../components/atoms";
 import { Button } from "@mui/material";
 import { useState, ChangeEvent } from "react";
 import { useSnackbar } from "notistack";
@@ -11,49 +11,41 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-
+import { AppState, useAppSelector, wrapper } from "../../features/store";
+import { authenticateTokenInPages } from "../../utils/authenticateTokenInPages";
+import {
+  useAddSnapshotMutation,
+  useGetOrderListQuery,
+} from "@/src/features/snapshot/snapshotApi";
+import LinearProgress from "@mui/material/LinearProgress";
 //구매 목록 더미 데이터
 
-const order_list = [
-  {
-    product_id: 12,
-    product_name: "상의",
-  },
-  {
-    product_id: 13,
-    product_name: "하의",
-  },
-  {
-    product_id: 23,
-    product_name: "아웃터",
-  },
-  {
-    product_id: 3,
-    product_name: "청바지",
-  },
-  {
-    product_id: 1,
-    product_name: "모자",
-  },
-];
-
 type Item = {
-  product_id: number;
-  product_name: string;
+  merchandise_id: number;
+  merchandise_name: string;
 };
 
 const SnapshotRegist = () => {
+  const { data: orderList, isLoading } = useGetOrderListQuery();
+
+  const [
+    addSnapshot,
+    { isLoading: addSnapshotLoading, error: addSanpshotError },
+  ] = useAddSnapshotMutation();
+
   const { enqueueSnackbar } = useSnackbar();
   const [value, setValue] = useState("");
+  const [picture, setPicture] = useState<any>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [content, setContent] = useState<string>("");
   const [products, setProducts] = useState<Item[]>([]);
 
-  //이미지 핸들러
+  //이미지 핸들러 => 선택한 이미지 화면에 보이게 하기
   const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-
+    setPicture(file);
     if (file) {
+      //파일 읽어오기
       const reader = new FileReader();
 
       reader.onloadend = () => {
@@ -62,12 +54,14 @@ const SnapshotRegist = () => {
 
       reader.readAsDataURL(file);
     } else {
+      //파일 없으면 표시 안해줌
       setPreviewImage(null);
     }
   };
 
   //제출 함수
   function submitHandler() {
+    //이미지 에러 처리
     if (!previewImage) {
       enqueueSnackbar(`이미지를 선택해 주세요 `, {
         variant: "error",
@@ -79,6 +73,7 @@ const SnapshotRegist = () => {
       return;
     }
 
+    //내용 에러 처리
     if (content === "") {
       enqueueSnackbar(`내용을 작성해 주세요  `, {
         variant: "error",
@@ -90,32 +85,48 @@ const SnapshotRegist = () => {
       return;
     }
 
-    console.log({
-      content,
-      previewImage,
+    //보낼 데이터 셋팅
+    const formData = new FormData();
+    formData.set("picture", picture);
+    formData.set("content", content);
+    products.forEach((item) => {
+      formData.append("wears", item.merchandise_id.toString());
     });
+
+    // 스넵샷 등록하기
+    addSnapshot(formData)
+      .unwrap()
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   //구매 목록에서 선택한 것들
   const handleChange = (event: SelectChangeEvent) => {
-    setValue(event.target.value as string);
-    let item: any;
-    for (let i = 0; i < order_list.length; i++) {
-      if (order_list[i].product_name === event.target.value) {
-        item = {
-          product_name: order_list[i].product_name,
-          product_id: order_list[i].product_id,
-        };
-        setProducts([...products, item] as Item[]);
+    setValue(event.target.value);
+
+    if (orderList) {
+      for (let i = 0; i < orderList.data.content.length; i++) {
+        //내가 구매목록에서 선택한것을 products에 넣어줌 => 이건 선택한 제품으로 등록됨
+        if (orderList.data.content[i].merchandise_name === event.target.value) {
+          let item = {
+            merchandise_name: orderList.data.content[i].merchandise_name,
+            merchandise_id: orderList.data.content[i].merchandise_id,
+          };
+          setProducts((preState) => [...preState, item]);
+          return;
+        }
       }
     }
-    console.log(products);
   };
 
   //내용 핸들러
   const handleContent = (event: ChangeEvent<HTMLInputElement>) => {
     const inputText = event.target.value;
-    if (inputText.length <= 100) {
+    if (inputText.length <= 300) {
       setContent(inputText);
     } else {
       event.target.value = content;
@@ -123,9 +134,9 @@ const SnapshotRegist = () => {
   };
 
   // 선택한 구매목록 제거
-  const handleDelete = (productId: number) => {
+  const handleDelete = (merchandise_name: string) => {
     setProducts((products: any) =>
-      products.filter((item: any) => item.product_id !== productId)
+      products.filter((item: any) => item.merchandise_name !== merchandise_name)
     );
   };
 
@@ -174,11 +185,25 @@ const SnapshotRegist = () => {
             onChange={handleChange}
             value={value}
           >
-            {order_list.map((item, i) => (
+            {orderList && orderList.data.content && orderList.data.content ? (
+              orderList.data.content.map((item, i) => (
+                <MenuItem value={item.merchandise_name} key={i}>
+                  {item.merchandise_name}
+                </MenuItem>
+              ))
+            ) : (
+              <MenuItem style={{ textAlign: "center" }}>
+                <Box sx={{ width: "100%" }}>
+                  <LinearProgress />
+                </Box>
+              </MenuItem>
+            )}
+
+            {/* {order_list.map((item, i) => (
               <MenuItem value={item.product_name} key={i}>
                 {item.product_name}
               </MenuItem>
-            ))}
+            ))} */}
           </Select>
         </FormControl>
         {/* 선택한 구매 내역 */}
@@ -186,12 +211,12 @@ const SnapshotRegist = () => {
           {products &&
             products.map((item, i) => (
               <Chip
-                label={item.product_name}
+                label={item.merchandise_name}
                 key={i}
                 variant="outlined"
                 style={{ margin: "3px" }}
                 onDelete={() => {
-                  handleDelete(item.product_id);
+                  handleDelete(item.merchandise_name);
                 }}
               />
             ))}
@@ -207,7 +232,7 @@ const SnapshotRegist = () => {
             rows={4}
             onChange={handleContent}
           />
-          <InlineText color="grey">글자수 : {content.length}/100</InlineText>
+          <BlockText color="grey">글자수 : {content.length}/100</BlockText>
         </div>
         <Button
           style={{ backgroundColor: "black", color: "white", padding: "20px" }}
@@ -222,6 +247,36 @@ const SnapshotRegist = () => {
 };
 
 export default SnapshotRegist;
+
+// 서버에서 Redux Store를 초기화하고, wrapper.useWrappedStore()를 사용해
+// 클라이언트에서도 동일한 store를 사용하도록 설정
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) => async (context) => {
+    // 쿠키의 토큰을 통해 로그인 확인, 토큰 리프레시, 실패 시 로그아웃 처리 등
+    await authenticateTokenInPages(
+      { req: context.req, res: context.res },
+      store
+    );
+
+    // 필요한 내용 작성
+
+    //유저정보 가져오기
+    // console.log(">>>>>>>>>>>",store.getState().auth.member);
+
+    //함수 불러오기
+    // store.dispatch(
+    //   productApi.endpoints.getProductDetail.initiate(lastSegment)
+    // );
+
+    //store에 집어 넣기
+    // store.dispatch(setProductListBySearch());
+
+    //
+    return {
+      props: {},
+    };
+  }
+);
 
 const Background = styled.div`
   background-color: #dddddd;

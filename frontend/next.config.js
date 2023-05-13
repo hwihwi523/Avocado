@@ -9,6 +9,9 @@ const nextConfig = {
       "d3t32hsnjxo7q6.cloudfront.net", // 테스트 상품 목록
       "assets.myntassets.com",
       "k.kakaocdn.net",
+
+      "avocado-img.s3.ap-northeast-2.amazonaws.com",
+
     ],
   },
 };

@@ -136,6 +136,5 @@ export const getServerSideProps = wrapper.getServerSideProps(
     };
   }
 );
-function useSelector() {
-  throw new Error("Function not implemented.");
-}
+
+

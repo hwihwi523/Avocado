@@ -94,11 +94,12 @@ public class MerchandiseService {
             }
         }
 
-        UUID consumerID1 = UUID.randomUUID();
-        Click click1 = Click.newBuilder()
-                .setMerchandiseId(merchandiseId)
-                .build();
-        kafkaProducer.sendClick(click1, consumerID1);
+        if (consumerId != null) {
+            kafkaProducer.sendClick(merchandiseId, consumerId);
+        } else {
+            UUID randomID = UUID.randomUUID();
+            kafkaProducer.sendClick(merchandiseId, randomID);
+        }
 
         return respContent;
     }

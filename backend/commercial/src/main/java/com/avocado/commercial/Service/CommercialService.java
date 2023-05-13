@@ -3,7 +3,6 @@ package com.avocado.commercial.Service;
 import com.avocado.commercial.Dto.request.CommercialCancelReqDto;
 import com.avocado.commercial.Dto.request.CommercialReqDto;
 import com.avocado.commercial.Dto.response.Analysis;
-import com.avocado.commercial.Dto.response.RegistedCommercial;
 import com.avocado.commercial.Dto.response.item.Carousel;
 import com.avocado.commercial.Dto.response.CommercialRespDto;
 import com.avocado.commercial.Dto.response.item.Click;
@@ -19,6 +18,8 @@ import com.avocado.commercial.util.JwtUtil;
 import com.avocado.commercial.util.UUIDUtil;
 import io.jsonwebtoken.Jwt;
 import net.bytebuddy.agent.builder.AgentBuilder;
+import com.avocado.commercial.kafka.KafkaProducer;
+import com.avocado.commercial.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -36,16 +37,17 @@ public class CommercialService {
     private CommercialExposureRepository commercialExposureRepository;
     private ImageService imageService;
     private JwtUtil jwtUtil;
-
+    private final KafkaProducer kafkaproducer;
     private final int TYPE_POPUP = 0;
     private final int TYPE_CAROUSEL = 1;
 
     @Autowired
-    public CommercialService(CommercialRepository commercialRepository, CommercialExposureRepository commercialExposureRepository, ImageService imageService, JwtUtil jwtUtil){
+    public CommercialService(CommercialRepository commercialRepository, CommercialExposureRepository commercialExposureRepository, ImageService imageService, JwtUtil jwtUtil, KafkaProducer kafkaproducer){
         this.commercialRepository = commercialRepository;
         this.commercialExposureRepository = commercialExposureRepository;
         this.imageService = imageService;
         this.jwtUtil = jwtUtil;
+        this.kafkaproducer = kafkaproducer;
     }
 
     // 리팩토링 해야할 듯
@@ -81,11 +83,6 @@ public class CommercialService {
             }
         }
 
-        // 광고가 없으면 예외
-//        if(commercialList.size() == 0){
-//            throw new CommercialException(ErrorCode.COMMERCIAL_NOT_FOUND);
-//        }
-
         // 응답으로 넘길 Dto
         CommercialRespDto commercialRespDto = new CommercialRespDto();
         List<Carousel> carouselList = new ArrayList<>();
@@ -96,46 +93,40 @@ public class CommercialService {
         if(0 <popupEntityList.size()) {
             Commercial commercial = popupEntityList.get(random.nextInt(popupEntityList.size()));
             CommercialExposure commercialExposure = new CommercialExposure();
-            commercialExposure.setCommercialId(commercial.getId());
             commercialRespDto.setPopup(commercial.toPopup());
-            System.out.println(commercialRespDto);
-            System.out.println(commercialExposure);
+            // 노출 수 올리기
+            commercialExposure.setCommercialId(commercial.getId());
             commercialExposureRepository.save(commercialExposure);
-        }
-        
-        
-        // 광고 수가 5보다 적으면 그대로 넘긴다.
-        if(carouselEntityList.size() < 5) {
-            for (Commercial commercial : carouselEntityList) {
-                carouselList.add(commercial.toCarousel());
-                CommercialExposure commercialExposure = new CommercialExposure();
-                commercialExposure.setCommercialId(commercial.getId());
-                commercialExposureRepository.save(commercialExposure);
-            }
-            commercialRespDto.setCarousel_list(carouselList);
-            return commercialRespDto;
         }
 
-        // 광고 수가 5보다 크면 SET을 이용해 랜덥한 광고를 5개 선출
-        Set<Commercial> commercialSet = new HashSet<>();
-        while (carouselEntityList.size() < 5) {
-            int randomNumber = random.nextInt(carouselEntityList.size());  // 0부터 리스트사이즈까지의 임의의 정수 생성
-            commercialSet.add(carouselEntityList.get(randomNumber));
+        Set<Integer> randomNumberSet = new HashSet<>();
+        if(carouselEntityList.size() < 5){
+            for(int i = 0; i < carouselEntityList.size(); ++i){
+                randomNumberSet.add(i);
+            }
         }
-        for (Commercial commercial : commercialSet) {
-            carouselList.add(commercial.toCarousel());
+        else{
+            while (randomNumberSet.size() < 5){
+                int randomNumber = random.nextInt(carouselEntityList.size());
+                randomNumberSet.add(randomNumber);
+            }
+        }
+        for(int index : randomNumberSet){
             CommercialExposure commercialExposure = new CommercialExposure();
-            commercialExposure.setCommercialId(commercial.getId());
+            carouselList.add(carouselEntityList.get(index).toCarousel());
+            // 노출 수 올리기()
+            commercialExposure.setCommercialId(carouselEntityList.get(index).getId());
             commercialExposureRepository.save(commercialExposure);
+            // produce to kafka
+            kafkaproducer.sendAdview(carouselEntityList.get(index).getMerchandiseId(), UUID.randomUUID());
         }
         commercialRespDto.setCarousel_list(carouselList);
-
 
         return commercialRespDto;
     }
 
 
-    public List<Analysis> getAnlyses(int commercialId){
+    public List<Analysis> getAnalyses(int commercialId){
         List<Analysis> analysisList = new ArrayList<>();
 
         Commercial commercial = commercialRepository.findById(commercialId);
@@ -195,6 +186,7 @@ public class CommercialService {
 
         return analysisList;
     }
+    
 
     public void saveCommercial(CommercialReqDto commercialReqDto, HttpServletRequest request){
         checkCommercialRequest(commercialReqDto);
@@ -232,6 +224,8 @@ public class CommercialService {
 
 
     }
+
+
 
     public void checkCommercialRequest(CommercialReqDto commercialReqDto){
         if(commercialReqDto.getAge() < 0){
