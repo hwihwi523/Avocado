@@ -20,15 +20,13 @@ import {
 import LinearProgress from "@mui/material/LinearProgress";
 //구매 목록 더미 데이터
 
-
-
 type Item = {
   merchandise_id: number;
   merchandise_name: string;
 };
 
 const SnapshotRegist = () => {
-  const { data : orderList, isLoading } = useGetOrderListQuery();
+  const { data: orderList, isLoading } = useGetOrderListQuery();
 
   const [
     addSnapshot,
@@ -87,15 +85,13 @@ const SnapshotRegist = () => {
       return;
     }
 
-    //보낼 데이터 셋팅 
+    //보낼 데이터 셋팅
     const formData = new FormData();
     formData.set("picture", picture);
     formData.set("content", content);
     products.forEach((item) => {
       formData.append("wears", item.merchandise_id.toString());
     });
-
-  
 
     // 스넵샷 등록하기
     addSnapshot(formData)
@@ -108,33 +104,29 @@ const SnapshotRegist = () => {
       });
   }
 
-
   //구매 목록에서 선택한 것들
   const handleChange = (event: SelectChangeEvent) => {
     setValue(event.target.value);
-    
-    if(orderList){
 
-      for(let i = 0 ;i<orderList.data.content.length;i++){
+    if (orderList) {
+      for (let i = 0; i < orderList.data.content.length; i++) {
         //내가 구매목록에서 선택한것을 products에 넣어줌 => 이건 선택한 제품으로 등록됨
-        if(orderList.data.content[i].merchandise_name === event.target.value){
+        if (orderList.data.content[i].merchandise_name === event.target.value) {
           let item = {
-            merchandise_name : orderList.data.content[i].merchandise_name,
-            merchandise_id : orderList.data.content[i].merchandise_id
-          }
-          setProducts(preState => ([...preState, item]))
+            merchandise_name: orderList.data.content[i].merchandise_name,
+            merchandise_id: orderList.data.content[i].merchandise_id,
+          };
+          setProducts((preState) => [...preState, item]);
           return;
         }
       }
     }
-
-
   };
 
   //내용 핸들러
   const handleContent = (event: ChangeEvent<HTMLInputElement>) => {
     const inputText = event.target.value;
-    if (inputText.length <= 100) {
+    if (inputText.length <= 300) {
       setContent(inputText);
     } else {
       event.target.value = content;
@@ -147,8 +139,6 @@ const SnapshotRegist = () => {
       products.filter((item: any) => item.merchandise_name !== merchandise_name)
     );
   };
-
-  
 
   return (
     <Background>
@@ -197,7 +187,7 @@ const SnapshotRegist = () => {
           >
             {orderList && orderList.data.content && orderList.data.content ? (
               orderList.data.content.map((item, i) => (
-                <MenuItem value={item.merchandise_name} key={i}>      
+                <MenuItem value={item.merchandise_name} key={i}>
                   {item.merchandise_name}
                 </MenuItem>
               ))

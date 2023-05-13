@@ -45,7 +45,7 @@ const SnapshotItem:React.FC<{data:snapshotItemType}> = (props) => {
           width={50}
           height={50}
           alt="아바타 이미지"
-          src={`/assets/avatar/${"winter_man"}}.png`}
+          src={`/assets/avatar/${"winter_man"}.png`}
         />
         <Stack style={{ color: "gray", width: "100%" }}>
           <div>
@@ -86,7 +86,7 @@ export default SnapshotItem;
 
 const Imagebox = styled.div`
   position: relative; //이게 제일 중요함
-  width: 100vw;
+  width: 100%;
   height: 400px;
   margin-bottom: 10px;
 `;

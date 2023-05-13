@@ -72,6 +72,10 @@ const CommercialRegist = () => {
 
   //제출 함수 and 에러 표시
   function submitHandler() {
+
+
+
+
     if (!previewImage) {
       enqueueSnackbar(`이미지를 선택해 주세요 `, {
         variant: "error",
@@ -379,3 +383,11 @@ const UploadImg = styled.div`
   background-color: #dddddd;
   border-radius: 10px;
 `;
+
+
+
+
+
+
+
+

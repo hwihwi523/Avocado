@@ -9,16 +9,39 @@ import { useState, useEffect } from "react";
 import { useGetSnapshotListQuery } from "@/src/features/snapshot/snapshotApi";
 import { BlockText } from "@/src/components/atoms";
 import { SnapshotItem as snapshotItemType } from "@/src/features/snapshot/snapshotApi";
-
-
+import { AppState, useAppSelector, wrapper } from "../../features/store";
+import { authenticateTokenInPages } from "../../utils/authenticateTokenInPages";
+import { useSnackbar } from "notistack";
 
 
 const Snapshot = () => {
+  //화면에 에러표시
+  const { enqueueSnackbar } = useSnackbar();
+  //데이터 불러오기 
   const { data, isLoading, error } = useGetSnapshotListQuery();
+  //유저정보 가져오기 => 글쓰기를 할 수 있냐 없냐 판별하기 위해서
+  const member = useAppSelector((state: AppState) => state.auth.member);
+
+  //무한스크롤을 위해 게시글을 담아둘 객체
   const [snapshotList, setSnapshotList] = useState<snapshotItemType[]>([]);
 
+  function redirectToRegistrationPage(){
+    if(!member){
+      enqueueSnackbar(`로그인이 필요한 서비스 입니다.`, {
+        variant: "error",
+        anchorOrigin: {
+          horizontal: "center",
+          vertical: "bottom",
+        },
+      });
+      return;
+    } 
+    router.push("/snapshot/regist")
+
+  }
   
-  useEffect(()=>{
+  
+  useEffect(()=>{   //data 안에 변하지 않는 변수가 있을거임 그거 찾으셈 
     if (data) {
       setSnapshotList((preValue) => [...preValue, ...data.styleshot_list]);
     }
@@ -83,3 +106,18 @@ const RegistButton = styled.button`
   color: white;
   box-shadow: 3px 3px 10px grey;
 `;
+
+
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) => async (context) => {
+    // 쿠키의 토큰을 통해 로그인 확인, 토큰 리프레시, 실패 시 로그아웃 처리 등
+    await authenticateTokenInPages(
+      { req: context.req, res: context.res },
+      store
+    );
+
+    return {
+      props: {},
+    };
+  }
+);
