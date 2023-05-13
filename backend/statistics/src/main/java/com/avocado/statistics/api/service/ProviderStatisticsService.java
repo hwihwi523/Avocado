@@ -42,16 +42,20 @@ public class ProviderStatisticsService {
                 .getMBTIDistribution(providerId);
         // Response 생성
         List<MBTIDistributionResp> mbtis = new ArrayList<>();
-        for (ChartDistributionDTO data : mbtiDist)
+        for (ChartDistributionDTO data : mbtiDist) {
+            if (data.getId() == null) continue;  // MBTI 미설정 구매자 집계 제외
             mbtis.add(MBTIDistributionResp.from(data));
+        }
 
         // 퍼스널컬러 분포 조회
         List<ChartDistributionDTO> personalColorDist = jpaStatisticsRepository
                 .getPersonalColorDistribution(providerId);
         // Response 생성
         List<PersonalColorDistributionResp> personalColors = new ArrayList<>();
-        for (ChartDistributionDTO data : personalColorDist)
+        for (ChartDistributionDTO data : personalColorDist) {
+            if (data.getId() == null) continue;  // 퍼스널컬러 미설정 구매자 집계 제외
             personalColors.add(PersonalColorDistributionResp.from(data));
+        }
 
         // Response DTO 생성
         ProviderStatisticsResp providerStatisticsResp = new ProviderStatisticsResp();
