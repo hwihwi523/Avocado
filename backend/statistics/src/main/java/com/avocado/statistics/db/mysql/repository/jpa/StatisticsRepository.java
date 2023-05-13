@@ -74,6 +74,27 @@ public class StatisticsRepository {
     }
 
     /**
+     * 성별 분포 조회
+     * @param providerId : 스토어 ID
+     * @return : 해당 스토어의 상품을 구매한 사람들의 성별 분포
+     */
+    public List<GenderDistributionDTO> getGenderDistribution(UUID providerId) {
+        // 구매자들의 성별 분포 조회
+        return queryFactory
+                .select(new QGenderDistributionDTO(
+                        consumer.gender,
+                        consumer.gender.count()
+                ))
+                .from(consumer)
+                .where(consumer.id.in(
+                        subSelectConsumers(providerId)
+                ))
+                .groupBy(consumer.gender)
+                .orderBy(OrderByNull.DEFAULT)
+                .fetch();
+    }
+
+    /**
      * MBTI 분포 조회
      * @param providerId : 스토어 ID
      * @return : 해당 스토어의 상품을 구매한 사람들의 MBTI 분포
@@ -115,6 +136,11 @@ public class StatisticsRepository {
                 .fetch();
     }
 
+    /**
+     * 연령대 분포 조회
+     * @param providerId : 스토어 ID
+     * @return : 해당 스토어의 상품을 구매한 사람들의 연령대 분포
+     */
     public List<AgeGroupDistributionDTO> getAgeGroupDistribution(UUID providerId) {
         // 구매자들의 연령대 분포 조회
         return queryFactory
