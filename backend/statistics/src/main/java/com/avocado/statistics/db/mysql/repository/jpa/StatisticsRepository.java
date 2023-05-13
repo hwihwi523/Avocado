@@ -1,13 +1,7 @@
 package com.avocado.statistics.db.mysql.repository.jpa;
 
 import com.avocado.statistics.common.utils.OrderByNull;
-import com.avocado.statistics.db.mysql.entity.jpa.QConsumer;
-import com.avocado.statistics.db.mysql.entity.jpa.QPurchase;
-import com.avocado.statistics.db.mysql.entity.jpa.QStore;
-import com.avocado.statistics.db.mysql.repository.dto.ChartDistributionDTO;
-import com.avocado.statistics.db.mysql.repository.dto.QChartDistributionDTO;
-import com.avocado.statistics.db.mysql.repository.dto.QSellCountTotalRevenueDTO;
-import com.avocado.statistics.db.mysql.repository.dto.SellCountTotalRevenueDTO;
+import com.avocado.statistics.db.mysql.repository.dto.*;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +16,6 @@ import static com.avocado.statistics.db.mysql.entity.jpa.QMerchandise.merchandis
 import static com.avocado.statistics.db.mysql.entity.jpa.QMerchandiseGroup.merchandiseGroup;
 import static com.avocado.statistics.db.mysql.entity.jpa.QPurchase.purchase;
 import static com.avocado.statistics.db.mysql.entity.jpa.QPurchasedMerchandise.purchasedMerchandise;
-import static com.avocado.statistics.db.mysql.entity.jpa.QStore.store;
 
 @Repository
 @RequiredArgsConstructor
@@ -81,6 +74,27 @@ public class StatisticsRepository {
     }
 
     /**
+     * 성별 분포 조회
+     * @param providerId : 스토어 ID
+     * @return : 해당 스토어의 상품을 구매한 사람들의 성별 분포
+     */
+    public List<GenderDistributionDTO> getGenderDistribution(UUID providerId) {
+        // 구매자들의 성별 분포 조회
+        return queryFactory
+                .select(new QGenderDistributionDTO(
+                        consumer.gender,
+                        consumer.gender.count()
+                ))
+                .from(consumer)
+                .where(consumer.id.in(
+                        subSelectConsumers(providerId)
+                ))
+                .groupBy(consumer.gender)
+                .orderBy(OrderByNull.DEFAULT)
+                .fetch();
+    }
+
+    /**
      * MBTI 분포 조회
      * @param providerId : 스토어 ID
      * @return : 해당 스토어의 상품을 구매한 사람들의 MBTI 분포
@@ -118,6 +132,27 @@ public class StatisticsRepository {
                         subSelectConsumers(providerId)  // 서브쿼리
                 ))
                 .groupBy(consumer.personalColor.id)
+                .orderBy(OrderByNull.DEFAULT)
+                .fetch();
+    }
+
+    /**
+     * 연령대 분포 조회
+     * @param providerId : 스토어 ID
+     * @return : 해당 스토어의 상품을 구매한 사람들의 연령대 분포
+     */
+    public List<AgeGroupDistributionDTO> getAgeGroupDistribution(UUID providerId) {
+        // 구매자들의 연령대 분포 조회
+        return queryFactory
+                .select(new QAgeGroupDistributionDTO(
+                        consumer.age,
+                        consumer.age.count()
+                ))
+                .from(consumer)
+                .where(consumer.id.in(
+                        subSelectConsumers(providerId)
+                ))
+                .groupBy(consumer.age)
                 .orderBy(OrderByNull.DEFAULT)
                 .fetch();
     }
