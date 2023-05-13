@@ -1,5 +1,6 @@
 package com.avocado.statistics.api.service;
 
+import com.avocado.statistics.api.response.MBTIDistributionResp;
 import com.avocado.statistics.api.response.PersonalColorDistributionResp;
 import com.avocado.statistics.api.response.ProviderStatisticsResp;
 import com.avocado.statistics.common.error.BaseException;
@@ -8,7 +9,6 @@ import com.avocado.statistics.common.utils.JwtUtils;
 import com.avocado.statistics.db.mysql.repository.dto.ChartDistributionDTO;
 import com.avocado.statistics.db.mysql.repository.dto.SellCountTotalRevenueDTO;
 import com.avocado.statistics.db.mysql.repository.jpa.StatisticsRepository;
-import com.avocado.statistics.db.redis.repository.AdvertiseCountRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,13 +37,25 @@ public class ProviderStatisticsService {
                 .getSellCountTotalRevenue(providerId);  // 판매수, 총 판매액
         Long merchandiseCount = jpaStatisticsRepository.getMerchandiseCount(providerId);
 
+        // MBTI 분포 조회
+        List<ChartDistributionDTO> mbtiDist = jpaStatisticsRepository
+                .getMBTIDistribution(providerId);
+        // Response 생성
+        List<MBTIDistributionResp> mbtis = new ArrayList<>();
+        for (ChartDistributionDTO data : mbtiDist) {
+            if (data.getId() == null) continue;  // MBTI 미설정 구매자 집계 제외
+            mbtis.add(MBTIDistributionResp.from(data));
+        }
+
         // 퍼스널컬러 분포 조회
         List<ChartDistributionDTO> personalColorDist = jpaStatisticsRepository
                 .getPersonalColorDistribution(providerId);
         // Response 생성
         List<PersonalColorDistributionResp> personalColors = new ArrayList<>();
-        for (ChartDistributionDTO data : personalColorDist)
+        for (ChartDistributionDTO data : personalColorDist) {
+            if (data.getId() == null) continue;  // 퍼스널컬러 미설정 구매자 집계 제외
             personalColors.add(PersonalColorDistributionResp.from(data));
+        }
 
         // Response DTO 생성
         ProviderStatisticsResp providerStatisticsResp = new ProviderStatisticsResp();
@@ -52,6 +64,7 @@ public class ProviderStatisticsService {
                 sellCountTotalRevenueDTO.getSellCount(),
                 sellCountTotalRevenueDTO.getTotalRevenue(),
                 merchandiseCount,
+                mbtis,
                 personalColors
         );
 

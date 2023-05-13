@@ -81,6 +81,27 @@ public class StatisticsRepository {
     }
 
     /**
+     * MBTI 분포 조회
+     * @param providerId : 스토어 ID
+     * @return : 해당 스토어의 상품을 구매한 사람들의 MBTI 분포
+     */
+    public List<ChartDistributionDTO> getMBTIDistribution(UUID providerId) {
+        // 구매자들의 MBTI 분포 조회
+        return queryFactory
+                .select(new QChartDistributionDTO(
+                        consumer.mbti.id,
+                        consumer.mbti.id.count()
+                ))
+                .from(consumer)
+                .where(consumer.id.in(
+                        subSelectConsumers(providerId)
+                ))
+                .groupBy(consumer.mbti.id)
+                .orderBy(OrderByNull.DEFAULT)
+                .fetch();
+    }
+
+    /**
      * 퍼스널컬러 분포 조회
      * @param providerId : 스토어 ID
      * @return : 해당 스토어의 상품을 구매한 사람들의 퍼스널컬러 분포
