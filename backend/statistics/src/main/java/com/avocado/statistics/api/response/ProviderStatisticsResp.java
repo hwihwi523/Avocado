@@ -15,15 +15,18 @@ public class ProviderStatisticsResp {
     private Long sell_count;
     private Long total_revenue;
     private Long merchandise_count;
+    private List<MBTIDistributionResp> mbtis;
     private List<PersonalColorDistributionResp> personal_colors;
 
     // 수로 이루어진 통계 정보 업데이트
     public void updateNumericStatistics(Long click_count, Long sell_count, Long total_revenue, Long merchandise_count,
+                                        List<MBTIDistributionResp> mbtis,
                                         List<PersonalColorDistributionResp> personal_colors) {
         this.click_count = click_count;
         this.sell_count = sell_count;
         this.total_revenue = total_revenue;
         this.merchandise_count = merchandise_count;
+        this.mbtis = mbtis;
         this.personal_colors = personal_colors;
     }
 }
