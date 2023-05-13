@@ -30,4 +30,7 @@ const personal_color_list:string[] = [
   "winter_cool_deep",
 ];
 
+
+
 export { mbti_list, personal_color_list };
+

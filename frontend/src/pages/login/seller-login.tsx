@@ -1,8 +1,21 @@
+import styled from "@emotion/styled";
 import {
   DecodedToken,
   SellerLoginResponse,
   useSellerLoginMutation,
 } from "@/src/features/auth/authApi";
+import {
+  Stack,
+  Button,
+  FormControl,
+  InputLabel,
+  InputAdornment,
+  Input,
+  OutlinedInput,
+  IconButton,
+} from "@mui/material";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import { AppState, wrapper } from "@/src/features/store";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -10,6 +23,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import jwt from "jsonwebtoken";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import {
   removeToken,
   removeTokenAll,
@@ -19,6 +33,7 @@ import { Member, clearAuth, setMember } from "@/src/features/auth/authSlice";
 import { appCookies } from "../_app";
 import authenticateMemberInPages from "@/src/utils/authenticateMemberInPages";
 import { authenticateTokenInPages } from "@/src/utils/authenticateTokenInPages";
+import { BlockText } from "@/src/components/atoms";
 
 const SECRET = process.env.NEXT_PUBLIC_JWT_SECRET
   ? process.env.NEXT_PUBLIC_JWT_SECRET
@@ -100,47 +115,109 @@ export default function SellerLogin() {
     router.push("/login");
   };
 
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
+
   return (
-    <div>
-      <Head>
-        <title>판매자 로그인</title>
-      </Head>
-      {member && <div>{member.email}</div>}
-      <div>여기는 판매자 로그인 페이지</div>
-      <br />
-      <form
-        onSubmit={handleLogin}
+    <Background>
+      <Stack
+        spacing={2}
         style={{
-          display: "flex",
-          flexDirection: "column",
-          width: "50%",
+          borderRadius: "10px",
+          backgroundColor: "white",
+          padding: "40px 10px",
+          marginTop: "30%",
+          
         }}
       >
-        <label>
-          이메일 :
-          <input
-            type="email"
-            name="email"
-            placeholder="test@test.com"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </label>
-        <label>
-          비밀번호 :
-          <input
-            type="password"
-            name="password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </label>
-        <button type="submit">로그인</button>
-      </form>
-      <button onClick={handleLogout}>로그아웃</button>
-      <br />
-      <button onClick={() => router.push("/example")}>이동 테스트</button>
-    </div>
+        <Head>
+          <title>판매자 로그인</title>
+        </Head>
+        <BlockText type="B" size="1.2rem">
+          판매자 로그인
+        </BlockText>
+        <br />
+        <form onSubmit={handleLogin}>
+          <Stack>
+
+            {/* 이메일 입력 */}
+            <FormControl sx={{ m: 1 }} variant="outlined">
+              <InputLabel htmlFor="outlined-adornment-email">email</InputLabel>
+              <OutlinedInput
+                onChange={(e) => setEmail(e.target.value)}
+                id="outlined-adornment-email"
+                type="email"
+                endAdornment={
+                  <InputAdornment position="end">
+                    <AccountCircleIcon />
+                  </InputAdornment>
+                }
+                label="email"
+              />
+            </FormControl>
+
+            {/* 비밀번호 입력 */}
+            <FormControl sx={{ m: 1 }} variant="outlined">
+              <InputLabel htmlFor="outlined-adornment-password">
+                Password
+              </InputLabel>
+              <OutlinedInput
+                onChange={(e) => setPassword(e.target.value)}
+                id="outlined-adornment-password"
+                type={showPassword ? "text" : "password"}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? (
+                        <VisibilityOffIcon />
+                      ) : (
+                        <VisibilityIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                label="Password"
+              />
+            </FormControl>
+          </Stack>
+          <Button
+            type="submit"
+            style={{
+              backgroundColor: "black",
+              color: "white",
+              padding: "20px",
+              boxSizing: "border-box",
+              marginTop:"40px"
+            }}
+            fullWidth
+          >
+            로그인
+          </Button>
+        </form>
+        {/* <button onClick={handleLogout}>로그아웃</button> */}
+        {/* <button onClick={() => router.push("/example")}>이동 테스트</button> */}
+      </Stack>
+    </Background>
   );
 }
+
+const Background = styled.div`
+  padding: 10px;
+  background-color: #dddddd;
+  height: 100vh;
+`;
 
 // 서버에서 Redux Store를 초기화하고, wrapper.useWrappedStore()를 사용해
 // 클라이언트에서도 동일한 store를 사용하도록 설정

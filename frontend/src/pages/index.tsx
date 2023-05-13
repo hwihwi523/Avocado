@@ -1,6 +1,6 @@
 import { Inter } from "next/font/google";
 import styled from "@emotion/styled";
-import Grid from "@mui/material/Grid";
+import { Grid, Button } from "@mui/material";
 import Head from "next/head";
 
 import {
@@ -9,6 +9,7 @@ import {
   Commercials,
   UserProfile,
 } from "../components/oranisms";
+import { useRouter } from "next/router";
 import { BlockText } from "../components/atoms";
 import { AppState, useAppSelector, wrapper } from "../features/store";
 import { authenticateTokenInPages } from "../utils/authenticateTokenInPages";
@@ -18,12 +19,12 @@ import { setProductListBySearch } from "../features/product/productSlice";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const name = "김싸피";
-  const mbti = "estp";
-  const personalColor = "spring bright";
+  const router = useRouter();
 
   const member = useAppSelector((state: AppState) => state.auth.member);
+  
 
+  const name = "김싸피";
   return (
     <BackgroundDiv>
       <Head>
@@ -46,8 +47,17 @@ export default function Home() {
       <Grid container gap={5}>
         {/* 사용자 프로필 */}
         <Grid item xs={12}>
-          <div>{member?.email}</div>
-          <UserProfile />
+          {member ? (
+            <UserProfile member={member} />
+          ) : (
+            <Button
+            fullWidth
+            style={{backgroundColor:"black",color:"white", padding:"20px", marginTop:"20px"}}
+              onClick={() => {
+                router.push("/login");
+              }}
+            >로그인 하기</Button>
+          )}
         </Grid>
 
         {/* 메뉴 카테고리 */}
@@ -108,23 +118,23 @@ export const getServerSideProps = wrapper.getServerSideProps(
     );
 
     // 필요한 내용 작성
-//유저정보 가져오기
+
+    //유저정보 가져오기
     // console.log(">>>>>>>>>>>",store.getState().auth.member);
 
-//함수 불러오기
+    //함수 불러오기
     // store.dispatch(
     //   productApi.endpoints.getProductDetail.initiate(lastSegment)
     // );
 
-    //store에 집어 넣기 
-      // store.dispatch(setProductListBySearch());
+    //store에 집어 넣기
+    // store.dispatch(setProductListBySearch());
 
-//
+    //
     return {
       props: {},
     };
   }
 );
-function useSelector() {
-  throw new Error("Function not implemented.");
-}
+
+
