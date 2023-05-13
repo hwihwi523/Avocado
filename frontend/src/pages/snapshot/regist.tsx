@@ -232,7 +232,7 @@ const SnapshotRegist = () => {
             rows={4}
             onChange={handleContent}
           />
-          <BlockText color="grey">글자수 : {content.length}/100</BlockText>
+          <BlockText color="grey">글자수 : {content.length}/300</BlockText>
         </div>
         <Button
           style={{ backgroundColor: "black", color: "white", padding: "20px" }}
