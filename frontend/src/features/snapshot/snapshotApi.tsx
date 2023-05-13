@@ -100,11 +100,8 @@ export const snapshotApi = createApi({
     //스넵샷 삭제
     removeSnapshot: build.mutation<ResponseType, number>({
       query: (styleshot_id: number) => ({
-        url: "/community/styleshots",
+        url: `/community/styleshots/${styleshot_id}`,
         method: "DELETE",
-        params: {
-          styleshot_id,
-        },
       }),
       invalidatesTags: [{ type: "snapshot", id: "LIST" }],
     }),
