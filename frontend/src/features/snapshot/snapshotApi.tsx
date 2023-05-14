@@ -4,25 +4,38 @@ import { customFetchBaseQuery } from "@/src/utils/customFetchBaseQuery";
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export type Wear = {
+  merchandise_id:number,
   name: string;
   imgurl: string;
 };
 
-
-export type SnapshotItem = {
-  content:string,
-  id:number,
-  created_at:string,
-  picture_url:string,
-  total_likes:number,
-  wears:Wear[]
+//전체 스넵샷 불러올때
+export type SnapshotRequestType = {
+  lastId: number | null;
+  size: number;
 };
 
-export type SnapshotList={
-  last_id:number,
-  last_page:boolean,
-  styleshot_list:SnapshotItem[],
-}
+export type SnapshotItem = {
+  my_styleshot: boolean; // 내 게시글인지 여부
+  iliked: boolean; //내가 좋아요 눌렀는지 여부
+  content: string;
+  id: number;
+  created_at: string;
+  picture_url: string;
+  total_likes: number;
+  wears: Wear[];
+  user_info: {
+    name: string;
+    mbti_id: number;
+    personal_color_id: number;
+  };
+};
+
+export type SnapshotList = {
+  last_id: number;
+  last_page: boolean;
+  styleshot_list: SnapshotItem[];
+};
 
 export type ResponseType = {
   status: number;
@@ -76,22 +89,27 @@ export const snapshotApi = createApi({
       providesTags: (result) =>
         result
           ? [
-              ...result.styleshot_list.map(({ id }) => ({ type: "snapshot", id } as const)),
+              ...result.styleshot_list.map(
+                ({ id }) => ({ type: "snapshot", id } as const)
+              ),
               { type: "snapshot", id: "LIST" },
             ]
           : [{ type: "snapshot", id: "LIST" }],
     }),
 
     //전체 스넵샷 조회
-    getSnapshotList: build.query<SnapshotList, void>({
-      query: () => ({
+    getSnapshotList: build.query<SnapshotList, any>({
+      query: (params) => ({
         url: "/community/styleshots",
         method: "GET",
+        params,
       }),
       providesTags: (result) =>
         result
           ? [
-              ...result.styleshot_list.map(({ id }) => ({ type: "snapshot", id } as const)),
+              ...result.styleshot_list.map(
+                ({ id }) => ({ type: "snapshot", id } as const)
+              ),
               { type: "snapshot", id: "LIST" },
             ]
           : [{ type: "snapshot", id: "LIST" }],
