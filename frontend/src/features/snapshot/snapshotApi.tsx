@@ -4,7 +4,7 @@ import { customFetchBaseQuery } from "@/src/utils/customFetchBaseQuery";
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export type Wear = {
-  merchandise_id:number,
+  merchandise_id: number;
   name: string;
   imgurl: string;
 };
@@ -137,11 +137,8 @@ export const snapshotApi = createApi({
     //스넵샷 좋아요
     addSnapshotLike: build.mutation<ResponseType, number>({
       query: (styleshot_id: number) => ({
-        url: "/community/styleshots",
+        url: `/community/styleshots/${styleshot_id}/like`,
         method: "POST",
-        params: {
-          styleshot_id,
-        },
       }),
       invalidatesTags: [{ type: "snapshot", id: "LIST" }],
     }),
@@ -149,11 +146,8 @@ export const snapshotApi = createApi({
     //스넵샷 좋아요 취소
     removeSnapshotLike: build.mutation<ResponseType, number>({
       query: (styleshot_id: number) => ({
-        url: "/community/styleshots",
+        url: `/community/styleshots/${styleshot_id}/unlike`,
         method: "POST",
-        params: {
-          styleshot_id,
-        },
       }),
       invalidatesTags: [{ type: "snapshot", id: "LIST" }],
     }),

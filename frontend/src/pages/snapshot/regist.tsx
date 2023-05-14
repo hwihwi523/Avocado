@@ -37,7 +37,9 @@ const SnapshotRegist = () => {
   const [value, setValue] = useState("");
   const [picture, setPicture] = useState<any>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const [content, setContent] = useState<string>("");
+  const [content, setContent] = useState<string>(
+    "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+  );
   const [products, setProducts] = useState<Item[]>([]);
 
   //이미지 핸들러 => 선택한 이미지 화면에 보이게 하기
@@ -126,7 +128,7 @@ const SnapshotRegist = () => {
   //내용 핸들러
   const handleContent = (event: ChangeEvent<HTMLInputElement>) => {
     const inputText = event.target.value;
-    if (inputText.length <= 300) {
+    if (inputText.length <= 100) {
       setContent(inputText);
     } else {
       event.target.value = content;
@@ -198,12 +200,6 @@ const SnapshotRegist = () => {
                 </Box>
               </MenuItem>
             )}
-
-            {/* {order_list.map((item, i) => (
-              <MenuItem value={item.product_name} key={i}>
-                {item.product_name}
-              </MenuItem>
-            ))} */}
           </Select>
         </FormControl>
         {/* 선택한 구매 내역 */}
@@ -230,9 +226,10 @@ const SnapshotRegist = () => {
             label="내용"
             multiline
             rows={4}
+            value={content}
             onChange={handleContent}
           />
-          <BlockText color="grey">글자수 : {content.length}/300</BlockText>
+          <BlockText color="grey">글자수 : {content.length}/100</BlockText>
         </div>
         <Button
           style={{ backgroundColor: "black", color: "white", padding: "20px" }}

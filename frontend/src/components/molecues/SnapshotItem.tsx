@@ -9,6 +9,7 @@ import { useState } from "react";
 import {
   SnapshotItem as snapshotItemType,
   useAddSnapshotLikeMutation,
+  useRemoveSnapshotLikeMutation,
 } from "@/src/features/snapshot/snapshotApi";
 import { useRemoveSnapshotMutation } from "@/src/features/snapshot/snapshotApi";
 import { mbti_list, personal_color_list } from "../atoms/data";
@@ -18,7 +19,7 @@ const SnapshotItem: React.FC<{ data: snapshotItemType }> = (props) => {
 
   const [removeSnapshot] = useRemoveSnapshotMutation();
   const [addSnapshotLike] = useAddSnapshotLikeMutation();
-  const [removeSnapshotLike] = useRemoveSnapshotMutation();
+  const [removeSnapshotLike] = useRemoveSnapshotLikeMutation();
 
   const [isLike, setIsLike] = useState(item.iliked);
 
@@ -52,24 +53,26 @@ const SnapshotItem: React.FC<{ data: snapshotItemType }> = (props) => {
 
   //좋아요 누름
   function addLikeHandler() {
+    console.log("좋아요 동작");
     addSnapshotLike(item.id)
       .unwrap()
       .then((res) => {
         console.log(res);
+        setIsLike(true);
       })
       .catch((err) => console.log(err));
-    setIsLike(true);
   }
 
   //좋아요 취소
   function removeLikeHandler() {
+    console.log("싫어요 동작");
     removeSnapshotLike(item.id)
       .unwrap()
       .then((res) => {
         console.log(res);
+        setIsLike(false);
       })
       .catch((err) => console.log(err));
-    setIsLike(false);
   }
 
   return (
@@ -138,12 +141,13 @@ const SnapshotItem: React.FC<{ data: snapshotItemType }> = (props) => {
               <div>
                 <IconButton aria-label="delete">
                   {isLike ? (
-                    <FavoriteBorderIcon
+                    <FavoriteIcon
+                      color="error"
                       fontSize="large"
                       onClick={removeLikeHandler}
                     />
                   ) : (
-                    <FavoriteIcon
+                    <FavoriteBorderIcon
                       color="error"
                       fontSize="large"
                       onClick={addLikeHandler}

@@ -61,11 +61,13 @@ const Snapshot = () => {
         );
         return [...prevValue, ...filteredData];
       });
-
     }
   }, [inView]);
 
   // 잘 넘어오는지 출력해 보기
+  console.log("data >>>> ", data);
+
+  console.log("snapshotList   >>>> ", snapshotList);
 
   return (
     <Background>
@@ -80,6 +82,14 @@ const Snapshot = () => {
         <meta property="og:description" content="snapshot 페이지" />
       </Head>
       <Stack direction={"column"} spacing={10}>
+        {/* 초반에는 api로 불러온 초기 데이터 보여줌 */}
+        {!lastId &&
+          data &&
+          data.styleshot_list.map((item, i) => (
+            <SnapshotItem data={item} key={i} />
+          ))}
+
+        {/* 그다음부터는 무한스크롤에 의해 쌓여가는 데이터 보여줌 */}
         {snapshotList ? (
           snapshotList.map((item, i) => <SnapshotItem data={item} key={i} />)
         ) : (
