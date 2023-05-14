@@ -2,6 +2,10 @@ server:
   servlet:
     context-path: /api/community
 spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
   datasource:
     username: root
     password: yasim506
