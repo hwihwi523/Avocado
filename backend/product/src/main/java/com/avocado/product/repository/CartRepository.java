@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.avocado.product.entity.QCart.cart;
+import static com.avocado.product.entity.QConsumer.consumer;
 import static com.avocado.product.entity.QMerchandise.merchandise;
 import static com.avocado.product.entity.QMerchandiseCategory.merchandiseCategory;
 import static com.avocado.product.entity.QMerchandiseGroup.merchandiseGroup;
@@ -55,12 +56,15 @@ public class CartRepository {
                 )
                 .fetchFirst();
     }
-    public Cart findByConsumerIdAndMerchandiseId(UUID consumerId, Long merchandiseId) {
+    public Cart findByConsumerIdAndMerchandiseId(UUID consumerId, Long merchandiseId, String size) {
         return queryFactory
                 .selectFrom(cart)
+                .join(cart.consumer, consumer).fetchJoin()
+                .join(cart.merchandise, merchandise).fetchJoin()
                 .where(
-                        cart.consumer.id.eq(consumerId),
-                        cart.merchandise.id.eq(merchandiseId)
+                        consumer.id.eq(consumerId),
+                        merchandise.id.eq(merchandiseId),
+                        cart.size.eq(size)
                 )
                 .fetchFirst();
     }

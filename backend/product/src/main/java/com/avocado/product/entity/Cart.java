@@ -1,9 +1,6 @@
 package com.avocado.product.entity;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -12,6 +9,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 public class Cart {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -42,5 +40,10 @@ public class Cart {
         this.merchandise = merchandise;
         this.quantity = quantity;
         this.size = size;
+    }
+
+    // 수량 증가
+    public void addQuantities(int quantity) {
+        this.quantity += quantity;
     }
 }
