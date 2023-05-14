@@ -45,7 +45,7 @@ public class DetailMerchandiseController {
                                                  HttpServletRequest request) {
         UUID reviewerId = jwtUtil.getId(request);
         reviewService.createReview(reviewerId, merchandise_id, addReviewReq.getScore(), addReviewReq.getContent());
-        return ResponseEntity.ok(BaseResp.of("리뷰가 등록되었습니다."));
+        return ResponseEntity.ok(BaseResp.of("리뷰가 등록되었습니다.", true));
     }
 
     @GetMapping("/reviews")
@@ -60,6 +60,6 @@ public class DetailMerchandiseController {
                                                  HttpServletRequest request) {
         UUID consumerId = jwtUtil.getId(request);
         reviewService.removeReview(consumerId, removeReviewReq.getReview_id());
-        return ResponseEntity.ok(BaseResp.of("리뷰가 삭제되었습니다."));
+        return ResponseEntity.ok(BaseResp.of("리뷰가 삭제되었습니다.", true));
     }
 }
