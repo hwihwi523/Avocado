@@ -13,15 +13,15 @@ import java.util.UUID;
 @Mapper
 public interface StyleshotRepository {
 
-    List<StyleshotResp> getAll();
+    List<Styleshot> getAll();
 
-    List<StyleshotResp> getAllPageable(Long lastId, Integer resultSize);
+    List<Styleshot> getAllPageable(Long lastId, Integer resultSize);
 
-    List<StyleshotResp> getAllFirstPageable(Integer resultSize);
+    List<Styleshot> getAllFirstPageable(Integer resultSize);
 
-    List<StyleshotResp> getAllByConsumerId(@Param("consumerId") UUID consumerId);
+    List<Styleshot> getAllByConsumerId(@Param("consumerId") UUID consumerId);
 
-    Optional<StyleshotResp> getById(long styleshotId);
+    Optional<Styleshot> getById(long styleshotId);
 
     void save(Styleshot styleshot);
 

@@ -7,11 +7,9 @@ import com.avocado.community.api.response.StyleshotResp;
 import com.avocado.community.common.error.BaseException;
 import com.avocado.community.common.error.ResponseCode;
 import com.avocado.community.common.utils.JwtUtils;
+import com.avocado.community.db.entity.Consumer;
 import com.avocado.community.db.entity.Styleshot;
-import com.avocado.community.db.repository.MerchandiseRepository;
-import com.avocado.community.db.repository.StyleshotLikeRepository;
-import com.avocado.community.db.repository.StyleshotRepository;
-import com.avocado.community.db.repository.WearRepository;
+import com.avocado.community.db.repository.*;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -29,6 +28,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class StyleshotService {
 
+    private final ConsumerRepository consumerRepository;
     private final StyleshotRepository styleshotRepository;
     private final StyleshotLikeRepository styleshotLikeRepository;
     private final MerchandiseRepository merchandiseRepository;
@@ -87,29 +87,33 @@ public class StyleshotService {
 
     }
 
-    public StyleshotPagingResp styleshotList(Long lastId, Integer resultSize) {
-        List<StyleshotResp> respList;
+    public StyleshotPagingResp styleshotList(Long lastId, Integer resultSize, Claims claims) {
+        UUID myId = jwtUtils.getId(claims);
+
+        List<Styleshot> styleshotList;
         if (lastId == null) {
-            respList = styleshotRepository.getAllFirstPageable(resultSize);
+            styleshotList = styleshotRepository.getAllFirstPageable(resultSize);
         } else {
-            respList = styleshotRepository.getAllPageable(lastId, resultSize);
+            styleshotList = styleshotRepository.getAllPageable(lastId, resultSize);
         }
 
-        for (StyleshotResp resp: respList) {
-            List<MerchandiseResp> wearList = merchandiseRepository.getWearById(resp.getId());
-            resp.setWears(wearList);
-            resp.setTotalLikes(styleshotLikeRepository.countTotal(resp.getId()));
+        List<StyleshotResp> respList = new ArrayList<>();
+
+        for (Styleshot styleshot: styleshotList) {
+            StyleshotResp resp = getStyleshotResp(styleshot, myId);
+            respList.add(resp);
+
         }
-        int listSize = respList.size();
+        int listSize = styleshotList.size();
         Long newLastId = null;
 
         if (listSize != 0) {
-            newLastId = respList.get(listSize - 1).getId();
+            newLastId = styleshotList.get(listSize - 1).getId();
         }
 
         boolean isLastPage = false;
 
-        List<StyleshotResp> nextStyle = styleshotRepository.getAllPageable(newLastId, 1);
+        List<Styleshot> nextStyle = styleshotRepository.getAllPageable(newLastId, 1);
         if (nextStyle.isEmpty()) {
             isLastPage = true;
         }
@@ -123,16 +127,17 @@ public class StyleshotService {
         return resp;
     }
 
-    public StyleshotResp showStyleshotDetail(long styleshotId) {
-        Optional<StyleshotResp> styleshotO = styleshotRepository.getById(styleshotId);
+    public StyleshotResp showStyleshotDetail(long styleshotId, Claims claims) {
+
+        Optional<Styleshot> styleshotO = styleshotRepository.getById(styleshotId);
         if (styleshotO.isEmpty()) {
             throw new BaseException(ResponseCode.BAD_REQUEST);
         }
-        List<MerchandiseResp> wearList = merchandiseRepository.getWearById(styleshotId);
-        StyleshotResp resp = styleshotO.get();
-        resp.setWears(wearList);
-        resp.setTotalLikes(styleshotLikeRepository.countTotal(resp.getId()));
-        return resp;
+        Styleshot styleshot = styleshotO.get();
+
+        UUID myId = jwtUtils.getId(claims);
+
+        return getStyleshotResp(styleshot, myId);
     }
 
     public List<StyleshotResp> myStyleshotList(Claims claims) {
@@ -141,17 +146,49 @@ public class StyleshotService {
             throw new BaseException(ResponseCode.FORBIDDEN);
         }
 
-        UUID consumerId = jwtUtils.getId(claims);
+        UUID myId = jwtUtils.getId(claims);
 
-        List<StyleshotResp> respList = styleshotRepository.getAllByConsumerId(consumerId);
+        List<Styleshot> styleshotList = styleshotRepository.getAllByConsumerId(myId);
 
-        for (StyleshotResp resp: respList) {
-            List<MerchandiseResp> wearList = merchandiseRepository.getWearById(resp.getId());
-            resp.setWears(wearList);
-            resp.setTotalLikes(styleshotLikeRepository.countTotal(resp.getId()));
+        List<StyleshotResp> respList = new ArrayList<>();
+
+        for (Styleshot styleshot: styleshotList) {
+            StyleshotResp resp = getStyleshotResp(styleshot, myId);
+            respList.add(resp);
         }
         return respList;
     }
+
+    private StyleshotResp getStyleshotResp(Styleshot styleshot, UUID myId) {
+        StyleshotResp resp = new StyleshotResp(styleshot);
+
+        // styleshot 게시자 정보 추가
+        Optional<Consumer> consumerO = consumerRepository.findById(styleshot.getConsumerId());
+        if (consumerO.isEmpty()) {
+            throw new BaseException(HttpStatus.INTERNAL_SERVER_ERROR, "DB 오류");
+        }
+        resp.updateUserInfo(consumerO.get());
+
+        // 착용 정보 추가
+        List<MerchandiseResp> wearList = merchandiseRepository.getWearById(styleshot.getId());
+        resp.setWears(wearList);
+
+        // 총 좋아요 수 추가
+        resp.setTotalLikes(styleshotLikeRepository.countTotal(resp.getId()));
+
+        // 내 스냅샷인지 여부 추가
+        if (styleshot.getConsumerId().equals(myId)) {
+            resp.setMyStyleshot(true);
+        }
+
+        // 내가 좋아요를 했는지 추가
+        int check = styleshotLikeRepository.checkExist(styleshot.getId(), myId);
+        if (check > 0) {
+            resp.setILiked(true);
+        }
+        return resp;
+    }
+
 
     @Transactional
     public void like(long styleshotId, Claims claims) {

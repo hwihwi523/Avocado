@@ -69,11 +69,11 @@ data class Consumer (
         val cHeight = checkIntValue(req.height)
         val cWeight = checkIntValue(req.weight)
         val cMbtiId = checkIntValueLimit(req.mbtiId, 15)
+        val cAgeGroup = checkAgeGroup(req.ageGroup)
         val cPersonalColorId = checkIntValueLimit(req.personalColorId, 9)
         return Consumer(
             consumerId, name, email, pictureUrl, checkGender(req.gender),
-            checkAgeGroup(ageGroup),
-            createdAt, LocalDateTime.now(ZoneId.of("Asia/Seoul")), cHeight, cWeight,
+            cAgeGroup, createdAt, LocalDateTime.now(ZoneId.of("Asia/Seoul")), cHeight, cWeight,
             sub, social, cMbtiId, cPersonalColorId, 1
         )
     }
