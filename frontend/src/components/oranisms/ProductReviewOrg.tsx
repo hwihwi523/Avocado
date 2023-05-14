@@ -7,7 +7,7 @@ type ProductReviewProps = {
   reviews: ProductReview[];
 };
 
-const ProductReview: React.FC<ProductReviewProps> = ({ reviews }) => {
+const ProductReviewOrg: React.FC<ProductReviewProps> = ({ reviews }) => {
   return (
     <>
       <ReviewInput />
@@ -24,6 +24,6 @@ const ProductReview: React.FC<ProductReviewProps> = ({ reviews }) => {
   );
 };
 
-export default ProductReview;
+export default ProductReviewOrg;
 
 const Background = styled.div``;

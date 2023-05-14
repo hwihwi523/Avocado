@@ -12,6 +12,7 @@ const nextConfig = {
       "encrypted-tbn0.gstatic.com",
       "image.fmkorea.com",
       "img.wowtv.co.kr",
+      "k.kakaocdn.net",
     ],
   },
 };

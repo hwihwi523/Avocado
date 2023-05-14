@@ -7,6 +7,11 @@ import { BlockText, InlineText } from "../atoms";
 import { IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { ProductReview } from "@/src/features/product/productSlice";
+import {
+  useGetProductReviewsQuery,
+  useRemoveProductReviewMutation,
+} from "@/src/features/product/productApi";
+import { useRouter } from "next/router";
 
 //임시로 만든 날짜 반환 함수
 function dateFormat() {
@@ -41,6 +46,25 @@ const Review: React.FC<ReviewProps> = ({ review }) => {
     id,
   } = review;
 
+  const router = useRouter();
+  const [removeReview, result] = useRemoveProductReviewMutation();
+
+  // url 마지막에서 product Id 가져오기
+  const lastSegment = router.asPath.split("/").pop();
+  const productId = parseInt(lastSegment!, 10);
+
+  // reviews 데이터 refetch
+  const { refetch } = useGetProductReviewsQuery(lastSegment!);
+
+  function DeleteBtnClickHandler() {
+    removeReview({ productId, reviewId: review.id })
+      .then((res) => {
+        console.log("REMOVE REVIEW RESULT: ", res);
+        refetch();
+      })
+      .catch((e) => console.log("REMOVE REVIEW ERROR", e));
+  }
+
   return (
     <Background>
       <Grid container p={2} gap={2}>
@@ -69,7 +93,10 @@ const Review: React.FC<ReviewProps> = ({ review }) => {
                     <InlineText color="grey" type="L" size="12px">
                       {created_at}
                     </InlineText>
-                    <IconButton aria-label="delete">
+                    <IconButton
+                      aria-label="delete"
+                      onClick={DeleteBtnClickHandler}
+                    >
                       <CloseIcon />
                     </IconButton>
                   </div>

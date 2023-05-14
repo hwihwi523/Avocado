@@ -8,7 +8,7 @@ import {
   ProductDetailImage,
   ProductCardsRow,
   ProductDescription,
-  ProductReview,
+  ProductReviewOrg,
 } from "@/src/components/oranisms";
 import { IconButton, Stack } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
@@ -26,29 +26,29 @@ import { TransitionProps } from "@mui/material/transitions";
 import { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import Head from "next/head";
-import router from "next/router";
+import { useRouter } from "next/router";
 import { AppState, useAppSelector, wrapper } from "@/src/features/store";
 import { authenticateTokenInPages } from "@/src/utils/authenticateTokenInPages";
-import { productApi } from "@/src/features/product/productApi";
-import { authApi } from "@/src/features/auth/authApi";
-import { useSelector } from "react-redux";
 import {
-  ProductDetail,
-  setProductReviews,
+  productApi,
+  useGetProductReviewsQuery,
+} from "@/src/features/product/productApi";
+import {
+  ProductReview,
   setSelectedProductDetail,
 } from "@/src/features/product/productSlice";
 
 const ProductDetailPage = () => {
+  const router = useRouter();
   const product = useAppSelector(
     (state: AppState) => state.product.selectedProductDetail
   );
-  const reviews = useAppSelector(
-    (state: AppState) => state.product.productReiews
-  );
 
-  useEffect(() => {
-    console.log(product);
-  }, [product]);
+  // url 마지막에서 product Id 가져오기
+  const productId = router.asPath.split("/").pop();
+  // reviews는 클라이언트 단에서 호출 => 등록 및 삭제 시 데이터 refetch를 위해
+  const { data: getReviewsData, error } = useGetProductReviewsQuery(productId!);
+  const reviews = getReviewsData as ProductReview[] | [];
 
   const [size, setSize] = useState("M");
   const [count, setCount] = useState(1);
@@ -148,7 +148,7 @@ const ProductDetailPage = () => {
             <BlockText type="B" size="1.3rem" style={{ marginBottom: "10px" }}>
               리뷰 작성하기
             </BlockText>
-            <ProductReview reviews={reviews} />
+            <ProductReviewOrg reviews={reviews} />
           </Grid>
         </Grid>
       </Background>
@@ -286,16 +286,17 @@ export const getServerSideProps = wrapper.getServerSideProps(
       console.log("SERVER_NO_PRODUCT_DETAIL: ", productDetailResponse);
     }
 
-    // 상품에 대한 리뷰 데이터 불러오기
-    const productReviewsResponse = await store.dispatch(
-      productApi.endpoints.getProductReviews.initiate(lastSegment)
-    );
-    const reviews = productReviewsResponse.data;
-    if (reviews) {
-      store.dispatch(setProductReviews(reviews));
-    } else {
-      console.log("SERVER_NO_REVIEWS: ", productReviewsResponse);
-    }
+    // // 상품에 대한 리뷰 데이터 불러오기
+    // const productReviewsResponse = await store.dispatch(
+    //   productApi.endpoints.getProductReviews.initiate(lastSegment)
+    // );
+    // const reviews = productReviewsResponse.data;
+    // if (reviews) {
+    //   store.dispatch(setProductReviews(reviews));
+    // } else {
+    //   console.log("SERVER_NO_REVIEWS: ", productReviewsResponse);
+    // }
+
     return {
       props: {},
     };

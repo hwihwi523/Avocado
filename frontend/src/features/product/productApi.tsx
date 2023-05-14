@@ -11,7 +11,6 @@ interface ProductListRequest {
   category?: number; // category_id
   size?: number; // 가져올 수
 }
-
 interface ProductListResponse {
   status: string;
   endpointName: string;
@@ -20,7 +19,6 @@ interface ProductListResponse {
   startedTimeStamp: number;
   data: Data;
 }
-
 interface Data {
   content: Product[];
 }
@@ -43,7 +41,6 @@ interface RegistProductReviewRequest {
   score: number;
   content: string;
 }
-
 interface RegistProductReviewResponse {
   message: string;
 }
@@ -53,8 +50,29 @@ interface RemoveProductReviewRequest {
   productId: number;
   reviewId: number;
 }
-
 interface RemoveProductReviewResponse {
+  message: string;
+}
+
+// /wishlists -> 조회, 등록, 삭제
+interface GetWishlistResponse {
+  message: string;
+  data: Product[] | [];
+}
+interface UpdateWishlistResponse {
+  message: string;
+  data: IsWishlist;
+}
+type IsWishlist = {
+  is_wishlist: boolean;
+};
+
+// /carts -> 조회, 등록, 삭제
+interface GetCartResponse {
+  message: string;
+  data: Product[] | [];
+}
+interface UpdateCartResponse {
   message: string;
 }
 
@@ -66,7 +84,7 @@ export const productApi = createApi({
       return action.payload[reducerPath];
     }
   },
-  tagTypes: [],
+  tagTypes: ["ProductList", "ProductDetail", "ProductReviews"],
   endpoints: (builder) => ({
     getProductList: builder.query<ProductListResponse, ProductListRequest>({
       query: (params) => ({
@@ -74,6 +92,7 @@ export const productApi = createApi({
         method: "GET",
         params,
       }),
+      providesTags: ["ProductList"],
     }),
     getProductDetail: builder.query<ProductDetail, string>({
       query: (id) => `/merchandises/${id}`,
@@ -81,12 +100,14 @@ export const productApi = createApi({
         // response 변환
         return response.data;
       },
+      providesTags: (result, error, id) => [{ type: "ProductDetail", id }],
     }),
     getProductReviews: builder.query<ProductReview[], string>({
       query: (id) => `/merchandises/${id}/reviews`,
       transformResponse: (response: ProductReviewsResponse) => {
         return response.data;
       },
+      providesTags: (result, error, id) => [{ type: "ProductReviews", id }],
     }),
     registProductReview: builder.mutation<
       RegistProductReviewResponse,
@@ -106,11 +127,47 @@ export const productApi = createApi({
       RemoveProductReviewRequest
     >({
       query: (payload) => ({
-        url: `/mkerchandises/${payload.productId}/reviews`,
+        url: `/merchandises/${payload.productId}/reviews`,
         method: "DELETE",
         body: {
           review_id: payload.reviewId,
         },
+      }),
+    }),
+    getWishlist: builder.query<Product[], void>({
+      query: () => `/wishlists`,
+      transformResponse: (response: GetWishlistResponse) => {
+        return response.data;
+      },
+    }),
+    AddWishlist: builder.mutation<UpdateWishlistResponse, void>({
+      query: () => ({
+        url: `/wishlists`,
+        method: "POST",
+      }),
+    }),
+    RemoveWishlist: builder.mutation<UpdateWishlistResponse, void>({
+      query: () => ({
+        url: `/wishlists`,
+        method: "DELETE",
+      }),
+    }),
+    getCart: builder.query<Product[], void>({
+      query: () => `/cart`,
+      transformResponse: (response: GetCartResponse) => {
+        return response.data;
+      },
+    }),
+    AddCart: builder.mutation<UpdateCartResponse, void>({
+      query: () => ({
+        url: `/cart`,
+        method: "POST",
+      }),
+    }),
+    RemoveCart: builder.mutation<UpdateCartResponse, void>({
+      query: () => ({
+        url: `/cart`,
+        method: "DELETE",
       }),
     }),
   }),
@@ -122,4 +179,10 @@ export const {
   useGetProductReviewsQuery,
   useRegistProductReviewMutation,
   useRemoveProductReviewMutation,
+  useGetWishlistQuery,
+  useAddWishlistMutation,
+  useRemoveWishlistMutation,
+  useGetCartQuery,
+  useAddCartMutation,
+  useRemoveCartMutation,
 } = productApi;

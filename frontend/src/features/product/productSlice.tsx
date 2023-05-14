@@ -14,6 +14,7 @@ export interface Product {
   mbti?: string | null;
   personal_color?: string | null;
   age_group?: string | null;
+  is_wishlist: boolean;
 }
 
 export interface ProductDetail {
@@ -33,6 +34,7 @@ export interface ProductDetail {
   age_group?: string | null;
   is_purchased: boolean; // 사용자가 해당 상품을 구매했는지 여부 (로그인 안 했으면 false)
   is_reviewed: boolean; // 사용자가 해당 상품에 리뷰를 남겼는지 여부 (로그인 안 했으면 false)
+  is_wishlist: boolean; // 사용자가 찜한 상품인지 여부
 }
 
 export interface ProductReview {
@@ -98,7 +100,7 @@ export const productSlice = createSlice({
   },
   extraReducers: {
     [HYDRATE]: (state, action) => {
-      console.log("HYDRATE-PRODUCT", state, action.payload);
+      // console.log("HYDRATE-PRODUCT", state, action.payload);
       return {
         ...state,
         ...action.payload.product,
