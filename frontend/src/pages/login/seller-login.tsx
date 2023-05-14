@@ -34,6 +34,7 @@ import { appCookies } from "../_app";
 import authenticateMemberInPages from "@/src/utils/authenticateMemberInPages";
 import { authenticateTokenInPages } from "@/src/utils/authenticateTokenInPages";
 import { BlockText } from "@/src/components/atoms";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 
 const SECRET = process.env.NEXT_PUBLIC_JWT_SECRET
   ? process.env.NEXT_PUBLIC_JWT_SECRET
@@ -103,7 +104,7 @@ export default function SellerLogin() {
       setToken("REFRESH_TOKEN", res.refresh_token, refreshExp);
       // store에 멤버 저장
       dispatch(setMember(member));
-      router.push("/seller")
+      router.push("/");
     } catch (error) {
       console.error("로그인 실패:", error);
     }
@@ -129,28 +130,31 @@ export default function SellerLogin() {
 
   return (
     <Background>
+      <Head>
+        <title>판매자 로그인</title>
+      </Head>
+      <TopBox>
+        <BlockText
+          type="B"
+          size="2rem"
+          style={{ textAlign: "center", color: "white" }}
+        >
+          <AccountCircleOutlinedIcon fontSize="large" /> <br />
+          판매자 로그인
+        </BlockText>
+      </TopBox>
+      <br />
       <Stack
         spacing={2}
         style={{
           borderRadius: "10px",
           backgroundColor: "white",
-          padding: "40px 10px",
-          marginTop: "30%",
-          
         }}
       >
-        <Head>
-          <title>판매자 로그인</title>
-        </Head>
-        <BlockText type="B" size="1.2rem">
-          판매자 로그인
-        </BlockText>
-        <br />
         <form onSubmit={handleLogin}>
-          <Stack>
-
+          <Stack style={{ padding: "10%" }} alignItems={"center"}>
             {/* 이메일 입력 */}
-            <FormControl sx={{ m: 1 }} variant="outlined">
+            <FormControl sx={{ m: 1 }} variant="outlined" fullWidth>
               <InputLabel htmlFor="outlined-adornment-email">email</InputLabel>
               <OutlinedInput
                 onChange={(e) => setEmail(e.target.value)}
@@ -166,7 +170,7 @@ export default function SellerLogin() {
             </FormControl>
 
             {/* 비밀번호 입력 */}
-            <FormControl sx={{ m: 1 }} variant="outlined">
+            <FormControl sx={{ m: 1 }} variant="outlined" fullWidth>
               <InputLabel htmlFor="outlined-adornment-password">
                 Password
               </InputLabel>
@@ -193,20 +197,21 @@ export default function SellerLogin() {
                 label="Password"
               />
             </FormControl>
+            <Button
+              type="submit"
+              style={{
+                borderRadius: "10px",
+                backgroundColor: "black",
+                color: "white",
+                padding: "20px",
+                boxSizing: "border-box",
+                marginTop: "40px",
+              }}
+              fullWidth
+            >
+              로그인
+            </Button>
           </Stack>
-          <Button
-            type="submit"
-            style={{
-              backgroundColor: "black",
-              color: "white",
-              padding: "20px",
-              boxSizing: "border-box",
-              marginTop:"40px"
-            }}
-            fullWidth
-          >
-            로그인
-          </Button>
         </form>
         {/* <button onClick={handleLogout}>로그아웃</button> */}
         {/* <button onClick={() => router.push("/example")}>이동 테스트</button> */}
@@ -214,10 +219,17 @@ export default function SellerLogin() {
     </Background>
   );
 }
+const TopBox = styled.div`
+  background-color: black;
+  color: white;
+  width: 100%;
+  height: 200px;
+  border-radius: 0px 0px 30px 30px;
+  padding-top: 80px;
+  margin-bottom: 30%;
+`;
 
 const Background = styled.div`
-  padding: 10px;
-  background-color: #dddddd;
   height: 100vh;
 `;
 
