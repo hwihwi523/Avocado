@@ -2,7 +2,7 @@ import { Inter } from "next/font/google";
 import styled from "@emotion/styled";
 import { Grid, Button } from "@mui/material";
 import Head from "next/head";
-
+import Image from "next/image";
 import {
   ProductCardsRow,
   Category,
@@ -26,6 +26,7 @@ export default function Home() {
   const router = useRouter();
   const [popup, setPopup] = useState<boolean>(false);
 
+  const member = useAppSelector((state: AppState) => state.auth.member);
   useEffect(() => {
     let expiration = localStorage.getItem("commercial_expiration_time");
     console.log("expiration >>> ", expiration);
@@ -39,9 +40,15 @@ export default function Home() {
     } else {
       setPopup(true);
     }
-  }, []);
 
-  const member = useAppSelector((state: AppState) => state.auth.member);
+    //성별 나이대 입력 안했으면 등록 페이지로 보내버리기
+    if(!!member){
+      if(member.gender === ""){
+        router.push("/register")
+      }
+    }
+  }, [member]);
+
 
   console.log("member >>> ", member);
 
@@ -75,15 +82,18 @@ export default function Home() {
               style={{
                 backgroundColor: "white",
                 color: "black",
-                padding: "80px 20px",
-                border: "1px solid black",
-                marginTop: "20px",
+                marginTop: "10%",
               }}
               onClick={() => {
                 router.push("/login");
               }}
             >
-              3초 간편 로그인 하기
+              <Image
+                src="/assets/images/kakao_login_bar.png"
+                width={400}
+                height={250}
+                alt="카카오 로그인 바"
+              />
             </Button>
           )}
 

@@ -104,7 +104,7 @@ export default function SellerLogin() {
       setToken("REFRESH_TOKEN", res.refresh_token, refreshExp);
       // store에 멤버 저장
       dispatch(setMember(member));
-      router.push("/seller");
+      router.push("/");
     } catch (error) {
       console.error("로그인 실패:", error);
     }
