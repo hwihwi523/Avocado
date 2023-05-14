@@ -43,6 +43,8 @@ export default function Home() {
 
   const member = useAppSelector((state: AppState) => state.auth.member);
 
+  console.log("member >>> ", member);
+
   const name = "김싸피";
   return (
     <BackgroundDiv>

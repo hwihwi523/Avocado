@@ -1,7 +1,7 @@
 // Or from '@reduxjs/toolkit/query' if not using the auto-generated hooks
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { customFetchBaseQuery } from "@/src/utils/customFetchBaseQuery";
-const API_URL = process.env.NEXT_PUBLIC_COMMERCIAL_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 //광고 신청 타입
 export type addCommercialRequestType = {
@@ -72,11 +72,9 @@ export type myCommercialList = {
   data: myCommercialItem[];
 };
 
-
-
 export const commercialApi = createApi({
   reducerPath: "commercialApi",
-  baseQuery: customFetchBaseQuery({ baseUrl: API_URL! }),
+  baseQuery: customFetchBaseQuery({ baseUrl: API_URL! + "/commercial" }),
   tagTypes: ["commercials"],
   endpoints: (build) => ({
     //광고 등록
@@ -90,7 +88,10 @@ export const commercialApi = createApi({
     }),
 
     //메인페이지 광고 노출
-    getExpostCommercialList: build.query<commercialList, exposeCommercialRequestType>({
+    getExpostCommercialList: build.query<
+      commercialList,
+      exposeCommercialRequestType
+    >({
       query: (params: exposeCommercialRequestType) => ({
         url: "/ads",
         method: "GET",
@@ -105,7 +106,7 @@ export const commercialApi = createApi({
         url: `/analyses/${commercial_id}`,
         method: "GET",
       }),
-      //provideTag로 관리가 안됨,여기서 캐시를 조작할 수가 없음 
+      //provideTag로 관리가 안됨,여기서 캐시를 조작할 수가 없음
     }),
 
     //내 광고 리스트
@@ -131,7 +132,7 @@ export const commercialApi = createApi({
         url: "/ads",
         method: "DELETE",
         params: {
-            commercial_id,
+          commercial_id,
         },
       }),
       invalidatesTags: [{ type: "commercials", id: "L" }],
