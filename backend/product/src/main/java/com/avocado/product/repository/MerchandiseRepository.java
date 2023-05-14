@@ -104,12 +104,12 @@ public class MerchandiseRepository {
      * 카테고리와 브랜드 이름을 기준으로 상품을 조회하고 상품 ID 내림차순 정렬
      * (페이징 + No offset 기법 적용)
      * @param categoryId : 카테고리 ID
-     * @param brandName : 브랜드 이름
+     * @param providerId : 스토어 ID
      * @param lastMerchandiseId : 마지막으로 조회한 상품 ID
      * @param pageable : 페이지 크기
      * @return : 조회 데이터, 마지막 페이지 여부, 마지막 상품 ID
      */
-    public Page<SimpleMerchandiseDTO> findByCategoryAndBrand_NoOffset(Short categoryId, String brandName,
+    public Page<SimpleMerchandiseDTO> findByCategoryAndBrand_NoOffset(Short categoryId, UUID providerId,
                                                                     Long lastMerchandiseId, Pageable pageable) {
         // 데이터 조회
         List<SimpleMerchandiseDTO> result = queryFactory
@@ -130,7 +130,7 @@ public class MerchandiseRepository {
                 .where(
                         ltLastMerchandiseId(lastMerchandiseId),
                         eqCategoryId(categoryId),
-                        eqBrandName(brandName)
+                        eqProviderId(providerId)
                 )
                 .orderBy(
                         merchandise.id.desc()
@@ -146,7 +146,7 @@ public class MerchandiseRepository {
                 .join(merchandiseGroup.provider, store)
                 .where(
                         eqCategoryId(categoryId),
-                        eqBrandName(brandName)
+                        eqProviderId(providerId)
                 );
 
         return PageableExecutionUtils.getPage(result, pageable, countQuery::fetchOne);
@@ -210,10 +210,10 @@ public class MerchandiseRepository {
     }
 
     // 브랜드 이름 조건
-    private BooleanExpression eqBrandName(String brandName) {
-        if (brandName == null || brandName.isBlank())
+    private BooleanExpression eqProviderId(UUID providerId) {
+        if (providerId == null)
             return null;
-        return store.name.eq(brandName);
+        return store.providerId.eq(providerId);
     }
 
     // 마지막 조회한 상품 ID 조건

@@ -1,6 +1,7 @@
 package com.avocado.product.controller;
 
 import com.avocado.product.config.JwtUtil;
+import com.avocado.product.config.UUIDUtil;
 import com.avocado.product.dto.response.*;
 import com.avocado.product.service.MerchandiseService;
 import lombok.RequiredArgsConstructor;
@@ -22,22 +23,26 @@ import java.util.UUID;
 public class MerchandiseListController {
     private final MerchandiseService merchandiseService;
     private final JwtUtil jwtUtil;
+    private final UUIDUtil uuidUtil;
 
     /**
      * 카테고리와 브랜드 이름을 기준으로 상품을 조회하고 상품 ID 내림차순 정렬
      * (페이징 + No offset 기법 적용)
-     * @param store : 브랜드 이름 (e.g. Nike, Puma, ...)
+     * @param provider_id : 스토어 ID
      * @param category : 카테고리 ID
      * @param last : 마지막으로 조회한 상품 ID
      * @param size : 한 번 요청에서 조회할 데이터 개수
      * @return : 조회 데이터, 마지막 페이지 여부, 마지막 상품 ID
      */
     @GetMapping("")
-    public ResponseEntity<BaseResp> showMerchandises_NoOffset(@RequestParam @Nullable String store,
+    public ResponseEntity<BaseResp> showMerchandises_NoOffset(@RequestParam @Nullable String provider_id,
                                                      @RequestParam @Nullable Short category,
                                                      @RequestParam @Nullable Long last,
                                                      @RequestParam(defaultValue = "12") Integer size) {
-        PageResp result = merchandiseService.showMerchandiseList_NoOffset(category, store, last, size);
+        UUID providerId = provider_id != null
+                ? uuidUtil.joinByHyphen(provider_id)
+                : null;
+        PageResp result = merchandiseService.showMerchandiseList_NoOffset(category, providerId, last, size);
         return ResponseEntity.ok(BaseResp.of("상품 조회 성공", result));
     }
 
