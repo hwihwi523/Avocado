@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Stack } from "@mui/material";
+import { Stack, Box } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
 import { SnapshotItem } from "../../components/molecues";
@@ -12,12 +12,23 @@ import { SnapshotItem as snapshotItemType } from "@/src/features/snapshot/snapsh
 import { AppState, useAppSelector, wrapper } from "../../features/store";
 import { authenticateTokenInPages } from "../../utils/authenticateTokenInPages";
 import { useSnackbar } from "notistack";
+import { useInView } from "react-intersection-observer";
+import LinearProgress from "@mui/material/LinearProgress";
 
 const Snapshot = () => {
+  // 화면 제일 하단으로 갔는지 감시하는 라이브러리 => 무한스크롤 쌉가능
+  const [ref, inView] = useInView();
   //화면에 에러표시
   const { enqueueSnackbar } = useSnackbar();
+
+  const [lastId, setLastId] = useState<null | number>(null);
+  const [isLastPage, setIsLastPage] = useState(false); // 마지막 페이지
+  const [size, setSize] = useState(12);
+
   //데이터 불러오기
-  const { data, isLoading, error } = useGetSnapshotListQuery();
+  const { data, isLoading, error } = useGetSnapshotListQuery(
+    lastId === null ? { size } : { size, lastId }
+  );
   //유저정보 가져오기 => 글쓰기를 할 수 있냐 없냐 판별하기 위해서
   const member = useAppSelector((state: AppState) => state.auth.member);
 
@@ -38,18 +49,23 @@ const Snapshot = () => {
     router.push("/snapshot/regist");
   }
 
-
-
-
   useEffect(() => {
     //data 안에 변하지 않는 변수가 있을거임 그거 찾으셈
-    if (data) {
-      setSnapshotList((preValue) => [...preValue, ...data.styleshot_list]);
+    if (data && data.styleshot_list.length > 0) {
+      setLastId(data.last_id);
+      setIsLastPage(data.last_page);
+      setSnapshotList((prevValue) => {
+        // 이미 추가된 데이터는 중복으로 추가하지 않도록 필터링
+        const filteredData = data.styleshot_list.filter(
+          (item) => !prevValue.some((prevItem) => prevItem.id === item.id)
+        );
+        return [...prevValue, ...filteredData];
+      });
+
     }
-  }, [data]);
+  }, [inView]);
 
   // 잘 넘어오는지 출력해 보기
-  // console.log("snapshotList >> ", snapshotList);
 
   return (
     <Background>
@@ -76,6 +92,16 @@ const Snapshot = () => {
             등록된 게시물이 없습니다.{" "}
           </BlockText>
         )}
+        <InfinityScroll ref={ref}>
+          {/* 로딩바 */}
+          {isLoading && (
+            <Box sx={{ width: "100%" }}>
+              <LinearProgress />
+            </Box>
+          )}
+          {/* 마지막 페이지 */}
+          {isLastPage && <BlockText>마지막 페이지 입니다. </BlockText>}
+        </InfinityScroll>
       </Stack>
 
       <RegistButton onClick={redirectToRegistrationPage}>
@@ -86,6 +112,10 @@ const Snapshot = () => {
 };
 
 export default Snapshot;
+const InfinityScroll = styled.div`
+  width: 100%;
+  height: 100px;
+`;
 
 const Background = styled.div`
   padding: 10px;
