@@ -1,7 +1,7 @@
 // Or from '@reduxjs/toolkit/query' if not using the auto-generated hooks
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { customFetchBaseQuery } from "@/src/utils/customFetchBaseQuery";
-const API_URL = process.env.NEXT_PUBLIC_SNAPSHOT_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export type Wear = {
   name: string;
