@@ -23,8 +23,8 @@ public class CartController {
     public ResponseEntity<BaseResp> addProductToCart(@RequestBody AddCartReq addCartReq,
                                                      HttpServletRequest request) {
         UUID consumerId = jwtUtil.getId(request);
-        cartService.addProductToCart(consumerId, addCartReq.getMerchandise_id());
-        return ResponseEntity.ok(BaseResp.of("장바구니 내역 등록 성공"));
+        cartService.addProductToCart(consumerId, addCartReq);
+        return ResponseEntity.ok(BaseResp.of("장바구니 내역 등록 성공", true));
     }
 
     @GetMapping("")
@@ -40,6 +40,6 @@ public class CartController {
                                                           HttpServletRequest request) {
         UUID consumerId = jwtUtil.getId(request);
         cartService.removeProductFromCart(consumerId, removeCartReq.getCart_id());
-        return ResponseEntity.ok(BaseResp.of("장바구니 내역 삭제 성공"));
+        return ResponseEntity.ok(BaseResp.of("장바구니 내역 삭제 성공", true));
     }
 }
