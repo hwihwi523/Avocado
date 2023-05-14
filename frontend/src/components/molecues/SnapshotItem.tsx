@@ -6,15 +6,21 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import router from "next/router";
 import { useState } from "react";
-import { SnapshotItem as snapshotItemType } from "@/src/features/snapshot/snapshotApi";
+import {
+  SnapshotItem as snapshotItemType,
+  useAddSnapshotLikeMutation,
+} from "@/src/features/snapshot/snapshotApi";
 import { useRemoveSnapshotMutation } from "@/src/features/snapshot/snapshotApi";
+import { mbti_list, personal_color_list } from "../atoms/data";
 
 const SnapshotItem: React.FC<{ data: snapshotItemType }> = (props) => {
   const item = props.data;
 
   const [removeSnapshot] = useRemoveSnapshotMutation();
+  const [addSnapshotLike] = useAddSnapshotLikeMutation();
+  const [removeSnapshotLike] = useRemoveSnapshotMutation();
 
-  const [isLike, setIsLike] = useState(false);
+  const [isLike, setIsLike] = useState(item.iliked);
 
   function deleteHandler() {
     removeSnapshot(item.id)
@@ -40,26 +46,50 @@ const SnapshotItem: React.FC<{ data: snapshotItemType }> = (props) => {
     return `${year}년 ${month}월 ${day}일  ${hours}시 ${minutes}분`;
   }
 
-  //좋아요누름 => 안누름 => 누름
-  function likeHandler() {
-    setIsLike(!isLike);
+  function redirectToProductPage(id: number) {
+    router.push(`/product/${id}`);
+  }
+
+  //좋아요 누름
+  function addLikeHandler() {
+    addSnapshotLike(item.id)
+      .unwrap()
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => console.log(err));
+    setIsLike(true);
+  }
+
+  //좋아요 취소
+  function removeLikeHandler() {
+    removeSnapshotLike(item.id)
+      .unwrap()
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => console.log(err));
+    setIsLike(false);
   }
 
   return (
     <Stack spacing={1}>
-      {/* 스넵샷 이미지 */}
-      <Button
-        variant="outlined"
-        color="error"
-        onClick={deleteHandler}
-        fullWidth
+      <Stack
+        direction="row"
+        justifyContent={"space-between"}
+        alignItems={"flex-end"}
       >
-        {" "}
-        삭제 버튼 (임시){" "}
-      </Button>
-      <BlockText color="grey" size="0.8rem" style={{ textAlign: "right" }}>
-        {dateFormat(item.created_at)}
-      </BlockText>
+        {/* 스넵샷 이미지 */}
+        <BlockText color="grey" size="0.8rem" style={{ textAlign: "right" }}>
+          {dateFormat(item.created_at)}
+        </BlockText>
+
+        {item.my_styleshot && (
+          <Button color="error" onClick={deleteHandler}>
+            삭제
+          </Button>
+        )}
+      </Stack>
       <Imagebox>
         <Image
           src={item.picture_url}
@@ -72,7 +102,14 @@ const SnapshotItem: React.FC<{ data: snapshotItemType }> = (props) => {
       {/* 제품 링크 */}
       <Stack spacing={1} direction={"row"} flexWrap={"wrap"} margin={"10px 0"}>
         {item.wears.map((item, i) => (
-          <Chip key={i} label={item.name} variant="outlined" />
+          <Chip
+            label={item.name}
+            key={i}
+            variant="outlined"
+            onClick={() => {
+              redirectToProductPage(item.merchandise_id);
+            }}
+          />
         ))}
       </Stack>
 
@@ -94,15 +131,23 @@ const SnapshotItem: React.FC<{ data: snapshotItemType }> = (props) => {
               <Stack>
                 <InlineText>{"김싸피"} </InlineText>
                 <InlineText color="grey" type="L" size="0.8rem">
-                  {"ISTP"} / {"가을뮤트"}
+                  {mbti_list[item.user_info.mbti_id]} /{" "}
+                  {personal_color_list[item.user_info.personal_color_id]}
                 </InlineText>
               </Stack>
               <div>
-                <IconButton aria-label="delete" onClick={likeHandler}>
+                <IconButton aria-label="delete">
                   {isLike ? (
-                    <FavoriteBorderIcon fontSize="large" />
+                    <FavoriteBorderIcon
+                      fontSize="large"
+                      onClick={removeLikeHandler}
+                    />
                   ) : (
-                    <FavoriteIcon color="error" fontSize="large" />
+                    <FavoriteIcon
+                      color="error"
+                      fontSize="large"
+                      onClick={addLikeHandler}
+                    />
                   )}
                 </IconButton>
               </div>

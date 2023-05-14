@@ -69,6 +69,7 @@ const StoreState = () => {
           color="error"
           variant="outlined"
           style={{ padding: "20px" }}
+          onClick={handleLogout}
         >
           로그아웃
         </Button>
