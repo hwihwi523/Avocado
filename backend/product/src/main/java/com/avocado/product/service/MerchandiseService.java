@@ -35,17 +35,17 @@ public class MerchandiseService {
     /**
      * 상품 목록을 카테고리와 브랜드 이름으로 조회한 데이터를 제공하는 서비스
      * @param categoryId : 카테고리 ID
-     * @param brandName : 브랜드 이름
+     * @param providerId : 스토어 ID
      * @param lastMerchandiseId : 마지막으로 조회한 상품 ID
      * @param size : 한 번에 조회할 데이터의 개수
      * @return : 상품 목록
      */
     @Transactional(readOnly = true)
-    public PageResp showMerchandiseList_NoOffset(Short categoryId, String brandName,
+    public PageResp showMerchandiseList_NoOffset(Short categoryId, UUID providerId,
                                                Long lastMerchandiseId, Integer size) {
         // DB 조회
         Page<SimpleMerchandiseDTO> result = merchandiseRepository
-                .findByCategoryAndBrand_NoOffset(categoryId, brandName, lastMerchandiseId, PageRequest.ofSize(size));
+                .findByCategoryAndBrand_NoOffset(categoryId, providerId, lastMerchandiseId, PageRequest.ofSize(size));
 
         // DTO -> Response 변환
         List<SimpleMerchandiseResp> respContent;
