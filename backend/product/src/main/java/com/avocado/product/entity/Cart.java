@@ -28,10 +28,19 @@ public class Cart {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Merchandise merchandise;
 
+    // 수량
+    private Integer quantity;
+
+    // 사이즈
+    @Column(columnDefinition = "VARCHAR(10)")
+    private String size;
+
     @Builder
-    public Cart(Long id, Consumer consumer, Merchandise merchandise) {
+    public Cart(Long id, Consumer consumer, Merchandise merchandise, Integer quantity, String size) {
         this.id = id;
         this.consumer = consumer;
         this.merchandise = merchandise;
+        this.quantity = quantity;
+        this.size = size;
     }
 }
