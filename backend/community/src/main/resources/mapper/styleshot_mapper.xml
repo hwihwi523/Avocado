@@ -5,27 +5,27 @@
 
 <mapper namespace="com.avocado.community.db.repository.StyleshotRepository">
 
-    <select id="getAll" resultType="StyleshotResp">
-        select id, content, picture_url, created_at from styleshot
+    <select id="getAll" resultType="Styleshot">
+        select id, content, picture_url, created_at, updated_at, consumer_id from styleshot
     </select>
 
-    <select id="getAllPageable" resultType="StyleshotResp">
-        select id, content, picture_url, created_at from styleshot
+    <select id="getAllPageable" resultType="Styleshot">
+        select id, content, picture_url, created_at, updated_at, consumer_id from styleshot
         where id &lt; #{lastId} order by id desc limit #{resultSize}
     </select>
 
-    <select id="getAllFirstPageable" resultType="StyleshotResp">
-        select id, content, picture_url, created_at from styleshot
+    <select id="getAllFirstPageable" resultType="Styleshot">
+        select id, content, picture_url, created_at, updated_at, consumer_id from styleshot
         order by id desc limit #{resultSize}
     </select>
 
 
-    <select id="getAllByConsumerId" resultType="StyleshotResp">
-        select id, content, picture_url, created_at from styleshot where consumer_id = #{consumerId}
+    <select id="getAllByConsumerId" resultType="Styleshot">
+        select id, content, picture_url, created_at, updated_at, consumer_id from styleshot where consumer_id = #{consumerId}
     </select>
 
-    <select id="getById" resultType="StyleshotResp">
-        select id, content, picture_url, created_at from styleshot where id = #{styleshotId}
+    <select id="getById" resultType="Styleshot">
+        select id, content, picture_url, created_at, updated_at, consumer_id from styleshot where id = #{styleshotId}
     </select>
 
     <select id="getByIdAndConsumerId" resultType="Long">
