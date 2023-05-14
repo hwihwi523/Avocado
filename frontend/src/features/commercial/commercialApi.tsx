@@ -88,10 +88,7 @@ export const commercialApi = createApi({
     }),
 
     //메인페이지 광고 노출
-    getExpostCommercialList: build.query<
-      commercialList,
-      exposeCommercialRequestType
-    >({
+    getExpostCommercialList: build.query<commercialList,exposeCommercialRequestType>({
       query: (params: exposeCommercialRequestType) => ({
         url: "/ads",
         method: "GET",
