@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -24,7 +26,9 @@ public class WishlistController {
                                          HttpServletRequest request) {
         UUID consumerId = jwtUtil.getId(request);
         wishlistService.addProductToWishlist(addWishlistReq.getMerchandise_id(), consumerId);
-        return ResponseEntity.ok(BaseResp.of("찜 성공", true));
+        Map<String, Boolean> body = new HashMap<>();
+        body.put("is_wishlist", true);
+        return ResponseEntity.ok(BaseResp.of("찜 성공", body));
     }
 
     @GetMapping("")
