@@ -6,13 +6,55 @@ import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlin
 import BookmarkOutlinedIcon from "@mui/icons-material/BookmarkOutlined";
 
 import Button from "@mui/material/Button";
+import {
+  useAddWishlistMutation,
+  useGetProductDetailQuery,
+  useRemoveWishlistMutation,
+} from "@/src/features/product/productApi";
+import { AppState, useAppSelector } from "@/src/features/store";
+import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 
 const ProductBottom: React.FC<{ openModal: () => void }> = (props) => {
-  // const { isBookmark }= props;
+  const router = useRouter();
+  const [addWishlist, addWishlistResult] = useAddWishlistMutation();
+  const [removeWishlist, removeWishlistResult] = useRemoveWishlistMutation();
+  const member = useAppSelector((state: AppState) => state.auth.member);
+  const product = useSelector(
+    (state: AppState) => state.product.selectedProductDetail
+  );
+  // url 마지막에서 product Id 가져오기
+  const lastSegment = router.asPath.split("/").pop();
+  // 상품 상세 정보 -> 찜 상태 가져오기
+  const { data } = useGetProductDetailQuery(lastSegment!);
 
   const { openModal } = props;
 
-  const [isBookmark, setIsBookmark] = useState(false);
+  const [isWishlist, setIsWishlist] = useState(product?.is_wishlist);
+
+  function WishlistBtnClickHandler() {
+    console.log("WISHLIST: ", data);
+    if (member) {
+      if (isWishlist) {
+        // 삭제
+
+        removeWishlist()
+          .then((res) => {
+            setIsWishlist(false);
+            console.log(res);
+          })
+          .catch((e) => console.log("REMOVE WISHLIST ERROR: ", e));
+      } else {
+        // 추가
+        addWishlist()
+          .then((res) => {
+            setIsWishlist(true);
+            console.log(res);
+          })
+          .catch((e) => console.log("ADD WISHLIST ERROR: ", e));
+      }
+    }
+  }
 
   return (
     <Background>
@@ -27,11 +69,9 @@ const ProductBottom: React.FC<{ openModal: () => void }> = (props) => {
             aria-label="fingerprint"
             style={{ color: "black" }}
             size="large"
-            onClick={() => {
-              setIsBookmark(!isBookmark);
-            }}
+            onClick={WishlistBtnClickHandler}
           >
-            {isBookmark ? (
+            {isWishlist ? (
               <BookmarkOutlinedIcon fontSize="large" />
             ) : (
               <BookmarkBorderOutlinedIcon fontSize="large" />
