@@ -34,4 +34,17 @@ class StreamServiceTest {
             }
         }
     }
+
+    @Test
+    @DisplayName("점수 DTO INSERT 테스트")
+    public void insert_score_dto() {
+        Type[] values = {Type.CART, Type.CLICK, Type.LIKE, Type.PAYMENT, Type.VIEW};
+        for(long id = 0; id < 20; id++) {
+            int size = new Random().nextInt(10) + 1;
+            for (int i = 0; i < size; i++) {
+                Result result = new Result(userId, id, values[new Random().nextInt(values.length)]);
+                streamService.consumeResult(result);
+            }
+        }
+    }
 }

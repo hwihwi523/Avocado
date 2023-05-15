@@ -20,6 +20,7 @@ export interface DecodedToken {
   id: string;
   email: string;
   name: string;
+  grade?: number;
   picture_url?: string;
   gender?: string;
   age_group?: number;

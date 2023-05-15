@@ -33,10 +33,6 @@ const ProductDetail = () => {
   const [count, setCount] = useState(1);
   const [open, setOpen] = React.useState(false);
 
-
-
-  
-
   //모달 오픈
   const handleClickOpen = () => {
     setOpen(true);
@@ -88,11 +84,8 @@ const ProductDetail = () => {
     <>
       <Head>
         <title>제품이름</title>
-        <meta name="description" content="스토어 설명"/>
-        <meta
-          name="keywords"
-          content={`제품카테고리, 제품 종류 , 등등`}
-        />
+        <meta name="description" content="스토어 설명" />
+        <meta name="keywords" content={`제품카테고리, 제품 종류 , 등등`} />
         <meta property="og:title" content="스토어 이름" />
         <meta property="og:description" content="스토어 설명" />
       </Head>
@@ -125,7 +118,7 @@ const ProductDetail = () => {
             <BlockText type="B" size="1.3rem" style={{ marginBottom: "10px" }}>
               연관 상품
             </BlockText>
-            <ProductCardsRow />
+            <ProductCardsRow isLogin={true} />
             <DividerBar />
           </Grid>
 

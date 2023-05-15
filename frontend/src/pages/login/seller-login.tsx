@@ -1,8 +1,21 @@
+import styled from "@emotion/styled";
 import {
   DecodedToken,
   SellerLoginResponse,
   useSellerLoginMutation,
 } from "@/src/features/auth/authApi";
+import {
+  Stack,
+  Button,
+  FormControl,
+  InputLabel,
+  InputAdornment,
+  Input,
+  OutlinedInput,
+  IconButton,
+} from "@mui/material";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import { AppState, wrapper } from "@/src/features/store";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -10,6 +23,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import jwt from "jsonwebtoken";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import {
   removeToken,
   removeTokenAll,
@@ -19,6 +33,8 @@ import { Member, clearAuth, setMember } from "@/src/features/auth/authSlice";
 import { appCookies } from "../_app";
 import authenticateMemberInPages from "@/src/utils/authenticateMemberInPages";
 import { authenticateTokenInPages } from "@/src/utils/authenticateTokenInPages";
+import { BlockText } from "@/src/components/atoms";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 
 const SECRET = process.env.NEXT_PUBLIC_JWT_SECRET
   ? process.env.NEXT_PUBLIC_JWT_SECRET
@@ -28,12 +44,13 @@ export default function SellerLogin() {
   const dispatch = useDispatch();
   const member = useSelector((state: AppState) => state.auth.member);
   const router = useRouter();
-  // // 로그인 상태인 경우 메인 페이지로 이동하는 예제
-  // useEffect(() => {
-  //   if (member) {
-  //     router.replace("/");
-  //   }
-  // }, [member, router]);
+
+  // 로그인 상태인 경우 메인 페이지로 이동하는 예제
+  useEffect(() => {
+    if (member) {
+      router.replace("/");
+    }
+  }, [member, router]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -87,6 +104,7 @@ export default function SellerLogin() {
       setToken("REFRESH_TOKEN", res.refresh_token, refreshExp);
       // store에 멤버 저장
       dispatch(setMember(member));
+      router.push("/");
     } catch (error) {
       console.error("로그인 실패:", error);
     }
@@ -100,47 +118,120 @@ export default function SellerLogin() {
     router.push("/login");
   };
 
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
+
   return (
-    <div>
+    <Background>
       <Head>
         <title>판매자 로그인</title>
       </Head>
-      {member && <div>{member.email}</div>}
-      <div>여기는 판매자 로그인 페이지</div>
+      <TopBox>
+        <BlockText
+          type="B"
+          size="2rem"
+          style={{ textAlign: "center", color: "white" }}
+        >
+          <AccountCircleOutlinedIcon fontSize="large" /> <br />
+          판매자 로그인
+        </BlockText>
+      </TopBox>
       <br />
-      <form
-        onSubmit={handleLogin}
+      <Stack
+        spacing={2}
         style={{
-          display: "flex",
-          flexDirection: "column",
-          width: "50%",
+          borderRadius: "10px",
+          backgroundColor: "white",
         }}
       >
-        <label>
-          이메일 :
-          <input
-            type="email"
-            name="email"
-            placeholder="test@test.com"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </label>
-        <label>
-          비밀번호 :
-          <input
-            type="password"
-            name="password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </label>
-        <button type="submit">로그인</button>
-      </form>
-      <button onClick={handleLogout}>로그아웃</button>
-      <br />
-      <button onClick={() => router.push("/example")}>이동 테스트</button>
-    </div>
+        <form onSubmit={handleLogin}>
+          <Stack style={{ padding: "10%" }} alignItems={"center"}>
+            {/* 이메일 입력 */}
+            <FormControl sx={{ m: 1 }} variant="outlined" fullWidth>
+              <InputLabel htmlFor="outlined-adornment-email">email</InputLabel>
+              <OutlinedInput
+                onChange={(e) => setEmail(e.target.value)}
+                id="outlined-adornment-email"
+                type="email"
+                endAdornment={
+                  <InputAdornment position="end">
+                    <AccountCircleIcon />
+                  </InputAdornment>
+                }
+                label="email"
+              />
+            </FormControl>
+
+            {/* 비밀번호 입력 */}
+            <FormControl sx={{ m: 1 }} variant="outlined" fullWidth>
+              <InputLabel htmlFor="outlined-adornment-password">
+                Password
+              </InputLabel>
+              <OutlinedInput
+                onChange={(e) => setPassword(e.target.value)}
+                id="outlined-adornment-password"
+                type={showPassword ? "text" : "password"}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? (
+                        <VisibilityOffIcon />
+                      ) : (
+                        <VisibilityIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                label="Password"
+              />
+            </FormControl>
+            <Button
+              type="submit"
+              style={{
+                borderRadius: "10px",
+                backgroundColor: "black",
+                color: "white",
+                padding: "20px",
+                boxSizing: "border-box",
+                marginTop: "40px",
+              }}
+              fullWidth
+            >
+              로그인
+            </Button>
+          </Stack>
+        </form>
+        {/* <button onClick={handleLogout}>로그아웃</button> */}
+        {/* <button onClick={() => router.push("/example")}>이동 테스트</button> */}
+      </Stack>
+    </Background>
   );
 }
+const TopBox = styled.div`
+  background-color: black;
+  color: white;
+  width: 100%;
+  height: 200px;
+  border-radius: 0px 0px 30px 30px;
+  padding-top: 80px;
+  margin-bottom: 30%;
+`;
+
+const Background = styled.div`
+  height: 100vh;
+`;
 
 // 서버에서 Redux Store를 초기화하고, wrapper.useWrappedStore()를 사용해
 // 클라이언트에서도 동일한 store를 사용하도록 설정

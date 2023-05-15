@@ -1,6 +1,7 @@
 package com.avocado.product.service;
 
 import com.avocado.product.dto.query.CartMerchandiseDTO;
+import com.avocado.product.dto.request.AddCartReq;
 import com.avocado.product.dto.response.CartMerchandiseResp;
 import com.avocado.product.entity.Cart;
 import com.avocado.product.entity.Consumer;
@@ -28,25 +29,32 @@ public class CartService {
     /**
      * 장바구니 내역 등록
      * @param consumerId : 요청한 소비자의 ID
-     * @param merchandiseId : 등록할 상품의 ID
+     * @param addCartReq : 등록할 상품의 ID, 수량, 크기
      */
     @Transactional
-    public void addProductToCart(UUID consumerId, Long merchandiseId) {
-        // 이미 존재하는지 확인
-        Cart originCart = cartRepository.findByConsumerIdAndMerchandiseId(consumerId, merchandiseId);
-        if (originCart != null)
-            throw new InvalidValueException(ErrorCode.EXISTS_CART);
+    public void addProductToCart(UUID consumerId, AddCartReq addCartReq) {
+        Long merchandiseId = addCartReq.getMerchandise_id();
+        Integer quantity = addCartReq.getQuantity();
+        String size = addCartReq.getSize();
 
-        // 등록할 상품, 사용자 프록시 조회
-        Consumer consumer = consumerRepository.getOne(consumerId);
-        Merchandise merchandise = merchandiseRepository.getOne(merchandiseId);
+        Cart originCart = cartRepository.findByConsumerIdAndMerchandiseId(consumerId, merchandiseId, size);
+        if (originCart != null) {  // 상품 ID, 사이즈가 똑같은 게 이미 있다면 기존 수량에 추가하고 종료
+            originCart.addQuantities(quantity);
+            cartRepository.save(originCart);
+        } else {  // 새로운 상품이거나 사이즈가 다른 상품이라면 새로 추가
+            // 등록할 상품, 사용자 프록시 조회
+            Consumer consumer = consumerRepository.getOne(consumerId);
+            Merchandise merchandise = merchandiseRepository.getOne(merchandiseId);
 
-        // Entity 생성 및 저장
-        Cart cart = Cart.builder()
-                .consumer(consumer)
-                .merchandise(merchandise)
-                .build();
-        cartRepository.save(cart);
+            // Entity 생성 및 저장
+            Cart newCart = Cart.builder()
+                    .consumer(consumer)
+                    .merchandise(merchandise)
+                    .size(size)
+                    .quantity(quantity)
+                    .build();
+            cartRepository.save(newCart);
+        }
     }
 
     /**

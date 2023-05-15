@@ -3,10 +3,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.avocado.community.db.repository.ConsumerRepository">
+<mapper namespace="com.avocado.statistics.db.mysql.repository.mybatis.ConsumerRepository">
 
     <select id="getById" resultType="Consumer">
-        select id, age, gender, name, picture_url, mbti_id, personal_color_id from cosumer
+        select id, age, gender, name, picture_url, mbti_id, personal_color_id from consumer
         where id = #{consumerId}
     </select>
 

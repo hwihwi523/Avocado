@@ -22,6 +22,7 @@ export default function authenticateMemberInPages(
       id: decodedToken.id,
       email: decodedToken.email,
       name: decodedToken.name,
+      grade: decodedToken.grade,
       picture_url: decodedToken.picture_url,
       gender: decodedToken.gender,
       age_group: decodedToken.age_group,

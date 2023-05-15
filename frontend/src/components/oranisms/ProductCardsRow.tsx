@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import Carousel from "react-material-ui-carousel";
 import { ProductCard } from "../molecues";
 import Button from "@mui/material/Button";
+import router from 'next/router'
 
 type ProductInfo = {
   id: number;
@@ -17,8 +18,8 @@ type ProductInfo = {
   brand: string;
 };
 
-const ProductCardsRow = (props: any) => {
-  const isLogin = true;
+const ProductCardsRow:React.FC<{isLogin:boolean}> = (props) => {
+  const isLogin = props.isLogin;
 
   const data: ProductInfo[] = [
     {
@@ -73,6 +74,10 @@ const ProductCardsRow = (props: any) => {
     },
   ];
 
+  function redirectToLoginPage(){
+    router.push("/login")
+  }
+
   return (
     <RowScrollable scroll={isLogin}>
       {data &&
@@ -84,6 +89,7 @@ const ProductCardsRow = (props: any) => {
       {!isLogin && (
         <LoginBox>
           <Button
+          onClick={redirectToLoginPage}
             size="large"
             style={{ backgroundColor: "black", color: "white" }}
             variant="contained"

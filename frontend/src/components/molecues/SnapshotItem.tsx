@@ -1,48 +1,101 @@
 import styled from "@emotion/styled";
-import { Stack, Chip, IconButton } from "@mui/material";
+import { Stack, Chip, IconButton, Button } from "@mui/material";
 import Image from "next/image";
 import { BlockText, InlineText } from "../atoms";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-
+import router from "next/router";
 import { useState } from "react";
+import {
+  SnapshotItem as snapshotItemType,
+  useAddSnapshotLikeMutation,
+  useRemoveSnapshotLikeMutation,
+} from "@/src/features/snapshot/snapshotApi";
+import { useRemoveSnapshotMutation } from "@/src/features/snapshot/snapshotApi";
+import { mbti_list, personal_color_list } from "../atoms/data";
 
-type Item = {
-  img_url: string;
-  like: boolean;
-  name: string;
-  products: string[];
-  avatar: string;
-  mbti: string;
-  personal_color: string;
-  content: string;
-  
-};
+const SnapshotItem: React.FC<{ data: snapshotItemType }> = (props) => {
+  const item = props.data;
 
-const SnapshotItem:React.FC<Item> = ({
-    like,
-    name,
-    products,
-    avatar,
-    mbti,
-    personal_color,
-    content,
-    img_url,
-  }) => {
+  const [removeSnapshot] = useRemoveSnapshotMutation();
+  const [addSnapshotLike] = useAddSnapshotLikeMutation();
+  const [removeSnapshotLike] = useRemoveSnapshotLikeMutation();
 
-  const [isLike, setIsLike] = useState(like);
+  const [isLike, setIsLike] = useState(item.iliked);
 
+  function deleteHandler() {
+    removeSnapshot(item.id)
+      .unwrap()
+      .then((res) => {
+        router.reload(); //지우고 다시 로딩함
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
-  function likeHandler() {
-    setIsLike(!isLike);
+  //날자 변환 함수
+  function dateFormat(date: string) {
+    const dateTimeString = date;
+    const dateObj = new Date(dateTimeString);
+    const year = dateObj.getFullYear();
+    const month = dateObj.getMonth() + 1;
+    const day = dateObj.getDate();
+    const hours = dateObj.getHours();
+    const minutes = dateObj.getMinutes();
+
+    return `${year}년 ${month}월 ${day}일  ${hours}시 ${minutes}분`;
+  }
+
+  function redirectToProductPage(id: number) {
+    router.push(`/product/${id}`);
+  }
+
+  //좋아요 누름
+  function addLikeHandler() {
+    console.log("좋아요 동작");
+    addSnapshotLike(item.id)
+      .unwrap()
+      .then((res) => {
+        console.log(res);
+        setIsLike(true);
+      })
+      .catch((err) => console.log(err));
+  }
+
+  //좋아요 취소
+  function removeLikeHandler() {
+    console.log("싫어요 동작");
+    removeSnapshotLike(item.id)
+      .unwrap()
+      .then((res) => {
+        console.log(res);
+        setIsLike(false);
+      })
+      .catch((err) => console.log(err));
   }
 
   return (
     <Stack spacing={1}>
-      {/* 스넵샷 이미지 */}
+      <Stack
+        direction="row"
+        justifyContent={"space-between"}
+        alignItems={"flex-end"}
+      >
+        {/* 스넵샷 이미지 */}
+        <BlockText color="grey" size="0.8rem" style={{ textAlign: "right" }}>
+          {dateFormat(item.created_at)}
+        </BlockText>
+
+        {item.my_styleshot && (
+          <Button color="error" onClick={deleteHandler}>
+            삭제
+          </Button>
+        )}
+      </Stack>
       <Imagebox>
         <Image
-          src={img_url}
+          src={item.picture_url}
           alt="제품 이미지"
           fill
           style={{ objectFit: "cover" }}
@@ -50,9 +103,16 @@ const SnapshotItem:React.FC<Item> = ({
       </Imagebox>
 
       {/* 제품 링크 */}
-      <Stack direction={"row"} spacing={1} margin={"10px 0"}>
-        {products.map((item, i) => (
-          <Chip key={i} label={item} variant="outlined" />
+      <Stack spacing={1} direction={"row"} flexWrap={"wrap"} margin={"10px 0"}>
+        {item.wears.map((item, i) => (
+          <Chip
+            label={item.name}
+            key={i}
+            variant="outlined"
+            onClick={() => {
+              redirectToProductPage(item.merchandise_id);
+            }}
+          />
         ))}
       </Stack>
 
@@ -62,38 +122,53 @@ const SnapshotItem:React.FC<Item> = ({
           width={50}
           height={50}
           alt="아바타 이미지"
-          src={`/assets/avatar/${avatar}.png`}
+          src={`/assets/avatar/${"winter_man"}.png`}
         />
         <Stack style={{ color: "gray", width: "100%" }}>
-          <BlockText>
+          <div>
             <Stack
               direction={"row"}
               justifyContent={"space-between"}
               alignItems={"center"}
             >
               <Stack>
-                <InlineText>{name} </InlineText>
+                <InlineText>{"김싸피"} </InlineText>
                 <InlineText color="grey" type="L" size="0.8rem">
-                  {mbti} / {personal_color}
+                  {mbti_list[item.user_info.mbti_id]} /{" "}
+                  {personal_color_list[item.user_info.personal_color_id]}
                 </InlineText>
               </Stack>
               <div>
-                <IconButton aria-label="delete" onClick={likeHandler}>
+                <IconButton aria-label="delete">
                   {isLike ? (
-                    <FavoriteBorderIcon fontSize="large" />
+                    <FavoriteIcon
+                      color="error"
+                      fontSize="large"
+                      onClick={removeLikeHandler}
+                    />
                   ) : (
-                    <FavoriteIcon fontSize="large" />
+                    <FavoriteBorderIcon
+                      color="error"
+                      fontSize="large"
+                      onClick={addLikeHandler}
+                    />
                   )}
                 </IconButton>
               </div>
             </Stack>
-          </BlockText>
+          </div>
         </Stack>
       </Stack>
 
-      {/* 글 내용 100자 제한임  */}
-      <BlockText style={{ padding: "10px", textAlign: "justify" }}>
-        {content}
+      {/* 글 내용 300자 제한임  */}
+      <BlockText
+        style={{
+          padding: "10px",
+          textAlign: "justify",
+          wordWrap: "break-word",
+        }}
+      >
+        {item.content}
       </BlockText>
     </Stack>
   );

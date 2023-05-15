@@ -16,6 +16,7 @@ import { BlockText } from "@/src/components/atoms";
 import Head from "next/head";
 
 import { useAddMemberInfoMutation } from "@/src/features/memberInfo/memberInfoApi";
+import { removeToken } from "@/src/utils/tokenManager";
 
 //memberInfo의 타입
 type RequestType = {
@@ -53,7 +54,9 @@ const UserInputForm = () => {
       .unwrap()
       .then((res) => {
         console.log("res : ", res);
+        removeToken("ACCESS_TOKEN");
         router.push("/")
+
       })
       .catch((error) => {
         console.log("error : ", error);

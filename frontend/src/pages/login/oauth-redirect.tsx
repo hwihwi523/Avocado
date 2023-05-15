@@ -30,7 +30,7 @@ export default function OAuthRedirect() {
       setToken("REFRESH_TOKEN", refreshToken, refreshExp);
     }
     // 메인 페이지로 이동
-    router.push("/login");
+    router.push("/");
   }, [queryParams, router]);
 
   return <></>;

@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -20,11 +22,13 @@ public class WishlistController {
     private final JwtUtil jwtUtil;
 
     @PostMapping("")
-    public BaseResp addProductToWishlist(@RequestBody AddWishlistReq addWishlistReq,
+    public ResponseEntity<BaseResp> addProductToWishlist(@RequestBody AddWishlistReq addWishlistReq,
                                          HttpServletRequest request) {
         UUID consumerId = jwtUtil.getId(request);
         wishlistService.addProductToWishlist(addWishlistReq.getMerchandise_id(), consumerId);
-        return BaseResp.of("찜 성공");
+        Map<String, Boolean> body = new HashMap<>();
+        body.put("is_wishlist", true);
+        return ResponseEntity.ok(BaseResp.of("찜 성공", body));
     }
 
     @GetMapping("")
@@ -36,10 +40,10 @@ public class WishlistController {
     }
 
     @DeleteMapping("")
-    public BaseResp removeProductFromWishlist(@RequestBody RemoveWishlistReq removeWishlistReq,
+    public ResponseEntity<BaseResp> removeProductFromWishlist(@RequestBody RemoveWishlistReq removeWishlistReq,
                                               HttpServletRequest request) {
         UUID consumerId = jwtUtil.getId(request);
         wishlistService.removeProductFromWishList(consumerId, removeWishlistReq.getWishlist_id());
-        return BaseResp.of("찜 해제 성공");
+        return ResponseEntity.ok(BaseResp.of("찜 해제 성공", true));
     }
 }

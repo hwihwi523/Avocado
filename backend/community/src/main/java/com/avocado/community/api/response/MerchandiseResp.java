@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class MerchandiseResp {
+    Integer merchandiseId;
     String name;
     String imgurl;
 }
