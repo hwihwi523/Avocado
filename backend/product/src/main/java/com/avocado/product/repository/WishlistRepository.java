@@ -103,9 +103,15 @@ public class WishlistRepository {
                 .fetchFirst();
     }
 
-    // 찜 ID 일치 여부
-    private BooleanExpression eqWishlistId(Long wishlistId) {
-        return wishlistId != null ? wishlist.id.eq(wishlistId) : null;
+    public List<Long> findWishlistMerchandiseIds(UUID consumerId, List<Long> merchandiseIds) {
+        return queryFactory
+                .select(wishlist.merchandise.id)
+                .from(wishlist)
+                .where(
+                        wishlist.consumer.id.eq(consumerId),
+                        wishlist.merchandise.id.in(merchandiseIds)
+                )
+                .fetch();
     }
 
     // 상품 ID 일치 여부
