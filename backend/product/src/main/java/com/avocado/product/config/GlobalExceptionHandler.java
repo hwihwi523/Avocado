@@ -25,27 +25,16 @@ public class GlobalExceptionHandler {
                 .body(BaseResp.of(errorCode.getMessage()));
     }
 
+    /**
+     * 찜 관련 기능 예외 처리
+     */
     @ExceptionHandler(InvalidValueException.class)
-    protected ResponseEntity<BaseResp> handleWishlistException(InvalidValueException e) {
+    protected ResponseEntity<BaseResp> handleInvalidValueException(InvalidValueException e) {
         log.error(e.getMessage() + " >> " + e.getErrorCode().getMessage());
         ErrorCode errorCode = e.getErrorCode();
         return ResponseEntity
                 .status(HttpStatus.valueOf(errorCode.getStatus()))
                 .body(BaseResp.of(errorCode.getMessage(), false));
-    }
-
-    /**
-     * 찜 관련 기능 예외 처리
-     */
-    @ExceptionHandler(WishlistException.class)
-    protected ResponseEntity<BaseResp> handleWishlistException(WishlistException e) {
-        log.error(e.getMessage() + " >> " + e.getErrorCode().getMessage());
-        ErrorCode errorCode = e.getErrorCode();
-        Map<String, Boolean> body = new HashMap<>();
-        body.put("is_wishlist", false);
-        return ResponseEntity
-                .status(HttpStatus.valueOf(errorCode.getStatus()))
-                .body(BaseResp.of(errorCode.getMessage(), body));
     }
 
     /**

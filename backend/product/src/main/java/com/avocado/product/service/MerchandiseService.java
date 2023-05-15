@@ -6,10 +6,12 @@ import com.avocado.product.dto.query.DetailMerchandiseDTO;
 import com.avocado.product.dto.query.PurchaseHistoryMerchandiseDTO;
 import com.avocado.product.dto.query.SimpleMerchandiseDTO;
 import com.avocado.product.dto.response.*;
+import com.avocado.product.entity.Wishlist;
 import com.avocado.product.kafka.KafkaProducer;
 import com.avocado.product.repository.MerchandiseRepository;
 import com.avocado.product.repository.PurchaseRepository;
 import com.avocado.product.repository.ReviewRepository;
+import com.avocado.product.repository.WishlistRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +28,7 @@ public class MerchandiseService {
     private final MerchandiseRepository merchandiseRepository;
     private final PurchaseRepository purchaseRepository;  // 구매 여부 조회하기 위한 repo
     private final ReviewRepository reviewRepository;  // 리뷰 여부 조회하기 위한 repo
+    private final WishlistRepository wishlistRepository;  // 찜꽁 여부를 조회하기 위한 repo
 
     // 대표 퍼스널컬러, MBTI, 나이대 등 개인화 정보 조회를 위한 service
     private final ScoreService scoreService;
@@ -92,6 +95,10 @@ public class MerchandiseService {
                 Boolean isReviewed = reviewRepository.checkReviewed(consumerId, merchandiseId);
                 respContent.updateIsReviewed(isReviewed);
             }
+
+            // 찜꽁 여부 조회
+            Wishlist wishlist = wishlistRepository.searchWishlist(null, consumerId, merchandiseId);
+            respContent.updateIsWishlist(wishlist != null);
         }
 
         if (consumerId != null) {
