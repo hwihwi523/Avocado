@@ -3,16 +3,7 @@ import { Stack } from "@mui/material";
 import { BlockText } from "../../components/atoms";
 import { WishItem } from "../../components/molecues";
 import Head from "next/head";
-import { AppState, useAppSelector, wrapper } from "@/src/features/store";
-import { authenticateTokenInPages } from "@/src/utils/authenticateTokenInPages";
-import {
-  productApi,
-  useGetWishlistQuery,
-} from "@/src/features/product/productApi";
-import {
-  setProductListForCart,
-  setProductListForWishlist,
-} from "@/src/features/product/productSlice";
+import { useGetWishlistQuery } from "@/src/features/product/productApi";
 const WishList = () => {
   // wishlist 호출
   const { data: wishlist } = useGetWishlistQuery();

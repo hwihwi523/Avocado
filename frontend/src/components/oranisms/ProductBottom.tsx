@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
 import Grid from "@mui/material/Grid";
-import { useEffect, useState } from "react";
 import { IconButton } from "@mui/material";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
 import BookmarkOutlinedIcon from "@mui/icons-material/BookmarkOutlined";
@@ -9,12 +8,10 @@ import Button from "@mui/material/Button";
 import {
   useAddWishlistMutation,
   useGetIsWishlistQuery,
-  useGetProductDetailQuery,
   useRemoveWishlistMutation,
 } from "@/src/features/product/productApi";
 import { AppState, useAppSelector } from "@/src/features/store";
 import { useRouter } from "next/router";
-import { useDispatch, useSelector } from "react-redux";
 
 const ProductBottom: React.FC<{
   openModal: () => void;

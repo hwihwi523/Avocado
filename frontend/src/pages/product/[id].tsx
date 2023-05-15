@@ -14,7 +14,6 @@ import { IconButton, Stack } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import * as React from "react";
 import { BlockText } from "@/src/components/atoms";
-import ProductBottom from "@/src/components/oranisms/ProductBottom";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -32,7 +31,6 @@ import { authenticateTokenInPages } from "@/src/utils/authenticateTokenInPages";
 import {
   productApi,
   useGetIsWishlistQuery,
-  useGetProductDetailQuery,
   useGetProductReviewsQuery,
 } from "@/src/features/product/productApi";
 import {
