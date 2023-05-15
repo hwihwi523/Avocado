@@ -31,14 +31,22 @@ import { AppState, useAppSelector, wrapper } from "@/src/features/store";
 import { authenticateTokenInPages } from "@/src/utils/authenticateTokenInPages";
 import {
   productApi,
+  useGetIsWishlistQuery,
+  useGetProductDetailQuery,
   useGetProductReviewsQuery,
 } from "@/src/features/product/productApi";
 import {
   ProductReview,
   setSelectedProductDetail,
 } from "@/src/features/product/productSlice";
+import dynamic from "next/dynamic";
 
 const ProductDetailPage = () => {
+  const ProductBottom = dynamic(
+    () => import("@/src/components/oranisms/ProductBottom"),
+    { ssr: false }
+  );
+
   const router = useRouter();
   const product = useAppSelector(
     (state: AppState) => state.product.selectedProductDetail
@@ -48,8 +56,14 @@ const ProductDetailPage = () => {
   // url 마지막에서 product Id 가져오기
   const productId = router.asPath.split("/").pop();
   // reviews는 클라이언트 단에서 호출 => 등록 및 삭제 시 데이터 refetch를 위해
-  const { data: getReviewsData, error } = useGetProductReviewsQuery(productId!);
+  const { data: getReviewsData, error: getReviewsError } =
+    useGetProductReviewsQuery(productId!);
   const reviews = getReviewsData as ProductReview[] | [];
+  // wishlist button 상태관리를 위해
+  const { data: getIsWishlistData, error } = useGetIsWishlistQuery({
+    merchandise_name: product!.merchandise_name,
+  });
+  const isWishlist = getIsWishlistData?.data;
 
   const [size, setSize] = useState("M");
   const [count, setCount] = useState(1);
@@ -254,7 +268,10 @@ const ProductDetailPage = () => {
         </Grid>
       </Dialog>
 
-      <ProductBottom openModal={handleClickOpen} />
+      <ProductBottom
+        openModal={handleClickOpen}
+        isWishlist={isWishlist ? isWishlist : false}
+      />
     </div>
   );
 };

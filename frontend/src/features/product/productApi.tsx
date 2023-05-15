@@ -76,9 +76,12 @@ interface GetWishlistResponse extends ProductBaseResponse {
 interface UpdateWishlistResponse extends ProductBaseResponse {
   data: null;
 }
-type IsWishlist = {
-  is_wishlist: boolean;
-};
+interface GetIsWishlistRequest {
+  merchandise_name: string;
+}
+interface GetIsWishlistResponse extends ProductBaseResponse {
+  data: boolean;
+}
 
 // /carts -> 조회, 등록, 삭제
 interface GetCartResponse extends ProductBaseResponse {
@@ -173,6 +176,9 @@ export const productApi = createApi({
         body: { merchandise_id: productId },
       }),
     }),
+    getIsWishlist: builder.query<GetIsWishlistResponse, GetIsWishlistRequest>({
+      query: (params) => ({ url: "/wishlists/exists", method: "GET", params }),
+    }),
     getCart: builder.query<ProductForCart[], void>({
       query: () => `/cart`,
       transformResponse: (response: GetCartResponse) => {
@@ -207,6 +213,7 @@ export const {
   useGetWishlistQuery,
   useAddWishlistMutation,
   useRemoveWishlistMutation,
+  useGetIsWishlistQuery,
   useGetCartQuery,
   useAddCartMutation,
   useRemoveCartMutation,
