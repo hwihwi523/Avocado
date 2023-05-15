@@ -3,7 +3,7 @@ package com.avocado.statistics.api.service;
 import com.avocado.statistics.common.error.BaseException;
 import com.avocado.statistics.common.error.ResponseCode;
 import com.avocado.statistics.common.utils.DateUtil;
-import com.avocado.statistics.db.mysql.repository.ConsumerRepository;
+import com.avocado.statistics.db.mysql.repository.mybatis.ConsumerRepository;
 import com.avocado.statistics.db.mysql.entity.mybatis.Consumer;
 import com.avocado.statistics.db.redis.repository.AdvertiseCountRepository;
 import com.avocado.statistics.db.redis.repository.CategoryType;

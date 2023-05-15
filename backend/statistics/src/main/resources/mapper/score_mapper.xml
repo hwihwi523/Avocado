@@ -3,12 +3,34 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.avocado.statistics.db.mysql.repository.mybatis.ConsumerRepository">
+<mapper namespace="com.avocado.statistics.db.mysql.repository.mybatis.ScoreMysqlRepository">
 
-    <select id="getById" resultType="Consumer">
-        select id, age, gender, name, picture_url, mbti_id, personal_color_id from consumer
-        where id = #{consumerId}
-    </select>
+    <insert id="ageGenderSave">
+        insert into age_gender_score (age, gender, score, merchandise_id)
+        values (#{age}, #{gender}, #{score}, #{merchandiseId})
+    </insert>
+
+    <insert id="mbtiSave">
+        insert into mbti_score (score, mbti_id, merchandise_id)
+        values (#{score}, #{mbtiId}, #{merchandiseId})
+    </insert>
+
+    <insert id="personalColorSave">
+        insert into personal_color_score (score, personal_color_id, merchandise_id)
+        values (#{score}, #{personalColorId}, #{merchandiseId})
+    </insert>
+
+    <delete id="deleteAllAgeGender">
+        truncate table age_gender_score
+    </delete>
+
+    <delete id="deleteAllMbti">
+        truncate table mbti_score
+    </delete>
+
+    <delete id="deleteAllPersonalColor">
+        truncate table personal_color_score
+    </delete>
 
 <!--    <select id="getAllByConsumerId" resultType="StyleshotResp">-->
 <!--        select id, content, picture_url, rating, created_at from styleshot where consumer_id = #{consumerId}-->
