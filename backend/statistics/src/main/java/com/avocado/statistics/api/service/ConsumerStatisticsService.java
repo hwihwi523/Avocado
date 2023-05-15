@@ -7,33 +7,28 @@ import com.avocado.statistics.db.redis.repository.ScoreRepository;
 import com.avocado.statistics.kafka.dto.Type;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class ConsumerStatisticsService {
 
-    private final JwtUtils jwtUtils;
     private final ScoreRepository scoreRepository;
-
-
-    public Object getConsumerRecommendPage(Claims claims) {
-
-        UUID id = jwtUtils.getId(claims);
-        String type = jwtUtils.getType(claims);
-
-
-        return null;
-    }
 
     public ProductStatisticsDetailResp getDetailStatistics(long merchandiseId) {
         List<Long> ageGenderPayList = scoreRepository.getByMerchandiseId(CategoryType.AGE_GENDER, Type.PAYMENT, merchandiseId);
+        log.info("ageGenderPayList: {}", ageGenderPayList);
         List<Long> mbtiPayList = scoreRepository.getByMerchandiseId(CategoryType.MBTI, Type.PAYMENT, merchandiseId);
+        log.info("mbtiPayList: {}", mbtiPayList);
         List<Long> personalColorPayList = scoreRepository.getByMerchandiseId(CategoryType.PERSONAL_COLOR, Type.PAYMENT, merchandiseId);
+        log.info("personalColorPayList: {}", personalColorPayList);
         ProductStatisticsDetailResp resp = new ProductStatisticsDetailResp(ageGenderPayList, mbtiPayList, personalColorPayList);
+        log.info("response: {}", resp);
         return resp;
     }
 }

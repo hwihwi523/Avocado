@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -64,6 +65,11 @@ public class ScoreRepository {
         map.putIfAbsent(id, 0L);
         Long cnt = map.get(id);
         map.put(id, cnt + 1);
+    }
+
+    public Map<Integer, Long> getMapByMerchandiseId(CategoryType cType, Type resType, Long merchandiseId) {
+        RMap<Integer, Long> map = redisson.getMap(getKey(merchandiseId, cType, resType));
+        return map.readAllMap();
     }
 
     public List<Long> getByMerchandiseId(CategoryType cType, Type resType, Long merchandiseId) {
