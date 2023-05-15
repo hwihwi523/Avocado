@@ -6,7 +6,7 @@
 <mapper namespace="com.avocado.community.db.repository.MerchandiseRepository">
 
     <select id="getWearById" resultType="MerchandiseResp">
-        select name, imgurl from merchandise
+        select id as merchandise_id, name, imgurl from merchandise
         where id in (select merchandise_id from wear where styleshot_id = #{styleshotId})
     </select>
 

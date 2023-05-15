@@ -1,4 +1,4 @@
-package com.avocado.statistics.db.mysql.repository;
+package com.avocado.statistics.db.mysql.repository.mybatis;
 
 import com.avocado.statistics.db.mysql.entity.mybatis.Consumer;
 import org.apache.ibatis.annotations.Mapper;

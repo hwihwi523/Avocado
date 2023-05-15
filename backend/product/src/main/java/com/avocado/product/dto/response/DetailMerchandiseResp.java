@@ -18,6 +18,7 @@ public class DetailMerchandiseResp extends DefaultMerchandiseResp {
 
     private Boolean is_purchased;  // 요청한 사용자가 이 상품을 구매했는지
     private Boolean is_reviewed;  // 요청한 사용자가 이 상품에 리뷰를 남겼는지
+    private Boolean is_wishlist;  // 요청한 사용자가 이 상품을 찜했는지
 
     public DetailMerchandiseResp(DetailMerchandiseDTO detailMerchandiseDTO) {
         super();
@@ -33,6 +34,7 @@ public class DetailMerchandiseResp extends DefaultMerchandiseResp {
         this.description = detailMerchandiseDTO.getDescription();
         this.is_purchased = false;
         this.is_reviewed = false;
+        this.is_wishlist = false;
     }
 
     public void updateImages(List<String> images) {
@@ -43,5 +45,8 @@ public class DetailMerchandiseResp extends DefaultMerchandiseResp {
     }
     public void updateIsReviewed(Boolean is_reviewed) {
         this.is_reviewed = is_reviewed;
+    }
+    public void updateIsWishlist(Boolean is_wishlist) {
+        this.is_wishlist = is_wishlist;
     }
 }

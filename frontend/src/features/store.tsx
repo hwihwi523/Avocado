@@ -15,6 +15,9 @@ import { searchApi } from "../queries/searchApi";
 import { memberInfoApi } from "./memberInfo/memberInfoApi";
 import { paymentApi } from "./payment/paymentApi";
 import { paymentSlice } from "./payment/paymentSlice";
+import { snapshotApi } from "./snapshot/snapshotApi";
+import { commercialApi } from "./commercial/commercialApi";
+import { sellerApi } from "./seller/sellerApi";
 
 // Root reducer 설정
 const rootReducer = combineReducers({
@@ -27,8 +30,12 @@ const rootReducer = combineReducers({
   [authApi.reducerPath]: authApi.reducer,
   [productApi.reducerPath]: productApi.reducer,
   [paymentApi.reducerPath]: paymentApi.reducer,
-  [searchApi.reducerPath]: searchApi.reducer, //검색 reducer
+
+  [searchApi.reducerPath]: searchApi.reducer, //검색 api
   [memberInfoApi.reducerPath]: memberInfoApi.reducer, //유저정보 수정 api
+  [snapshotApi.reducerPath]: snapshotApi.reducer, //스넵샷 api
+  [commercialApi.reducerPath]: commercialApi.reducer, // 광고 api
+  [sellerApi.reducerPath]: sellerApi.reducer, //판매자 페이지 api
 });
 
 // https://github.com/kirill-konshin/next-redux-wrapper#redux-toolkit
@@ -44,8 +51,11 @@ const makeStore = () => {
         authApi.middleware,
         productApi.middleware,
         paymentApi.middleware,
-        searchApi.middleware, //검색 api 미들웨어
-        memberInfoApi.middleware // 유저정보 수정 api
+        searchApi.middleware, //검색 api
+        memberInfoApi.middleware, // 유저정보 수정 api
+        snapshotApi.middleware, // 스넵샷 Api
+        commercialApi.middleware, //광고 api
+        sellerApi.middleware //판매자 api
       ),
     devTools: true,
   });

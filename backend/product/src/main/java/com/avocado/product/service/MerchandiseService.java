@@ -6,10 +6,12 @@ import com.avocado.product.dto.query.DetailMerchandiseDTO;
 import com.avocado.product.dto.query.PurchaseHistoryMerchandiseDTO;
 import com.avocado.product.dto.query.SimpleMerchandiseDTO;
 import com.avocado.product.dto.response.*;
+import com.avocado.product.entity.Wishlist;
 import com.avocado.product.kafka.KafkaProducer;
 import com.avocado.product.repository.MerchandiseRepository;
 import com.avocado.product.repository.PurchaseRepository;
 import com.avocado.product.repository.ReviewRepository;
+import com.avocado.product.repository.WishlistRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +28,7 @@ public class MerchandiseService {
     private final MerchandiseRepository merchandiseRepository;
     private final PurchaseRepository purchaseRepository;  // 구매 여부 조회하기 위한 repo
     private final ReviewRepository reviewRepository;  // 리뷰 여부 조회하기 위한 repo
+    private final WishlistRepository wishlistRepository;  // 찜꽁 여부를 조회하기 위한 repo
 
     // 대표 퍼스널컬러, MBTI, 나이대 등 개인화 정보 조회를 위한 service
     private final ScoreService scoreService;
@@ -35,17 +38,17 @@ public class MerchandiseService {
     /**
      * 상품 목록을 카테고리와 브랜드 이름으로 조회한 데이터를 제공하는 서비스
      * @param categoryId : 카테고리 ID
-     * @param brandName : 브랜드 이름
+     * @param providerId : 스토어 ID
      * @param lastMerchandiseId : 마지막으로 조회한 상품 ID
      * @param size : 한 번에 조회할 데이터의 개수
      * @return : 상품 목록
      */
     @Transactional(readOnly = true)
-    public PageResp showMerchandiseList_NoOffset(Short categoryId, String brandName,
+    public PageResp showMerchandiseList_NoOffset(Short categoryId, UUID providerId,
                                                Long lastMerchandiseId, Integer size) {
         // DB 조회
         Page<SimpleMerchandiseDTO> result = merchandiseRepository
-                .findByCategoryAndBrand_NoOffset(categoryId, brandName, lastMerchandiseId, PageRequest.ofSize(size));
+                .findByCategoryAndBrand_NoOffset(categoryId, providerId, lastMerchandiseId, PageRequest.ofSize(size));
 
         // DTO -> Response 변환
         List<SimpleMerchandiseResp> respContent;
@@ -92,6 +95,10 @@ public class MerchandiseService {
                 Boolean isReviewed = reviewRepository.checkReviewed(consumerId, merchandiseId);
                 respContent.updateIsReviewed(isReviewed);
             }
+
+            // 찜꽁 여부 조회
+            Wishlist wishlist = wishlistRepository.searchWishlist(consumerId, merchandiseId);
+            respContent.updateIsWishlist(wishlist != null);
         }
 
         if (consumerId != null) {

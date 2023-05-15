@@ -18,16 +18,16 @@ public class RedissonConfig {
         shutdown : 빈 삭제 시 redisson instance 는 닫아버리지만,
         redis 서버는 닫지 않음
      */
-    @Bean(destroyMethod = "shutdown")
-    RedissonClient redissonSingle(@Value("classpath:/redisson-single.yaml") Resource configFile) throws IOException {
-        Config config = Config.fromYAML(configFile.getInputStream());
-        return Redisson.create(config);
-    }
-
 //    @Bean(destroyMethod = "shutdown")
-//    RedissonClient redissonMasterSlave(@Value("classpath:/redisson-ms.yaml") Resource configFile) throws IOException {
+//    RedissonClient redissonSingle(@Value("classpath:/redisson-single.yaml") Resource configFile) throws IOException {
 //        Config config = Config.fromYAML(configFile.getInputStream());
 //        return Redisson.create(config);
 //    }
+
+    @Bean(destroyMethod = "shutdown")
+    RedissonClient redissonMasterSlave(@Value("classpath:/redisson-ms.yaml") Resource configFile) throws IOException {
+        Config config = Config.fromYAML(configFile.getInputStream());
+        return Redisson.create(config);
+    }
 
 }

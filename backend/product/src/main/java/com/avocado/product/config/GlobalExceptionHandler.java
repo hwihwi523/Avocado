@@ -10,11 +10,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessLogicException.class)
-    protected ResponseEntity<BaseResp> handleRedirectBusinessLogicException(BusinessLogicException e) {
+    protected ResponseEntity<BaseResp> handleBusinessLogicException(BusinessLogicException e) {
         log.error(e.getMessage() + " >> " + e.getErrorCode().getMessage());
         ErrorCode errorCode = e.getErrorCode();
         return ResponseEntity
@@ -26,7 +29,7 @@ public class GlobalExceptionHandler {
      * 찜 관련 기능 예외 처리
      */
     @ExceptionHandler(InvalidValueException.class)
-    protected ResponseEntity<BaseResp> handleWishlistException(InvalidValueException e) {
+    protected ResponseEntity<BaseResp> handleInvalidValueException(InvalidValueException e) {
         log.error(e.getMessage() + " >> " + e.getErrorCode().getMessage());
         ErrorCode errorCode = e.getErrorCode();
         return ResponseEntity

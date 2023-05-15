@@ -7,6 +7,7 @@ import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,15 +24,17 @@ public class StyleshotController {
     private final StyleshotService styleshotService;
 
     @GetMapping
-    public ResponseEntity<?> getStyleshotList() {
+    public ResponseEntity<?> getStyleshotList(@RequestParam @Nullable Long lastId, @RequestParam(defaultValue = "12") Integer size, HttpServletRequest request) {
         log.info("get all styleshot list");
-        return ResponseEntity.ok(styleshotService.styleshotList());
+        Claims claims = jwtUtils.getClaims(request);
+        return ResponseEntity.ok(styleshotService.styleshotList(lastId, size, claims));
     }
 
     @GetMapping("{styleshotId}")
-    public ResponseEntity<?> getStyleshotDetail(@PathVariable long styleshotId) {
+    public ResponseEntity<?> getStyleshotDetail(@PathVariable long styleshotId, HttpServletRequest request) {
         log.info("get detail - styleshotId : {}", styleshotId);
-        return ResponseEntity.ok(styleshotService.showStyleshotDetail(styleshotId));
+        Claims claims = jwtUtils.getClaims(request);
+        return ResponseEntity.ok(styleshotService.showStyleshotDetail(styleshotId, claims));
     }
 
     @PostMapping

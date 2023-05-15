@@ -1,6 +1,7 @@
 package com.avocado.commercial.Repository;
 
 import com.avocado.commercial.Entity.CommercialStatistic;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -13,5 +14,5 @@ public interface CommercialStatisticRepository extends JpaRepository<CommercialS
             ":commercialStatistic.exposureCnt,(select id from commercial where merchandise_id = :merchandiseId limit 1),:commercialStatistic.date)")
     void saveByMerchandiseId(long merchandiseId, CommercialStatistic commercialStatistic);
 
-    List<CommercialStatistic> findByCommercialId(long commercialId);
+    List<CommercialStatistic> findByCommercialId(long commercialId, Sort sort);
 }

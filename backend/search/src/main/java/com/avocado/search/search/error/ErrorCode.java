@@ -17,9 +17,6 @@ public enum ErrorCode {
     /* 404 NOT_FOUND : Resource 를 찾을 수 없음 */
     PRODUCT_NOT_FOUND(NOT_FOUND, "해당 조건에 맞는 제품을 찾을 수 없습니다."),
 
-    /* 409 CONFLICT : Resource 의 현재 상태와 충돌. 보통 중복된 데이터 존재 */
-    //DUPLICATE_RESOURCE(CONFLICT, "데이터가 이미 존재합니다")
-
     /* 500 Internal Server error : 알 수 없는 에러 */
     UNCOVERED_ERROR(INTERNAL_SERVER_ERROR, "알 수 없는 에러, 관리자에게 문의하세요"),
     UNCOVERED_ELASTIC_SEARCH_ERROR(INTERNAL_SERVER_ERROR, "엘라스틱 서치 에러, 관리자에게 문의하세요")

@@ -11,6 +11,7 @@ import static org.springframework.http.HttpStatus.*;
 public enum ErrorCode {
 
     /* 400 BAD_REQUEST : 잘못된 요청 */
+    BAD_IMAGE_REQUEST(BAD_REQUEST, "이미지가 없습니다"),
     BAD_FILE_FORMAT(BAD_REQUEST, "파일 형식을 다시 확인해주세요"),
     BAD_MBTI_ID(BAD_REQUEST,"잘못된 MBTI 식별자입니다"),
     BAD_COMMERCIAL_TYPE(BAD_REQUEST,"잘못된 광고 타입입니다"),
@@ -20,6 +21,7 @@ public enum ErrorCode {
 
     /* 401 UNAUTHORIZED : 인증되지 않은 사용자 */
     INVALID_AUTH_TOKEN(UNAUTHORIZED, "권한 정보가 없는 토큰입니다"),
+    EXPIRED_TOKEN(UNAUTHORIZED, "사용기한이 만료된 토큰입니다"),
 
     // 403 Forbidden : 유효하지 않은 데이터
     //INVALID_PASSWORD(FORBIDDEN, "비밀번호가 유효하지 않습니다."),

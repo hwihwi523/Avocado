@@ -13,6 +13,7 @@ const nextConfig = {
       "image.fmkorea.com",
       "img.wowtv.co.kr",
       "k.kakaocdn.net",
+      "avocado-img.s3.ap-northeast-2.amazonaws.com",
     ],
   },
 };

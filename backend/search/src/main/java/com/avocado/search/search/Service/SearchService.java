@@ -6,6 +6,8 @@ import java.util.List;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import com.avocado.search.search.Dto.request.InventoryDto;
+import com.avocado.search.search.Dto.request.ReviewDto;
 import com.avocado.search.search.Dto.response.KeywordRespDto;
 import com.avocado.search.search.Dto.response.ProductRespDto;
 import com.avocado.search.search.Entity.Keyword;
@@ -28,18 +30,6 @@ public class SearchService {
     @Autowired
     public SearchService(ElasticsearchClient elasticsearchClient) {
         this.elasticsearchClient = elasticsearchClient;
-    }
-
-    private void checkData(String category, String keyword){
-        if(category == null){
-            throw new SearchException(ErrorCode.CATEGORY_NULL_EXCEPTION);
-        }
-        if(keyword == null){
-            throw new SearchException(ErrorCode.KEYWORD_NULL_EXCEPTIOIN);
-        }
-        if(!(category.equals("Bottomwear")||category.equals("Dress")||category.equals("Footwear")||category.equals("Bags")||category.equals("Accessories")||category.equals("All"))){
-            throw new SearchException(ErrorCode.INVALID_CATEGORY);
-        }
     }
 
     public List<ProductRespDto> searchProduct(String category, String keyword){
@@ -142,6 +132,54 @@ public class SearchService {
         return keywordRespDtoList;
     }
 
+    public void modifyProductReview(){
+        
+        // 카프카로 데이터 받아오면 데이터 교체할 것
+        ReviewDto product = new ReviewDto();
+        product.setId(1);
+        product.setTotal_score(150);
+        product.setReview_count(30);
+        try {
+            elasticsearchClient.update(u -> u
+                            .index("products")
+                            .id(String.valueOf(product.getId()))
+                            .doc(product)
+                    , ReviewDto.class);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
 
+    }
+
+    public void modifyProductInventory(){
+
+        // 카프카로 데이터 받아오면 데이터 교체할 것
+        InventoryDto product = new InventoryDto();
+        product.setId(1);
+        product.setInventory(150);
+        try {
+            elasticsearchClient.update(u -> u
+                            .index("products")
+                            .id(String.valueOf(product.getId()))
+                            .doc(product)
+                    , ReviewDto.class);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    private void checkData(String category, String keyword){
+        if(category == null){
+            throw new SearchException(ErrorCode.CATEGORY_NULL_EXCEPTION);
+        }
+
+        if(keyword == null){
+            throw new SearchException(ErrorCode.KEYWORD_NULL_EXCEPTIOIN);
+        }
+
+        if(!(category.equals("Bottomwear")||category.equals("Dress")||category.equals("Footwear")||category.equals("Bags")||category.equals("Accessories")||category.equals("All"))){
+            throw new SearchException(ErrorCode.INVALID_CATEGORY);
+        }
+    }
 
 }
