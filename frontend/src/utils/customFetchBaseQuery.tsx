@@ -71,7 +71,7 @@ export const customFetchBaseQuery = (option: {
             setToken("ACCESS_TOKEN", newTokens.access_token, accessExp);
             setToken("REFRESH_TOKEN", newTokens.refresh_token, refreshExp);
             token = appCookies.get("ACCESS_TOKEN");
-            headers.set("Authorization", token);
+            headers.set("Authorization", `Bearer ${token}`);
           } else {
             // 요청이 실패하면 로그아웃시키기
             removeTokenAll();

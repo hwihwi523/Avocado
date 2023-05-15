@@ -13,6 +13,8 @@ import { authApi } from "./auth/authApi";
 import { productApi } from "./product/productApi";
 import { searchApi } from "../queries/searchApi";
 import { memberInfoApi } from "./memberInfo/memberInfoApi";
+import { paymentApi } from "./payment/paymentApi";
+import { paymentSlice } from "./payment/paymentSlice";
 import { snapshotApi } from "./snapshot/snapshotApi";
 import { commercialApi } from "./commercial/commercialApi";
 import { sellerApi } from "./seller/sellerApi";
@@ -22,10 +24,12 @@ const rootReducer = combineReducers({
   example: exampleSlice.reducer,
   auth: authSlice.reducer,
   product: productSlice.reducer,
+  payment: paymentSlice.reducer,
   [examplePostsApi.reducerPath]: examplePostsApi.reducer,
   [testProductListApi.reducerPath]: testProductListApi.reducer,
   [authApi.reducerPath]: authApi.reducer,
   [productApi.reducerPath]: productApi.reducer,
+  [paymentApi.reducerPath]: paymentApi.reducer,
 
   [searchApi.reducerPath]: searchApi.reducer, //검색 api
   [memberInfoApi.reducerPath]: memberInfoApi.reducer, //유저정보 수정 api
@@ -46,7 +50,7 @@ const makeStore = () => {
         testProductListApi.middleware,
         authApi.middleware,
         productApi.middleware,
-
+        paymentApi.middleware,
         searchApi.middleware, //검색 api
         memberInfoApi.middleware, // 유저정보 수정 api
         snapshotApi.middleware, // 스넵샷 Api

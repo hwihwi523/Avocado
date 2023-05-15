@@ -1,18 +1,65 @@
 import styled from "@emotion/styled";
 import Grid from "@mui/material/Grid";
-import { useState } from "react";
 import { IconButton } from "@mui/material";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
 import BookmarkOutlinedIcon from "@mui/icons-material/BookmarkOutlined";
 
 import Button from "@mui/material/Button";
+import {
+  useAddWishlistMutation,
+  useGetIsWishlistQuery,
+  useRemoveWishlistMutation,
+} from "@/src/features/product/productApi";
+import { AppState, useAppSelector } from "@/src/features/store";
+import { useRouter } from "next/router";
 
-const ProductBottom: React.FC<{ openModal: () => void }> = (props) => {
-  // const { isBookmark }= props;
+const ProductBottom: React.FC<{
+  openModal: () => void;
+  isWishlist: boolean;
+}> = (props) => {
+  const router = useRouter();
+  const [addWishlist, addWishlistResult] = useAddWishlistMutation();
+  const [removeWishlist, removeWishlistResult] = useRemoveWishlistMutation();
+  const member = useAppSelector((state: AppState) => state.auth.member);
+  const product = useAppSelector(
+    (state: AppState) => state.product.selectedProductDetail
+  );
+  // url 마지막에서 product Id 가져오기
+  const lastSegment = router.asPath.split("/").pop();
+  const productId = parseInt(lastSegment || "-1");
+  // 상품 상세 정보 -> 찜 상태 가져오기
+  const { refetch } = useGetIsWishlistQuery({
+    merchandise_name: product!.merchandise_name,
+  });
+  // 상품이 wishlist에 포함되어 있는지 여부 가져오기
+  const isWishlist = props.isWishlist;
+  console.log("WISHLIST DATA: ", isWishlist);
 
   const { openModal } = props;
 
-  const [isBookmark, setIsBookmark] = useState(false);
+  async function WishlistBtnClickHandler() {
+    if (member) {
+      if (isWishlist) {
+        // 삭제
+        removeWishlist(productId)
+          .unwrap()
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((e) => console.log("REMOVE WISHLIST ERROR: ", e));
+        refetch();
+      } else {
+        // 추가
+        addWishlist(productId)
+          .unwrap()
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((e) => console.log("ADD WISHLIST ERROR: ", e));
+        refetch();
+      }
+    }
+  }
 
   return (
     <Background>
@@ -27,11 +74,9 @@ const ProductBottom: React.FC<{ openModal: () => void }> = (props) => {
             aria-label="fingerprint"
             style={{ color: "black" }}
             size="large"
-            onClick={() => {
-              setIsBookmark(!isBookmark);
-            }}
+            onClick={WishlistBtnClickHandler}
           >
-            {isBookmark ? (
+            {isWishlist ? (
               <BookmarkOutlinedIcon fontSize="large" />
             ) : (
               <BookmarkBorderOutlinedIcon fontSize="large" />

@@ -13,7 +13,7 @@ import { createCookiesInstance } from "../utils/createCookiesInstance";
 export const appCookies = createCookiesInstance(); // 앱에서 사용할 쿠키 생성
 
 const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
-  console.log("rest: ", pageProps);
+  // console.log("rest: ", pageProps);
   const { store } = wrapper.useWrappedStore({
     ...pageProps,
   });

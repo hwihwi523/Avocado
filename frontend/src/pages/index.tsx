@@ -179,7 +179,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
     );
 
     // 필요한 내용 작성
-
     //유저정보 가져오기
     // console.log(">>>>>>>>>>>",store.getState().auth.member);
 
