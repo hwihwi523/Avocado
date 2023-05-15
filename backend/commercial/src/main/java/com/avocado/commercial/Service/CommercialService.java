@@ -223,6 +223,9 @@ public class CommercialService {
 
 
     public void checkCommercialRequest(CommercialReqDto commercialReqDto){
+        if(commercialReqDto.getFile() == null){
+            throw new CommercialException(ErrorCode.BAD_FILE_FORMAT);
+        }
         if(commercialReqDto.getAge() < 0){
             throw new CommercialException(ErrorCode.BAD_AGE);
         }
