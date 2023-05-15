@@ -18,6 +18,7 @@ import {
   useGetOrderListQuery,
 } from "@/src/features/snapshot/snapshotApi";
 import LinearProgress from "@mui/material/LinearProgress";
+import router from "next/router";
 //구매 목록 더미 데이터
 
 type Item = {
@@ -99,10 +100,27 @@ const SnapshotRegist = () => {
     addSnapshot(formData)
       .unwrap()
       .then((res) => {
-        console.log(res);
+        enqueueSnackbar(`게시물을 등록했습니다. `, {
+          variant: "success",
+          anchorOrigin: {
+            horizontal: "center",
+            vertical: "top",
+          },
+        });
+        router.replace("/snapshot");
+
+        return;
       })
       .catch((err) => {
         console.log(err);
+        enqueueSnackbar(`등록 실패했습니다 `, {
+          variant: "error",
+          anchorOrigin: {
+            horizontal: "center",
+            vertical: "top",
+          },
+        });
+        return;
       });
   }
 

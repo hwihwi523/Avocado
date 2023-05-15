@@ -9,6 +9,10 @@ import ProductDescription from "./ProductDescription";
 import ProductReviewOrg from "./ProductReviewOrg";
 import ProductCardsGrid from "./ProductCardsGrid";
 import UserStateSummary from "./UserStateSummary";
+import CommercialRegist from "./CommercialRegist";
+import MainUserProfile from "./UserProfile";
+import PopupCommercial from "./PopupCommercial";
+import ProviderProfile from "./ProviderProfile";
 
 export {
   Category,
@@ -22,4 +26,8 @@ export {
   ProductReviewOrg,
   ProductCardsGrid,
   UserStateSummary,
+  CommercialRegist,
+  MainUserProfile,
+  PopupCommercial,
+  ProviderProfile,
 };

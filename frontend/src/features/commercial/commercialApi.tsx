@@ -12,7 +12,7 @@ export type addCommercialRequestType = {
   commercial_type_id: number; //0 팝업, 1 메인 캐러셀
   age: number;
   gender: string; // F M
-  file: File; //광고 이미지
+  file: string; //광고 이미지
 };
 
 //응답
@@ -50,26 +50,18 @@ export type analyseItem = {
   quantity: number;
 };
 
-export type analysesList = {
-  data: analyseItem[];
-};
-
 export type myCommercialItem = {
   id: number;
   age: number;
   gender: string;
   imgurl: string;
-  merchandiseName: string;
-  commercialTypeId: number;
-  mbtiId: number;
-  personalColorId: number;
-  createAt: number[];
-  merchandiseId: number;
-  providerId: string;
-};
-
-export type myCommercialList = {
-  data: myCommercialItem[];
+  merchandise_name: string;
+  commercial_type_id: number;
+  mbti_id: number;
+  personal_color_id: number;
+  created_at: number[];
+  merchandise_id: number;
+  provider_id: string;
 };
 
 export const commercialApi = createApi({
@@ -78,8 +70,8 @@ export const commercialApi = createApi({
   tagTypes: ["commercials"],
   endpoints: (build) => ({
     //광고 등록
-    addCommercial: build.mutation<ResponseType, addCommercialRequestType>({
-      query: (body: addCommercialRequestType) => ({
+    addCommercial: build.mutation<ResponseType, any>({
+      query: (body) => ({
         url: "/ads",
         method: "POST",
         body,
@@ -88,7 +80,10 @@ export const commercialApi = createApi({
     }),
 
     //메인페이지 광고 노출
-    getExpostCommercialList: build.query<commercialList,exposeCommercialRequestType>({
+    getExpostCommercialList: build.query<
+      commercialList,
+      exposeCommercialRequestType
+    >({
       query: (params: exposeCommercialRequestType) => ({
         url: "/ads",
         method: "GET",
@@ -98,16 +93,16 @@ export const commercialApi = createApi({
     }),
 
     //광고 하나의 통계
-    getCommercialAnalyses: build.query<analysesList, number>({
+    getCommercialAnalyses: build.query<analyseItem[], number>({
       query: (commercial_id: number) => ({
         url: `/analyses/${commercial_id}`,
         method: "GET",
       }),
-      //provideTag로 관리가 안됨,여기서 캐시를 조작할 수가 없음
+      //provideTag로 관리가 안됨,여기서 캐시를 조작할 수가 없음 => 통계를 특정지을 수 있는 변수가 없음
     }),
 
     //내 광고 리스트
-    getMyCommercialList: build.query<myCommercialList, void>({
+    getMyCommercialList: build.query<myCommercialItem[], void>({
       query: () => ({
         url: "/ads/registed",
         method: "GET",
@@ -115,24 +110,19 @@ export const commercialApi = createApi({
       providesTags: (result) =>
         result
           ? [
-              ...result.data.map(
-                ({ id }) => ({ type: "commercials", id } as const)
-              ),
+              ...result.map(({ id }) => ({ type: "commercials", id } as const)),
               { type: "commercials", id: "LIST" },
             ]
           : [{ type: "commercials", id: "LIST" }],
     }),
 
-    //제품 삭제
+    //광고 삭제
     removeCommercial: build.mutation<ResponseType, number>({
       query: (commercial_id: number) => ({
-        url: "/ads",
+        url: `/ads/${commercial_id}`,
         method: "DELETE",
-        params: {
-          commercial_id,
-        },
       }),
-      invalidatesTags: [{ type: "commercials", id: "L" }],
+      invalidatesTags: [{ type: "commercials", id: "LIST" }],
     }),
   }),
 });

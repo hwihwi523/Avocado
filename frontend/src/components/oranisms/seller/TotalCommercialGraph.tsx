@@ -1,56 +1,36 @@
 import styled from "@emotion/styled";
-import AddIcon from "@mui/icons-material/Add";
-import { Button, Stack, Divider } from "@mui/material";
+import { Stack } from "@mui/material";
 import { ChartCommercialState } from "../charts";
 import MouseOutlinedIcon from "@mui/icons-material/MouseOutlined";
 import { InlineText } from "../../atoms";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import PaidOutlinedIcon from "@mui/icons-material/PaidOutlined";
 import SellOutlinedIcon from "@mui/icons-material/SellOutlined";
-const CommercialState = () => {
-  const data = [
-    {
-      date: "2023-05-12",
-      exposure_cnt: 22,
-      click_cont: 12,
-      purchase_amount: 1000,
-      quantity: 5,
-    },
-    {
-      date: "2023-05-13",
-      exposure_cnt: 23,
-      click_cont: 13,
-      purchase_amount: 23000,
-      quantity: 8,
-    },
-    {
-      date: "2023-05-14",
-      exposure_cnt: 2,
-      click_cont: 5,
-      purchase_amount: 310000,
-      quantity: 2,
-    },
-    {
-      date: "2023-05-15",
-      exposure_cnt: 42,
-      click_cont: 7,
-      purchase_amount: 10020,
-      quantity: 1,
-    },
-    {
-      date: "2023-05-16",
-      exposure_cnt: 52,
-      click_cont: 13,
-      purchase_amount: 1300,
-      quantity: 15,
-    },
-  ];
+import { useGetCommercialAnalysesQuery } from "@/src/features/commercial/commercialApi";
+import { useState, useEffect } from "react";
 
-  let date = data.map((item) => item.date);
-  let exposure_cnt = data.map((item) => item.exposure_cnt);
-  let click_cnt = data.map((item) => item.click_cont);
-  let purchase_amount = data.map((item) => item.purchase_amount);
-  let quantity = data.map((item) => item.quantity);
+const CommercialState: React.FC<{ commercialId: number }> = (props) => {
+  const { commercialId } = props;
+
+  const { data: analyses } = useGetCommercialAnalysesQuery(commercialId);
+
+  const [date, setDate] = useState<string[]>([]);
+  const [exposureCnt, setExposureCnt] = useState<number[]>([]);
+  const [clickCnt, setClickCnt] = useState<number[]>([]);
+  const [purchaseAmount, setPurchaseAmount] = useState<number[]>([]);
+  const [quantity, setQuantity] = useState<number[]>([]);
+
+  console.log("analyses >>>", analyses);
+
+  useEffect(() => {
+    if (analyses) {
+      setDate(analyses.map((item) => item.date));
+      setExposureCnt(analyses.map((item) => item.exposure_cnt));
+      setClickCnt(analyses.map((item) => item.click_cnt));
+      setPurchaseAmount(analyses.map((item) => item.purshase_amount));
+      setQuantity(analyses.map((item) => item.quantity));
+    }
+  }, [commercialId]);
 
   //숫자 변환 함수 3000 = > 3,000
   function formatCurrency(num: number) {
@@ -73,31 +53,27 @@ const CommercialState = () => {
         <Stack direction={"column"} spacing={1}>
           <Stack spacing={1} direction={"row"}>
             <IconBox>
-              <MouseOutlinedIcon color="error"/>
+              <MouseOutlinedIcon color="error" />
               <InlineText size="0.9rem" color="grey">
                 총 클릭 수
               </InlineText>
-              <InlineText>{totalAmount(click_cnt)} 번</InlineText>
+              <InlineText>{totalAmount(clickCnt)} 번</InlineText>
             </IconBox>
             <IconBox>
-              <VisibilityOutlinedIcon color="success"/>
+              <VisibilityOutlinedIcon color="success" />
               <InlineText size="0.9rem" color="grey">
                 총 노출 수
               </InlineText>
-              <InlineText>
-                {totalAmount(exposure_cnt)} 번
-              </InlineText>
+              <InlineText>{totalAmount(exposureCnt)} 번</InlineText>
             </IconBox>
           </Stack>
           <Stack spacing={1} direction={"row"}>
             <IconBox>
-              <PaidOutlinedIcon color="primary"/>
+              <PaidOutlinedIcon color="primary" />
               <InlineText size="0.9rem" color="grey">
                 총 판매 액수
               </InlineText>
-              <InlineText>
-                {totalAmount(purchase_amount)} 원
-              </InlineText>
+              <InlineText>{totalAmount(purchaseAmount)} 원</InlineText>
             </IconBox>
             <IconBox>
               <SellOutlinedIcon color="warning" />
@@ -110,13 +86,13 @@ const CommercialState = () => {
         </Stack>
         <ChartCommercialState
           date={date}
-          value={exposure_cnt}
+          value={exposureCnt}
           title={"광고 노출"}
           color="green"
         />
         <ChartCommercialState
           date={date}
-          value={click_cnt}
+          value={clickCnt}
           title={"클릭 수"}
           color="red"
         />
@@ -128,7 +104,7 @@ const CommercialState = () => {
         />
         <ChartCommercialState
           date={date}
-          value={purchase_amount}
+          value={purchaseAmount}
           title={"판매 총액"}
           color="blue"
         />

@@ -1,38 +1,18 @@
 import styled from "@emotion/styled";
-import { Stack, Chip, Button, Dialog, Slide } from "@mui/material";
+import { Stack, Chip, Button } from "@mui/material";
 import Image from "next/image";
 import { BlockText, InlineText } from "../atoms";
 import Link from "next/link";
 import { useState } from "react";
 import { TotalCommercialGraph } from "../oranisms/seller";
-import * as React from 'react';
-import { TransitionProps } from '@mui/material/transitions';
+import * as React from "react";
 
-//풀스크린 모달창을 위한 옵션
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement;
-  },
-  ref: React.Ref<unknown>,
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+import { myCommercialItem } from "@/src/features/commercial/commercialApi";
+import { mbti_list, personal_color_list } from "../atoms/data";
 
-type Item = {
-  id: number;
-  age: number;
-  gender: string;
-  imgurl: string;
-  commercial_type_id: number;
-  mbti_id: number;
-  personal_color_id: number;
-  create_at: number;
-  merchandise_id: number;
-  merchandise_name: string;
-  provider_id: number;
-};
-
-const CommercialItem: React.FC<{ data: Item }> = (props) => {
+const CommercialItem: React.FC<{
+  data: myCommercialItem;
+}> = (props) => {
   const {
     id,
     age,
@@ -41,18 +21,14 @@ const CommercialItem: React.FC<{ data: Item }> = (props) => {
     commercial_type_id,
     mbti_id,
     personal_color_id,
-    create_at,
+    created_at,
     merchandise_id,
     merchandise_name,
     provider_id,
   } = props.data;
 
-  //모달 옵션
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  //더미 데이터
+  //삭제 버튼
+  function deleteHandler() {}
 
   return (
     <Background>
@@ -75,7 +51,16 @@ const CommercialItem: React.FC<{ data: Item }> = (props) => {
             생성 날짜 :
           </InlineText>
           <InlineText color="grey" size="0.9rem">
-            {create_at}
+            {created_at[0] +
+              "년 " +
+              created_at[1] +
+              "월 " +
+              created_at[2] +
+              "일 " +
+              created_at[3] +
+              "시 " +
+              created_at[4] +
+              "분 "}
           </InlineText>
         </Stack>
 
@@ -84,52 +69,25 @@ const CommercialItem: React.FC<{ data: Item }> = (props) => {
             광고 타입 :
           </InlineText>
           <InlineText size="0.9rem" color="grey">
-            {commercial_type_id}(팝업)
+            {commercial_type_id === 1 ? "메인페이지" : "팝업"}
           </InlineText>
         </Stack>
         <Stack direction="row" spacing={1} style={{ marginTop: "30px" }}>
-          <Chip label={"INFJ"} variant="outlined" />
-          <Chip label={"personal_color_id"} variant="outlined" />
-          <Chip label={"20대"} variant="outlined" />
+          <Chip label={mbti_list[mbti_id]} variant="outlined" />
+          <Chip
+            label={personal_color_list[personal_color_id]}
+            variant="outlined"
+          />
+          <Chip label={age + "대"} variant="outlined" />
         </Stack>
-        <Stack direction={"row"} spacing={1}>
-
-        <Button
-          style={{ marginTop:"10px", backgroundColor: "black", color: "white", padding: "10px" }}
-          fullWidth
-          onClick={handleOpen}
-          >
-          통계 보기
-        </Button>
-        <Button
-          style={{ marginTop:"10px", backgroundColor: "red", color: "white", padding: "10px" }}
-          fullWidth
-          onClick={handleOpen}
-          >
-          삭제 하기
-        </Button>
-          </Stack>
+       
       </Stack>
-
-      <Dialog
-      fullScreen
-        open={open}
-        onClose={handleClose}
-        scroll="body"
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-        TransitionComponent={Transition}
-        style={{paddingBottom:"50px"}}
-      >
-          <TotalCommercialGraph />
-          <Button  style={{ width:"100%", color:"black", margin:"10px 0px 10px 0px", padding:"20px"}} onClick={handleClose}>닫기</Button>
-      </Dialog>
     </Background>
   );
 };
 
 export default CommercialItem;
- 
+
 const Background = styled.div`
   padding: 10px;
   border-radius: 10px;
@@ -139,4 +97,3 @@ const ImageBox = styled.div`
   width: 100%;
   height: 20vh;
 `;
-
