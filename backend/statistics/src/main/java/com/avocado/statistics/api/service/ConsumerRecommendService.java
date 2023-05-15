@@ -2,13 +2,17 @@ package com.avocado.statistics.api.service;
 
 import com.avocado.statistics.api.dto.ScoreResult;
 import com.avocado.statistics.api.response.ConsumerRecommendResp;
+import com.avocado.statistics.api.response.MerchandiseResp;
 import com.avocado.statistics.common.codes.ScoreFactor;
 import com.avocado.statistics.common.error.BaseException;
 import com.avocado.statistics.common.error.ResponseCode;
 import com.avocado.statistics.common.utils.CategoryTypeUtil;
 import com.avocado.statistics.common.utils.JwtUtils;
 import com.avocado.statistics.db.mysql.entity.mybatis.Consumer;
+import com.avocado.statistics.db.mysql.repository.dto.MerchandiseGroupDTO;
+import com.avocado.statistics.db.mysql.repository.dto.MerchandiseMainDTO;
 import com.avocado.statistics.db.mysql.repository.mybatis.ConsumerRepository;
+import com.avocado.statistics.db.mysql.repository.mybatis.MerchandiseRepository;
 import com.avocado.statistics.db.redis.repository.CategoryType;
 import com.avocado.statistics.db.redis.repository.MerchandiseIdSetRepository;
 import com.avocado.statistics.db.redis.repository.ScoreRepository;
@@ -28,6 +32,7 @@ public class ConsumerRecommendService {
     private final JwtUtils jwtUtils;
     private final CategoryTypeUtil categoryTypeUtil;
     private final ScoreRepository scoreRepository;
+    private final MerchandiseRepository merchandiseRepository;
     private final MerchandiseIdSetRepository merchandiseIdSetRepository;
     private final ConsumerRepository consumerRepository;
 
@@ -59,17 +64,60 @@ public class ConsumerRecommendService {
 
         BitSet bitSet = merchandiseIdSetRepository.getBitSet();
 
-        List<ScoreResult> scoreResults = calculateRecommend(consumer, consumerTypes, bitSet);
-        System.out.println(scoreResults);
-        List<ScoreResult> scoreResults1 = calculateRecommend(consumer, personalColorType, bitSet);
-        System.out.println(scoreResults1);
-        List<ScoreResult> scoreResults2 = calculateRecommend(consumer, mbtiType, bitSet);
-        System.out.println(scoreResults2);
+        List<MerchandiseResp> merchandiseList = getMerchandiseList(consumer, consumerTypes, bitSet);
+        System.out.println(merchandiseList);
+        List<MerchandiseResp> merchandiseList1 = getMerchandiseList(consumer, personalColorType, bitSet);
+        System.out.println(merchandiseList1);
+        List<MerchandiseResp> merchandiseList2 = getMerchandiseList(consumer, mbtiType, bitSet);
+        System.out.println(merchandiseList2);
 
         return null;
     }
 
-    public List<ScoreResult> calculateRecommend(Consumer consumer, List<CategoryType> cTypes, BitSet bitSet) {
+    public List<MerchandiseResp> getMerchandiseList(Consumer consumer, List<CategoryType> cTypes, BitSet bitset) {
+        List<ScoreResult> scoreResults = calculateRecommend(consumer, cTypes, bitset);
+
+        List<MerchandiseResp> respList = new ArrayList<>();
+        Set<Long> idSet = new HashSet<>();
+
+        int i = 0;
+        for (ScoreResult sc: scoreResults) {
+            long merchandiseId = sc.getMerchandiseId();
+            MerchandiseResp resp = merchandiseRespFrom(merchandiseId);
+            respList.add(resp);
+            idSet.add(merchandiseId);
+            i++;
+            if (i == 7) {
+                break;
+            }
+        }
+        return respList;
+    }
+
+    private MerchandiseResp merchandiseRespFrom(long merchandiseId) {
+        Optional<MerchandiseMainDTO> mainInfoO = merchandiseRepository.getInfoById(merchandiseId);
+        if (mainInfoO.isEmpty()) {
+            throw new BaseException(ResponseCode.INVALID_VALUE);
+        }
+        long groupId = mainInfoO.get().getGroupId();
+        MerchandiseGroupDTO groupInfo = merchandiseRepository.getInfoByGroupId(groupId).get();
+
+        String mbtiTag = merchandiseRepository.getMBTITag(merchandiseId);
+        Integer ageGroup = merchandiseRepository.getAgeGroup(merchandiseId);
+        String personalColorTag = merchandiseRepository.getPersonalColorTag(merchandiseId);
+
+        MerchandiseResp resp = new MerchandiseResp();
+        resp.updateMerchandiseMainInfo(mainInfoO.get());
+        resp.updateMerchandiseGroupInfo(groupInfo);
+        resp.updateMBTITag(mbtiTag);
+        resp.updateAgeGroupTag(ageGroup);
+        resp.updatePersonalColorTag(personalColorTag);
+
+        return resp;
+    }
+
+
+    private List<ScoreResult> calculateRecommend(Consumer consumer, List<CategoryType> cTypes, BitSet bitSet) {
         int bitSetLen = bitSet.length();
 
         List<ScoreResult> scoreResults = new ArrayList<>();

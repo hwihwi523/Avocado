@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- mapper DTD 선언 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avocado.statistics.db.mysql.repository.mybatis.MerchandiseRepository">
+
+    <select id="getInfoById" resultType="MerchandiseMainDTO">
+        SELECT id as merchandise_id, imgurl as image_url, name as merchandise_name, group_id FROM merchandise WHERE id = #{merchandiseId};
+    </select>
+
+    <select id="getInfoByGroupId" resultType="MerchandiseGroupDTO">
+        SELECT price, discounted_price,
+               (SELECT mc.name_kor FROM merchandise_category as mc WHERE mc.id = mg.category_id) as merchandise_category,
+               (SELECT s.name FROM store as s WHERE s.provider_id = mg.provider_id) as brand_name
+        FROM merchandise_group as mg WHERE id = #{groupId};
+    </select>
+
+    <select id="getMBTITag" resultType="String">
+        SELECT (SELECT kind FROM mbti m WHERE m.id = mbti_id) AS mbti
+        FROM mbti_score WHERE merchandise_id = #{merchandiseId} ORDER BY score DESC LIMIT 1;
+    </select>
+
+    <select id="getPersonalColorTag" resultType="String">
+        SELECT (SELECT kind FROM personal_color p WHERE p.id = personal_color_id) AS personal_color
+        FROM personal_color_score WHERE merchandise_id = #{merchandiseId} ORDER BY score DESC LIMIT 1;
+    </select>
+
+    <select id="getAgeGroup" resultType="Integer">
+        SELECT age as age_group FROM age_gender_score WHERE merchandise_id = #{merchandiseId} ORDER BY score DESC LIMIT 1;
+    </select>
+
+</mapper>
