@@ -42,15 +42,12 @@ export default function Home() {
     }
 
     //성별 나이대 입력 안했으면 등록 페이지로 보내버리기
-    if(!!member){
-      if(member.gender === ""){
-        router.push("/register")
+    if (!!member) {
+      if (member.gender === "") {
+        router.push("/register");
       }
     }
   }, [member]);
-
-
-  console.log("member >>> ", member);
 
   const name = "김싸피";
   return (
@@ -110,7 +107,7 @@ export default function Home() {
 
         {/* 메뉴 카테고리 */}
         <Grid item xs={12}>
-          <Category />
+          {/* <Category /> */}
         </Grid>
 
         {/* 개인화 추천 제품 */}

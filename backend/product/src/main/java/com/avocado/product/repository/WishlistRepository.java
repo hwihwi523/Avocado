@@ -50,13 +50,12 @@ public class WishlistRepository {
      * @param consumerId : 찜한 회원의 ID
      * @return : 검색결과 (단건 or NULL)
      */
-    public Wishlist searchWishlist(Long wishlistId, UUID consumerId, Long merchandiseId) {
+    public Wishlist searchWishlist(UUID consumerId, Long merchandiseId) {
         return queryFactory
                 .selectFrom(wishlist)
                 .where(
-                        eqWishlistId(wishlistId),  // 찜 ID 조건
-                        eqMerchandiseId(merchandiseId),  // 상품 ID 조건
-                        eqConsumerId(consumerId)  // 구매자 ID 조건
+                        eqConsumerId(consumerId),  // 구매자 ID 조건
+                        eqMerchandiseId(merchandiseId)  // 상품 ID 조건
                 )
                 .fetchFirst();
     }

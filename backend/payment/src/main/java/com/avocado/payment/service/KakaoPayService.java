@@ -32,9 +32,6 @@ public class KakaoPayService {
     @PersistenceContext
     private final EntityManager em;
 
-    private final String LOCK_NAME = "PAY_LOCK";
-    private final RedissonClient redissonClient;
-
     private final MerchandiseRepository merchandiseRepository;
     private final PurchasingRepository purchasingRepository;
     private final ConsumerRepository consumerRepository;
@@ -127,6 +124,8 @@ public class KakaoPayService {
                 .consumer_id(consumerId)
                 .total_price(paymentReq.getTotal_price())
                 .merchandises(purchasingMerchandises)
+                .success_url(paymentReq.getSuccess_url())
+                .fail_url(paymentReq.getFail_url())
                 .build();
         purchasingRepository.save(purchasing);
 
@@ -144,7 +143,7 @@ public class KakaoPayService {
      * @param pgToken : 카카오페이로부터 받은 결제 토큰
      */
     @Transactional
-    public void approve(String purchasingId, String pgToken) {
+    public String approve(String purchasingId, String pgToken) {
         // 구매 대기 내역 조회
         Optional<Purchasing> optionalPurchasing = purchasingRepository.findById(purchasingId);
         if (optionalPurchasing.isEmpty())
@@ -153,6 +152,7 @@ public class KakaoPayService {
 
         // 재고를 파악한 뒤 카카오페이 서버로 승인 요청을 보내 결제 완료 처리
         completeKakaoPay(purchasing, purchasing.getConsumer_id(), pgToken);
+        return purchasing.getSuccess_url();
     }
 
     /**
@@ -160,12 +160,15 @@ public class KakaoPayService {
      * @param purchasingId : 구매 대기 내역 ID
      */
     @Transactional
-    public void cancel(String purchasingId) {
+    public String cancel(String purchasingId) {
         Optional<Purchasing> optionalPurchasing = purchasingRepository.findById(purchasingId);
         if (optionalPurchasing.isPresent()) {
             Purchasing purchasing = optionalPurchasing.get();
+            String cancelUrl = purchasing.getFail_url();
             purchasingRepository.delete(purchasing);
+            return cancelUrl;
         }
+        throw new KakaoPayException(ErrorCode.CANCEL_ERROR);
     }
 
     /**
@@ -173,11 +176,12 @@ public class KakaoPayService {
      * @param purchasingId : 구매 대기 내역 ID
      */
     @Transactional
-    public void fail(String purchasingId) {
+    public String fail(String purchasingId) {
         Optional<Purchasing> optionalPurchasing = purchasingRepository.findById(purchasingId);
         if (optionalPurchasing.isPresent()) {
             Purchasing purchasing = optionalPurchasing.get();
             purchasingRepository.delete(purchasing);
+            return purchasing.getFail_url();
         }
         throw new KakaoPayException(ErrorCode.APPROVE_ERROR);
     }

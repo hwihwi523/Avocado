@@ -17,7 +17,7 @@ import java.util.Map;
 @Slf4j
 public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessLogicException.class)
-    protected ResponseEntity<BaseResp> handleRedirectBusinessLogicException(BusinessLogicException e) {
+    protected ResponseEntity<BaseResp> handleBusinessLogicException(BusinessLogicException e) {
         log.error(e.getMessage() + " >> " + e.getErrorCode().getMessage());
         ErrorCode errorCode = e.getErrorCode();
         return ResponseEntity
@@ -25,27 +25,16 @@ public class GlobalExceptionHandler {
                 .body(BaseResp.of(errorCode.getMessage()));
     }
 
-    @ExceptionHandler(InvalidValueException.class)
-    protected ResponseEntity<BaseResp> handleWishlistException(InvalidValueException e) {
-        log.error(e.getMessage() + " >> " + e.getErrorCode().getMessage());
-        ErrorCode errorCode = e.getErrorCode();
-        return ResponseEntity
-                .status(HttpStatus.valueOf(errorCode.getStatus()))
-                .body(BaseResp.of(errorCode.getMessage(), false));
-    }
-
     /**
      * 찜 관련 기능 예외 처리
      */
-    @ExceptionHandler(WishlistException.class)
-    protected ResponseEntity<BaseResp> handleWishlistException(WishlistException e) {
+    @ExceptionHandler(InvalidValueException.class)
+    protected ResponseEntity<BaseResp> handleInvalidValueException(InvalidValueException e) {
         log.error(e.getMessage() + " >> " + e.getErrorCode().getMessage());
         ErrorCode errorCode = e.getErrorCode();
-        Map<String, Boolean> body = new HashMap<>();
-        body.put("is_wishlist", false);
         return ResponseEntity
                 .status(HttpStatus.valueOf(errorCode.getStatus()))
-                .body(BaseResp.of(errorCode.getMessage(), body));
+                .body(BaseResp.of(errorCode.getMessage()));
     }
 
     /**

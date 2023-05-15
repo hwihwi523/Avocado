@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RedirectBusinessLogicException.class)
     protected RedirectView handleRedirectBusinessLogicException(RedirectBusinessLogicException e) {
         log.error(e.getMessage() + " >> " + e.getErrorCode().getMessage());
-        return new RedirectView("http://k8s-avocado-c6c0ca3c6e-209771398.ap-northeast-2.elb.amazonaws.com");
+        return new RedirectView("http://k8s-avocado-c6c0ca3c6e-209771398.ap-northeast-2.elb.amazonaws.com/FAIL");
     }
 
     /**
@@ -32,8 +32,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoInventoryException.class)
     protected RedirectView handleNoInventoryException(NoInventoryException e) {
         log.error(e.getMessage() + " >> " + e.getErrorCode().getMessage());
-        RedirectView redirectView = new RedirectView("https://naver.com");
-        return redirectView;
+        return new RedirectView("http://k8s-avocado-c6c0ca3c6e-209771398.ap-northeast-2.elb.amazonaws.com/NO_INVENTORY");
     }
 
     /**

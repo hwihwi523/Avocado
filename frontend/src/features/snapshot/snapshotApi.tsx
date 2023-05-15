@@ -25,6 +25,7 @@ export type SnapshotItem = {
   total_likes: number;
   wears: Wear[];
   user_info: {
+    gender: string;
     name: string;
     mbti_id: number;
     personal_color_id: number;

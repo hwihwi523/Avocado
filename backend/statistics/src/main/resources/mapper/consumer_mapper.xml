@@ -10,31 +10,4 @@
         where id = #{consumerId}
     </select>
 
-<!--    <select id="getAllByConsumerId" resultType="StyleshotResp">-->
-<!--        select id, content, picture_url, rating, created_at from styleshot where consumer_id = #{consumerId}-->
-<!--    </select>-->
-
-<!--    <select id="getById" resultType="StyleshotResp">-->
-<!--        select id, content, picture_url, rating, created_at from styleshot where id = #{styleshotId}-->
-<!--    </select>-->
-
-<!--    <select id="getByIdAndConsumerId" resultType="Long">-->
-<!--        select id from styleshot where id = #{styleshotId} and consumer_id = #{consumerId}-->
-<!--    </select>-->
-
-<!--    <insert id="save" useGeneratedKeys="true" keyColumn="id" keyProperty="id">-->
-<!--        insert into styleshot(content, picture_url, rating, created_at, updated_at, consumer_id)-->
-<!--        values(#{content}, #{pictureUrl}, #{rating}, now(), now(), #{consumerId})-->
-<!--    </insert>-->
-
-<!--    <delete id="deleteById">-->
-<!--        delete from styleshot-->
-<!--        where id = #{styleshotId}-->
-<!--    </delete>-->
-
-    <!--    <update id="updateMember">-->
-    <!--        update member set name = #{name}-->
-    <!--        where id = #{id}-->
-    <!--    </update>-->
-
 </mapper>

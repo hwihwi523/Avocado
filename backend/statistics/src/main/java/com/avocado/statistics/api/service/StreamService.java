@@ -2,6 +2,7 @@ package com.avocado.statistics.api.service;
 
 import com.avocado.statistics.common.error.BaseException;
 import com.avocado.statistics.common.error.ResponseCode;
+import com.avocado.statistics.common.utils.CategoryTypeUtil;
 import com.avocado.statistics.common.utils.DateUtil;
 import com.avocado.statistics.db.mysql.repository.mybatis.ConsumerRepository;
 import com.avocado.statistics.db.mysql.entity.mybatis.Consumer;
@@ -28,6 +29,7 @@ public class StreamService {
     private final ConsumerRepository consumerRepository;
     private final AdvertiseCountRepository advertiseCountRepository;
     private final DateUtil dateUtil;
+    private final CategoryTypeUtil categoryTypeUtil;
 
     public void consumeResult(Result result) {
         Long merchandiseId = result.getMerchandiseId();
@@ -68,10 +70,7 @@ public class StreamService {
         Integer age = consumer.getAge();
         String gender = consumer.getGender();
         if (age != null && gender != null) {
-            int index = (age / 10) -1; // 10대 -> 0, 1 / 20대 -> 2, 3 / 30대 -> 4, 5 /
-            if (gender.equals("M")) {
-                index++;
-            }
+            int index = categoryTypeUtil.getIndexOfGenderAgeGroup(age, gender);
             scoreRepository.save(CategoryType.AGE_GENDER, resType, merchandiseId, index);
         }
         

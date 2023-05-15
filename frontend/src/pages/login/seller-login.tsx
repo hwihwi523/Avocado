@@ -135,12 +135,11 @@ export default function SellerLogin() {
       </Head>
       <TopBox>
         <BlockText
-          type="B"
-          size="2rem"
+          type="L"
+          size="1rem"
           style={{ textAlign: "center", color: "white" }}
         >
-          <AccountCircleOutlinedIcon fontSize="large" /> <br />
-          판매자 로그인
+          <AccountCircleOutlinedIcon style={{ fontSize: "4rem" }} />
         </BlockText>
       </TopBox>
       <br />
@@ -209,7 +208,7 @@ export default function SellerLogin() {
               }}
               fullWidth
             >
-              로그인
+              판매자 로그인
             </Button>
           </Stack>
         </form>
@@ -224,7 +223,7 @@ const TopBox = styled.div`
   color: white;
   width: 100%;
   height: 200px;
-  border-radius: 0px 0px 30px 30px;
+  border-radius: 0px 0px 40px 40px;
   padding-top: 80px;
   margin-bottom: 30%;
 `;

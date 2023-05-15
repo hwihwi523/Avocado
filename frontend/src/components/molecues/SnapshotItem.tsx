@@ -122,7 +122,9 @@ const SnapshotItem: React.FC<{ data: snapshotItemType }> = (props) => {
           width={50}
           height={50}
           alt="아바타 이미지"
-          src={`/assets/avatar/${"winter_man"}.png`}
+          src={`/assets/avatar/${
+            personal_color_list[item.user_info.personal_color_id].split("_")[0]
+          }_${item.user_info.gender === "M" ? "man" : "woman"}.png`}
         />
         <Stack style={{ color: "gray", width: "100%" }}>
           <div>
@@ -132,7 +134,7 @@ const SnapshotItem: React.FC<{ data: snapshotItemType }> = (props) => {
               alignItems={"center"}
             >
               <Stack>
-                <InlineText>{"김싸피"} </InlineText>
+                <InlineText>{item.user_info.name} </InlineText>
                 <InlineText color="grey" type="L" size="0.8rem">
                   {mbti_list[item.user_info.mbti_id]} /{" "}
                   {personal_color_list[item.user_info.personal_color_id]}
