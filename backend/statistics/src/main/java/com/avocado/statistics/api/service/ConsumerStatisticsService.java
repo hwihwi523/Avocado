@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @Slf4j
@@ -22,11 +21,8 @@ public class ConsumerStatisticsService {
 
     public ProductStatisticsDetailResp getDetailStatistics(long merchandiseId) {
         List<Long> ageGenderPayList = scoreRepository.getByMerchandiseId(CategoryType.AGE_GENDER, Type.PAYMENT, merchandiseId);
-        log.info("ageGenderPayList: {}", ageGenderPayList);
         List<Long> mbtiPayList = scoreRepository.getByMerchandiseId(CategoryType.MBTI, Type.PAYMENT, merchandiseId);
-        log.info("mbtiPayList: {}", mbtiPayList);
         List<Long> personalColorPayList = scoreRepository.getByMerchandiseId(CategoryType.PERSONAL_COLOR, Type.PAYMENT, merchandiseId);
-        log.info("personalColorPayList: {}", personalColorPayList);
         ProductStatisticsDetailResp resp = new ProductStatisticsDetailResp(ageGenderPayList, mbtiPayList, personalColorPayList);
         log.info("response: {}", resp);
         return resp;
