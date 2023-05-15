@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,7 +45,7 @@ public class MerchandiseService {
      * @return : 상품 목록
      */
     @Transactional(readOnly = true)
-    public PageResp showMerchandiseList_NoOffset(Short categoryId, UUID providerId,
+    public PageResp showMerchandiseList_NoOffset(UUID consumerId, Short categoryId, UUID providerId,
                                                Long lastMerchandiseId, Integer size) {
         // DB 조회
         Page<SimpleMerchandiseDTO> result = merchandiseRepository
@@ -59,6 +60,28 @@ public class MerchandiseService {
             throw new RuntimeException();
         }
 
+        // 찜꽁 여부 조회 및 부착
+        if (consumerId != null) {
+            // 상품 ID 취합
+            List<Long> merchandiseIds = new ArrayList<>();
+            for (SimpleMerchandiseDTO data : result)
+                merchandiseIds.add(data.getMerchandiseId());
+
+            // 구매자 ID, 상품 IDs로 찜꽁한 상품 ID 조회
+            List<Long> interestedMerchandiseIds = wishlistRepository
+                    .findWishlistMerchandiseIds(consumerId, merchandiseIds);
+
+            // 찜꽁한 상품의 is_wishlist를 true로 변경
+            int wIdx = 0;
+            for (SimpleMerchandiseResp resp : respContent) {
+                // 찜꽁한 상품이 등장하면 is_wishlist를 true로 바꾸고, 다음 찜꽁 상품 ID로 넘어가기
+                if (wIdx < interestedMerchandiseIds.size()
+                        && resp.getMerchandise_id().equals(interestedMerchandiseIds.get(wIdx))) {
+                    resp.updateIsWishlist(true);
+                    wIdx++;
+                }
+            }
+        }
         // 마지막으로 조회한 ID
         Long newLastMerchandiseId = respContent.isEmpty()
                 ? null

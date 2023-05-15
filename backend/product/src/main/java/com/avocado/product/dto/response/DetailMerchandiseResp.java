@@ -11,6 +11,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class DetailMerchandiseResp extends DefaultMerchandiseResp {
+    private String provider_id;
     private List<String> images;
     private Integer inventory;
     private Float score;
@@ -27,6 +28,7 @@ public class DetailMerchandiseResp extends DefaultMerchandiseResp {
 
     public void updateDetail(DetailMerchandiseDTO detailMerchandiseDTO) {
         super.updateDefault(detailMerchandiseDTO);
+        this.provider_id = detailMerchandiseDTO.getProviderId().toString().replace("-", "");
         this.images = new ArrayList<>();
         this.images.add(detailMerchandiseDTO.getImageUrl());
         this.inventory = detailMerchandiseDTO.getInventory();
