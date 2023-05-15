@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = e.getErrorCode();
         return ResponseEntity
                 .status(HttpStatus.valueOf(errorCode.getStatus()))
-                .body(BaseResp.of(errorCode.getMessage(), false));
+                .body(BaseResp.of(errorCode.getMessage()));
     }
 
     /**

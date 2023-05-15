@@ -97,7 +97,7 @@ public class MerchandiseService {
             }
 
             // 찜꽁 여부 조회
-            Wishlist wishlist = wishlistRepository.searchWishlist(null, consumerId, merchandiseId);
+            Wishlist wishlist = wishlistRepository.searchWishlist(consumerId, merchandiseId);
             respContent.updateIsWishlist(wishlist != null);
         }
 

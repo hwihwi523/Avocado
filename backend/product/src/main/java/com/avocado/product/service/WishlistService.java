@@ -30,7 +30,7 @@ public class WishlistService {
     @Transactional
     public void addProductToWishlist(Long merchandiseId, UUID consumerId) {
         // 기존 찜 내역 조회 (구매자 ID, 상품 ID로 조회)
-        Wishlist wishlist = wishlistRepository.searchWishlist(null, consumerId, merchandiseId);
+        Wishlist wishlist = wishlistRepository.searchWishlist(consumerId, merchandiseId);
         if (wishlist != null)
             throw new InvalidValueException(ErrorCode.EXISTS_WISHLIST);
 
@@ -69,16 +69,11 @@ public class WishlistService {
     }
 
     @Transactional
-    public void removeProductFromWishList(UUID consumerId, Long wishlistId) {
+    public void removeProductFromWishList(UUID consumerId, Long merchandiseId) {
         // 기존 찜 내역 조회 (찜 ID로 조회)
-        Wishlist wishlist = wishlistRepository.searchWishlist(wishlistId, null, null);
-
-        // 본인의 찜 목록이 아니라면 Forbidden 예외
-        if (wishlist != null && !wishlist.getConsumer().getId().equals(consumerId))
-            throw new AccessDeniedException(ErrorCode.ACCESS_DENIED);
+        Wishlist wishlist = wishlistRepository.searchWishlist(consumerId, merchandiseId);
 
         // 찜 내역이 존재하지 않을 경우 InvalidValueException 반환
-        // 본 예외를 먼저 확인하게 되면, 제3자가 불특정 타인의 찜 내역 존재 여부를 파악할 수 있음
         if (wishlist == null)
             throw new InvalidValueException(ErrorCode.NO_WISHLIST);
 
