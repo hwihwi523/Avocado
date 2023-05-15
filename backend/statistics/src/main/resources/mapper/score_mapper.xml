@@ -3,7 +3,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.avocado.statistics.db.mysql.repository.mybatis.ScoreMysqlRepository">
+<mapper namespace="com.avocado.statistics.db.mysql.repository.mybatis.ScoreMybatisRepository">
 
     <insert id="ageGenderSave">
         insert into age_gender_score (age, gender, score, merchandise_id)
@@ -18,6 +18,30 @@
     <insert id="personalColorSave">
         insert into personal_color_score (score, personal_color_id, merchandise_id)
         values (#{score}, #{personalColorId}, #{merchandiseId})
+    </insert>
+
+    <insert id="ageGenderBulkSave" parameterType="List">
+        insert into age_gender_score (age, gender, score, merchandise_id)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.age}, #{item.gender}, #{item.score}, #{item.merchandiseId})
+        </foreach>
+    </insert>
+
+    <insert id="mbtiBulkSave" parameterType="List">
+        insert into mbti_score (score, mbti_id, merchandise_id)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.score}, #{item.mbtiId}, #{item.merchandiseId})
+        </foreach>
+    </insert>
+
+    <insert id="personalColorBulkSave" parameterType="List">
+        insert into personal_color_score (score, personal_color_id, merchandise_id)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.score}, #{item.personalColorId}, #{item.merchandiseId})
+        </foreach>
     </insert>
 
     <delete id="deleteAllAgeGender">

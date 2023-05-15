@@ -19,7 +19,5 @@ class ProviderDBServiceTest {
     @Test
     public void 작동테스트() {
         providerDBService.update();
-
     }
-
 }
