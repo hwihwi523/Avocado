@@ -13,11 +13,11 @@ import lombok.NoArgsConstructor;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class UserInfo {
     String name;
-    Integer ageGroup;
+    String gender;
     Integer mbtiId;
     Integer personalColorId;
 
     public static UserInfo of(Consumer consumer) {
-        return new UserInfo(consumer.getName(), consumer.getAgeGroup(), consumer.getMbtiId(), consumer.getPersonalColorId());
+        return new UserInfo(consumer.getName(), consumer.getGender(), consumer.getMbtiId(), consumer.getPersonalColorId());
     }
 }
