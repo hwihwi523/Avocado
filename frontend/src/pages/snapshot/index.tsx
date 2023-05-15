@@ -102,16 +102,15 @@ const Snapshot = () => {
             등록된 게시물이 없습니다.{" "}
           </BlockText>
         )}
-        <InfinityScroll ref={ref}>
-          {/* 로딩바 */}
-          {isLoading && (
-            <Box sx={{ width: "100%" }}>
-              <LinearProgress />
-            </Box>
-          )}
-          {/* 마지막 페이지 */}
-          {isLastPage && <BlockText>마지막 페이지 입니다. </BlockText>}
-        </InfinityScroll>
+        {isLastPage ? (
+          <BlockText>마지막 페이지 입니다. </BlockText>
+        ) : isLoading ? (
+          <Box sx={{ width: "100%" }}>
+            <LinearProgress />
+          </Box>
+        ) : (
+          <InfinityScroll ref={ref} />
+        )}
       </Stack>
 
       <RegistButton onClick={redirectToRegistrationPage}>

@@ -93,8 +93,10 @@ const ProductCard = (props: any) => {
         </Grid>
       </Card>
 
+      
+
       {/* 북마크 버튼 */}
-      {isBookmark && (
+      {isBookmark !== null && (
         <IconButton
           style={{
             position: "absolute",
