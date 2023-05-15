@@ -38,35 +38,38 @@ public class ConsumerRecommendService {
         if (consumerO.isEmpty()) {
             throw new BaseException(HttpStatus.BAD_REQUEST, "존재하지 않는 유저입니다.");
         }
-
         Consumer consumer = consumerO.get();
+        List<CategoryType> consumerTypes = new ArrayList<>();
+        List<CategoryType> mbtiType = new ArrayList<>();
+        List<CategoryType> personalColorType = new ArrayList<>();
 
-        BitSet bitSet = merchandiseIdSetRepository.getBitSet();
-        calculateRecommend(consumer ,new CategoryType[] {CategoryType.AGE_GENDER, CategoryType.PERSONAL_COLOR, CategoryType.MBTI }, bitSet);
-
-        calculateRecommend(consumer, new CategoryType[] { CategoryType.PERSONAL_COLOR }, bitSet);
-
-        calculateRecommend(consumer, new CategoryType[] { CategoryType.MBTI }, bitSet);
-
-        return null;
-    }
-
-    private Object calculateConsumerRecommend(Consumer consumer, BitSet bitSet) {
-        Integer mbtiId = consumer.getMbtiId();
-        Integer personalColorId = consumer.getPersonalColorId();
-
-        Integer age = consumer.getAge();
-        String gender = consumer.getGender();
-        int ageGenderIndex = -1;
-        if (age != null && gender != null) {
-            ageGenderIndex = categoryTypeUtil.getIndexOfGenderAgeGroup(age, gender);
+        if (consumer.getAge() != null && consumer.getGender() != null) {
+            consumerTypes.add(CategoryType.AGE_GENDER);
         }
 
+        if (consumer.getMbtiId() != null) {
+            consumerTypes.add(CategoryType.MBTI);
+            mbtiType.add(CategoryType.MBTI);
+        }
+
+        if (consumer.getPersonalColorId() != null) {
+            consumerTypes.add(CategoryType.PERSONAL_COLOR);
+            personalColorType.add(CategoryType.PERSONAL_COLOR);
+        }
+
+        BitSet bitSet = merchandiseIdSetRepository.getBitSet();
+
+        List<ScoreResult> scoreResults = calculateRecommend(consumer, consumerTypes, bitSet);
+        System.out.println(scoreResults);
+        List<ScoreResult> scoreResults1 = calculateRecommend(consumer, personalColorType, bitSet);
+        System.out.println(scoreResults1);
+        List<ScoreResult> scoreResults2 = calculateRecommend(consumer, mbtiType, bitSet);
+        System.out.println(scoreResults2);
 
         return null;
     }
 
-    private List<ScoreResult> calculateRecommend(Consumer consumer, CategoryType[] cTypes, BitSet bitSet) {
+    public List<ScoreResult> calculateRecommend(Consumer consumer, List<CategoryType> cTypes, BitSet bitSet) {
         int bitSetLen = bitSet.length();
 
         List<ScoreResult> scoreResults = new ArrayList<>();
@@ -116,6 +119,7 @@ public class ConsumerRecommendService {
 
             scoreResults.add(scoreResult);
         }
+        Collections.sort(scoreResults);
 
         return scoreResults;
     }
