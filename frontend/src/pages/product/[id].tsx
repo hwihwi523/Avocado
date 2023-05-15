@@ -43,6 +43,7 @@ const ProductDetailPage = () => {
   const product = useAppSelector(
     (state: AppState) => state.product.selectedProductDetail
   );
+  const member = useAppSelector((state: AppState) => state.auth.member);
 
   // url 마지막에서 product Id 가져오기
   const productId = router.asPath.split("/").pop();
@@ -83,19 +84,46 @@ const ProductDetailPage = () => {
 
   //구매하기 함수
   function purchaseHandler() {
-    console.log({
-      id: 123123,
-      size,
-      count,
-    });
-
-    router.push("/billing");
+    if (member) {
+      router.push({
+        pathname: "/billing",
+        query: {
+          member: JSON.stringify(member),
+          products: JSON.stringify([
+            {
+              id: product?.id,
+              brand_namd: product?.brand_name,
+              merchandise_id: product?.merchandise_id,
+              merchandise_category: product?.merchandise_category,
+              images: product?.images,
+              merchandise_name: product?.merchandise_name,
+              price: product?.price,
+              discounted_price: product?.discounted_price,
+              size,
+              count,
+            },
+            {
+              id: product?.id,
+              brand_namd: product?.brand_name,
+              merchandise_id: product?.merchandise_id,
+              merchandise_category: product?.merchandise_category,
+              images: product?.images,
+              merchandise_name: product?.merchandise_name,
+              price: product?.price,
+              discounted_price: product?.discounted_price,
+              size,
+              count,
+            },
+          ]),
+        },
+      });
+    }
   }
 
   // 장바구니에 담기
   function addToCart() {
     console.log({
-      id: 123123,
+      id: member ? member.id : "",
       size,
       count,
     });
@@ -285,17 +313,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
     } else {
       console.log("SERVER_NO_PRODUCT_DETAIL: ", productDetailResponse);
     }
-
-    // // 상품에 대한 리뷰 데이터 불러오기
-    // const productReviewsResponse = await store.dispatch(
-    //   productApi.endpoints.getProductReviews.initiate(lastSegment)
-    // );
-    // const reviews = productReviewsResponse.data;
-    // if (reviews) {
-    //   store.dispatch(setProductReviews(reviews));
-    // } else {
-    //   console.log("SERVER_NO_REVIEWS: ", productReviewsResponse);
-    // }
 
     return {
       props: {},

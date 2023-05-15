@@ -108,23 +108,20 @@ export const getServerSideProps = wrapper.getServerSideProps(
     );
 
     // 필요한 내용 작성
-//유저정보 가져오기
+    //유저정보 가져오기
     // console.log(">>>>>>>>>>>",store.getState().auth.member);
 
-//함수 불러오기
+    //함수 불러오기
     // store.dispatch(
     //   productApi.endpoints.getProductDetail.initiate(lastSegment)
     // );
 
-    //store에 집어 넣기 
-      // store.dispatch(setProductListBySearch());
+    //store에 집어 넣기
+    // store.dispatch(setProductListBySearch());
 
-//
+    //
     return {
       props: {},
     };
   }
 );
-function useSelector() {
-  throw new Error("Function not implemented.");
-}

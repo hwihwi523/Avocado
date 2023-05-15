@@ -1,9 +1,21 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { HYDRATE } from "next-redux-wrapper";
-import { Product, ProductDetail, ProductReview } from "./productSlice";
+import {
+  Product,
+  ProductDetail,
+  ProductForCart,
+  ProductForWishlist,
+  ProductReview,
+} from "./productSlice";
 import { customFetchBaseQuery } from "@/src/utils/customFetchBaseQuery";
+import { headers } from "next/dist/client/components/headers";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+interface ProductBaseResponse {
+  message: string;
+  data: any;
+}
 
 //store={store_name}&category={category_id}&last={merchandise_id}&size={size}
 interface ProductListRequest {
@@ -55,25 +67,27 @@ interface RemoveProductReviewResponse {
 }
 
 // /wishlists -> 조회, 등록, 삭제
-interface GetWishlistResponse {
-  message: string;
-  data: Product[] | [];
+interface GetWishlistRequest {
+  token?: string;
 }
-interface UpdateWishlistResponse {
-  message: string;
-  data: IsWishlist;
+interface GetWishlistResponse extends ProductBaseResponse {
+  data: ProductForWishlist[] | [];
+}
+interface UpdateWishlistResponse extends ProductBaseResponse {
+  data: null;
 }
 type IsWishlist = {
   is_wishlist: boolean;
 };
 
 // /carts -> 조회, 등록, 삭제
-interface GetCartResponse {
-  message: string;
-  data: Product[] | [];
+interface GetCartResponse extends ProductBaseResponse {
+  data: ProductForCart[] | [];
 }
-interface UpdateCartResponse {
-  message: string;
+interface AddCartRequest {
+  merchandise_id: number;
+  size: string;
+  quantity: number;
 }
 
 export const productApi = createApi({
@@ -100,7 +114,6 @@ export const productApi = createApi({
         // response 변환
         return response.data;
       },
-      providesTags: (result, error, id) => [{ type: "ProductDetail", id }],
     }),
     getProductReviews: builder.query<ProductReview[], string>({
       query: (id) => `/merchandises/${id}/reviews`,
@@ -134,40 +147,52 @@ export const productApi = createApi({
         },
       }),
     }),
-    getWishlist: builder.query<Product[], void>({
-      query: () => `/wishlists`,
+    getWishlist: builder.query<ProductForWishlist[], void>({
+      query: () => ({
+        url: `/wishlists`,
+        // 서버단에서 토큰을 넣어주기 위해 필요
+        // headers: payload.token
+        //   ? { Authorization: `Bearer ${payload.token}` }
+        //   : undefined,
+      }),
       transformResponse: (response: GetWishlistResponse) => {
         return response.data;
       },
     }),
-    AddWishlist: builder.mutation<UpdateWishlistResponse, void>({
-      query: () => ({
+    AddWishlist: builder.mutation<UpdateWishlistResponse, number>({
+      query: (productId) => ({
         url: `/wishlists`,
         method: "POST",
+        body: { merchandise_id: productId },
       }),
     }),
-    RemoveWishlist: builder.mutation<UpdateWishlistResponse, void>({
-      query: () => ({
+    RemoveWishlist: builder.mutation<UpdateWishlistResponse, number>({
+      query: (productId) => ({
         url: `/wishlists`,
         method: "DELETE",
+        body: { merchandise_id: productId },
       }),
     }),
-    getCart: builder.query<Product[], void>({
+    getCart: builder.query<ProductForCart[], void>({
       query: () => `/cart`,
       transformResponse: (response: GetCartResponse) => {
         return response.data;
       },
     }),
-    AddCart: builder.mutation<UpdateCartResponse, void>({
-      query: () => ({
+    AddCart: builder.mutation<ProductBaseResponse, AddCartRequest>({
+      query: (payload) => ({
         url: `/cart`,
         method: "POST",
+        body: payload,
       }),
     }),
-    RemoveCart: builder.mutation<UpdateCartResponse, void>({
-      query: () => ({
+    RemoveCart: builder.mutation<ProductBaseResponse, number>({
+      query: (cartId) => ({
         url: `/cart`,
         method: "DELETE",
+        body: {
+          cart_id: cartId,
+        },
       }),
     }),
   }),

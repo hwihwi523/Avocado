@@ -48,12 +48,38 @@ export interface ProductReview {
   created_at: string;
 }
 
+export interface ProductForWishlist
+  extends Omit<Product, "id" | "is_wishlist"> {
+  wishlist_id: number;
+}
+
+export interface ProductForBuy {
+  id: number;
+  brand_name: string;
+  merchandise_id: number;
+  merchandise_category: string;
+  images: string[];
+  merchandise_name: string;
+  price: number;
+  discounted_price: number;
+  size: string; // 구매할 사이즈
+  count: number; // 구매할 수량
+}
+
+export interface ProductForCart extends Omit<Product, "id" | "is_wishlist"> {
+  cart_id: number;
+  size: string; // 구매할 사이즈
+  count: number; // 구매할 수량
+}
+
 interface ProductState {
   selectedProductDetail: ProductDetail | null;
   productListBySearch: Product[];
   productListByMbti: Product[];
   productListByPersonalColor: Product[];
   productReiews: ProductReview[];
+  productListForCart: ProductForCart[];
+  productListForWishlist: ProductForWishlist[];
 }
 
 const initialState: ProductState = {
@@ -62,6 +88,8 @@ const initialState: ProductState = {
   productListByMbti: [],
   productListByPersonalColor: [],
   productReiews: [],
+  productListForCart: [],
+  productListForWishlist: [],
 };
 
 export const productSlice = createSlice({
@@ -85,6 +113,15 @@ export const productSlice = createSlice({
     },
     setProductReviews: (state, action: PayloadAction<ProductReview[]>) => {
       state.productReiews = action.payload;
+    },
+    setProductListForCart: (state, action: PayloadAction<ProductForCart[]>) => {
+      state.productListForCart = action.payload;
+    },
+    setProductListForWishlist: (
+      state,
+      action: PayloadAction<ProductForWishlist[]>
+    ) => {
+      state.productListForWishlist = action.payload;
     },
     clearSelectedProductDetail: (state) => {
       state.selectedProductDetail = null;
@@ -115,6 +152,8 @@ export const {
   setProductListByMbti,
   setProductListByPersonalColor,
   setProductReviews,
+  setProductListForCart,
+  setProductListForWishlist,
   clearSelectedProductDetail,
   clearProductListAll,
   clearProductReviews,

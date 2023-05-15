@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import Grid from "@mui/material/Grid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IconButton } from "@mui/material";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
 import BookmarkOutlinedIcon from "@mui/icons-material/BookmarkOutlined";
@@ -13,45 +13,48 @@ import {
 } from "@/src/features/product/productApi";
 import { AppState, useAppSelector } from "@/src/features/store";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-const ProductBottom: React.FC<{ openModal: () => void }> = (props) => {
+const ProductBottom: React.FC<{
+  openModal: () => void;
+}> = (props) => {
   const router = useRouter();
   const [addWishlist, addWishlistResult] = useAddWishlistMutation();
   const [removeWishlist, removeWishlistResult] = useRemoveWishlistMutation();
   const member = useAppSelector((state: AppState) => state.auth.member);
-  const product = useSelector(
-    (state: AppState) => state.product.selectedProductDetail
-  );
   // url 마지막에서 product Id 가져오기
   const lastSegment = router.asPath.split("/").pop();
+  const productId = parseInt(lastSegment || "-1");
   // 상품 상세 정보 -> 찜 상태 가져오기
-  const { data } = useGetProductDetailQuery(lastSegment!);
+  const { data: currentProductData, refetch } = useGetProductDetailQuery(
+    lastSegment!
+  );
+  console.log("WISHLIST DATA: ", currentProductData);
+  // 상품이 wishlist에 포함되어 있는지 여부 가져오기
+  const isWishlist = currentProductData?.is_wishlist;
 
   const { openModal } = props;
 
-  const [isWishlist, setIsWishlist] = useState(product?.is_wishlist);
-
-  function WishlistBtnClickHandler() {
-    console.log("WISHLIST: ", data);
+  async function WishlistBtnClickHandler() {
     if (member) {
       if (isWishlist) {
         // 삭제
-
-        removeWishlist()
+        removeWishlist(productId)
+          .unwrap()
           .then((res) => {
-            setIsWishlist(false);
             console.log(res);
           })
           .catch((e) => console.log("REMOVE WISHLIST ERROR: ", e));
+        refetch();
       } else {
         // 추가
-        addWishlist()
+        addWishlist(productId)
+          .unwrap()
           .then((res) => {
-            setIsWishlist(true);
             console.log(res);
           })
           .catch((e) => console.log("ADD WISHLIST ERROR: ", e));
+        refetch();
       }
     }
   }

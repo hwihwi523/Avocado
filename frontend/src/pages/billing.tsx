@@ -6,51 +6,44 @@ import { InputAdornment, TextField } from "@mui/material";
 import { AddressInput } from "../components/molecues";
 import MapIcon from "@mui/icons-material/Map";
 import { useSnackbar } from "notistack";
-import Head from "next/head"
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { ProductForBuy } from "../features/product/productSlice";
+import { Member } from "../features/auth/authSlice";
+import { ProductForPayment } from "../features/payment/paymentSlice";
+
 const BillingPage = () => {
+  const router = useRouter();
   const [addressInputVisible, setAddressInputVisible] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
-  //주문자 정보
-  const [address, setAddress] = useState("");
-  const name = "김싸피";
-  const email = "abc@abc.com";
-  const order_date = "2023.09.13";
 
-  //상품 더미데이터
-  const products = [
-    {
-      id: 123,
-      product_name: "청바지",
-      size: "M",
-      count: 4,
-      price: 30000,
-      discount: 10000,
-    },
-    {
-      id: 123,
-      product_name: "흰 티셔츠",
-      size: "M",
-      count: 4,
-      price: 30000,
-      discount: 10000,
-    },
-    {
-      id: 123,
-      product_name: "검은색 아우터",
-      size: "M",
-      count: 4,
-      price: 30000,
-      discount: 10000,
-    },
-    {
-      id: 123,
-      product_name: "양말",
-      size: "M",
-      count: 4,
-      price: 30000,
-      discount: 10000,
-    },
-  ];
+  // 주문자 정보
+  let member: Member = {
+    id: "",
+    name: "",
+    email: "",
+    type: "",
+  };
+  if (typeof router.query.member === "string") {
+    member = JSON.parse(router.query.member);
+  }
+  const [address, setAddress] = useState("");
+  const name = member.name;
+  const email = member.email;
+
+  // 주문 일자 (현재 날짜)
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+  const day = String(currentDate.getDate()).padStart(2, "0");
+  const order_date = `${year}.${month}.${day}`;
+
+  // 상품 상세 or 장바구니에서 넘어온 상품들 파싱
+  let products: ProductForBuy[] = [];
+  if (typeof router.query.products === "string") {
+    products = JSON.parse(router.query.products);
+  }
+  console.log(products);
 
   //숫자 변환 함수 3000  => 3,000원
   function formatCurrency(num: number) {
@@ -61,42 +54,56 @@ const BillingPage = () => {
   function totalDiscount() {
     let result = 0;
     for (let i = 0; i < products.length; i++) {
-      result += products[i].discount * products[i].count;
+      result +=
+        (products[i].price - products[i].discounted_price) * products[i].count;
     }
     return formatCurrency(result);
   }
 
-  //총 결제 긍맥
+  //총 결제 금액
   function totalPrice() {
     let result = 0;
     for (let i = 0; i < products.length; i++) {
-      result += (products[i].price - products[i].discount) * products[i].count;
+      result +=
+        (products[i].price - products[i].discounted_price) * products[i].count;
     }
     return formatCurrency(result);
   }
 
-  function paymantHandler(){
-    if(!address){
-        enqueueSnackbar(`주소를 입력해 주세요 `, {
-            variant: "error",
-            anchorOrigin: {
-              horizontal: "center",
-              vertical: "bottom",
-            },
-          });
-          return;
+  function paymantHandler() {
+    if (!address) {
+      enqueueSnackbar(`주소를 입력해 주세요 `, {
+        variant: "error",
+        anchorOrigin: {
+          horizontal: "center",
+          vertical: "bottom",
+        },
+      });
+      return;
     }
-    console.log("결제 했다~")
+    // 결제
+    // 요청을 보내기 위한 상품 객체
+    let merchandises: ProductForPayment[] = [];
+    let total_price: number = 0;
+    products.forEach((product) => {
+      const merchandise: ProductForPayment = {
+        merchandise_id: product.merchandise_id,
+        quantity: product.count,
+        price: product.price,
+        size: product.size,
+      };
+      merchandises.push(merchandise);
+      total_price += product.discounted_price;
+    });
+    console.log("결제~", { total_price, merchandises });
   }
-
-
 
   return (
     <Background>
       <Head>
         <title>계산서</title>
       </Head>
-      <Stack spacing={2} style={{ marginBottom:"50px"}}>
+      <Stack spacing={2} style={{ marginBottom: "50px" }}>
         {/* 주문자정보 */}
         <Box>
           <BlockText size="1.5rem" style={{ marginBottom: "20px" }}>
@@ -157,10 +164,13 @@ const BillingPage = () => {
             결제 정보
           </BlockText>
           {products.map(
-            ({ product_name, count, id, price, discount, size }, i) => (
+            (
+              { merchandise_name, count, id, price, discounted_price, size },
+              i
+            ) => (
               <Stack direction={"row"} justifyContent={"space-between"} key={i}>
                 <BlockText>
-                  {product_name}{" "}
+                  {merchandise_name}{" "}
                   <InlineText size="0.8rem" color="grey">
                     / {size} {count}개
                   </InlineText>
@@ -213,7 +223,7 @@ export default BillingPage;
 const Background = styled.div`
   background-color: #dddddd;
   width: 100%;
-  
+
   padding: 20% 10px 20% 10px;
   box-sizing: border-box;
 `;
