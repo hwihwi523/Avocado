@@ -7,8 +7,10 @@ import com.avocado.commercial.Dto.response.item.*;
 import com.avocado.commercial.Dto.response.CommercialRespDto;
 import com.avocado.commercial.Entity.Commercial;
 import com.avocado.commercial.Entity.CommercialExposure;
+import com.avocado.commercial.Entity.CommercialStatistic;
 import com.avocado.commercial.Repository.CommercialExposureRepository;
 import com.avocado.commercial.Repository.CommercialRepository;
+import com.avocado.commercial.Repository.CommercialStatisticRepository;
 import com.avocado.commercial.error.CommercialException;
 import com.avocado.commercial.error.ErrorCode;
 import com.avocado.commercial.util.JwtUtil;
@@ -32,6 +34,7 @@ public class CommercialService {
 
     private CommercialRepository commercialRepository;
     private CommercialExposureRepository commercialExposureRepository;
+    private CommercialStatisticRepository commercialStatisticRepository;
     private ImageService imageService;
     private JwtUtil jwtUtil;
     private final KafkaProducer kafkaproducer;
@@ -39,9 +42,11 @@ public class CommercialService {
     private final int TYPE_CAROUSEL = 1;
 
     @Autowired
-    public CommercialService(CommercialRepository commercialRepository, CommercialExposureRepository commercialExposureRepository, ImageService imageService, JwtUtil jwtUtil, KafkaProducer kafkaproducer){
+    public CommercialService(CommercialRepository commercialRepository, CommercialExposureRepository commercialExposureRepository,
+                             ImageService imageService, JwtUtil jwtUtil, KafkaProducer kafkaproducer, CommercialStatisticRepository commercialStatisticRepository){
         this.commercialRepository = commercialRepository;
         this.commercialExposureRepository = commercialExposureRepository;
+        this.commercialStatisticRepository = commercialStatisticRepository;
         this.imageService = imageService;
         this.jwtUtil = jwtUtil;
         this.kafkaproducer = kafkaproducer;
@@ -56,7 +61,7 @@ public class CommercialService {
         List<Commercial> carouselEntityList = null;
 
         // 넘어온 상태 값에 따라 다른 리스트를 가져온다.
-        if(gender == 'X'||age==-1){
+        if(gender == 'X'||age == -1){
             popupEntityList = commercialRepository.findByCommercialTypeId(TYPE_POPUP);
             carouselEntityList = commercialRepository.findByCommercialTypeId(TYPE_CAROUSEL);
         }else {
@@ -200,6 +205,11 @@ public class CommercialService {
 
     }
 
+
+    public List<CommercialStatistic> getCommercialStatistic(int commercialId){
+        List<CommercialStatistic> commercialStatisticList = commercialStatisticRepository.findByCommercialId(commercialId);
+        return commercialStatisticList;
+    }
 
 
     public void checkCommercialRequest(CommercialReqDto commercialReqDto){
