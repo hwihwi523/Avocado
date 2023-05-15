@@ -2,18 +2,18 @@ import styled from "@emotion/styled";
 import { Stack } from "@mui/material";
 import Image from "next/image";
 import { Category, ProductCardsGrid } from "@/src/components/oranisms";
-import Head from 'next/head'
+import Head from "next/head";
+import { useState } from "react";
 const Store = () => {
+  const [category, setCategory] = useState(6);
   const img_url = "store_main_image";
   return (
     <Background>
-            <Head>
+      <Head>
         <title>스토어 이름</title>
-        <meta name="description" content=""/>스토어 설
-        <meta
-          name="keywords"
-          content={`제품카테고리, 제품 종류 , 등등`}
-        />
+        <meta name="description" content="" />
+        스토어 설
+        <meta name="keywords" content={`제품카테고리, 제품 종류 , 등등`} />
         <meta property="og:title" content="제품명" />
         <meta property="og:description" content="제품 설명" />
         <meta property="og:image" content="제품 이미지 url" />
@@ -32,10 +32,10 @@ const Store = () => {
         </Imagebox>
 
         {/* 카테고리 */}
-        <Category />
+        <Category setCategory={setCategory}/>
 
         {/* 제품들 뭐 하기로 했는데 까먹음  */}
-        
+
         {/* <ProductCardsGrid /> */}
       </Stack>
     </Background>
