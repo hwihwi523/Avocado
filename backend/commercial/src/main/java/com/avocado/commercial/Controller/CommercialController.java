@@ -9,6 +9,7 @@ import com.avocado.commercial.Entity.Commercial;
 import com.avocado.commercial.Service.CommercialService;
 import com.avocado.commercial.Dto.response.CommercialRespDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,18 +37,16 @@ public class CommercialController {
     public ResponseEntity<CommercialRespDto> exposeCommercial(
             @RequestParam(name = "mbti_id", defaultValue = "-1") int mbtiId, @RequestParam(name = "age", defaultValue = "-1") int age,
             @RequestParam(name = "personal_color_id", defaultValue = "-1") int personalColorId, @RequestParam(name = "gender", defaultValue = "X") char gender){
-        System.out.println(personalColorId);
-        CommercialRespDto commercialRespDto = null;
-
-        commercialRespDto = commercialService.getCommercialExposure(mbtiId, age, personalColorId, gender);
+        CommercialRespDto commercialRespDto = commercialService.getCommercialExposure(mbtiId, age, personalColorId, gender);
         
         // 응답 환경 구성 필요
-        return new ResponseEntity<CommercialRespDto>(commercialRespDto, HttpStatus.OK);
+        return ResponseEntity.ok().header("msg","success").body(commercialRespDto);
+//                <CommercialRespDto>(commercialRespDto, HttpStatus.OK);
     }
     @GetMapping("/analyses/{commercial_id}")
     public ResponseEntity<List<Analysis>> getAnalyses(@PathVariable("commercial_id") int commercialId){
-        List<Analysis> analysisList = commercialService.getAnalyses(commercialId);
-
+//        List<Analysis> analysisList = commercialService.getAnalyses(commercialId);
+        List<Analysis> analysisList = commercialService.getCommercialStatistic(commercialId);
         return new ResponseEntity<List<Analysis>>(analysisList,HttpStatus.OK);
     }
 

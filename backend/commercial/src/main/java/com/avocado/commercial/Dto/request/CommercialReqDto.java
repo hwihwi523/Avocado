@@ -18,7 +18,7 @@ public class CommercialReqDto {
     private int commercial_type_id;
     private int age;
     private char gender;
-    private MultipartFile file;
+    private MultipartFile[] file;
 
     public Commercial toEntity(){
         Commercial commercial = Commercial.builder()
