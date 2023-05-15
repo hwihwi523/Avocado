@@ -194,15 +194,14 @@ public class CommercialService {
     public void removeCommercial(CommercialCancelReqDto commercialCancelReqDto, HttpServletRequest request) {
         UUID uuid = jwtUtil.getId(request);
         System.out.println(commercialCancelReqDto);
-        try {
-            commercialExposureRepository.deleteByCommercialId(commercialCancelReqDto.getCommercial_id());
-            commercialRepository.deleteByIdAndProviderId(commercialCancelReqDto.getCommercial_id(),uuid);
-        }catch (EmptyResultDataAccessException e){
-            e.printStackTrace();
+        commercialExposureRepository.deleteByCommercialId(commercialCancelReqDto.getCommercial_id());
+        if(0 == commercialRepository.deleteByIdAndProviderId(commercialCancelReqDto.getCommercial_id(),uuid)){
             throw new CommercialException(ErrorCode.COMMERCIAL_NOT_FOUND);
         }
+    }
 
-
+    public void saveCommercialStatistic(List<CommercialStatistic> commercialStatisticList){
+        commercialStatisticRepository.saveAll(commercialStatisticList);
     }
 
 
