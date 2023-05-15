@@ -11,6 +11,7 @@ import static org.springframework.http.HttpStatus.*;
 public enum ErrorCode {
 
     /* 400 BAD_REQUEST : 잘못된 요청 */
+    BAD_IMAGE_REQUEST(BAD_REQUEST, "이미지가 없습니다"),
     BAD_FILE_FORMAT(BAD_REQUEST, "파일 형식을 다시 확인해주세요"),
     BAD_MBTI_ID(BAD_REQUEST,"잘못된 MBTI 식별자입니다"),
     BAD_COMMERCIAL_TYPE(BAD_REQUEST,"잘못된 광고 타입입니다"),
