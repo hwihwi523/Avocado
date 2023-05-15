@@ -2,6 +2,8 @@ package com.avocado.commercial.Entity;
 
 import com.avocado.commercial.Dto.response.item.Carousel;
 import com.avocado.commercial.Dto.response.item.Popup;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -9,7 +11,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
-
+@Data
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
