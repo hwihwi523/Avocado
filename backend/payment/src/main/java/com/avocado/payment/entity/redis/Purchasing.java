@@ -23,12 +23,18 @@ public class Purchasing {
 
     private List<PurchasingMerchandise> merchandises;
 
+    private String success_url;
+    private String fail_url;
+
     @Builder
-    public Purchasing(String id, String consumer_id, Long total_price, String tid, List<PurchasingMerchandise> merchandises) {
+    public Purchasing(String id, String consumer_id, Long total_price, String tid, List<PurchasingMerchandise> merchandises,
+                      String success_url, String fail_url) {
         this.id = id;
         this.consumer_id = consumer_id;
         this.total_price = total_price;
         this.tid = tid;
         this.merchandises = merchandises;
+        this.success_url = success_url;
+        this.fail_url = fail_url;
     }
 }

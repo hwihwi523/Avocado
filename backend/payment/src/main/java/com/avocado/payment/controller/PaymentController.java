@@ -29,12 +29,6 @@ public class PaymentController {
 
     @Value("${kakao-pay.url.redirect.host}")
     private String completeHost;
-    @Value("${kakao-pay.url.redirect.approval}")
-    private String completeApproveUrl;
-    @Value("${kakao-pay.url.redirect.cancel}")
-    private String completeCancelUrl;
-    @Value("${kakao-pay.url.redirect.fail}")
-    private String completeFailUrl;
 
     /**
      * 결제 준비하기 (카카오페이 서버로 결제 정보 등록)
@@ -74,7 +68,7 @@ public class PaymentController {
                         @PathVariable String purchasingId,
                         @RequestParam String pg_token) throws IOException {
         // 승인 요청
-        kakaoPayService.approve(purchasingId, pg_token);
+        String completeApproveUrl = kakaoPayService.approve(purchasingId, pg_token);
 
         // 성공 페이지로 리다이렉트
         response.sendRedirect(completeHost + completeApproveUrl);
@@ -88,7 +82,7 @@ public class PaymentController {
     public void cancel(HttpServletResponse response,
                        @PathVariable String purchasingId) throws IOException {
         // 취소 처리
-        kakaoPayService.cancel(purchasingId);
+        String completeCancelUrl = kakaoPayService.cancel(purchasingId);
 
         // 취소 페이지로 리다이렉트
         response.sendRedirect(completeHost + completeCancelUrl);
@@ -102,7 +96,7 @@ public class PaymentController {
     public void fail(HttpServletResponse response,
                      @PathVariable String purchasingId) throws IOException {
         // 실패 처리
-        kakaoPayService.fail(purchasingId);
+        String completeFailUrl = kakaoPayService.fail(purchasingId);
 
         // 실패 페이지로 리다이렉트
         response.sendRedirect(completeHost + completeFailUrl);
