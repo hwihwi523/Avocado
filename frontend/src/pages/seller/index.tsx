@@ -17,7 +17,6 @@ import { authenticateTokenInPages } from "../../utils/authenticateTokenInPages";
 import { useEffect } from "react";
 import router from "next/router";
 
-
 const Seller = () => {
   //member 정보
   const member = useAppSelector((state: AppState) => state.auth.member);
@@ -66,7 +65,7 @@ const Seller = () => {
           style={{ padding: "10px 0px 90px 0px", margin: 0 }}
           value="상품 목록"
         >
-          <MyProductsList provider_id={member ? member.id : "" } />
+          <MyProductsList provider_id={member ? member.id : ""} />
         </TabPanel>
 
         {/* 광고 전략 */}
@@ -90,6 +89,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       { req: context.req, res: context.res },
       store
     );
+
     return {
       props: {},
     };
@@ -99,4 +99,3 @@ export const getServerSideProps = wrapper.getServerSideProps(
 const Background = styled.div`
   padding: 10px;
 `;
-

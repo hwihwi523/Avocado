@@ -13,21 +13,31 @@ import {
 } from "@/src/features/snapshot/snapshotApi";
 import { useRemoveSnapshotMutation } from "@/src/features/snapshot/snapshotApi";
 import { mbti_list, personal_color_list } from "../atoms/data";
+import { useSnackbar } from "notistack";
 
 const SnapshotItem: React.FC<{ data: snapshotItemType }> = (props) => {
   const item = props.data;
-
+  const { enqueueSnackbar } = useSnackbar();
   const [removeSnapshot] = useRemoveSnapshotMutation();
   const [addSnapshotLike] = useAddSnapshotLikeMutation();
   const [removeSnapshotLike] = useRemoveSnapshotLikeMutation();
 
   const [isLike, setIsLike] = useState(item.iliked);
 
+  //게시물 삭제
   function deleteHandler() {
     removeSnapshot(item.id)
       .unwrap()
       .then((res) => {
+        enqueueSnackbar(`게시물이 삭제되었씁니다. `, {
+          variant: "info",
+          anchorOrigin: {
+            horizontal: "center",
+            vertical: "top",
+          },
+        });
         router.reload(); //지우고 다시 로딩함
+        return;
       })
       .catch((err) => {
         console.log(err);

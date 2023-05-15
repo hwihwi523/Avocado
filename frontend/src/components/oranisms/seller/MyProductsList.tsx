@@ -9,8 +9,22 @@ import ProductCardsGrid from "../ProductCardsGrid";
 import { useInView } from "react-intersection-observer";
 import LinearProgress from "@mui/material/LinearProgress";
 import { BlockText, InlineText } from "../../atoms";
-import { Box, Grid } from "@mui/material";
+import {
+  Box,
+  Button,
+  Grid,
+  Dialog,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Stack,
+} from "@mui/material";
 import { ProductCard } from "../../molecues";
+import Slide from "@mui/material/Slide";
+import * as React from "react";
+import { TransitionProps } from "@mui/material/transitions";
+import CommercialRegist from "../CommercialRegist";
+import CloseIcon from "@mui/icons-material/Close";
 
 const MyProductsList: React.FC<{ provider_id: string }> = (props) => {
   const [ref, inView] = useInView(); //무한스크롤 감지 라이브러리
@@ -19,7 +33,10 @@ const MyProductsList: React.FC<{ provider_id: string }> = (props) => {
   const [last, setLast] = useState<number | null>(null); //마지막 제품 아이디
   const [size, setSize] = useState<number>(12); //한번에 보여주는 제품 개수
   const [isLastPage, setIsLastPage] = useState(false); // 마지막 페이지 인지 여부 확인
+
   const [registOpen, setRegistOpen] = useState(false); // 등록페이지 popup
+  const [registProductName, setRegistProductName] = useState<string>(""); //등록할 제품 아이디 셋팅
+  const [registProductId, setRegistProductId] = useState<number>(-1); //등록할 제품 아이디 셋팅
 
   //rtk로 넘어가는 파라미터
   function requeryValue() {
@@ -49,6 +66,7 @@ const MyProductsList: React.FC<{ provider_id: string }> = (props) => {
     requeryValue()
   );
 
+  //무한스크롤을 이용하기위해 이어 붙임
   useEffect(() => {
     //data 안에 변하지 않는 변수가 있을거임 그거 찾으셈
     if (data) {
@@ -67,13 +85,22 @@ const MyProductsList: React.FC<{ provider_id: string }> = (props) => {
     }
   }, [inView]);
 
+  //카테고리 변경될때마다 초기화 됨
   useEffect(() => {
     setLast(null);
     setIsLastPage(false);
     setProductList([]);
   }, [category]);
 
-  function registDialogHandler() {}
+  //모달 열기
+  const handleClickOpen = () => {
+    setRegistOpen(true);
+  };
+
+  //모달 닫기
+  const handleClose = () => {
+    setRegistOpen(false);
+  };
 
   return (
     <>
@@ -83,7 +110,7 @@ const MyProductsList: React.FC<{ provider_id: string }> = (props) => {
       <Grid container>
         {!last &&
           data?.data.content.map((item, i) => (
-            <Grid item lg={3} md={3} sm={4} xs={6} key={i}>
+            <Grid item lg={3} md={3} sm={4} xs={6} key={i} p={0.5}>
               <ProductCard
                 data={{
                   id: item.merchandise_id,
@@ -95,12 +122,23 @@ const MyProductsList: React.FC<{ provider_id: string }> = (props) => {
                   tags: [item.merchandise_category],
                 }}
               />
+              <Button
+                variant="outlined"
+                fullWidth
+                onClick={() => {
+                  setRegistProductName(item.merchandise_name);
+                  setRegistProductId(item.merchandise_id);
+                  handleClickOpen();
+                }}
+              >
+                광고 등록
+              </Button>
             </Grid>
           ))}
 
         {productList &&
           productList.map((item, i) => (
-            <Grid item lg={3} md={3} sm={4} xs={6} key={i}>
+            <Grid item lg={3} md={3} sm={4} xs={6} key={i} p={0.5}>
               <ProductCard
                 data={{
                   id: item.merchandise_id,
@@ -112,10 +150,22 @@ const MyProductsList: React.FC<{ provider_id: string }> = (props) => {
                   tags: [item.merchandise_category],
                 }}
               />
+              <Button
+                variant="outlined"
+                fullWidth
+                onClick={() => {
+                  setRegistProductName(item.merchandise_name);
+                  setRegistProductId(item.merchandise_id);
+                  handleClickOpen();
+                }}
+              >
+                광고 등록
+              </Button>
             </Grid>
           ))}
       </Grid>
 
+{/* 무한 스크롤을 위한 감시 div와 로딩바 */}
       {isLastPage ? (
         <BlockText
           style={{ textAlign: "center", padding: "40px 0" }}
@@ -130,11 +180,56 @@ const MyProductsList: React.FC<{ provider_id: string }> = (props) => {
       ) : (
         <InfinityScroll ref={ref} />
       )}
+
+      {/* 모달 창 */}
+
+      <Dialog
+        fullScreen
+        open={registOpen}
+        onClose={handleClose}
+        TransitionComponent={Transition}
+      >
+        <AppBar sx={{ position: "fixed" }}>
+          <Toolbar>
+            <Stack
+              style={{ width: "100%" }}
+              direction="row"
+              justifyContent={"space-between"}
+              alignItems={"center"}
+            >
+              {registProductName}
+              <IconButton
+                edge="start"
+                color="inherit"
+                onClick={handleClose}
+                aria-label="close"
+              >
+                <CloseIcon />
+              </IconButton>
+            </Stack>
+          </Toolbar>
+        </AppBar>
+        <CommercialRegist
+          merchandise_id={registProductId}
+          merchandise_name={registProductName}
+          modalClose={handleClose}
+        />
+      </Dialog>
     </>
   );
 };
 
 export default MyProductsList;
+
+//모달창을 위한 옵션
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement;
+  },
+  ref: React.Ref<unknown>
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const InfinityScroll = styled.div`
   width: 100%;

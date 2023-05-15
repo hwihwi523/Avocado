@@ -6,6 +6,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 export type ProductItem = {
   brand_name: string;
   merchandise_id: number;
+  merchandise_name: string;
   merchandise_category: string;
   price: number;
   discounted_price: number;

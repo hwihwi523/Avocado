@@ -6,7 +6,7 @@ import router from "next/router";
 import { Member } from "@/src/features/auth/authSlice";
 import { useEffect } from "react";
 
-const MainUserProfile: React.FC<{ member: Member }> = (props) => {
+const ProviderProfile: React.FC<{ member: Member }> = (props) => {
   const { gender, mbti_id, name, personal_color_id, picture_url, grade } =
     props.member;
 
@@ -42,7 +42,7 @@ const MainUserProfile: React.FC<{ member: Member }> = (props) => {
   );
 };
 
-export default MainUserProfile;
+export default ProviderProfile;
 
 type StyleProps = {
   left: string;

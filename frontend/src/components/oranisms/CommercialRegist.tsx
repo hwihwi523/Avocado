@@ -12,52 +12,31 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+import { useAddCommercialMutation } from "@/src/features/commercial/commercialApi";
 
 //구매 목록 더미 데이터
 
-const order_list = [
-  {
-    product_id: 12,
-    product_name: "상의",
-  },
-  {
-    product_id: 13,
-    product_name: "하의",
-  },
-  {
-    product_id: 23,
-    product_name: "아웃터",
-  },
-  {
-    product_id: 3,
-    product_name: "청바지",
-  },
-  {
-    product_id: 1,
-    product_name: "모자",
-  },
-];
-
-type Item = {
-  product_id: number;
-  product_name: string;
-};
-
-const CommercialRegist = () => {
+const CommercialRegist: React.FC<{
+  merchandise_id: number;
+  merchandise_name: string;
+  modalClose: () => void;
+}> = (props) => {
   const { enqueueSnackbar } = useSnackbar();
+  const { merchandise_id, merchandise_name, modalClose } = props;
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const [age, setAge] = useState(""); //나이대
   const [gender, setGender] = useState(""); //성별
-  const [product, setProduct] = useState(""); //상품목록 검색
   const [type, setType] = useState(""); //광고 타입
   const [personalColor, setPersonalColor] = useState(""); //퍼스널 컬러
-  const [mbti, setMbti] = useState(""); //mbti 타입
+  const [mbti, setMbti] = useState(""); //mbti
+  const [image, setImage] = useState<any>(null);
   //이미지 핸들러
   const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
     if (file) {
+      setImage(file);
       const reader = new FileReader();
 
       reader.onloadend = () => {
@@ -70,25 +49,12 @@ const CommercialRegist = () => {
     }
   };
 
+  const [addCommercial] = useAddCommercialMutation();
+
   //제출 함수 and 에러 표시
   function submitHandler() {
-
-
-
-
     if (!previewImage) {
       enqueueSnackbar(`이미지를 선택해 주세요 `, {
-        variant: "error",
-        anchorOrigin: {
-          horizontal: "center",
-          vertical: "top",
-        },
-      });
-      return;
-    }
-
-    if (!product) {
-      enqueueSnackbar(`제품을 선택해 주세요 `, {
         variant: "error",
         anchorOrigin: {
           horizontal: "center",
@@ -153,15 +119,44 @@ const CommercialRegist = () => {
       return;
     }
 
-    console.log({
-      previewImage,
-      product,
-      type,
-      age,
-      gender,
-      mbti,
-      personalColor,
-    });
+    //보낼 데이터 셋팅
+    const formData = new FormData();
+    formData.set("merchandise_id", merchandise_id.toString());
+    formData.set("merchandise_name", merchandise_name);
+    formData.set("mbti_id", mbti);
+    formData.set("personal_color_id", personalColor);
+    formData.set("commercial_type_id", "0");
+    formData.set("file", image);
+    formData.set("age", age);
+    formData.set("gender", gender);
+
+    addCommercial(formData)
+      .unwrap()
+      .then((res) => {
+        modalClose(); //모달 닫기
+        enqueueSnackbar(`광고를 등록했습니다. `, {
+          variant: "success",
+          anchorOrigin: {
+            horizontal: "center",
+            vertical: "top",
+          },
+        });
+        return;
+
+        //등록성공 메시지 보내기
+      })
+      .catch((err) => {
+        //실패 메시지 날리기
+        console.log("err >>>>>", err);
+        enqueueSnackbar(`광고를 등록하지 못했습니다. `, {
+          variant: "error",
+          anchorOrigin: {
+            horizontal: "center",
+            vertical: "top",
+          },
+        });
+        return;
+      });
   }
 
   //selet에서 선택한거 셋팅해주는 함수들
@@ -171,10 +166,6 @@ const CommercialRegist = () => {
 
   const genderHandleChange = (event: SelectChangeEvent) => {
     setGender(event.target.value as string);
-  };
-
-  const productHandleChange = (event: SelectChangeEvent) => {
-    setProduct(event.target.value as string);
   };
 
   const typeHandleChange = (event: SelectChangeEvent) => {
@@ -228,24 +219,6 @@ const CommercialRegist = () => {
           />
         </UploadBox>
 
-        {/* 제품선택 */}
-        <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">내 상품</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            label="orderList"
-            onChange={productHandleChange}
-            value={product}
-          >
-            {order_list.map((item, i) => (
-              <MenuItem value={item.product_id} key={i}>
-                {item.product_name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
         {/* 광고 타입 */}
         <FormControl fullWidth>
           <InputLabel id="demo-simple-select-label">광고 타입</InputLabel>
@@ -257,8 +230,8 @@ const CommercialRegist = () => {
             onChange={typeHandleChange}
             value={type}
           >
-            <MenuItem value={1}>팝업</MenuItem>
-            <MenuItem value={2}>메인페이지</MenuItem>
+            <MenuItem value={"0"}>팝업</MenuItem>
+            <MenuItem value={"1"}>메인페이지</MenuItem>
           </Select>
         </FormControl>
 
@@ -383,11 +356,3 @@ const UploadImg = styled.div`
   background-color: #dddddd;
   border-radius: 10px;
 `;
-
-
-
-
-
-
-
-
