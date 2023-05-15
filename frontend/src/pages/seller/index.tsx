@@ -12,17 +12,27 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import Head from "next/head";
+import { AppState, useAppSelector, wrapper } from "../../features/store";
+import { authenticateTokenInPages } from "../../utils/authenticateTokenInPages";
+import { useEffect } from "react";
+import router from "next/router";
 
 
 const Seller = () => {
-  
+  //member 정보
+  const member = useAppSelector((state: AppState) => state.auth.member);
   const [page, setPage] = useState("통계");
+  useEffect(() => {
+    if (!member) {
+      router.replace("/");
+    }
+  }, []);
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setPage(newValue);
   };
 
-
+  console.log(member);
 
   return (
     <Background>
@@ -56,7 +66,7 @@ const Seller = () => {
           style={{ padding: "10px 0px 90px 0px", margin: 0 }}
           value="상품 목록"
         >
-          <MyProductsList />
+          <MyProductsList provider_id={member ? member.id : "" } />
         </TabPanel>
 
         {/* 광고 전략 */}
@@ -66,8 +76,6 @@ const Seller = () => {
         >
           <MyCommercial />
         </TabPanel>
-
-        
       </TabContext>
     </Background>
   );
@@ -75,6 +83,20 @@ const Seller = () => {
 
 export default Seller;
 
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) => async (context) => {
+    // 쿠키의 토큰을 통해 로그인 확인, 토큰 리프레시, 실패 시 로그아웃 처리 등
+    await authenticateTokenInPages(
+      { req: context.req, res: context.res },
+      store
+    );
+    return {
+      props: {},
+    };
+  }
+);
+
 const Background = styled.div`
   padding: 10px;
 `;
+

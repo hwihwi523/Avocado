@@ -1,4 +1,4 @@
-const mbti_list:string[] = [
+const mbti_list: string[] = [
   "INFJ",
   "INFP",
   "INTJ",
@@ -17,7 +17,7 @@ const mbti_list:string[] = [
   "ESTP",
 ];
 
-const personal_color_list:string[] = [
+const personal_color_list: string[] = [
   "spring_warm_light",
   "spring_warm_brignt",
   "summer_cool_light",
@@ -30,7 +30,14 @@ const personal_color_list:string[] = [
   "winter_cool_deep",
 ];
 
+const category_list = [
+  { kor: "상의", eng: "Topwear" },
+  { kor: "하의", eng: "Bottomwear" },
+  { kor: "원피스", eng: "Dress" },
+  { kor: "신발", eng: "Footwear" },
+  { kor: "가방", eng: "Bags" },
+  { kor: "액세서리", eng: "Accessories" },
+  { kor: "전체", eng: "Total" },
+];
 
-
-export { mbti_list, personal_color_list };
-
+export { mbti_list, personal_color_list, category_list };

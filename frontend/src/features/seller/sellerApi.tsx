@@ -18,18 +18,20 @@ export type ProductItem = {
 
 export type ResponseProductListType = {
   message: string;
-  is_last_page: boolean;
-  last_id: number;
-  last_date: null; // 이게 뭐지?
-  data: ProductItem[];
+  data: {
+    is_last_page: boolean;
+    last_id: number;
+    last_date: null; // 이게 뭐지?
+    content: ProductItem[];
+  };
 };
 
-export type RequestProductListType = {
-  provider_id: number;
-  category: string | null; //
-  last: number | null; // 받아온 last_id 넘겨주면됨
-  size: number;
-};
+// export type RequestProductListType = {
+//   provider_id: string;
+//   category?: string | null | undefined; //
+//   last?: number | null | undefined; // 받아온 last_id 넘겨주면됨
+//   size: number;
+// };
 
 export const sellerApi = createApi({
   reducerPath: "sellerApi",
@@ -37,19 +39,16 @@ export const sellerApi = createApi({
   tagTypes: ["seller"],
   endpoints: (build) => ({
     //카테고리별 제품 리스트
-    getProductListByCategory: build.query<
-      ResponseProductListType,
-      RequestProductListType
-    >({
+    getProductListByCategory: build.query<ResponseProductListType, any>({
       query: (params) => ({
-        url: "/",
+        url: "/merchandises",
         method: "GET",
         params,
       }),
       providesTags: (result) =>
         result
           ? [
-              ...result.data.map(
+              ...result.data.content.map(
                 ({ merchandise_id }) =>
                   ({ type: "seller", id: merchandise_id } as const)
               ),
