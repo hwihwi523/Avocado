@@ -15,7 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -52,10 +54,11 @@ public class CommercialController {
 
 
     @PostMapping( "/ads")
-    public ResponseEntity<String> registCommercial(CommercialReqDto commercial, HttpServletRequest request){
-
+    public ResponseEntity<Map<String,String>> registCommercial(CommercialReqDto commercial, HttpServletRequest request){
+        Map<String,String> msg = new HashMap<String,String>();
+        msg.put("msg","success");
         commercialService.saveCommercial(commercial, request);
-        return new ResponseEntity<String>("success",HttpStatus.CREATED);
+        return new ResponseEntity<Map<String,String>>(msg,HttpStatus.CREATED);
     }
 
     @GetMapping("/ads/registed")
@@ -66,11 +69,12 @@ public class CommercialController {
     }
 
     @DeleteMapping("/ads")
-    public ResponseEntity<String> cancelCommercial(@RequestBody CommercialCancelReqDto commercialCancelReqDto, HttpServletRequest request){
+    public ResponseEntity<Map<String,String>> cancelCommercial(@RequestBody CommercialCancelReqDto commercialCancelReqDto, HttpServletRequest request){
 
         commercialService.removeCommercial(commercialCancelReqDto,request);
-
-        return new ResponseEntity<String>("success",HttpStatus.ACCEPTED);
+        Map<String,String> msg = new HashMap<String,String>();
+        msg.put("msg","success");
+        return new ResponseEntity<Map<String,String>>(msg,HttpStatus.ACCEPTED);
     }
 
 
