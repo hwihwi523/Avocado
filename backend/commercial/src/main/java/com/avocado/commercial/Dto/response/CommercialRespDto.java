@@ -14,6 +14,5 @@ import java.util.List;
 @AllArgsConstructor
 public class CommercialRespDto {
     private Popup popup;
-    List<Carousel> Carousel_list;
-
+    private List<Carousel> carousel_list;
 }

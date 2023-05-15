@@ -130,7 +130,7 @@ public class Product {
                         .sub_color1_eng(this.sub_color1_eng)
                         .sub_color2_eng(this.sub_color2_eng)
                         .sub_color2_kor(this.sub_color2_kor)
-                        .total_score(this.review_count == 0 ? this.total_score : this.total_score/this.review_count)
+                        .total_score(this.review_count == 0 ? 0 : this.total_score/this.review_count)
                         .review_count(this.review_count)
                         .category_kor(this.category_kor)
                         .category_eng(this.category_eng)

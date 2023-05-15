@@ -3,15 +3,14 @@ package com.avocado.commercial.Service;
 import com.avocado.commercial.Dto.request.CommercialCancelReqDto;
 import com.avocado.commercial.Dto.request.CommercialReqDto;
 import com.avocado.commercial.Dto.response.Analysis;
-import com.avocado.commercial.Dto.response.item.Carousel;
+import com.avocado.commercial.Dto.response.item.*;
 import com.avocado.commercial.Dto.response.CommercialRespDto;
-import com.avocado.commercial.Dto.response.item.Click;
-import com.avocado.commercial.Dto.response.item.Exposure;
-import com.avocado.commercial.Dto.response.item.Purchase;
 import com.avocado.commercial.Entity.Commercial;
 import com.avocado.commercial.Entity.CommercialExposure;
+import com.avocado.commercial.Entity.CommercialStatistic;
 import com.avocado.commercial.Repository.CommercialExposureRepository;
 import com.avocado.commercial.Repository.CommercialRepository;
+import com.avocado.commercial.Repository.CommercialStatisticRepository;
 import com.avocado.commercial.error.CommercialException;
 import com.avocado.commercial.error.ErrorCode;
 import com.avocado.commercial.util.JwtUtil;
@@ -35,6 +34,7 @@ public class CommercialService {
 
     private CommercialRepository commercialRepository;
     private CommercialExposureRepository commercialExposureRepository;
+    private CommercialStatisticRepository commercialStatisticRepository;
     private ImageService imageService;
     private JwtUtil jwtUtil;
     private final KafkaProducer kafkaproducer;
@@ -42,9 +42,11 @@ public class CommercialService {
     private final int TYPE_CAROUSEL = 1;
 
     @Autowired
-    public CommercialService(CommercialRepository commercialRepository, CommercialExposureRepository commercialExposureRepository, ImageService imageService, JwtUtil jwtUtil, KafkaProducer kafkaproducer){
+    public CommercialService(CommercialRepository commercialRepository, CommercialExposureRepository commercialExposureRepository,
+                             ImageService imageService, JwtUtil jwtUtil, KafkaProducer kafkaproducer, CommercialStatisticRepository commercialStatisticRepository){
         this.commercialRepository = commercialRepository;
         this.commercialExposureRepository = commercialExposureRepository;
+        this.commercialStatisticRepository = commercialStatisticRepository;
         this.imageService = imageService;
         this.jwtUtil = jwtUtil;
         this.kafkaproducer = kafkaproducer;
@@ -59,7 +61,7 @@ public class CommercialService {
         List<Commercial> carouselEntityList = null;
 
         // 넘어온 상태 값에 따라 다른 리스트를 가져온다.
-        if(gender == 'X'||age==-1){
+        if(gender == 'X'||age == -1){
             popupEntityList = commercialRepository.findByCommercialTypeId(TYPE_POPUP);
             carouselEntityList = commercialRepository.findByCommercialTypeId(TYPE_CAROUSEL);
         }else {
@@ -86,39 +88,17 @@ public class CommercialService {
         // 응답으로 넘길 Dto
         CommercialRespDto commercialRespDto = new CommercialRespDto();
         List<Carousel> carouselList = new ArrayList<>();
-        // 무작위의 광고를 보여주기 위한 랜덤객체
-        Random random = new Random();
 
-        // 광고를 하나 뽑아 popup으로 넣는다
-        if(0 <popupEntityList.size()) {
-            Commercial commercial = popupEntityList.get(random.nextInt(popupEntityList.size()));
+        // 팝업을 사용하게 되면 스트림도 넘겨야한다.
+        commercialRespDto.setPopup(popupEntityList.size() == 0 ? null : popupEntityList.get(0).toPopup());
+
+        for(Commercial commercial : carouselEntityList){
             CommercialExposure commercialExposure = new CommercialExposure();
-            commercialRespDto.setPopup(commercial.toPopup());
-            // 노출 수 올리기
+            carouselList.add(commercial.toCarousel());
             commercialExposure.setCommercialId(commercial.getId());
             commercialExposureRepository.save(commercialExposure);
-        }
-
-        Set<Integer> randomNumberSet = new HashSet<>();
-        if(carouselEntityList.size() < 5){
-            for(int i = 0; i < carouselEntityList.size(); ++i){
-                randomNumberSet.add(i);
-            }
-        }
-        else{
-            while (randomNumberSet.size() < 5){
-                int randomNumber = random.nextInt(carouselEntityList.size());
-                randomNumberSet.add(randomNumber);
-            }
-        }
-        for(int index : randomNumberSet){
-            CommercialExposure commercialExposure = new CommercialExposure();
-            carouselList.add(carouselEntityList.get(index).toCarousel());
-            // 노출 수 올리기()
-            commercialExposure.setCommercialId(carouselEntityList.get(index).getId());
-            commercialExposureRepository.save(commercialExposure);
             // produce to kafka
-            kafkaproducer.sendAdview(carouselEntityList.get(index).getMerchandiseId(), UUID.randomUUID());
+            kafkaproducer.sendAdview(commercial.getMerchandiseId(), UUID.randomUUID());
         }
         commercialRespDto.setCarousel_list(carouselList);
 
@@ -226,6 +206,11 @@ public class CommercialService {
     }
 
 
+    public List<CommercialStatistic> getCommercialStatistic(int commercialId){
+        List<CommercialStatistic> commercialStatisticList = commercialStatisticRepository.findByCommercialId(commercialId);
+        return commercialStatisticList;
+    }
+
 
     public void checkCommercialRequest(CommercialReqDto commercialReqDto){
         if(commercialReqDto.getAge() < 0){
@@ -251,10 +236,10 @@ public class CommercialService {
         if(gender != 'M' && gender != 'F' && gender != 'X'){
             throw new CommercialException(ErrorCode.BAD_GENDER_TYPE);
         }
-        if(mbtiId < 0 || 15 < mbtiId){
+        if(mbtiId < -1 || 15 < mbtiId){
             throw new CommercialException(ErrorCode.BAD_MBTI_ID);
         }
-        if(personalColorId < 0 || 9 < personalColorId){
+        if(personalColorId < -1 || 9 < personalColorId){
             throw new CommercialException(ErrorCode.BAD_PERSONAL_COLOR);
         }
     }

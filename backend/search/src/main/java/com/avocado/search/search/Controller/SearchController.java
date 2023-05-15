@@ -33,4 +33,10 @@ public class SearchController {
     public ResponseEntity<List<KeywordRespDto>> recommandKeyword(@RequestParam(name = "category", defaultValue = "All")String category, @RequestParam(name = "keyword", defaultValue = " ")String keyword){
         return new ResponseEntity<List<KeywordRespDto>>(searchService.searchKeyword(category,keyword), HttpStatus.OK);
     }
+
+    @GetMapping("/modify")
+    public ResponseEntity<String> modify(){
+        searchService.modifyProduct();
+        return new ResponseEntity<String>("success",HttpStatus.OK);
+    }
 }

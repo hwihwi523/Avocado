@@ -14,14 +14,39 @@ import java.util.List;
 import java.util.UUID;
 
 public interface CommercialRepository extends Repository<Commercial,Long> {
+
+    @Query(nativeQuery = true, value = "select * from commercial \n" +
+            "where mbti_id = :mbtiId AND age = :age AND commercial_type_id = :commercialTypeId AND personal_color_id = :personalColorId AND gender = :gender\n" +
+            "ORDER BY RAND()\n" +
+            "LIMIT 5")
     List<Commercial> findByMbtiIdAndAgeAndCommercialTypeIdAndPersonalColorIdAndGender
             (int mbtiId, int age, int commercialTypeId, int personalColorId, char gender);
+
+    @Query(nativeQuery = true, value = "select * from commercial \n" +
+            "where mbti_id = :mbtiId AND age = :age AND commercial_type_id = :commercialTypeId AND gender = :gender\n" +
+            "ORDER BY RAND()\n" +
+            "LIMIT 5")
     List<Commercial> findByMbtiIdAndAgeAndCommercialTypeIdAndGender
             (int mbtiId, int age, int commercialTypeId, char gender);
+
+    @Query(nativeQuery = true, value = "select * from commercial \n" +
+            "where age = :age AND commercial_type_id = :commercialTypeId AND personal_color_id = :personalColorId AND gender = :gender\n" +
+            "ORDER BY RAND()\n" +
+            "LIMIT 5")
     List<Commercial> findByAgeAndCommercialTypeIdAndPersonalColorIdAndGender
             (int age, int commercialTypeId, int personalColorId, char gender);
+
+    @Query(nativeQuery = true, value = "select * from commercial \n" +
+            "where age = :age AND commercial_type_id = :commercialTypeId AND gender = :gender\n" +
+            "ORDER BY RAND()\n" +
+            "LIMIT 5")
     List<Commercial> findByAgeAndCommercialTypeIdAndGender
             (int age, int commercialTypeId, char gender);
+
+    @Query(nativeQuery = true, value = "select * from commercial \n" +
+            "where commercial_type_id = :commercialTypeId\n" +
+            "ORDER BY RAND()\n" +
+            "LIMIT 5")
     List<Commercial> findByCommercialTypeId(int commercialTypeId);
 
     void save(Commercial commercial);
