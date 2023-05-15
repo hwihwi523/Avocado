@@ -20,6 +20,7 @@ public enum ErrorCode {
 
     /* 401 UNAUTHORIZED : 인증되지 않은 사용자 */
     INVALID_AUTH_TOKEN(UNAUTHORIZED, "권한 정보가 없는 토큰입니다"),
+    EXPIRED_TOKEN(UNAUTHORIZED, "사용기한이 만료된 토큰입니다"),
 
     // 403 Forbidden : 유효하지 않은 데이터
     //INVALID_PASSWORD(FORBIDDEN, "비밀번호가 유효하지 않습니다."),

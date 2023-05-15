@@ -76,5 +76,5 @@ public interface CommercialRepository extends Repository<Commercial,Long> {
     List<Purchase> countPurchaseByMerchandiseId(@Param("merchandiseId")long merchandiseId);
 
 
-    void deleteByIdAndProviderId(long commercial_id, UUID provider_id);
+    long deleteByIdAndProviderId(long commercial_id, UUID provider_id);
 }

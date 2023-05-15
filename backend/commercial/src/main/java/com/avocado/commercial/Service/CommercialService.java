@@ -19,6 +19,7 @@ import io.jsonwebtoken.Jwt;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import com.avocado.commercial.kafka.KafkaProducer;
 import com.avocado.commercial.util.JwtUtil;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,6 @@ import java.net.http.HttpRequest;
 import java.util.*;
 
 @Service
-// 리팩토링 무조건 필요할 듯
 public class CommercialService {
 
     private CommercialRepository commercialRepository;
@@ -52,7 +52,6 @@ public class CommercialService {
         this.kafkaproducer = kafkaproducer;
     }
 
-    // 리팩토링 해야할 듯
     public CommercialRespDto getCommercialExposure(int mbtiId, int age, int personalColorId, char gender){
         checkCommercialRequest(age, gender, mbtiId, personalColorId);
 
@@ -88,10 +87,23 @@ public class CommercialService {
         // 응답으로 넘길 Dto
         CommercialRespDto commercialRespDto = new CommercialRespDto();
         List<Carousel> carouselList = new ArrayList<>();
+        List<Popup> popupList = new ArrayList<>();
 
-        // 팝업을 사용하게 되면 스트림도 넘겨야한다.
-        commercialRespDto.setPopup(popupEntityList.size() == 0 ? null : popupEntityList.get(0).toPopup());
+        // 팝업 리스트 세개
+        int i = 0;
+        for(Commercial commercial : popupEntityList){
+            if(i++ == 3){
+                break;
+            }
+            CommercialExposure commercialExposure = new CommercialExposure();
+            popupList.add(commercial.toPopup());
+            commercialExposure.setCommercialId(commercial.getId());
+            commercialExposureRepository.save(commercialExposure);
+            // kafka
+            kafkaproducer.sendAdview(commercial.getMerchandiseId(), UUID.randomUUID());
+        }
 
+        // 캐러셀 리스트 5개
         for(Commercial commercial : carouselEntityList){
             CommercialExposure commercialExposure = new CommercialExposure();
             carouselList.add(commercial.toCarousel());
@@ -101,6 +113,7 @@ public class CommercialService {
             kafkaproducer.sendAdview(commercial.getMerchandiseId(), UUID.randomUUID());
         }
         commercialRespDto.setCarousel_list(carouselList);
+        commercialRespDto.setPopup_list(popupList);
 
         return commercialRespDto;
     }
@@ -194,15 +207,14 @@ public class CommercialService {
     public void removeCommercial(CommercialCancelReqDto commercialCancelReqDto, HttpServletRequest request) {
         UUID uuid = jwtUtil.getId(request);
         System.out.println(commercialCancelReqDto);
-        try {
-            commercialExposureRepository.deleteByCommercialId(commercialCancelReqDto.getCommercial_id());
-            commercialRepository.deleteByIdAndProviderId(commercialCancelReqDto.getCommercial_id(),uuid);
-        }catch (EmptyResultDataAccessException e){
-            e.printStackTrace();
+        commercialExposureRepository.deleteByCommercialId(commercialCancelReqDto.getCommercial_id());
+        if(0 == commercialRepository.deleteByIdAndProviderId(commercialCancelReqDto.getCommercial_id(),uuid)){
             throw new CommercialException(ErrorCode.COMMERCIAL_NOT_FOUND);
         }
+    }
 
-
+    public void saveCommercialStatistic(List<CommercialStatistic> commercialStatisticList){
+        commercialStatisticRepository.saveAll(commercialStatisticList);
     }
 
 
