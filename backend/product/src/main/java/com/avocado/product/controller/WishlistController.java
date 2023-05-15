@@ -33,7 +33,9 @@ public class WishlistController {
 
     @GetMapping("")
     public ResponseEntity<BaseResp> showMyCart(HttpServletRequest request) {
+        log.info("showMyCart >> 시작");
         UUID consumerId = jwtUtil.getId(request);
+        log.info("showMyCart >> \"" + consumerId + "\"");
         return ResponseEntity.ok(BaseResp.of(
                 "찜 목록 조회 성공", wishlistService.showMyWishlist(consumerId)
         ));
