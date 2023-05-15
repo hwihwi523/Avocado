@@ -91,6 +91,18 @@ public class WishlistRepository {
                 .fetch();
     }
 
+    public Long findByMerchandiseName(UUID consumerId, String merchandiseName) {
+        return queryFactory
+                .select(wishlist.id)
+                .from(wishlist)
+                .join(wishlist.merchandise, merchandise)
+                .where(
+                        wishlist.consumer.id.eq(consumerId),
+                        merchandise.name.eq(merchandiseName)
+                )
+                .fetchFirst();
+    }
+
     // 찜 ID 일치 여부
     private BooleanExpression eqWishlistId(Long wishlistId) {
         return wishlistId != null ? wishlist.id.eq(wishlistId) : null;

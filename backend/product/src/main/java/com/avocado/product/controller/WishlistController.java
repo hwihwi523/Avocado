@@ -6,6 +6,7 @@ import com.avocado.product.dto.request.RemoveWishlistReq;
 import com.avocado.product.dto.response.BaseResp;
 import com.avocado.product.service.WishlistService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping("/wishlists")
 @RequiredArgsConstructor
@@ -43,5 +45,15 @@ public class WishlistController {
         UUID consumerId = jwtUtil.getId(request);
         wishlistService.removeProductFromWishList(consumerId, removeWishlistReq.getMerchandise_id());
         return ResponseEntity.ok(BaseResp.of("찜 해제 성공"));
+    }
+
+    @GetMapping("/exists")
+    public ResponseEntity<BaseResp> testExistsWishlist(@RequestParam String merchandise_name,
+                                                       HttpServletRequest request) {
+        log.info("testExistsWishlist >> \"" + merchandise_name + "\"");
+        UUID consumerId = jwtUtil.getId(request);
+        log.info("testExistsWishlist >> \"" + consumerId + "\"");
+        boolean exists = wishlistService.testExistsWishlist(consumerId, merchandise_name);
+        return ResponseEntity.ok(BaseResp.of("찜 존재 여부 확인", exists));
     }
 }
