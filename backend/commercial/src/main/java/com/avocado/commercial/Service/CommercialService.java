@@ -14,19 +14,13 @@ import com.avocado.commercial.Repository.CommercialStatisticRepository;
 import com.avocado.commercial.error.CommercialException;
 import com.avocado.commercial.error.ErrorCode;
 import com.avocado.commercial.util.JwtUtil;
-import com.avocado.commercial.util.UUIDUtil;
-import io.jsonwebtoken.Jwt;
-import net.bytebuddy.agent.builder.AgentBuilder;
 import com.avocado.commercial.kafka.KafkaProducer;
-import com.avocado.commercial.util.JwtUtil;
-import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
-import java.net.http.HttpRequest;
 import java.util.*;
 
 @Service
@@ -89,7 +83,7 @@ public class CommercialService {
         List<Carousel> carouselList = new ArrayList<>();
         List<Popup> popupList = new ArrayList<>();
 
-        // 팝업 리스트 세개
+        // 팝업 리스트 3개
         int i = 0;
         for(Commercial commercial : popupEntityList){
             if(i++ == 3){
@@ -100,7 +94,7 @@ public class CommercialService {
             commercialExposure.setCommercialId(commercial.getId());
             commercialExposureRepository.save(commercialExposure);
             // kafka
-            kafkaproducer.sendAdview(commercial.getMerchandiseId(), UUID.randomUUID());
+//            kafkaproducer.sendAdview(commercial.getMerchandiseId(), UUID.randomUUID());
         }
 
         // 캐러셀 리스트 5개
@@ -110,7 +104,7 @@ public class CommercialService {
             commercialExposure.setCommercialId(commercial.getId());
             commercialExposureRepository.save(commercialExposure);
             // produce to kafka
-            kafkaproducer.sendAdview(commercial.getMerchandiseId(), UUID.randomUUID());
+//            kafkaproducer.sendAdview(commercial.getMerchandiseId(), UUID.randomUUID());
         }
         commercialRespDto.setCarousel_list(carouselList);
         commercialRespDto.setPopup_list(popupList);
@@ -183,7 +177,7 @@ public class CommercialService {
 
     public void saveCommercial(CommercialReqDto commercialReqDto, HttpServletRequest request){
         checkCommercialRequest(commercialReqDto);
-        String imgurl = imageService.createCommercialImages(commercialReqDto.getFile());
+        String imgurl = imageService.createCommercialImages(commercialReqDto.getFile()[0]);
         if(imgurl == null){
             throw new CommercialException(ErrorCode.BAD_FILE_FORMAT);
         }
@@ -218,9 +212,13 @@ public class CommercialService {
     }
 
 
-    public List<CommercialStatistic> getCommercialStatistic(int commercialId){
-        List<CommercialStatistic> commercialStatisticList = commercialStatisticRepository.findByCommercialId(commercialId);
-        return commercialStatisticList;
+    public List<Analysis> getCommercialStatistic(int commercialId){
+        List<Analysis> analysisList = new ArrayList<>();
+        List<CommercialStatistic> commercialStatisticList = commercialStatisticRepository.findByCommercialId(commercialId,Sort.by(Sort.Direction.ASC,"date"));
+        for(CommercialStatistic commercialStatistic : commercialStatisticList){
+            analysisList.add(commercialStatistic.toDto());
+        }
+        return analysisList;
     }
 
 
@@ -245,7 +243,7 @@ public class CommercialService {
         if(age < -1){
             throw new CommercialException(ErrorCode.BAD_AGE);
         }
-        if(gender != 'M' && gender != 'F' && gender != 'X'){
+        if(!(gender == 'M' || gender == 'F' || gender == 'X')){
             throw new CommercialException(ErrorCode.BAD_GENDER_TYPE);
         }
         if(mbtiId < -1 || 15 < mbtiId){

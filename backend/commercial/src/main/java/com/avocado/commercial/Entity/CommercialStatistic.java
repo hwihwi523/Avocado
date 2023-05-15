@@ -1,5 +1,6 @@
 package com.avocado.commercial.Entity;
 
+import com.avocado.commercial.Dto.response.Analysis;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -37,4 +38,15 @@ public class CommercialStatistic {
 
     @Column(nullable = false, columnDefinition = "DATE")
     private String date;
+
+    public Analysis toDto(){
+        Analysis commercialStatisticRespDto = Analysis.builder()
+                .click_cnt(this.clickCnt)
+                .purchase_amount(this.purchaseAmount)
+                .exposure_cnt(this.exposureCnt)
+                .quantity(this.quantity)
+                .date(this.date)
+                .build();
+        return commercialStatisticRespDto;
+    }
 }

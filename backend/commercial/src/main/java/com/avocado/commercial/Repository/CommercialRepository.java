@@ -49,9 +49,9 @@ public interface CommercialRepository extends Repository<Commercial,Long> {
             "LIMIT 5")
     List<Commercial> findByCommercialTypeId(int commercialTypeId);
 
-    void save(Commercial commercial);
-
     List<Commercial> findByProviderId(UUID providerId);
+
+    void save(Commercial commercial);
 
     Commercial findById(long id);
 

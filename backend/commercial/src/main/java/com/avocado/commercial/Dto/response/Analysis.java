@@ -1,13 +1,14 @@
 package com.avocado.commercial.Dto.response;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 
 @Setter
 @Getter
 @ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Analysis {
     private String date;
     private long exposure_cnt;
