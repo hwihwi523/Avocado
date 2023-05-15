@@ -25,6 +25,4 @@ public class MyStyleshotController {
         Claims claims = jwtUtils.getClaims(request);
         return ResponseEntity.ok(styleshotService.myStyleshotList(claims));
     }
-
-
 }
