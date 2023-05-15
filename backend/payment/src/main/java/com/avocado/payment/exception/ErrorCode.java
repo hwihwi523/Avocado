@@ -29,6 +29,7 @@ public enum ErrorCode {
     NOT_SAME_WITH_TOTAL_PRICE(400, "NOT_SAME_WITH_TOTAL_PRICE"),
     READY_ERROR(500, "READY_ERROR"),
     APPROVE_ERROR(500, "APPROVE_ERROR"),
+    CANCEL_ERROR(500, "CANCEL_ERROR"),
     ;
 
     final int status;

@@ -6,7 +6,7 @@ import MobileHeader from "./MobileHeader";
 import ProductCardsRow from "./ProductCardsRow";
 import ProductDetailImage from "./ProductDetailImage";
 import ProductDescription from "./ProductDescription";
-import ProductReview from "./ProductReview";
+import ProductReviewOrg from "./ProductReviewOrg";
 import ProductCardsGrid from "./ProductCardsGrid";
 import UserStateSummary from "./UserStateSummary";
 import CommercialRegist from "./CommercialRegist";
@@ -23,7 +23,7 @@ export {
   ProductCardsRow,
   ProductDetailImage,
   ProductDescription,
-  ProductReview,
+  ProductReviewOrg,
   ProductCardsGrid,
   UserStateSummary,
   CommercialRegist,

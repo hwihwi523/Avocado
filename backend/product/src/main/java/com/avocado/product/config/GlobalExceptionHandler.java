@@ -17,7 +17,7 @@ import java.util.Map;
 @Slf4j
 public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessLogicException.class)
-    protected ResponseEntity<BaseResp> handleRedirectBusinessLogicException(BusinessLogicException e) {
+    protected ResponseEntity<BaseResp> handleBusinessLogicException(BusinessLogicException e) {
         log.error(e.getMessage() + " >> " + e.getErrorCode().getMessage());
         ErrorCode errorCode = e.getErrorCode();
         return ResponseEntity

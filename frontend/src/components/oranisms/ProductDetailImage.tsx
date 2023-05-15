@@ -7,19 +7,24 @@ import Link from "next/link";
 import Chip from "@mui/material/Chip";
 import { BlockText, InlineText } from "../atoms";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import { ProductDetail } from "@/src/features/product/productSlice";
 
-const ProductDetailImage = () => {
-  const images = [
-    "https://cdn.pixabay.com/photo/2023/03/16/15/00/woman-7856919_960_720.jpg",
-    "https://cdn.pixabay.com/photo/2023/04/28/12/18/dogs-7956516_960_720.jpg",
-    "https://cdn.pixabay.com/photo/2022/10/06/13/17/monks-7502654_960_720.jpg",
+type ProductDetailImageProps = {
+  product: ProductDetail | null;
+};
+
+const ProductDetailImage: React.FC<ProductDetailImageProps> = ({ product }) => {
+  const images = product?.images;
+  const product_name = product?.merchandise_name;
+  const brand = product?.brand_name;
+  const tags = [
+    product?.mbti,
+    product?.personal_color,
+    product?.merchandise_category,
   ];
-  const product_name = "오버사이즈 울 트랜치 코트";
-  const brand = "Valentino";
-  const tags = ["ESTJ", "가을뮤트", "상의"];
-  const discount = 10000;
-  const price = 43000;
-  const remaining = 997;
+  const discount = product?.discounted_price; //할인된 가격
+  const price = product?.price; //원가
+  const remaining = product?.inventory; //재고
 
   //숫자 변환 함수 3000  => 3,000원
   function formatCurrency(num: number) {
@@ -36,7 +41,7 @@ const ProductDetailImage = () => {
         </Link>
       </Stack>
       <Carousel animation="slide" autoPlay={true}>
-        {images.map((url: string, i) => (
+        {images?.map((url: string, i) => (
           <Imagebox key={i}>
             <Image
               src={url}
@@ -69,18 +74,19 @@ const ProductDetailImage = () => {
         {/*태그*/}
         <Grid item xs={12}>
           <Stack direction="row" spacing={3} gap={1}>
-            {tags.map((item: string) => (
-              <Chip
-                size="small"
-                label={item}
-                key={item}
-                variant="outlined"
-                style={{ fontSize: "12px", margin: "5px 0 40px 0" }}
-              />
-            ))}
+            {tags
+              .filter((item): item is string => Boolean(item))
+              .map((item: string) => (
+                <Chip
+                  size="small"
+                  label={item}
+                  key={item}
+                  variant="outlined"
+                  style={{ fontSize: "12px", margin: "5px 0 40px 0" }}
+                />
+              ))}
           </Stack>
         </Grid>
-
         {/* 원래 가격 */}
         <Grid item xs={12}>
           <BlockText
@@ -88,18 +94,21 @@ const ProductDetailImage = () => {
             size="1.5rem"
             style={{ textDecoration: "line-through", color: "grey" }}
           >
-            {formatCurrency(price)}
+            {price && formatCurrency(price)}
           </BlockText>
         </Grid>
 
-        {/* 원가 + 할인률 */}
+        {/* 할인가 + 할인률 */}
         <Grid item xs={12}>
           <Stack direction={"row"} justifyContent={"space-between"}>
             <InlineText type="L" size="2rem">
-              {formatCurrency(price - discount)}
+              {price && discount && formatCurrency(discount)}
             </InlineText>
             <InlineText type="L" size="2rem" color="red">
-              {Math.ceil((discount / price) * 100)}%
+              {price &&
+                discount &&
+                Math.ceil(((price - discount) / price) * 100)}
+              %
             </InlineText>
           </Stack>
           <BlockText
@@ -108,7 +117,7 @@ const ProductDetailImage = () => {
             color="grey"
             style={{ marginTop: "20px" }}
           >
-            남은 수량 : {remaining}
+            {remaining && <> 남은 수량 : {remaining}</>}
           </BlockText>
         </Grid>
       </Grid>

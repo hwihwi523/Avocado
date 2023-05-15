@@ -34,9 +34,11 @@ public class SearchController {
         return new ResponseEntity<List<KeywordRespDto>>(searchService.searchKeyword(category,keyword), HttpStatus.OK);
     }
 
-    @GetMapping("/modify")
-    public ResponseEntity<String> modify(){
-        searchService.modifyProduct();
+    @GetMapping("/modify/review")
+    public ResponseEntity<String> modifyProductReview(){
+        searchService.modifyProductReview();
         return new ResponseEntity<String>("success",HttpStatus.OK);
     }
+
+
 }

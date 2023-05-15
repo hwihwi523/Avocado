@@ -2,6 +2,7 @@ package com.avocado.statistics.api.service;
 
 import com.avocado.statistics.common.codes.ScoreFactor;
 import com.avocado.statistics.common.utils.CategoryTypeUtil;
+import com.avocado.statistics.api.dto.GenderAgeGroup;
 import com.avocado.statistics.db.mysql.entity.mybatis.AgeGenderScoreMybatis;
 import com.avocado.statistics.db.mysql.entity.mybatis.MbtiScoreMybatis;
 import com.avocado.statistics.db.mysql.entity.mybatis.PersonalColorScoreMybatis;
@@ -77,13 +78,9 @@ public class ProviderDBService {
 
                     switch (cType) {
                         case AGE_GENDER:
-                            int age = (i / 2 + 1) * 10;
-                            String gender;
-                            if (i % 2 == 0) {
-                                gender = "F";
-                            } else {
-                                gender = "M";
-                            }
+                            GenderAgeGroup genderAgeGroup = categoryTypeUtil.getGenderAgeGroupFromIndex(i);
+                            int age = genderAgeGroup.getAgeGroup();
+                            String gender = genderAgeGroup.getGender();
 
                             AgeGenderScoreMybatis ageGenderScoreMybatis = AgeGenderScoreMybatis.builder()
                                     .score(score).age(age)
@@ -102,11 +99,9 @@ public class ProviderDBService {
                             break;
                     }
                 }
-
             }
-
-
         }
+
         scoreMybatisRepository.ageGenderBulkSave(ageGenderScoreList);
         scoreMybatisRepository.mbtiBulkSave(mbtiScoreList);
         scoreMybatisRepository.personalColorBulkSave(personalColorScoreList);

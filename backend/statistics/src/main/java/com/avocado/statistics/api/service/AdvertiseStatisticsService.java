@@ -17,7 +17,6 @@ public class AdvertiseStatisticsService {
     private final AdvertiseCountRepository advertiseCountRepository;
     private final DateUtil dateUtil;
 
-
     public void sendAdvertiseInfo() {
         String nowDate = dateUtil.getNowDate();
         List<Status> statusList = new ArrayList<>();

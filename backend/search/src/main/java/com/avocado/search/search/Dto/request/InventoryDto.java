@@ -8,9 +8,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductReqDto {
+public class InventoryDto {
     private int id;
     private int inventory;
-    private int review_count;
-    private int total_score;
 }

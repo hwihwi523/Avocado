@@ -36,13 +36,18 @@ public class MerchandiseListController {
      */
     @GetMapping("")
     public ResponseEntity<BaseResp> showMerchandises_NoOffset(@RequestParam @Nullable String provider_id,
-                                                     @RequestParam @Nullable Short category,
-                                                     @RequestParam @Nullable Long last,
-                                                     @RequestParam(defaultValue = "12") Integer size) {
+                                                              @RequestParam @Nullable Short category,
+                                                              @RequestParam @Nullable Long last,
+                                                              @RequestParam(defaultValue = "12") Integer size,
+                                                              HttpServletRequest request) {
+        UUID consumerId = null;
+        try { consumerId = jwtUtil.getId(request); }
+        catch (Exception ignore) {}
+
         UUID providerId = provider_id != null
                 ? uuidUtil.joinByHyphen(provider_id)
                 : null;
-        PageResp result = merchandiseService.showMerchandiseList_NoOffset(category, providerId, last, size);
+        PageResp result = merchandiseService.showMerchandiseList_NoOffset(consumerId, category, providerId, last, size);
         return ResponseEntity.ok(BaseResp.of("상품 조회 성공", result));
     }
 

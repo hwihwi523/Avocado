@@ -112,10 +112,19 @@ export default function SellerLogin() {
 
   const handleLogout = () => {
     console.log("로그아웃 버튼이 클릭되었습니다.");
-    removeTokenAll();
-    dispatch(clearAuth());
-    //로그인 페이지로 이동
-    router.push("/login");
+    // removeTokenAll();
+    // dispatch(clearAuth());
+    // //로그인 페이지로 이동
+    // router.push("/login");
+    fetch("/api/logout", { method: "POST" })
+      .then(() => {
+        // 로그아웃 성공 시 처리할 로직 작성
+        console.error("WEB_LOGOUT_SUCCESS");
+        router.push("/login");
+      })
+      .catch((error) => {
+        console.error("WEB_LOGOUT_FAIL: ", error);
+      });
   };
 
   const [showPassword, setShowPassword] = useState(false);

@@ -8,13 +8,12 @@ import {
   ProductDetailImage,
   ProductCardsRow,
   ProductDescription,
-  ProductReview,
+  ProductReviewOrg,
 } from "@/src/components/oranisms";
 import { IconButton, Stack } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import * as React from "react";
 import { BlockText } from "@/src/components/atoms";
-import ProductBottom from "@/src/components/oranisms/ProductBottom";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -23,12 +22,47 @@ import Slide from "@mui/material/Slide";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { TransitionProps } from "@mui/material/transitions";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import Head from "next/head";
-import router from "next/router";
+import { useRouter } from "next/router";
+import { AppState, useAppSelector, wrapper } from "@/src/features/store";
+import { authenticateTokenInPages } from "@/src/utils/authenticateTokenInPages";
+import {
+  productApi,
+  useGetIsWishlistQuery,
+  useGetProductReviewsQuery,
+} from "@/src/features/product/productApi";
+import {
+  ProductReview,
+  setSelectedProductDetail,
+} from "@/src/features/product/productSlice";
+import dynamic from "next/dynamic";
 
-const ProductDetail = () => {
+const ProductDetailPage = () => {
+  const ProductBottom = dynamic(
+    () => import("@/src/components/oranisms/ProductBottom"),
+    { ssr: false }
+  );
+
+  const router = useRouter();
+  const product = useAppSelector(
+    (state: AppState) => state.product.selectedProductDetail
+  );
+  const member = useAppSelector((state: AppState) => state.auth.member);
+
+  // url 마지막에서 product Id 가져오기
+  const productId = router.asPath.split("/").pop();
+  // reviews는 클라이언트 단에서 호출 => 등록 및 삭제 시 데이터 refetch를 위해
+  const { data: getReviewsData, error: getReviewsError } =
+    useGetProductReviewsQuery(productId!);
+  const reviews = getReviewsData as ProductReview[] | [];
+  // wishlist button 상태관리를 위해
+  const { data: getIsWishlistData, error } = useGetIsWishlistQuery({
+    merchandise_name: product!.merchandise_name,
+  });
+  const isWishlist = getIsWishlistData?.data;
+
   const [size, setSize] = useState("M");
   const [count, setCount] = useState(1);
   const [open, setOpen] = React.useState(false);
@@ -62,26 +96,53 @@ const ProductDetail = () => {
 
   //구매하기 함수
   function purchaseHandler() {
-    console.log({
-      id: 123123,
-      size,
-      count,
-    });
-
-    router.push("/billing");
+    if (member) {
+      router.push({
+        pathname: "/billing",
+        query: {
+          member: JSON.stringify(member),
+          products: JSON.stringify([
+            {
+              id: product?.id,
+              brand_namd: product?.brand_name,
+              merchandise_id: product?.merchandise_id,
+              merchandise_category: product?.merchandise_category,
+              images: product?.images,
+              merchandise_name: product?.merchandise_name,
+              price: product?.price,
+              discounted_price: product?.discounted_price,
+              size,
+              count,
+            },
+            {
+              id: product?.id,
+              brand_namd: product?.brand_name,
+              merchandise_id: product?.merchandise_id,
+              merchandise_category: product?.merchandise_category,
+              images: product?.images,
+              merchandise_name: product?.merchandise_name,
+              price: product?.price,
+              discounted_price: product?.discounted_price,
+              size,
+              count,
+            },
+          ]),
+        },
+      });
+    }
   }
 
   // 장바구니에 담기
   function addToCart() {
     console.log({
-      id: 123123,
+      id: member ? member.id : "",
       size,
       count,
     });
   }
 
   return (
-    <>
+    <div>
       <Head>
         <title>제품이름</title>
         <meta name="description" content="스토어 설명" />
@@ -93,7 +154,7 @@ const ProductDetail = () => {
         <Grid container gap={2}>
           {/* 제품 이미지 */}
           <Grid item xs={12}>
-            <ProductDetailImage />
+            <ProductDetailImage product={product} />
             <DividerBar />
           </Grid>
 
@@ -109,7 +170,7 @@ const ProductDetail = () => {
 
           {/* 상품 설명 */}
           <Grid item xs={12}>
-            <ProductDescription />
+            <ProductDescription description={product?.description} />
             <DividerBar />
           </Grid>
 
@@ -127,7 +188,7 @@ const ProductDetail = () => {
             <BlockText type="B" size="1.3rem" style={{ marginBottom: "10px" }}>
               리뷰 작성하기
             </BlockText>
-            <ProductReview />
+            <ProductReviewOrg reviews={reviews} />
           </Grid>
         </Grid>
       </Background>
@@ -205,12 +266,15 @@ const ProductDetail = () => {
         </Grid>
       </Dialog>
 
-      <ProductBottom openModal={handleClickOpen} />
-    </>
+      <ProductBottom
+        openModal={handleClickOpen}
+        isWishlist={isWishlist ? isWishlist : false}
+      />
+    </div>
   );
 };
 
-export default ProductDetail;
+export default ProductDetailPage;
 
 // 모달창 애니메이션 옵션
 const Transition = React.forwardRef(function Transition(
@@ -219,7 +283,11 @@ const Transition = React.forwardRef(function Transition(
   },
   ref: React.Ref<unknown>
 ) {
-  return <Slide direction="up" ref={ref} {...props} />;
+  return (
+    <div>
+      <Slide direction="up" ref={ref} {...props} />;
+    </div>
+  );
 });
 
 const Background = styled.div`
@@ -233,3 +301,36 @@ const DividerBar = styled.div`
   height: 1px;
   margin: 20px 0px;
 `;
+
+// SSR
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) => async (context) => {
+    // 쿠키의 토큰을 통해 로그인 확인, 토큰 리프레시, 실패 시 로그아웃 처리 등
+    await authenticateTokenInPages(
+      { res: context.res, req: context.req },
+      store
+    );
+
+    // URL에서 마지막 경로 세그먼트 가져오기
+    const resolvedUrl = context.resolvedUrl;
+    const segments = resolvedUrl.split("/");
+    const lastSegment = segments[segments.length - 1];
+
+    // lastSegment를 활용하여 필요한 데이터를 가져와서 페이지 렌더링에 활용
+    const productDetailResponse = await store.dispatch(
+      productApi.endpoints.getProductDetail.initiate(lastSegment)
+    );
+
+    // 응답을 변환하여 store에 저장
+    const productDetail = productDetailResponse.data;
+    if (productDetail) {
+      store.dispatch(setSelectedProductDetail(productDetail));
+    } else {
+      console.log("SERVER_NO_PRODUCT_DETAIL: ", productDetailResponse);
+    }
+
+    return {
+      props: {},
+    };
+  }
+);

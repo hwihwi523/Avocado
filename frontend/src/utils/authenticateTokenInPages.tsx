@@ -64,10 +64,10 @@ export async function authenticateTokenInPages(
       } catch (error) {
         // 요청 실패 시 로그인 상태 해제(쿠키, 스토어) 후..
         // 서버단에서의 쿠키 조작을 위해 res 이용
-        // store.dispatch(clearAuth());
-        // res.setHeader("Set-Cookie", "ACCESS_TOKEN=;Max-Age=0");
-        // res.setHeader("Set-Cookie", "REFRESH_TOKEN=;Max-Age=0");
-        // console.log("SERVER_TOKEN_REFRESH_ERRROR: ", error);
+        store.dispatch(clearAuth());
+        res.setHeader("Set-Cookie", "ACCESS_TOKEN=;Max-Age=0");
+        res.setHeader("Set-Cookie", "REFRESH_TOKEN=;Max-Age=0");
+        console.log("SERVER_TOKEN_REFRESH_ERRROR: ", error);
       }
     } else {
       // 리프레시 토큰이 없다면 아무일 없음
