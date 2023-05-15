@@ -80,4 +80,10 @@ public class WishlistService {
         // 삭제
         wishlistRepository.delete(wishlist);
     }
+
+    @Transactional(readOnly = true)
+    public boolean testExistsWishlist(UUID consumerId, String merchandiseName) {
+        Long wishlistId = wishlistRepository.findByMerchandiseName(consumerId, merchandiseName);
+        return wishlistId != null;
+    }
 }
