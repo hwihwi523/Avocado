@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class RemoveWishlistReq {
-    private Long wishlist_id;
+    private Long merchandise_id;
 
     @Builder
-    public RemoveWishlistReq(Long wishlist_id) {
-        this.wishlist_id = wishlist_id;
+    public RemoveWishlistReq(Long merchandise_id) {
+        this.merchandise_id = merchandise_id;
     }
 }
