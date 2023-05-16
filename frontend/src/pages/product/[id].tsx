@@ -200,6 +200,7 @@ const ProductDetailPage = () => {
         keepMounted
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
+        style={{ marginTop: "60%" }}
       >
         <Grid
           container
