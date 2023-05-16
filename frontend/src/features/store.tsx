@@ -18,6 +18,7 @@ import { paymentSlice } from "./payment/paymentSlice";
 import { snapshotApi } from "./snapshot/snapshotApi";
 import { commercialApi } from "./commercial/commercialApi";
 import { sellerApi } from "./seller/sellerApi";
+import { commercialSlice } from "./commercial/commercialSlice";
 
 // Root reducer 설정
 const rootReducer = combineReducers({
@@ -25,12 +26,13 @@ const rootReducer = combineReducers({
   auth: authSlice.reducer,
   product: productSlice.reducer,
   payment: paymentSlice.reducer,
+  commercial: commercialSlice.reducer,
+
   [examplePostsApi.reducerPath]: examplePostsApi.reducer,
   [testProductListApi.reducerPath]: testProductListApi.reducer,
   [authApi.reducerPath]: authApi.reducer,
   [productApi.reducerPath]: productApi.reducer,
   [paymentApi.reducerPath]: paymentApi.reducer,
-
   [searchApi.reducerPath]: searchApi.reducer, //검색 api
   [memberInfoApi.reducerPath]: memberInfoApi.reducer, //유저정보 수정 api
   [snapshotApi.reducerPath]: snapshotApi.reducer, //스넵샷 api

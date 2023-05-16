@@ -27,7 +27,12 @@ export default function Home() {
   const [popup, setPopup] = useState<boolean>(false);
 
   const member = useAppSelector((state: AppState) => state.auth.member);
+
+  
   useEffect(() => {
+
+
+    //팝업 함수
     let expiration = localStorage.getItem("commercial_expiration_time");
     console.log("expiration >>> ", expiration);
     if (expiration) {
