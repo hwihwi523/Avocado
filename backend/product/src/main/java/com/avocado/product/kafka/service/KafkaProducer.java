@@ -35,14 +35,16 @@ public class KafkaProducer {
     }
 
     public void sendClick(Long merchandiseID, UUID consumerID) {
-        Click click = Click.newBuilder()
-                .setUserId(consumerID.toString())
-                .build();
-
+        Click click;
         if (consumerID == null) {
-            click.setUserId(makeRandomUUID().toString());
+            click = Click.newBuilder()
+                    .setUserId(makeRandomUUID().toString())
+                    .build();
+        } else {
+            click = Click.newBuilder()
+                    .setUserId(consumerID.toString())
+                    .build();
         }
-
         ListenableFuture<SendResult<Long, Click>> future = clickKafkaTemplate.send(clickTopic, merchandiseID, click);
         future.addCallback(new ListenableFutureCallback<>() {
             @Override
