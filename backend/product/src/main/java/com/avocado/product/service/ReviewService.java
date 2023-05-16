@@ -46,8 +46,11 @@ public class ReviewService {
                 .build();
         reviewRepository.save(review);
 
+        // Kafka Produce 용도로 상품 ID, 별점 총점, 리뷰 개수 조회
+        Merchandise updatedMerchandise = merchandiseRepository.findById(merchandiseId);
+
         // send to kafka
-        kafkaProducer.sendCompactReview(review);
+        kafkaProducer.sendCompactReview(updatedMerchandise);
     }
 
     @Transactional(readOnly = true)
