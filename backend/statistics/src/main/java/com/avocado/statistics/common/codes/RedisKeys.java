@@ -25,5 +25,6 @@ public class RedisKeys {
     public final String cartPrefix = "cart:";
     public final String paymentPrefix = "pay:";
 
-
+    // Statistics Type
+    public final String providerPrefix = "provider";
 }

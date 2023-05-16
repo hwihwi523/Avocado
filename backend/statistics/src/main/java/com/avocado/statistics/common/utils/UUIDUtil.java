@@ -7,6 +7,7 @@ import java.util.UUID;
 @Component
 public class UUIDUtil {
     public UUID joinByHyphen(String userId) {
+        userId = userId.toLowerCase();
         return UUID.fromString(
                 userId.substring(0, 8)
                         + "-" + userId.substring(8, 12)
@@ -14,5 +15,9 @@ public class UUIDUtil {
                         + "-" + userId.substring(16, 20)
                         + "-" + userId.substring(20)
         );
+    }
+
+    public static String removeHyphen(UUID userId) {
+        return userId.toString().replace("-", "").toLowerCase();
     }
 }
