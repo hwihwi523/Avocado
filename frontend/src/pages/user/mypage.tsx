@@ -55,7 +55,7 @@ const Mypage = () => {
           로그아웃
         </Button>
         <UserStateSummary />
-        <ChartPersonalColor />
+        {/* <ChartPersonalColor /> */}
 
         <Box>
           <Stack direction={"row"} justifyContent={"space-between"}>
