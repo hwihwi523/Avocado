@@ -144,9 +144,7 @@ const MyCommercial = () => {
         TransitionComponent={Transition}
         style={{ padding: "50px 0" }}
       >
-        <AppBar
-          sx={{ position: "fixed", backgroundColorL: "black", color: "white" }}
-        >
+        <AppBar sx={{ position: "fixed", backgroundColor: "black" }}>
           <Toolbar>
             <Stack
               style={{ width: "100%" }}

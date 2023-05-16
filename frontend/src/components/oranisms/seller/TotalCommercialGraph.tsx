@@ -116,7 +116,7 @@ const CommercialState: React.FC<{ commercialId: number }> = (props) => {
 export default CommercialState;
 
 const Background = styled.div`
-  padding: 10px;
+  padding: 30px 10px 0px 10px;
   box-sizing: border-box;
 `;
 
