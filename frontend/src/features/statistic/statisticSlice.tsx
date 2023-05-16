@@ -12,7 +12,7 @@ export interface StatisticDataForProductDetail {
 export interface StatisticDataForPersonalRecommendation {
   consumer_recommends: RecommendItem[];
   personal_color_recommends: RecommendItem[];
-  mbit_recommentds: RecommendItem[];
+  mbti_recommentds: RecommendItem[];
 }
 
 interface RecommendItem {
@@ -63,6 +63,7 @@ interface AgeGroupsData {
 
 interface StatisticState {
   selectedProductStatisticData: StatisticDataForProductDetail;
+  recommendedProductsData: StatisticDataForPersonalRecommendation;
 }
 
 const initialState: StatisticState = {
@@ -70,6 +71,11 @@ const initialState: StatisticState = {
     age_gender_score: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     mbti_score: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     personal_color_score: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  },
+  recommendedProductsData: {
+    consumer_recommends: [],
+    personal_color_recommends: [],
+    mbti_recommentds: [],
   },
 };
 
