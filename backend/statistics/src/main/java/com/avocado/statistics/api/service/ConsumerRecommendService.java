@@ -72,11 +72,10 @@ public class ConsumerRecommendService {
         List<MerchandiseResp> mbtiRecommends = getMerchandiseList(consumer, mbtiType, bitSet);
         System.out.println(mbtiRecommends);
 
-        ConsumerRecommendResp resp = ConsumerRecommendResp.builder()
+        return ConsumerRecommendResp.builder()
                 .consumerRecommends(consumerRecommends)
                 .personalColorRecommends(personalColorRecommends)
                 .mbtiRecommends(mbtiRecommends).build();
-        return resp;
     }
 
     public List<MerchandiseResp> getMerchandiseList(Consumer consumer, List<CategoryType> cTypes, BitSet bitset) {
@@ -89,7 +88,7 @@ public class ConsumerRecommendService {
         int i = 0;
         for (ScoreResult sc: scoreResults) {
             long merchandiseId = sc.getMerchandiseId();
-            MerchandiseResp resp = merchandiseRespFrom(merchandiseId);
+            MerchandiseResp resp = merchandiseRespFrom(merchandiseId, consumer.getId());
             respList.add(resp);
             idSet.add(merchandiseId);
             i++;
@@ -107,7 +106,7 @@ public class ConsumerRecommendService {
                 continue;
             }
             idSet.add(merchandiseId);
-            MerchandiseResp resp = merchandiseRespFrom(merchandiseId);
+            MerchandiseResp resp = merchandiseRespFrom(merchandiseId, consumer.getId());
             if (respList.size() == 0) {
                 respList.add(resp);
             } else {
@@ -119,7 +118,7 @@ public class ConsumerRecommendService {
         return respList;
     }
 
-    private MerchandiseResp merchandiseRespFrom(long merchandiseId) {
+    private MerchandiseResp merchandiseRespFrom(long merchandiseId, UUID consumerId) {
         Optional<MerchandiseMainDTO> mainInfoO = merchandiseRepository.getInfoById(merchandiseId);
         if (mainInfoO.isEmpty()) {
             throw new BaseException(ResponseCode.INVALID_VALUE);
@@ -131,12 +130,17 @@ public class ConsumerRecommendService {
         Integer ageGroup = merchandiseRepository.getAgeGroup(merchandiseId);
         String personalColorTag = merchandiseRepository.getPersonalColorTag(merchandiseId);
 
+        Optional<Integer> wishlistExists = merchandiseRepository.wishlistExists(consumerId, merchandiseId);
+
         MerchandiseResp resp = new MerchandiseResp();
         resp.updateMerchandiseMainInfo(mainInfoO.get());
         resp.updateMerchandiseGroupInfo(groupInfo);
         resp.updateMBTITag(mbtiTag);
         resp.updateAgeGroupTag(ageGroup);
         resp.updatePersonalColorTag(personalColorTag);
+        if (wishlistExists.isPresent()) {
+            resp.updateWishlist(true);
+        }
 
         return resp;
     }

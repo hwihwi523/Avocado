@@ -30,4 +30,8 @@
         SELECT age as age_group FROM age_gender_score WHERE merchandise_id = #{merchandiseId} ORDER BY score DESC LIMIT 1;
     </select>
 
+    <select id="wishlistExists" resultType="Integer">
+        SELECT id FROM interest WHERE consumer_id = #{consumerId} AND merchandise_id = #{merchandiseId}
+    </select>
+
 </mapper>
