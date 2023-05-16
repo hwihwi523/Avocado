@@ -12,6 +12,7 @@ public class CartMerchandiseResp extends DefaultMerchandiseResp {
     private String image_url;
     private Float score;
     private String size;
+    private Integer quantity;
 
     public void updateCart(CartMerchandiseDTO cartMerchandiseDTO) {
         super.updateDefault(cartMerchandiseDTO);
@@ -19,5 +20,6 @@ public class CartMerchandiseResp extends DefaultMerchandiseResp {
         this.image_url = cartMerchandiseDTO.getImageUrl();
         this.score = cartMerchandiseDTO.getScore();
         this.size = cartMerchandiseDTO.getSize();
+        this.quantity = cartMerchandiseDTO.getQuantity();
     }
 }
