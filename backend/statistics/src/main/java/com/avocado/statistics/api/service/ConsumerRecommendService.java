@@ -3,6 +3,7 @@ package com.avocado.statistics.api.service;
 import com.avocado.statistics.api.dto.ScoreResult;
 import com.avocado.statistics.api.response.ConsumerRecommendResp;
 import com.avocado.statistics.api.response.MerchandiseResp;
+import com.avocado.statistics.common.codes.RecommendFactor;
 import com.avocado.statistics.common.codes.ScoreFactor;
 import com.avocado.statistics.common.error.BaseException;
 import com.avocado.statistics.common.error.ResponseCode;
@@ -29,13 +30,13 @@ import java.util.*;
 public class ConsumerRecommendService {
 
     private final ScoreFactor sc;
+    private final RecommendFactor rf;
     private final JwtUtils jwtUtils;
     private final CategoryTypeUtil categoryTypeUtil;
     private final ScoreRepository scoreRepository;
     private final MerchandiseRepository merchandiseRepository;
     private final MerchandiseIdSetRepository merchandiseIdSetRepository;
     private final ConsumerRepository consumerRepository;
-
 
     public ConsumerRecommendResp getConsumerRecommend(Claims claims) {
         UUID id = jwtUtils.getId(claims);
@@ -64,22 +65,27 @@ public class ConsumerRecommendService {
 
         BitSet bitSet = merchandiseIdSetRepository.getBitSet();
 
-        List<MerchandiseResp> merchandiseList = getMerchandiseList(consumer, consumerTypes, bitSet);
-        System.out.println(merchandiseList);
-        List<MerchandiseResp> merchandiseList1 = getMerchandiseList(consumer, personalColorType, bitSet);
-        System.out.println(merchandiseList1);
-        List<MerchandiseResp> merchandiseList2 = getMerchandiseList(consumer, mbtiType, bitSet);
-        System.out.println(merchandiseList2);
+        List<MerchandiseResp> consumerRecommends = getMerchandiseList(consumer, consumerTypes, bitSet);
+        System.out.println(consumerRecommends);
+        List<MerchandiseResp> personalColorRecommends = getMerchandiseList(consumer, personalColorType, bitSet);
+        System.out.println(personalColorRecommends);
+        List<MerchandiseResp> mbtiRecommends = getMerchandiseList(consumer, mbtiType, bitSet);
+        System.out.println(mbtiRecommends);
 
-        return null;
+        ConsumerRecommendResp resp = ConsumerRecommendResp.builder()
+                .consumerRecommends(consumerRecommends)
+                .personalColorRecommends(personalColorRecommends)
+                .mbtiRecommends(mbtiRecommends).build();
+        return resp;
     }
 
     public List<MerchandiseResp> getMerchandiseList(Consumer consumer, List<CategoryType> cTypes, BitSet bitset) {
         List<ScoreResult> scoreResults = calculateRecommend(consumer, cTypes, bitset);
 
-        List<MerchandiseResp> respList = new ArrayList<>();
+        List<MerchandiseResp> respList = new LinkedList<>();
         Set<Long> idSet = new HashSet<>();
-
+        
+        // 추천 기준으로 넣은 물품들
         int i = 0;
         for (ScoreResult sc: scoreResults) {
             long merchandiseId = sc.getMerchandiseId();
@@ -87,10 +93,29 @@ public class ConsumerRecommendService {
             respList.add(resp);
             idSet.add(merchandiseId);
             i++;
-            if (i == 7) {
+            if (i == rf.MAX_RECOMMEND) {
                 break;
             }
         }
+
+        // 랜덤으로 넣은 물품들
+        int randomLen = rf.TOTAL_SIZE - respList.size();
+        i = 0;
+        while (i < randomLen) {
+            long merchandiseId = new Random().nextInt(31866);
+            if (idSet.contains(merchandiseId)) {
+                continue;
+            }
+            idSet.add(merchandiseId);
+            MerchandiseResp resp = merchandiseRespFrom(merchandiseId);
+            if (respList.size() == 0) {
+                respList.add(resp);
+            } else {
+                respList.add(new Random().nextInt(respList.size()), resp);
+            }
+            i++;
+        }
+
         return respList;
     }
 
