@@ -2,6 +2,7 @@ package com.avocado.product.kafka.service;
 
 import com.avocado.Click;
 import com.avocado.CompactReview;
+import com.avocado.product.entity.Merchandise;
 import com.avocado.product.entity.Review;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,14 +60,16 @@ public class KafkaProducer {
         });
     }
 
-    public void sendCompactReview(Review review) {
+    public void sendCompactReview(Merchandise updatedMerchandise) {
         CompactReview compactReview = CompactReview.newBuilder()
-                .setMerchandiseId(review.getMerchandise().getId())
-                .setReviewCount(3333)  // <<< 재휘야 이것좀
-                .setTotalScore(review.getScore())
+                .setMerchandiseId(updatedMerchandise.getId())
+                .setReviewCount(updatedMerchandise.getReviewCount().intValue())
+                .setTotalScore(updatedMerchandise.getTotalScore().intValue())
                 .build();
 
-        ListenableFuture<SendResult<Long, CompactReview>> future = reviewKafkaTemplate.send(reviewTopic, review.getId(), compactReview);
+        ListenableFuture<SendResult<Long, CompactReview>> future = reviewKafkaTemplate.send(
+                reviewTopic, updatedMerchandise.getId(), compactReview
+        );
         future.addCallback(new ListenableFutureCallback<>() {
             @Override
             public void onFailure(Throwable ex) {
