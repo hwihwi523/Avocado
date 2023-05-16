@@ -4,7 +4,20 @@ import { BlockText } from "../../components/atoms";
 import { WishItem } from "../../components/molecues";
 import Head from "next/head";
 import { useGetWishlistQuery } from "@/src/features/product/productApi";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { AppState, useAppSelector } from "@/src/features/store";
 const WishList = () => {
+  const router = useRouter();
+  const member = useAppSelector((state: AppState) => state.auth.member);
+
+  //로그인 정보 없으면 로그인 화면으로 보내기
+  useEffect(() => {
+    if (!member) {
+      router.replace("/login");
+    }
+  }, []);
+
   // wishlist 호출
   const { data: wishlist } = useGetWishlistQuery();
 

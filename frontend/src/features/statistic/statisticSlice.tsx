@@ -95,7 +95,7 @@ export const statisticSlice = createSlice({
       // console.log("HYDRATE-STATISTIC", state, action.payload);
       return {
         ...state,
-        ...action.payload.product,
+        ...action.payload.statistic,
       };
     },
   },

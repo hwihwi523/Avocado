@@ -6,31 +6,32 @@ import Grid from "@mui/material/Grid";
 import router from "next/router";
 import ClearIcon from "@mui/icons-material/Clear";
 import StarIcon from "@mui/icons-material/Star";
+import { ProductForCart } from "@/src/features/product/productSlice";
+import { AppState, useAppSelector } from "@/src/features/store";
+import {
+  useGetCartQuery,
+  useRemoveCartMutation,
+} from "@/src/features/product/productApi";
 
-type Item = {
-  img_url: string;
-  brand_name: string;
-  product_name: string;
-  product_id: number;
-  rating: number;
-  size: string;
-  count: number;
-  price: number;
-  discount: number;
-};
-
-const CartItem: React.FC<{ data: Item }> = (props) => {
+const CartItem: React.FC<{ data: ProductForCart }> = (props) => {
   const {
-    img_url,
     brand_name,
-    product_name,
-    product_id,
-    rating,
-    size,
-    count,
+    cart_id,
+    quantity,
+    discounted_price,
+    image_url,
+    merchandise_category,
+    merchandise_id,
+    merchandise_name,
     price,
-    discount,
+    score,
+    size,
+    age_group,
+    mbti,
+    personal_color,
   } = props.data;
+
+  const member = useAppSelector((state: AppState) => state.auth.member);
 
   //숫자 변환 함수 3000  => 3,000원
   function formatCurrency(num: number) {
@@ -38,7 +39,23 @@ const CartItem: React.FC<{ data: Item }> = (props) => {
   }
 
   function pageMove() {
-    router.push("product/" + product_id);
+    router.push("product/" + merchandise_id);
+  }
+
+  // 장바구니에서 제거
+  const [removeFromCart, result] = useRemoveCartMutation();
+  const { refetch } = useGetCartQuery();
+  function removeBtnHandler() {
+    if (!member) {
+      return;
+    }
+    removeFromCart(cart_id)
+      .unwrap()
+      .then((res) => {
+        console.log(res);
+        refetch();
+      })
+      .catch((e) => console.log("REMOVE CART ERROR: ", e));
   }
 
   return (
@@ -48,7 +65,7 @@ const CartItem: React.FC<{ data: Item }> = (props) => {
           <ImageBox>
             <Image
               onClick={pageMove}
-              src={img_url}
+              src={image_url}
               alt="제품 이미지"
               fill
               style={{ objectFit: "cover" }}
@@ -70,13 +87,14 @@ const CartItem: React.FC<{ data: Item }> = (props) => {
                 <IconButton
                   aria-label="clearIcon"
                   style={{ margin: "0px", padding: "0px" }}
+                  onClick={removeBtnHandler}
                 >
                   <ClearIcon />
                 </IconButton>
               </Stack>
-              <BlockText>{product_name}</BlockText>
+              <BlockText>{merchandise_name}</BlockText>
               <BlockText>
-                <StarIcon /> {rating}
+                <StarIcon /> {score}
               </BlockText>
               <BlockText
                 color="grey"
@@ -91,10 +109,10 @@ const CartItem: React.FC<{ data: Item }> = (props) => {
                 justifyContent={"space-between"}
               >
                 <BlockText type="L" color="grey">
-                  {size} {count}개
+                  {size} {quantity}개
                 </BlockText>
                 <BlockText color="red" size="1.5rem" type="L">
-                  {formatCurrency(price - discount)}
+                  {formatCurrency(discounted_price)}
                 </BlockText>
               </Stack>
             </Stack>

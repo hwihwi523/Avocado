@@ -39,10 +39,16 @@ export const statisticApi = createApi({
   tagTypes: [],
   endpoints: (builder) => ({
     getStatisticDataForProductDetail: builder.query<
-      GetStatisticDataForProductDetailResponse,
+      StatisticDataForProductDetail,
       number
     >({
       query: (productId) => `/merchandises/${productId}`,
+      transformResponse: (
+        response: GetStatisticDataForProductDetailResponse
+      ) => {
+        // response 변환
+        return response.data;
+      },
     }),
     getStatisticDataForPersonalRecoimmendation: builder.query<
       GetStatisticDataForPersonalRecommendationResponse,
