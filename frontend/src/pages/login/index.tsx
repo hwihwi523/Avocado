@@ -38,14 +38,6 @@ export default function Login() {
     }
   };
 
-  if (isLoading) {
-    return (
-      <Box sx={{ display: "flex" }}>
-        <CircularProgress />
-      </Box>
-    );
-  }
-
   return (
     <Background>
       <Stack spacing={1}>

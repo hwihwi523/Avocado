@@ -11,6 +11,12 @@ import styled from "@emotion/styled";
 import Link from "next/link";
 
 const MobileBottom = (props: any) => {
+
+
+  
+
+
+
   return (
     <BackgroundDiv>
       {/* 홈 */}
