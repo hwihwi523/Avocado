@@ -16,7 +16,7 @@ const Required: React.FC<{ title: string; to: string }> = (props) => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          backgroundImage: `url("/assets/images/empty_img.jpg")`,
+          backgroundImage: `url("/assets/images/empty.jpg")`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}

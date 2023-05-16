@@ -7,7 +7,7 @@ import WishItem from "./WishItem";
 import OrderItem from "./OrderItem";
 import AddressInput from "./AddressInput";
 import CommercialItem from "./CommercialItem";
-import Required from "./RequiredBox";
+import RequiredBox from "./RequiredBox";
 
 export {
   ProductCard,
@@ -19,5 +19,5 @@ export {
   OrderItem,
   AddressInput,
   CommercialItem,
-  Required,
+  RequiredBox,
 };

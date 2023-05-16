@@ -24,7 +24,10 @@ import {
   setCarouselCommercialList,
   setPopupCommercialList,
 } from "../features/commercial/commercialSlice";
-import { Required } from "../components/molecues";
+import { statisticApi } from "../features/statistic/statisticApi";
+
+import { setRecommendProductsData } from "../features/statistic/statisticSlice";
+import { RequiredBox } from "../components/molecues";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,6 +36,12 @@ export default function Home() {
   const [popup, setPopup] = useState<boolean>(false);
 
   const member = useAppSelector((state: AppState) => state.auth.member);
+  const { consumer_recommends, mbti_recommends, personal_color_recommends } =
+    useAppSelector(
+      (state: AppState) => state.statistic.recommendedProductsData
+    ); //추천 제품 가져오기
+
+  console.log("mbti_recommends >>>", mbti_recommends);
 
   const popup_list = useAppSelector(
     (state: AppState) => state.commercial.popupCommercialList
@@ -44,7 +53,6 @@ export default function Home() {
   useEffect(() => {
     //팝업 함수
     let expiration = localStorage.getItem("commercial_expiration_time");
-    console.log("expiration >>> ", expiration);
     if (expiration) {
       const currentTime = new Date().getTime();
       if (currentTime < Number(expiration)) {
@@ -133,11 +141,7 @@ export default function Home() {
             </InlineText>
             님을 위한 추천 아이템
           </BlockText>
-          {!member ? (
-            <Required title={"로그인이 필요한 서비스 입니다."} to={"/login"} />
-          ) : (
-            <ProductCardsRow />
-          )}
+          <ProductCardsRow data={consumer_recommends} />
         </Grid>
 
         {/* 브랜드 광고 */}
@@ -146,51 +150,68 @@ export default function Home() {
           <Commercials data={carousel_list} />
         </Grid>
 
-        {/* 펄스널 컬러별 추천 */}
-        <Grid item xs={12}>
-          <BlockText color="grey" type="L">
-            <InlineText size="1.2rem" color="black" type="B">
-              {member?.personal_color_id
-                ? personal_color_list[member?.personal_color_id]
-                : "???"}{" "}
-            </InlineText>
-            사용자들을 위한 추천 아이템
-          </BlockText>
-          {!member && (
-            <Required title={"로그인이 필요한 서비스 입니다."} to={"/login"} />
-          )}
-          {!!member &&
-            (member.personal_color_id === -1 ? (
-              <Required
-                title={"나의 Personal Color 설정하기"}
-                to={"/user/regist"}
-              />
-            ) : (
-              <ProductCardsRow />
-            ))}
-        </Grid>
-
         {/* mbti별 추천 */}
         <Grid item xs={12}>
           <BlockText color="grey" type="L">
             <InlineText size="1.2rem" color="black" type="B">
-              {member?.mbti_id ? mbti_list[member?.mbti_id] : "???"}{" "}
+              {!!member && member.mbti_id && member.mbti_id !== -1
+                ? mbti_list[member.mbti_id]
+                : "???"}{" "}
             </InlineText>
             사용자들을 위한 추천 아이템
           </BlockText>
+
           {!member && (
-            <Required title={"로그인이 필요한 서비스 입니다."} to={"/login"} />
+            <RequiredBox
+              title={"로그인이 필요한 서비스 입니다."}
+              to={"/login"}
+            />
           )}
+
           {!!member &&
             (member.mbti_id === -1 ? (
-              <Required title={"나의 MBTI 설정하기"} to={"/user/regist"} />
+              <RequiredBox
+                title={"나의 Personal color 설정하러 가기"}
+                to={"/user/regist"}
+              />
             ) : (
-              <ProductCardsRow />
+              <ProductCardsRow data={mbti_recommends} />
+            ))}
+        </Grid>
+
+        {/* 펄스널 컬러별 추천 */}
+        <Grid item xs={12}>
+          <BlockText color="grey" type="L">
+            <InlineText size="1.2rem" color="black" type="B">
+              {!!member &&
+              member.personal_color_id &&
+              member.personal_color_id !== -1
+                ? personal_color_list[member.personal_color_id]
+                : "???"}{" "}
+            </InlineText>
+            사용자들을 위한 추천 아이템
+          </BlockText>
+
+          {!member && (
+            <RequiredBox
+              title={"로그인이 필요한 서비스 입니다."}
+              to={"/login"}
+            />
+          )}
+
+          {!!member &&
+            (member.personal_color_id === -1 ? (
+              <RequiredBox
+                title={"나의 Personal color 설정하러 가기"}
+                to={"/user/regist"}
+              />
+            ) : (
+              <ProductCardsRow data={personal_color_recommends} />
             ))}
         </Grid>
       </Grid>
 
-      <PopupCommercial open={popup} setOpen={setPopup} data={carousel_list} />
+      <PopupCommercial open={popup} setOpen={setPopup} data={popup_list} />
     </BackgroundDiv>
   );
 }
@@ -211,9 +232,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
       store
     );
 
-    // 필요한 내용 작성
+    // ======== 광고  서버사이드 랜더링 =================
+
     //유저정보 가져오기
-    // console.log(">>>>>>>>>>>",store.getState().auth.member);
     const member = store.getState().auth.member;
 
     //member정보를 확인하고 적절한 광고Api 변수를 반환함
@@ -243,11 +264,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
       }
     }
 
-    //함수 불러오기
-    // store.dispatch(
-    //   productApi.endpoints.getProductDetail.initiate(lastSegment)
-    // );
-
     //비동기라 propmise형태로 가져오게 됨
     const commercial = await store.dispatch(
       commercialApi.endpoints.getExpostCommercialList.initiate(
@@ -265,12 +281,63 @@ export const getServerSideProps = wrapper.getServerSideProps(
       )
     );
 
-    //store에 집어 넣기
-    // store.dispatch(setProductListBySearch());
+    // ======== 추천상품 서버사이드 랜더링 =================
 
-    //
+    // 서버에서 토큰을 헤더에 넣어주기 위한 작업
+    let cookie = context.req?.headers.cookie;
+    let accessToken = cookie
+      ?.split(";")
+      .find((c) => c.trim().startsWith("ACCESS_TOKEN="))
+      ?.split("=")[1];
+
+    if (accessToken) {
+      const recommend_products = await store.dispatch(
+        statisticApi.endpoints.getStatisticDataForPersonalRecommendation.initiate(
+          accessToken
+        )
+      );
+
+      console.log(recommend_products);
+
+      if (recommend_products.data) {
+        store.dispatch(setRecommendProductsData(recommend_products.data.data));
+      }
+
+      // store.dispatch()
+    }
+
     return {
       props: {},
     };
   }
 );
+
+// // 서버에서 Redux Store를 초기화하고, wrapper.useWrappedStore()를 사용해
+// // 클라이언트에서도 동일한 store를 사용하도록 설정
+// export const getServerSideProps = wrapper.getServerSideProps(
+//   (store) => async (context) => {
+//     // 쿠키의 토큰을 통해 로그인 확인, 토큰 리프레시, 실패 시 로그아웃 처리 등
+//     await authenticateTokenInPages(
+//       { req: context.req, res: context.res },
+//       store
+//     );
+//     // 서버에서 토큰을 헤더에 넣어주기 위한 작업
+//     let cookie = context.req?.headers.cookie;
+//     let accessToken = cookie
+//       ?.split(";")
+//       .find((c) => c.trim().startsWith("ACCESS_TOKEN="))
+//       ?.split("=")[1];
+//     // wishlist 가져오기
+//     const wishlistResponse = await store.dispatch(
+//       productApi.endpoints.getWishlist.initiate({ token: accessToken })
+//     );
+//     const wishlist = wishlistResponse.data;
+//     {
+//       wishlist && store.dispatch(setProductListForWishlist(wishlist));
+//     }
+
+//     return {
+//       props: {},
+//     };
+//   }
+// );

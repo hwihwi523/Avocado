@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-type Recommands = { name: string };
+type Recommends = { name: string };
 
 type PostsList = {
   id: number;
@@ -49,7 +49,7 @@ type ProductInfo = {
 export const searchApi = createApi({
   reducerPath: "searchApi",
   baseQuery: fetchBaseQuery({ baseUrl: API_URL! + "/search" }),
-  tagTypes: ["products", "recommands"],
+  tagTypes: ["products", "recommends"],
   endpoints: (build) => ({
     getProductList: build.query<ProductInfo[], string>({
       query: (keyword) => ({
@@ -85,9 +85,9 @@ export const searchApi = createApi({
             [{ type: "products", id: "LIST" }],
     }),
 
-    getRecommands: build.query<Recommands[], string>({
+    getRecommends: build.query<Recommends[], string>({
       query: (keyword) => ({
-        url: "/recommands",
+        url: "/recommends",
         method: "GET",
         params: { keyword },
       }),
@@ -96,14 +96,14 @@ export const searchApi = createApi({
           ? // 성공시 설정할 태그
             [
               ...result.map(
-                ({ name }) => ({ type: "recommands", name } as const)
+                ({ name }) => ({ type: "recommends", name } as const)
               ),
-              { type: "recommands", id: "LIST" },
+              { type: "recommends", id: "LIST" },
             ]
           : // 실패시 설정할 태그
-            [{ type: "recommands", id: "LIST" }],
+            [{ type: "recommends", id: "LIST" }],
     }),
   }),
 });
 
-export const { useGetRecommandsQuery, useGetProductListQuery } = searchApi;
+export const { useGetRecommendsQuery, useGetProductListQuery } = searchApi;

@@ -12,6 +12,10 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 
 import { BlockText, InlineText } from "../atoms";
+import {
+  useAddWishlistMutation,
+  useRemoveWishlistMutation,
+} from "@/src/features/product/productApi";
 
 const ProductCard = (props: any) => {
   const router = useRouter();
@@ -19,6 +23,9 @@ const ProductCard = (props: any) => {
   const { id, img_url, price, discount, brand, isBookmark, tags } = props.data;
 
   const [bookmark, setBookmark] = useState(isBookmark);
+
+  const [removeWishList] = useRemoveWishlistMutation();
+  const [addWishList] = useAddWishlistMutation();
 
   function pageMove() {
     router.push({
@@ -29,6 +36,24 @@ const ProductCard = (props: any) => {
   //숫자 변환 함수 3000  => 3,000원
   function formatCurrency(num: number) {
     return num.toLocaleString("en-US") + "원";
+  }
+
+  function addWishListHandler() {
+    addWishList(id)
+      .unwrap()
+      .then((res) => console.log(res))
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  function removeWishListHandler() {
+    removeWishList(id)
+      .unwrap()
+      .then((res) => console.log(res))
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   return (
@@ -110,9 +135,15 @@ const ProductCard = (props: any) => {
         >
           <Tooltip title="찜하기" placement="top">
             {bookmark ? (
-              <BookmarkOutlinedIcon fontSize="small" />
+              <BookmarkOutlinedIcon
+                fontSize="small"
+                onClick={removeWishListHandler}
+              />
             ) : (
-              <BookmarkBorderOutlinedIcon fontSize="small" />
+              <BookmarkBorderOutlinedIcon
+                fontSize="small"
+                onClick={addWishListHandler}
+              />
             )}
           </Tooltip>
         </IconButton>
@@ -126,6 +157,7 @@ export default ProductCard;
 const Background = styled.div`
   position: relative;
   width: 100%;
+  min-width: 170px;
 `;
 
 const Card = styled.div`
