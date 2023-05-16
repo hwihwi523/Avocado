@@ -83,17 +83,15 @@ const ProductCard = (props: any) => {
           <Grid item xs={12}>
             <Stack direction={"row"} justifyContent={"space-between"}>
               <InlineText size="1.2rem" type="L">
-                {formatCurrency(price - discount)}
+                {formatCurrency(discount)}
               </InlineText>
               <InlineText size="1.2rem" type="L" color="red">
-                {Math.ceil((discount / price) * 100)}%
+                {Math.ceil(((price - discount) / price) * 100)}%
               </InlineText>
             </Stack>
           </Grid>
         </Grid>
       </Card>
-
-      
 
       {/* 북마크 버튼 */}
       {isBookmark !== null && (

@@ -26,7 +26,7 @@ const Snapshot = () => {
   const [size, setSize] = useState(12);
 
   //데이터 불러오기
-  const { data, isLoading, error } = useGetSnapshotListQuery(
+  const { data, isLoading, error, refetch } = useGetSnapshotListQuery(
     lastId === null ? { size } : { size, lastId }
   );
   //유저정보 가져오기 => 글쓰기를 할 수 있냐 없냐 판별하기 위해서
@@ -86,12 +86,14 @@ const Snapshot = () => {
         {!lastId &&
           data &&
           data.styleshot_list.map((item, i) => (
-            <SnapshotItem data={item} key={i} />
+            <SnapshotItem data={item} key={i} refetch={refetch} />
           ))}
 
         {/* 그다음부터는 무한스크롤에 의해 쌓여가는 데이터 보여줌 */}
         {snapshotList ? (
-          snapshotList.map((item, i) => <SnapshotItem data={item} key={i} />)
+          snapshotList.map((item, i) => (
+            <SnapshotItem data={item} key={i} refetch={refetch} />
+          ))
         ) : (
           <BlockText
             color="grey"

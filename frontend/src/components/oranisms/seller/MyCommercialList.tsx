@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { CommercialItem } from "../../molecues";
 import router from "next/router";
+import { useSnackbar } from "notistack";
 import {
   useGetMyCommercialListQuery,
   useRemoveCommercialMutation,
@@ -26,12 +27,17 @@ import CloseIcon from "@mui/icons-material/Close";
 
 const MyCommercial = () => {
   //광고 리스트 출력
-  const { data, isLoading, error } = useGetMyCommercialListQuery();
+  const { data, isLoading, error, refetch } = useGetMyCommercialListQuery();
+
+  //알림창
+  const { enqueueSnackbar } = useSnackbar();
 
   //모달 옵션
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  //통계페이지에 props으로 내려서 사용할 것들
   const [merchandiseName, setMerchandiseName] = useState("");
   const [commercialId, setCommercialId] = useState(0);
 
@@ -39,16 +45,28 @@ const MyCommercial = () => {
   const [removeCommercial] = useRemoveCommercialMutation();
 
   //광고 삭제
-  function deleteHandler(id: number) {
+  function deleteHandler(commercial_id: number) {
     //삭제 함수 불러오기
-
-    removeCommercial(id)
+    removeCommercial(commercial_id)
       .unwrap()
       .then((res) => {
-        console.log("삭제성공", res);
+        enqueueSnackbar(`성공적으로 제거했습니다.`, {
+          variant: "success",
+          anchorOrigin: {
+            horizontal: "center",
+            vertical: "top",
+          },
+        });
+        refetch();
       })
       .catch((err) => {
-        console.log("삭제 실패", err);
+        enqueueSnackbar(`요청이 실패했습니다.`, {
+          variant: "error",
+          anchorOrigin: {
+            horizontal: "center",
+            vertical: "top",
+          },
+        });
       });
   }
 
@@ -126,7 +144,9 @@ const MyCommercial = () => {
         TransitionComponent={Transition}
         style={{ padding: "50px 0" }}
       >
-        <AppBar sx={{ position: "fixed" }}>
+        <AppBar
+          sx={{ position: "fixed", backgroundColorL: "black", color: "white" }}
+        >
           <Toolbar>
             <Stack
               style={{ width: "100%" }}
