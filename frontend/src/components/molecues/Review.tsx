@@ -12,23 +12,7 @@ import {
   useRemoveProductReviewMutation,
 } from "@/src/features/product/productApi";
 import { useRouter } from "next/router";
-
-//임시로 만든 날짜 반환 함수
-function dateFormat() {
-  let today: Date = new Date();
-  let year: number = today.getFullYear();
-  let month: number | string = today.getMonth() + 1;
-  let date: number | string = today.getDate();
-
-  if (month < 10) {
-    month = "0" + month;
-  }
-  if (date < 10) {
-    date = "0" + date;
-  }
-
-  return `${year}.${month}.${date}`;
-}
+import { useAppSelector, AppState } from "@/src/features/store";
 
 type ReviewProps = {
   review: ProductReview;
@@ -45,6 +29,8 @@ const Review: React.FC<ReviewProps> = ({ review }) => {
     created_at,
     id,
   } = review;
+
+  const member = useAppSelector((state: AppState) => state.auth.member);
 
   const router = useRouter();
   const [removeReview, result] = useRemoveProductReviewMutation();
@@ -69,12 +55,13 @@ const Review: React.FC<ReviewProps> = ({ review }) => {
     <Background>
       <Grid container p={2} gap={2}>
         <Grid item xs={12}>
-          <Stack direction={"row"} spacing={2}>
+          <Stack direction={"row"} spacing={2} alignItems={"center"}>
             <Image
-              width={50}
-              height={50}
+              width={60}
+              height={60}
               alt="사용자 프로필 이미지"
               src={picture_url ? picture_url : ""}
+              style={{ maxHeight: "60px" }}
             />
             <Stack style={{ color: "gray", width: "100%" }}>
               <BlockText>
@@ -89,17 +76,14 @@ const Review: React.FC<ReviewProps> = ({ review }) => {
                       {mbti} / {personal_color}
                     </InlineText>
                   </div>
-                  <div>
-                    <InlineText color="grey" type="L" size="12px">
-                      {created_at}
-                    </InlineText>
+                  {!!member && member.name === reviewer && (
                     <IconButton
                       aria-label="delete"
                       onClick={DeleteBtnClickHandler}
                     >
-                      <CloseIcon />
+                      <CloseIcon color="error" />
                     </IconButton>
-                  </div>
+                  )}
                 </Stack>
               </BlockText>
               <Rating
@@ -113,6 +97,9 @@ const Review: React.FC<ReviewProps> = ({ review }) => {
         </Grid>
         <Grid item xs={12}>
           <BlockText>{content}</BlockText>
+          <InlineText color="grey" type="L" size="12px">
+            {created_at}
+          </InlineText>
         </Grid>
       </Grid>
     </Background>
