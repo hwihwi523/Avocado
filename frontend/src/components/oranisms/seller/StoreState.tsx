@@ -14,8 +14,17 @@ import {
   setToken,
 } from "@/src/utils/tokenManager";
 import { InlineText, BlockText } from "../../atoms";
+import { AppState, useAppSelector } from "@/src/features/store";
 const StoreState = () => {
   const dispatch = useDispatch();
+
+  // 통계 자료
+  const statisticData = useAppSelector(
+    (state: AppState) => state.statistic.selectedProductStatisticData
+  );
+  const ageGenderData = statisticData.age_gender_score;
+  const mbtiData = statisticData.mbti_score;
+  const personalColorData = statisticData.personal_color_score;
 
   const handleLogout = () => {
     console.log("로그아웃 버튼이 클릭되었습니다.");
@@ -61,8 +70,8 @@ const StoreState = () => {
       </Stack>
       <Stack spacing={2}>
         <ChartGender />
-        <ChartMbti />
-        <ChartPersonalColor />
+        <ChartMbti mbtiData={mbtiData} />
+        <ChartPersonalColor personalColorData={personalColorData} />
         {/* 로그아웃 버튼 */}
         <Button
           fullWidth

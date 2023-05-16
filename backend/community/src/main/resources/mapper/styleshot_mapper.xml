@@ -9,6 +9,15 @@
         select id, content, picture_url, created_at, updated_at, consumer_id from styleshot
     </select>
 
+    <select id="getStyleshotCnt" resultType="int">
+        SELECT COUNT(*) FROM styleshot WHERE consumer_id = #{consumerId}
+    </select>
+
+    <select id="getLikeCnt" resultType="int">
+        SELECT COUNT(*) FROM styleshot_like
+        WHERE styleshot_id IN (SELECT id FROM styleshot WHERE consumer_id = #{consumerId})
+    </select>
+
     <select id="getAllPageable" resultType="Styleshot">
         select id, content, picture_url, created_at, updated_at, consumer_id from styleshot
         where id &lt; #{lastId} order by id desc limit #{resultSize}

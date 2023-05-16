@@ -1,6 +1,9 @@
-package com.avocado.product.kafka;
+package com.avocado.product.kafka.service;
 
-import com.avocado.product.Click;
+import com.avocado.Click;
+import com.avocado.CompactReview;
+import com.avocado.product.entity.Merchandise;
+import com.avocado.product.entity.Review;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,18 +21,31 @@ public class KafkaProducer {
 
     @Value(value = "${spring.kafka.click-config.topic}")
     private String clickTopic;
+    @Value(value = "${spring.kafka.review-config.topic}")
+    private String reviewTopic;
 
     private final KafkaTemplate<Long, Click> clickKafkaTemplate;
+    private final KafkaTemplate<Long, CompactReview> reviewKafkaTemplate;
 
     @Autowired
-    public KafkaProducer(KafkaTemplate<Long, Click> clickKafkaTemplate) {
+    public KafkaProducer(
+            KafkaTemplate<Long, Click> clickKafkaTemplate,
+            KafkaTemplate<Long, CompactReview> reviewKafkaTemplate) {
         this.clickKafkaTemplate = clickKafkaTemplate;
+        this.reviewKafkaTemplate = reviewKafkaTemplate;
     }
 
     public void sendClick(Long merchandiseID, UUID consumerID) {
-        Click click = Click.newBuilder()
-                .setUserId(makeRandomUUID().toString())
-                .build();
+        Click click;
+        if (consumerID == null) {
+            click = Click.newBuilder()
+                    .setUserId(makeRandomUUID().toString())
+                    .build();
+        } else {
+            click = Click.newBuilder()
+                    .setUserId(consumerID.toString())
+                    .build();
+        }
         ListenableFuture<SendResult<Long, Click>> future = clickKafkaTemplate.send(clickTopic, merchandiseID, click);
         future.addCallback(new ListenableFutureCallback<>() {
             @Override
@@ -40,6 +56,29 @@ public class KafkaProducer {
             @Override
             public void onSuccess(SendResult<Long, Click> result) {
                 log.info("click sent: [{}] with partition = [{}] offset=[{}]", click, result.getRecordMetadata().partition(), result.getRecordMetadata().offset());
+            }
+        });
+    }
+
+    public void sendCompactReview(Merchandise updatedMerchandise) {
+        CompactReview compactReview = CompactReview.newBuilder()
+                .setMerchandiseId(updatedMerchandise.getId())
+                .setReviewCount(updatedMerchandise.getReviewCount().intValue())
+                .setTotalScore(updatedMerchandise.getTotalScore().intValue())
+                .build();
+
+        ListenableFuture<SendResult<Long, CompactReview>> future = reviewKafkaTemplate.send(
+                reviewTopic, updatedMerchandise.getId(), compactReview
+        );
+        future.addCallback(new ListenableFutureCallback<>() {
+            @Override
+            public void onFailure(Throwable ex) {
+                log.warn("Unable to send message: [{}] due to : {}", compactReview, ex.getMessage());
+            }
+
+            @Override
+            public void onSuccess(SendResult<Long, CompactReview> result) {
+                log.info("click sent: [{}] with partition = [{}] offset=[{}]", compactReview, result.getRecordMetadata().partition(), result.getRecordMetadata().offset());
             }
         });
     }

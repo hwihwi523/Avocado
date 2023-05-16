@@ -3,11 +3,13 @@ package com.avocado.statistics.api.response;
 import com.avocado.statistics.db.mysql.repository.dto.GenderDistributionDTO;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class GenderDistributionResp {
-    private final String gender;
-    private final Long count;
+    private String gender;
+    private Long count;
 
     public static GenderDistributionResp from(GenderDistributionDTO dto) {
         return GenderDistributionResp.builder()

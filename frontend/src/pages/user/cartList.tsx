@@ -2,24 +2,24 @@ import styled from "@emotion/styled";
 import { Stack, Button } from "@mui/material";
 import { BlockText } from "../../components/atoms";
 import { CartItem } from "../../components/molecues";
-import Head from "next/head"
+import Head from "next/head";
 import { AppState, useAppSelector, wrapper } from "../../features/store";
 import { authenticateTokenInPages } from "../../utils/authenticateTokenInPages";
-import router from 'next/router'
-import {useEffect} from 'react'
+import router from "next/router";
+import { useEffect } from "react";
+import { useGetCartQuery } from "@/src/features/product/productApi";
 
 const CartList = () => {
-
-
   const member = useAppSelector((state: AppState) => state.auth.member);
-
+  const { data: cartlistData, isLoading } = useGetCartQuery();
+  console.log(cartlistData);
 
   //로그인 정보 없으면 로그인 화면으로 보내기
-  useEffect(()=>{
-    if(!member){
-      router.push("/login")
+  useEffect(() => {
+    if (!member) {
+      router.push("/login");
     }
-  },[])
+  }, []);
 
   //더미 데이터
   const data = [
@@ -115,13 +115,11 @@ export const getServerSideProps = wrapper.getServerSideProps(
       store
     );
 
-
     return {
       props: {},
     };
   }
 );
-
 
 const Background = styled.div`
   padding: 10px;

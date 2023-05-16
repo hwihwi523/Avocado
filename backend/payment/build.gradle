@@ -2,6 +2,8 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.11'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    // avro
+    id "com.github.davidmc24.gradle.plugin.avro" version "1.7.1"
 }
 
 group = 'com.avocado'
@@ -16,6 +18,9 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven {
+        url "https://packages.confluent.io/maven"
+    }
 }
 
 dependencies {
@@ -36,8 +41,16 @@ dependencies {
     // redis & redisson
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.redisson:redisson-spring-boot-starter:3.17.0'
+
+    // kafka
+    implementation 'org.springframework.kafka:spring-kafka'
+    testImplementation 'org.springframework.kafka:spring-kafka-test'
+
+    // avro, schema
+    implementation "org.apache.avro:avro:1.11.1"
+    implementation 'io.confluent:kafka-avro-serializer:7.3.3'
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
-}
+//tasks.named('test') {
+//    useJUnitPlatform()
+//}

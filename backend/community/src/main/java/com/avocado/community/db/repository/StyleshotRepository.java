@@ -21,6 +21,10 @@ public interface StyleshotRepository {
 
     List<Styleshot> getAllByConsumerId(@Param("consumerId") UUID consumerId);
 
+    int getStyleshotCnt(@Param("consumerId") UUID consumerId);
+
+    int getLikeCnt(@Param("consumerId") UUID consumerId);
+
     Optional<Styleshot> getById(long styleshotId);
 
     void save(Styleshot styleshot);

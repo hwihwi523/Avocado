@@ -180,21 +180,21 @@ export const productApi = createApi({
       query: (params) => ({ url: "/wishlists/exists", method: "GET", params }),
     }),
     getCart: builder.query<ProductForCart[], void>({
-      query: () => `/cart`,
+      query: () => `/carts`,
       transformResponse: (response: GetCartResponse) => {
         return response.data;
       },
     }),
     addCart: builder.mutation<ProductBaseResponse, AddCartRequest>({
       query: (payload) => ({
-        url: `/cart`,
+        url: `/carts`,
         method: "POST",
         body: payload,
       }),
     }),
     removeCart: builder.mutation<ProductBaseResponse, number>({
       query: (cartId) => ({
-        url: `/cart`,
+        url: `/carts`,
         method: "DELETE",
         body: {
           cart_id: cartId,

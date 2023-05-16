@@ -1,6 +1,6 @@
 {
   "name": "View",
-  "namespace": "com.avocado.product",
+  "namespace": "com.avocado",
   "type": "record",
   "fields": [
     {"name": "userId", "type": "string"}

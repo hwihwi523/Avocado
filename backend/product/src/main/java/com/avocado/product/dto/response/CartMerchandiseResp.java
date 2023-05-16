@@ -11,11 +11,15 @@ public class CartMerchandiseResp extends DefaultMerchandiseResp {
     private Long cart_id;
     private String image_url;
     private Float score;
+    private String size;
+    private Integer quantity;
 
     public void updateCart(CartMerchandiseDTO cartMerchandiseDTO) {
         super.updateDefault(cartMerchandiseDTO);
         this.cart_id = cartMerchandiseDTO.getCartId();
         this.image_url = cartMerchandiseDTO.getImageUrl();
         this.score = cartMerchandiseDTO.getScore();
+        this.size = cartMerchandiseDTO.getSize();
+        this.quantity = cartMerchandiseDTO.getQuantity();
     }
 }

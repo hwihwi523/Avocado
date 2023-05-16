@@ -7,6 +7,7 @@ import com.avocado.product.entity.Merchandise;
 import com.avocado.product.entity.Review;
 import com.avocado.product.exception.ErrorCode;
 import com.avocado.product.exception.InvalidValueException;
+import com.avocado.product.kafka.service.KafkaProducer;
 import com.avocado.product.repository.ConsumerRepository;
 import com.avocado.product.repository.MerchandiseRepository;
 import com.avocado.product.repository.ReviewRepository;
@@ -24,6 +25,7 @@ public class ReviewService {
     private final MerchandiseRepository merchandiseRepository;
     private final ReviewRepository reviewRepository;
     private final ConsumerRepository consumerRepository;
+    private final KafkaProducer kafkaProducer;
 
     @Transactional
     public void createReview(UUID reviewerId, Long merchandiseId, Byte score, String content) {
@@ -43,6 +45,12 @@ public class ReviewService {
                 .content(content)
                 .build();
         reviewRepository.save(review);
+
+        // Kafka Produce 용도로 상품 ID, 별점 총점, 리뷰 개수 조회
+        Merchandise updatedMerchandise = merchandiseRepository.findById(merchandiseId);
+
+        // send to kafka
+        kafkaProducer.sendCompactReview(updatedMerchandise);
     }
 
     @Transactional(readOnly = true)
