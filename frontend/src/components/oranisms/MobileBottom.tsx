@@ -9,13 +9,22 @@ import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlin
 import IconButton from "@mui/material/IconButton";
 import styled from "@emotion/styled";
 import Link from "next/link";
+import { useAppSelector, AppState } from "@/src/features/store";
 
 const MobileBottom = (props: any) => {
+  const member = useAppSelector((state: AppState) => state.auth.member);
 
-
-  
-
-
+  function pageRouterHandler() {
+    if (!!member) {
+      if (member.type === "provider") {
+        return "/seller";
+      } else {
+        return "/user/mypage";
+      }
+    } else {
+      return "/login";
+    }
+  }
 
   return (
     <BackgroundDiv>
@@ -55,7 +64,7 @@ const MobileBottom = (props: any) => {
         </Link>
 
         {/* 마이페이지 */}
-        <Link href="/user/mypage">
+        <Link href={pageRouterHandler()}>
           <IconButton aria-label="mypage">
             <AccountCircleOutlinedIcon
               fontSize="large"
@@ -72,10 +81,10 @@ export default MobileBottom;
 
 const BackgroundDiv = styled.div`
   background-color: black;
-  width:100%;
+  width: 100%;
   color: white;
-  
-  position:fixed;
-  bottom:0px;
-  z-index:100;
+
+  position: fixed;
+  bottom: 0px;
+  z-index: 100;
 `;
