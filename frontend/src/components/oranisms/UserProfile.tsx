@@ -10,15 +10,13 @@ import IconButton from "@mui/material/IconButton";
 import router from "next/router";
 import { mbti_list, personal_color_list } from "../atoms/data";
 import { Member } from "@/src/features/auth/authSlice";
-import {useEffect} from 'react'
-
+import { useEffect } from "react";
 
 const MainUserProfile: React.FC<{ member: Member }> = (props) => {
-    
+  const { gender, mbti_id, name, personal_color_id, picture_url, grade } =
+    props.member;
 
-  const { gender, mbti_id, name, personal_color_id, picture_url,grade } = props.member;
-
-    console.log("props.member >>>> ", props.member)
+  console.log("props.member >>>> ", props.member);
 
   const personalColors = [
     {
@@ -67,7 +65,6 @@ const MainUserProfile: React.FC<{ member: Member }> = (props) => {
   //이데이터 들은 props 로 넘어와야함
   //없으면 다른게 보여야함
 
-  
   const personalcolor = personalColors[personal_color_id!];
 
   function editHandler() {
@@ -87,7 +84,7 @@ const MainUserProfile: React.FC<{ member: Member }> = (props) => {
           </Grid>
           {/* 상단 이미지 */}
           <Grid item xs={7} style={{ marginBottom: "10px" }}>
-            {gender && personalcolor  ? (
+            {gender && personalcolor ? (
               <AvatarDiv>
                 <ColorBox left="70px" color={personalcolor.colors[1]} />
                 <ColorBox left="50px" color={personalcolor.colors[2]} />
@@ -104,12 +101,15 @@ const MainUserProfile: React.FC<{ member: Member }> = (props) => {
               </AvatarDiv>
             ) : (
               <AvatarDiv>
+                <ColorBox left="70px" color={"bebebe"} />
+                <ColorBox left="50px" color={"939393"} />
+                <ColorBox left="30px" color={"666666"} />
                 <Image
                   src={picture_url!}
                   width={100}
                   height={100}
                   alt="my avatar"
-                  style={{ position: "absolute" }}
+                  style={{ position: "absolute", borderRadius: "100px" }}
                 />
               </AvatarDiv>
             )}
@@ -130,31 +130,29 @@ const MainUserProfile: React.FC<{ member: Member }> = (props) => {
               <TextDiv>
                 <StyledTitle>MBTI</StyledTitle>
                 <br />
-              <BlockText type="B">
-                  { mbti_id !== -1 ? mbti_list[mbti_id!] : "???"} 
+                <BlockText type="B">
+                  {mbti_id !== -1 ? mbti_list[mbti_id!] : "???"}
                 </BlockText>
               </TextDiv>
               <TextDiv>
                 <StyledTitle>Color</StyledTitle>
                 <br />
-                  {personal_color_id !== -1? (
-                 <BlockText type="B">
+                {personal_color_id !== -1 ? (
+                  <BlockText type="B">
                     {personal_color_list[personal_color_id!].split("_")[0]}
                     <br />
                     {personal_color_list[personal_color_id!].split("_")[1]}
                     <br />
                     {personal_color_list[personal_color_id!].split("_")[2]}
-                </BlockText>
-                  ) : (
-                  "???"                    
-                  )}
+                  </BlockText>
+                ) : (
+                  "???"
+                )}
               </TextDiv>
               <TextDiv>
                 <StyledTitle>Grade</StyledTitle>
                 <br />
-                <BlockText type="B">
-                  {grade ?  grade : "???"}.LV
-                </BlockText>
+                <BlockText type="B">{grade ? grade : "???"}.LV</BlockText>
               </TextDiv>
             </Stack>
           </Grid>
