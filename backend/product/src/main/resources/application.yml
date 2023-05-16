@@ -20,6 +20,10 @@ spring:
       topic: test-view
     click-config:
       topic: test-click1
+    purchase-history-config:
+      topic: test-purchase-history1
+    review-config:
+      topic: test-review
 
 
 

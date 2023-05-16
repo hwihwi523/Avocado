@@ -1,13 +1,12 @@
 package com.avocado.product.service;
 
-import com.avocado.product.Click;
 import com.avocado.product.dto.query.ClickMerchandiseDTO;
 import com.avocado.product.dto.query.DetailMerchandiseDTO;
 import com.avocado.product.dto.query.PurchaseHistoryMerchandiseDTO;
 import com.avocado.product.dto.query.SimpleMerchandiseDTO;
 import com.avocado.product.dto.response.*;
 import com.avocado.product.entity.Wishlist;
-import com.avocado.product.kafka.KafkaProducer;
+import com.avocado.product.kafka.service.KafkaProducer;
 import com.avocado.product.repository.MerchandiseRepository;
 import com.avocado.product.repository.PurchaseRepository;
 import com.avocado.product.repository.ReviewRepository;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -108,12 +106,7 @@ public class MerchandiseService {
             respContent.updateIsWishlist(wishlist != null);
         }
 
-//        if (consumerId != null) {
-//            kafkaProducer.sendClick(merchandiseId, consumerId);
-//        } else {
-//            UUID randomID = UUID.randomUUID();
-//            kafkaProducer.sendClick(merchandiseId, randomID);
-//        }
+        kafkaProducer.sendClick(merchandiseId, consumerId);
 
         return respContent;
     }
