@@ -12,6 +12,7 @@ import {
 } from "@/src/features/product/productApi";
 import { AppState, useAppSelector } from "@/src/features/store";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 const ProductBottom: React.FC<{
   openModal: () => void;
@@ -33,32 +34,50 @@ const ProductBottom: React.FC<{
   });
   // 상품이 wishlist에 포함되어 있는지 여부 가져오기
   const isWishlist = props.isWishlist;
-  console.log("WISHLIST DATA: ", isWishlist);
+  // console.log("WISHLIST DATA: ", isWishlist);
 
   const { openModal } = props;
 
+  // 버튼 비활성화
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  // 클릭 이벤트 중복 체크
+  const [isButtonClicked, setIsButtonClicked] = useState(false);
+
   async function WishlistBtnClickHandler() {
+    if (isButtonClicked) {
+      return; // 클릭 이벤트 중복 시, 함수 실행 중단
+    }
+    setIsButtonClicked(true);
+
     if (member) {
       if (isWishlist) {
+        setIsButtonDisabled(true);
         // 삭제
-        removeWishlist(productId)
+        await removeWishlist(productId)
           .unwrap()
           .then((res) => {
             console.log(res);
           })
-          .catch((e) => console.log("REMOVE WISHLIST ERROR: ", e));
-        refetch();
+          .catch((e) => console.log("REMOVE WISHLIST ERROR: ", e))
+          .finally(() => {
+            setIsButtonDisabled(false); // 버튼 다시 활성화
+          });
       } else {
+        setIsButtonDisabled(true);
         // 추가
-        addWishlist(productId)
+        await addWishlist(productId)
           .unwrap()
           .then((res) => {
             console.log(res);
           })
-          .catch((e) => console.log("ADD WISHLIST ERROR: ", e));
-        refetch();
+          .catch((e) => console.log("ADD WISHLIST ERROR: ", e))
+          .finally(() => {
+            setIsButtonDisabled(false); // 버튼 다시 활성화
+          });
       }
     }
+    refetch(); // [id] 페이지에서 getProductDetailQeeury를 refetch
+    setIsButtonClicked(false); // 클릭 완료 후 버튼 클릭 상태 해제
   }
 
   return (
@@ -75,6 +94,7 @@ const ProductBottom: React.FC<{
             style={{ color: "black" }}
             size="large"
             onClick={WishlistBtnClickHandler}
+            disabled={isButtonDisabled}
           >
             {isWishlist ? (
               <BookmarkOutlinedIcon fontSize="large" />

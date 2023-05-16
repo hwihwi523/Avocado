@@ -1,5 +1,6 @@
 package com.avocado.statistics.api.controller;
 
+import com.avocado.statistics.api.response.BaseResp;
 import com.avocado.statistics.api.service.ConsumerRecommendService;
 import com.avocado.statistics.api.service.ConsumerStatisticsService;
 import com.avocado.statistics.api.service.ProviderDBService;
@@ -25,13 +26,13 @@ public class ConsumerStatisticsController {
 
     @GetMapping("/merchandises/{merchandiseId}")
     public ResponseEntity<?> getStatisticsOfMerchandiseDetail(@PathVariable long merchandiseId) {
-        return ResponseEntity.ok(consumerStatisticsService.getDetailStatistics(merchandiseId));
+        return ResponseEntity.ok(BaseResp.of(merchandiseId+"번 상품 통계 조회 성공", consumerStatisticsService.getDetailStatistics(merchandiseId)));
     }
 
     @GetMapping("/recommend")
     public ResponseEntity<?> getRecommendation(HttpServletRequest request) {
         Claims claims = jwtUtils.getClaims(request);
-        return ResponseEntity.ok(consumerRecommendService.getConsumerRecommend(claims));
+        return ResponseEntity.ok(BaseResp.of("구매자 추천 데이터 조회 성공", consumerRecommendService.getConsumerRecommend(claims)));
     }
 
     @GetMapping("/db-update")

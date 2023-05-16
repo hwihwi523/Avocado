@@ -1,13 +1,23 @@
-import { createApi } from "@reduxjs/toolkit/dist/query";
+import { createApi } from "@reduxjs/toolkit/query/react";
 import { ProductForPayment } from "./paymentSlice";
 import { customFetchBaseQuery } from "@/src/utils/customFetchBaseQuery";
 import { HYDRATE } from "next-redux-wrapper";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export interface PaymentRequest {
+export interface StartPaymentRequest {
   total_price: number;
+  success_url: string;
+  fail_url: string;
   merchandises: ProductForPayment[];
+}
+
+interface StartPaymentResponse {
+  message: string;
+  data: {
+    next_redirect_mobile_url: string; // 바로 카카오톡으로 연결돼서 PC로는 결제 불가
+    next_redirect_pc_url: string; // QR 코드가 표시되고 스캔해서 결제
+  };
 }
 
 export const paymentApi = createApi({
@@ -19,7 +29,15 @@ export const paymentApi = createApi({
     }
   },
   tagTypes: [],
-  endpoints: (builder) => ({}),
+  endpoints: (builder) => ({
+    startPayment: builder.mutation<StartPaymentResponse, StartPaymentRequest>({
+      query: (body) => ({
+        url: "/ready",
+        method: "POST",
+        body,
+      }),
+    }),
+  }),
 });
 
-export const {} = paymentApi;
+export const { useStartPaymentMutation } = paymentApi;

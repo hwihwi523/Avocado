@@ -7,8 +7,10 @@ import com.avocado.userserver.api.request.ConsumerRequiredInfoReq
 import com.avocado.userserver.api.request.ConsumerUpdateReq
 import com.avocado.userserver.common.error.BaseException
 import com.avocado.userserver.common.error.ResponseCode
+import com.avocado.userserver.common.utils.ConvertIdUtil
 import com.avocado.userserver.common.utils.OAuthUrlUtil
 import com.avocado.userserver.db.entity.Consumer
+import com.avocado.userserver.db.entity.Wallet
 import com.avocado.userserver.db.repository.ConsumerInsertRepository
 import com.avocado.userserver.db.repository.ConsumerRepository
 import com.avocado.userserver.db.repository.WalletRepository
@@ -26,6 +28,7 @@ class ConsumerService(
     private val walletRepository: WalletRepository,
     private val oauthService: OauthService,
     private val oAuthUrlUtil: OAuthUrlUtil,
+    private val convertIdUtil: ConvertIdUtil,
     private val jwtProvider: JwtProvider,
 ) {
     val log: Logger = LoggerFactory.getLogger(ConsumerService::class.java)
@@ -59,6 +62,10 @@ class ConsumerService(
         log.info("카카오 정보를 바탕으로 소비자 정보 구성. consumer: {}", consumer)
         consumerInsertRepository.insert(consumer)
         consumerInsertRepository.insertWallet(consumer)
+        
+        // TODO - kafka로 새로 회원가입 했음을 알리기
+        consumer.consumerId // 얘 보내기
+        
         return consumer
     }
 
@@ -88,11 +95,29 @@ class ConsumerService(
         val consumer = consumerRepository.findById(jwtProvider.getId(claims))?:throw BaseException(ResponseCode.NOT_FOUND_VALUE)
         val updatedConsumer = consumer.updateInfo(req)
         consumerRepository.save(updatedConsumer)
+        
+        // TODO - Kafka로 회원정보 수정 알리기
+//        consumer.consumerId
+//        consumer.ageGroup
+//        consumer.gender
+//        consumer.name
+//        consumer.mbtiId
+//        consumer.personalColorId
+    }
+
+    @Transactional
+    suspend fun updateWallet() {
+//        val consumerId = convertIdUtil.unHex(dto.userId)
+//        val wallet: Wallet = walletRepository.findByConsumerId(consumerId)?:throw BaseException(ResponseCode.NOT_FOUND_VALUE)
+//        val updatedWallet = wallet.updateTotalExpense(dto.totalPrice)
+//        walletRepository.save(updatedWallet)
     }
 
     @Transactional
     suspend fun deleteConsumer(claims: Claims) {
-        consumerRepository.deleteById(jwtProvider.getId(claims))
-        // TODO - 다른 DB 에도 관련 정보를 알려야 함
+        val consumerId = jwtProvider.getId(claims)
+        consumerRepository.deleteById(consumerId)
+        // TODO -  Kafka로 회원 탈퇴 처리 알리기
+        //  consumerId 보내기
     }
 }

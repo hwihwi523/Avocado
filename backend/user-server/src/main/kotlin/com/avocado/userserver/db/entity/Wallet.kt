@@ -13,5 +13,9 @@ class Wallet(
     val updatedAt: LocalDateTime,
     ) {
 
+    suspend fun updateTotalExpense(totalPrice: Long):Wallet {
+        return Wallet(consumerId, this.totalExpense + totalPrice, balance, LocalDateTime.now())
+    }
+
 
 }

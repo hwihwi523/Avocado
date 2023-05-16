@@ -11,11 +11,13 @@ import { useRouter } from "next/router";
 import { ProductForBuy } from "../features/product/productSlice";
 import { Member } from "../features/auth/authSlice";
 import { ProductForPayment } from "../features/payment/paymentSlice";
+import { useStartPaymentMutation } from "../features/payment/paymentApi";
 
 const BillingPage = () => {
   const router = useRouter();
   const [addressInputVisible, setAddressInputVisible] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
+  const [startPayment, result] = useStartPaymentMutation();
 
   // 주문자 정보
   let member: Member = {
@@ -64,13 +66,12 @@ const BillingPage = () => {
   function totalPrice() {
     let result = 0;
     for (let i = 0; i < products.length; i++) {
-      result +=
-        (products[i].price - products[i].discounted_price) * products[i].count;
+      result += products[i].discounted_price * products[i].count;
     }
     return formatCurrency(result);
   }
 
-  function paymantHandler() {
+  async function paymantHandler() {
     if (!address) {
       enqueueSnackbar(`주소를 입력해 주세요 `, {
         variant: "error",
@@ -89,12 +90,30 @@ const BillingPage = () => {
       const merchandise: ProductForPayment = {
         merchandise_id: product.merchandise_id,
         quantity: product.count,
-        price: product.price,
+        price: product.discounted_price,
         size: product.size,
       };
       merchandises.push(merchandise);
       total_price += product.discounted_price;
     });
+
+    startPayment({
+      total_price,
+      success_url: "/user/mypage",
+      fail_url: "/billing",
+      merchandises,
+    })
+      .then((res) => {
+        if ("data" in res) {
+          const redirectUrl = res.data.data.next_redirect_pc_url;
+          router.push(redirectUrl);
+        } else {
+          // Handle error response
+          console.log(res.error);
+        }
+      })
+      .catch((e) => console.log(e));
+
     console.log("결제~", { total_price, merchandises });
   }
 

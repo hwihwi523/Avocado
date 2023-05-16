@@ -162,14 +162,14 @@ export const productApi = createApi({
         return response.data;
       },
     }),
-    AddWishlist: builder.mutation<UpdateWishlistResponse, number>({
+    addWishlist: builder.mutation<UpdateWishlistResponse, number>({
       query: (productId) => ({
         url: `/wishlists`,
         method: "POST",
         body: { merchandise_id: productId },
       }),
     }),
-    RemoveWishlist: builder.mutation<UpdateWishlistResponse, number>({
+    removeWishlist: builder.mutation<UpdateWishlistResponse, number>({
       query: (productId) => ({
         url: `/wishlists`,
         method: "DELETE",
@@ -185,14 +185,14 @@ export const productApi = createApi({
         return response.data;
       },
     }),
-    AddCart: builder.mutation<ProductBaseResponse, AddCartRequest>({
+    addCart: builder.mutation<ProductBaseResponse, AddCartRequest>({
       query: (payload) => ({
         url: `/cart`,
         method: "POST",
         body: payload,
       }),
     }),
-    RemoveCart: builder.mutation<ProductBaseResponse, number>({
+    removeCart: builder.mutation<ProductBaseResponse, number>({
       query: (cartId) => ({
         url: `/cart`,
         method: "DELETE",
