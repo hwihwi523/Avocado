@@ -15,6 +15,6 @@ public class ScoreResult implements Comparable<ScoreResult> {
 
     @Override
     public int compareTo(ScoreResult o) {
-        return Long.compare(this.score, o.getScore());
+        return - Long.compare(this.score, o.getScore());
     }
 }
