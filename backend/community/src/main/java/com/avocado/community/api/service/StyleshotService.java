@@ -1,6 +1,7 @@
 package com.avocado.community.api.service;
 
 import com.avocado.community.api.request.PostStyleshotReq;
+import com.avocado.community.api.response.CountsResp;
 import com.avocado.community.api.response.MerchandiseResp;
 import com.avocado.community.api.response.StyleshotPagingResp;
 import com.avocado.community.api.response.StyleshotResp;
@@ -35,6 +36,17 @@ public class StyleshotService {
     private final WearRepository wearRepository;
     private final ImageService imageService;
     private final JwtUtils jwtUtils;
+
+
+    public CountsResp getCounts(Claims claims) {
+        UUID consumerId = jwtUtils.getId(claims);
+        int styleshotCnt = styleshotRepository.getStyleshotCnt(consumerId);
+        int likeCnt = styleshotRepository.getLikeCnt(consumerId);
+        return CountsResp.builder()
+                .styleshotCnt(styleshotCnt)
+                .likeCnt(likeCnt)
+                .build();
+    }
 
     @Transactional
     public void addStyleshot(PostStyleshotReq req, Claims claims) {

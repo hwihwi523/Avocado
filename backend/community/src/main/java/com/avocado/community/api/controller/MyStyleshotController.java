@@ -13,16 +13,21 @@ import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 @RestController
-@RequestMapping("my-styleshots")
 @RequiredArgsConstructor
 public class MyStyleshotController {
 
     private final JwtUtils jwtUtils;
     private final StyleshotService styleshotService;
 
-    @GetMapping
+    @GetMapping("my-styleshots")
     public ResponseEntity<?> getMyStyleshotList(HttpServletRequest request) {
         Claims claims = jwtUtils.getClaims(request);
         return ResponseEntity.ok(styleshotService.myStyleshotList(claims));
+    }
+
+    @GetMapping("my-statistics")
+    public ResponseEntity<?> getCounts(HttpServletRequest request) {
+        Claims claims = jwtUtils.getClaims(request);
+        return ResponseEntity.ok(styleshotService.getCounts(claims));
     }
 }
