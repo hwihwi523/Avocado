@@ -15,7 +15,9 @@ import { useRemoveSnapshotMutation } from "@/src/features/snapshot/snapshotApi";
 import { mbti_list, personal_color_list } from "../atoms/data";
 import { useSnackbar } from "notistack";
 
-const SnapshotItem: React.FC<{ data: snapshotItemType }> = (props) => {
+const SnapshotItem: React.FC<{ data: snapshotItemType; refetch: any }> = (
+  props
+) => {
   const item = props.data;
   const { enqueueSnackbar } = useSnackbar();
   const [removeSnapshot] = useRemoveSnapshotMutation();
@@ -36,7 +38,7 @@ const SnapshotItem: React.FC<{ data: snapshotItemType }> = (props) => {
             vertical: "top",
           },
         });
-        router.reload(); //지우고 다시 로딩함
+        props.refetch();
         return;
       })
       .catch((err) => {

@@ -119,8 +119,11 @@ export const commercialApi = createApi({
     //광고 삭제
     removeCommercial: build.mutation<ResponseType, number>({
       query: (commercial_id: number) => ({
-        url: `/ads/${commercial_id}`,
+        url: `/ads`,
         method: "DELETE",
+        body: {
+          commercial_id,
+        },
       }),
       invalidatesTags: [{ type: "commercials", id: "LIST" }],
     }),
