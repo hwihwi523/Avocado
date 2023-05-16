@@ -10,7 +10,7 @@ mybatis:
     map-underscore-to-camel-case: true
   mapper-locations:
     - classpath:mapper/**/*.xml
-  type-aliases-package: com.avocado.statistics.api.response, com.avocado.statistics.db.mysql.entity.mybatis
+  type-aliases-package: com.avocado.statistics.api.response, com.avocado.statistics.db.mysql.entity.mybatis, com.avocado.statistics.db.mysql.repository.dto
   type-handlers-package: com.avocado.statistics.config.handler
 
 jwt:

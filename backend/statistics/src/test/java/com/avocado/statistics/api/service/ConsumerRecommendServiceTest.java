@@ -1,6 +1,7 @@
 package com.avocado.statistics.api.service;
 
 import com.avocado.statistics.api.dto.ScoreResult;
+import com.avocado.statistics.api.response.MerchandiseResp;
 import com.avocado.statistics.db.mysql.entity.mybatis.Consumer;
 import com.avocado.statistics.db.mysql.repository.mybatis.ConsumerRepository;
 import com.avocado.statistics.db.redis.repository.CategoryType;
@@ -40,9 +41,7 @@ class ConsumerRecommendServiceTest {
         List<CategoryType> cTypes = new ArrayList<>();
         cTypes.add(CategoryType.PERSONAL_COLOR);
 
-
-        List<ScoreResult> scoreResults = consumerRecommendService.calculateRecommend(consumer, cTypes, bitSet);
-        System.out.println(scoreResults);
+        List<MerchandiseResp> merchandiseList = consumerRecommendService.getMerchandiseList(consumer, cTypes, bitSet);
+        System.out.println(merchandiseList);
     }
-
 }
