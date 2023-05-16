@@ -24,6 +24,7 @@ import {
   setCarouselCommercialList,
   setPopupCommercialList,
 } from "../features/commercial/commercialSlice";
+import { Required } from "../components/molecues";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -132,7 +133,11 @@ export default function Home() {
             </InlineText>
             님을 위한 추천 아이템
           </BlockText>
-          <ProductCardsRow isLogin={!!member} />
+          {!member ? (
+            <Required title={"로그인이 필요한 서비스 입니다."} to={"/login"} />
+          ) : (
+            <ProductCardsRow />
+          )}
         </Grid>
 
         {/* 브랜드 광고 */}
@@ -151,7 +156,18 @@ export default function Home() {
             </InlineText>
             사용자들을 위한 추천 아이템
           </BlockText>
-          <ProductCardsRow isLogin={!!member} />
+          {!member && (
+            <Required title={"로그인이 필요한 서비스 입니다."} to={"/login"} />
+          )}
+          {!!member &&
+            (member.personal_color_id === -1 ? (
+              <Required
+                title={"나의 Personal Color 설정하기"}
+                to={"/user/regist"}
+              />
+            ) : (
+              <ProductCardsRow />
+            ))}
         </Grid>
 
         {/* mbti별 추천 */}
@@ -162,7 +178,15 @@ export default function Home() {
             </InlineText>
             사용자들을 위한 추천 아이템
           </BlockText>
-          <ProductCardsRow isLogin={!!member} />
+          {!member && (
+            <Required title={"로그인이 필요한 서비스 입니다."} to={"/login"} />
+          )}
+          {!!member &&
+            (member.mbti_id === -1 ? (
+              <Required title={"나의 MBTI 설정하기"} to={"/user/regist"} />
+            ) : (
+              <ProductCardsRow />
+            ))}
         </Grid>
       </Grid>
 

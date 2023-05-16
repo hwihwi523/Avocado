@@ -37,7 +37,7 @@ export default function OAuthRedirect() {
         }
       }
       // 메인 페이지로 이동(스택 X)
-      await router.replace("/login", undefined, { shallow: true });
+      await router.replace("/", undefined, { shallow: true });
     };
 
     navigateToLogin();

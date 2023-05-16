@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import Carousel from "react-material-ui-carousel";
 import { ProductCard } from "../molecues";
 import Button from "@mui/material/Button";
-import router from 'next/router'
+import router from "next/router";
 
 type ProductInfo = {
   id: number;
@@ -18,9 +18,7 @@ type ProductInfo = {
   brand: string;
 };
 
-const ProductCardsRow:React.FC<{isLogin:boolean}> = (props) => {
-  const isLogin = props.isLogin;
-
+const ProductCardsRow: React.FC<{}> = (props) => {
   const data: ProductInfo[] = [
     {
       id: 123123,
@@ -74,41 +72,19 @@ const ProductCardsRow:React.FC<{isLogin:boolean}> = (props) => {
     },
   ];
 
-  function redirectToLoginPage(){
-    router.push("/login")
-  }
-
   return (
-    <RowScrollable scroll={isLogin}>
+    <RowScrollable>
       {data &&
         data?.map((item: ProductInfo, i) => (
-          <ProductCard data={item} key={i}/>
+          <ProductCard data={item} key={i} />
         ))}
-
-        {/* 로그인 안하면 나타나는 화면 가리개 */}
-      {!isLogin && (
-        <LoginBox>
-          <Button
-          onClick={redirectToLoginPage}
-            size="large"
-            style={{ backgroundColor: "black", color: "white" }}
-            variant="contained"
-          >
-            로그인이 필요한 서비스 입니다.
-          </Button>
-        </LoginBox>
-      )}
     </RowScrollable>
   );
 };
 
 export default ProductCardsRow;
 
-type Scroll = {
-  scroll: boolean;
-};
-
-const RowScrollable = styled.div<Scroll>`
+const RowScrollable = styled.div`
   position: relative;
   display: flex;
   width: 100%;
@@ -118,9 +94,6 @@ const RowScrollable = styled.div<Scroll>`
   ::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera*/
   }
-
-  overflow-x: ${(props) => (props.scroll ? "" : "hidden")};
-  overflow-y: ${(props) => (props.scroll ? "" : "hidden")};
 `;
 
 const LoginBox = styled.div`
