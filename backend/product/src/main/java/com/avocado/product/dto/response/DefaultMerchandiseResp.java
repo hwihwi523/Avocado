@@ -14,6 +14,8 @@ public class DefaultMerchandiseResp {
     private Integer price;
     private Integer discounted_price;
 
+    private Boolean is_wishlist;
+
     private String mbti;
     private String personal_color;
     private String age_group;
@@ -25,6 +27,7 @@ public class DefaultMerchandiseResp {
         this.merchandise_name = defaultMerchandiseDTO.getMerchandiseName();
         this.price = defaultMerchandiseDTO.getPrice();
         this.discounted_price = defaultMerchandiseDTO.getDiscountedPrice();
+        this.is_wishlist = false;
     }
 
     public void updateMBTI(String mbti) {
@@ -35,5 +38,8 @@ public class DefaultMerchandiseResp {
     }
     public void updateAgeGroup(String ageGroup) {
         this.age_group = ageGroup + "대";
+    }
+    public void updateIsWishlist(Boolean is_wishlist) {
+        this.is_wishlist = is_wishlist;
     }
 }
