@@ -38,6 +38,8 @@ import {
   setSelectedProductDetail,
 } from "@/src/features/product/productSlice";
 import dynamic from "next/dynamic";
+import { statisticApi } from "@/src/features/statistic/statisticApi";
+import { setSelectedProductStatisticData } from "@/src/features/statistic/statisticSlice";
 
 const ProductDetailPage = () => {
   const ProductBottom = dynamic(
@@ -50,6 +52,13 @@ const ProductDetailPage = () => {
     (state: AppState) => state.product.selectedProductDetail
   );
   const member = useAppSelector((state: AppState) => state.auth.member);
+  // 통계 자료
+  const statisticData = useAppSelector(
+    (state: AppState) => state.statistic.selectedProductStatisticData
+  );
+  const ageGenderData = statisticData.age_gender_score;
+  const mbtiData = statisticData.mbti_score;
+  const personalColorData = statisticData.personal_color_score;
 
   // url 마지막에서 product Id 가져오기
   const productId = router.asPath.split("/").pop();
@@ -114,18 +123,6 @@ const ProductDetailPage = () => {
               size,
               count,
             },
-            {
-              id: product?.id,
-              brand_namd: product?.brand_name,
-              merchandise_id: product?.merchandise_id,
-              merchandise_category: product?.merchandise_category,
-              images: product?.images,
-              merchandise_name: product?.merchandise_name,
-              price: product?.price,
-              discounted_price: product?.discounted_price,
-              size: "L",
-              count,
-            },
           ]),
         },
       });
@@ -160,12 +157,12 @@ const ProductDetailPage = () => {
 
           {/* mbti chart */}
           <Grid item xs={12}>
-            <ChartMbti />
+            <ChartMbti mbtiData={mbtiData} />
           </Grid>
 
           {/* personal color chart */}
           <Grid item xs={12}>
-            <ChartPersonalColor />
+            <ChartPersonalColor personalColorData={personalColorData} />
           </Grid>
 
           {/* 상품 설명 */}
@@ -321,6 +318,11 @@ export const getServerSideProps = wrapper.getServerSideProps(
     const productDetailResponse = await store.dispatch(
       productApi.endpoints.getProductDetail.initiate(lastSegment)
     );
+    const statisticDataResponse = await store.dispatch(
+      statisticApi.endpoints.getStatisticDataForProductDetail.initiate(
+        parseInt(lastSegment, 10)
+      )
+    );
 
     // 응답을 변환하여 store에 저장
     const productDetail = productDetailResponse.data;
@@ -328,6 +330,15 @@ export const getServerSideProps = wrapper.getServerSideProps(
       store.dispatch(setSelectedProductDetail(productDetail));
     } else {
       console.log("SERVER_NO_PRODUCT_DETAIL: ", productDetailResponse);
+    }
+    const statisticData = statisticDataResponse.data?.data;
+    if (statisticData) {
+      store.dispatch(setSelectedProductStatisticData(statisticData));
+    } else {
+      console.log(
+        "SERVER_NO_STATISTIC_DATA_FOR_DETAIL: ",
+        statisticDataResponse
+      );
     }
 
     return {

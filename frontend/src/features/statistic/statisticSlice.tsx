@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
 
 // 상품 상세
@@ -76,7 +76,14 @@ const initialState: StatisticState = {
 export const statisticSlice = createSlice({
   name: "statistic",
   initialState,
-  reducers: {},
+  reducers: {
+    setSelectedProductStatisticData: (
+      state,
+      action: PayloadAction<StatisticDataForProductDetail>
+    ) => {
+      state.selectedProductStatisticData = action.payload;
+    },
+  },
   extraReducers: {
     [HYDRATE]: (state, action) => {
       // console.log("HYDRATE-STATISTIC", state, action.payload);
@@ -88,4 +95,4 @@ export const statisticSlice = createSlice({
   },
 });
 
-export const {} = statisticSlice.actions;
+export const { setSelectedProductStatisticData } = statisticSlice.actions;
