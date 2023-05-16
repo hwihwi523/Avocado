@@ -38,7 +38,7 @@ kakao-pay:
       cancel: /cancel/
       fail: /fail/
     redirect:
-      host: http://k8s-avocado-c6c0ca3c6e-209771398.ap-northeast-2.elb.amazonaws.com
+      host: http://localhost:3000
 
 jwt:
   issuer: avocado.com
