@@ -38,6 +38,14 @@ const Mypage = () => {
     router.replace("/");
   };
 
+  // 통계 자료
+  const statisticData = useAppSelector(
+    (state: AppState) => state.statistic.selectedProductStatisticData
+  );
+  const ageGenderData = statisticData.age_gender_score;
+  const mbtiData = statisticData.mbti_score;
+  const personalColorData = statisticData.personal_color_score;
+
   return (
     <Background>
       <Head>
@@ -55,7 +63,7 @@ const Mypage = () => {
           로그아웃
         </Button>
         <UserStateSummary />
-        <ChartPersonalColor />
+        <ChartPersonalColor personalColorData={personalColorData} />
 
         <Box>
           <Stack direction={"row"} justifyContent={"space-between"}>
