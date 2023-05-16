@@ -2,44 +2,29 @@ import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import Carousel from "react-material-ui-carousel";
 import Image from "next/image";
-const Commercials = (props: any) => {
-  const router = useRouter();
 
-  let items = [
-    {
-      id: 1,
-      img_url:
-        "https://cdn.pixabay.com/photo/2023/04/25/18/14/mountain-7950729__340.jpg",
-    },
-    {
-      id: 2,
-      img_url:
-        "https://cdn.pixabay.com/photo/2023/03/30/18/27/animal-7888465__340.jpg",
-    },
-    {
-      id: 3,
-      img_url:
-        "https://cdn.pixabay.com/photo/2023/03/28/19/55/lake-7884049__340.jpg",
-    },
-    {
-      id: 4,
-      img_url:
-        "https://cdn.pixabay.com/photo/2023/04/16/08/10/flower-7929400__340.jpg",
-    },
-  ];
+type CommercialItem = {
+  merchandise_id: number;
+  imgurl: string;
+};
+
+const Commercials: React.FC<{ data: CommercialItem[] }> = (props) => {
+  const commercial_list = props.data;
+
+  const router = useRouter();
 
   return (
     <Commercial>
       <Carousel animation="slide" indicators={false} interval={2000}>
-        {items.map((item, i) => (
+        {commercial_list.map((item, i) => (
           <ImageBox
             key={i}
             onClick={() => {
-              router.push("product/" + item.id);
+              router.push("product/" + item.merchandise_id);
             }}
           >
             <Image
-              src={item.img_url}
+              src={item.imgurl}
               alt="광고 이미지"
               fill
               style={{ objectFit: "cover" }}

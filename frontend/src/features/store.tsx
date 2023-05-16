@@ -18,6 +18,7 @@ import { paymentSlice } from "./payment/paymentSlice";
 import { snapshotApi } from "./snapshot/snapshotApi";
 import { commercialApi } from "./commercial/commercialApi";
 import { sellerApi } from "./seller/sellerApi";
+import { commercialSlice } from "./commercial/commercialSlice";
 import { statisticSlice } from "./statistic/statisticSlice";
 import { statisticApi } from "./statistic/statisticApi";
 
@@ -27,7 +28,9 @@ const rootReducer = combineReducers({
   auth: authSlice.reducer,
   product: productSlice.reducer,
   payment: paymentSlice.reducer,
+  commercial: commercialSlice.reducer,
   statistic: statisticSlice.reducer,
+
   [examplePostsApi.reducerPath]: examplePostsApi.reducer,
   [testProductListApi.reducerPath]: testProductListApi.reducer,
   [authApi.reducerPath]: authApi.reducer,

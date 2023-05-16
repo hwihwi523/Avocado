@@ -19,6 +19,11 @@ import { useState, useEffect } from "react";
 import { mbti_list, personal_color_list } from "../components/atoms/data";
 import PopupCommercial from "../components/oranisms/PopupCommercial";
 import ProviderProfile from "../components/oranisms/ProviderProfile";
+import { commercialApi } from "../features/commercial/commercialApi";
+import {
+  setCarouselCommercialList,
+  setPopupCommercialList,
+} from "../features/commercial/commercialSlice";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,7 +32,16 @@ export default function Home() {
   const [popup, setPopup] = useState<boolean>(false);
 
   const member = useAppSelector((state: AppState) => state.auth.member);
+
+  const popup_list = useAppSelector(
+    (state: AppState) => state.commercial.popupCommercialList
+  );
+  const carousel_list = useAppSelector(
+    (state: AppState) => state.commercial.carouselCommercialList
+  );
+
   useEffect(() => {
+    //팝업 함수
     let expiration = localStorage.getItem("commercial_expiration_time");
     console.log("expiration >>> ", expiration);
     if (expiration) {
@@ -124,7 +138,7 @@ export default function Home() {
         {/* 브랜드 광고 */}
         <Grid item xs={12}>
           <BlockText>맞춤형 광고</BlockText>
-          <Commercials />
+          <Commercials data={carousel_list} />
         </Grid>
 
         {/* 펄스널 컬러별 추천 */}
@@ -152,7 +166,7 @@ export default function Home() {
         </Grid>
       </Grid>
 
-      <PopupCommercial open={popup} setOpen={setPopup} />
+      <PopupCommercial open={popup} setOpen={setPopup} data={carousel_list} />
     </BackgroundDiv>
   );
 }
@@ -161,11 +175,6 @@ const BackgroundDiv = styled.div`
   padding: 10px;
   box-sizing: border-box;
   margin-bottom: 50px;
-`;
-
-const StyledSpan = styled.span`
-  font-weight: bold;
-  font-size: 20px;
 `;
 
 // 서버에서 Redux Store를 초기화하고, wrapper.useWrappedStore()를 사용해
@@ -181,11 +190,56 @@ export const getServerSideProps = wrapper.getServerSideProps(
     // 필요한 내용 작성
     //유저정보 가져오기
     // console.log(">>>>>>>>>>>",store.getState().auth.member);
+    const member = store.getState().auth.member;
+
+    //member정보를 확인하고 적절한 광고Api 변수를 반환함
+    function commercialRequestType() {
+      if (!member) {
+        return {}; //로그인 안했으면 아무거나 넘겨주겠지!
+      }
+
+      const age = member.age_group;
+      const gender = member.gender;
+      const mbti_id = member.mbti_id;
+      const personal_color_id = member.personal_color_id;
+
+      //사용자 설정에 따른 각종 리턴 타입
+      if (mbti_id === -1) {
+        if (personal_color_id === -1) {
+          return { age, gender };
+        } else {
+          return { age, gender, personal_color_id };
+        }
+      } else {
+        if (personal_color_id === -1) {
+          return { age, gender, mbti_id };
+        } else {
+          return { age, gender, mbti_id, personal_color_id };
+        }
+      }
+    }
 
     //함수 불러오기
     // store.dispatch(
     //   productApi.endpoints.getProductDetail.initiate(lastSegment)
     // );
+
+    //비동기라 propmise형태로 가져오게 됨
+    const commercial = await store.dispatch(
+      commercialApi.endpoints.getExpostCommercialList.initiate(
+        commercialRequestType()
+      )
+    );
+
+    store.dispatch(
+      setPopupCommercialList(commercial.data ? commercial.data.popup_list : [])
+    );
+
+    store.dispatch(
+      setCarouselCommercialList(
+        commercial.data ? commercial.data.carousel_list : []
+      )
+    );
 
     //store에 집어 넣기
     // store.dispatch(setProductListBySearch());

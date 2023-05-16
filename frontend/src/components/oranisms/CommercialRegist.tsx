@@ -28,8 +28,8 @@ const CommercialRegist: React.FC<{
   const [age, setAge] = useState(""); //나이대
   const [gender, setGender] = useState(""); //성별
   const [type, setType] = useState(""); //광고 타입
-  const [personalColor, setPersonalColor] = useState(""); //퍼스널 컬러
-  const [mbti, setMbti] = useState(""); //mbti
+  const [personalColor, setPersonalColor] = useState("-1"); //퍼스널 컬러
+  const [mbti, setMbti] = useState("-1"); //mbti
   const [image, setImage] = useState<any>(null);
   //이미지 핸들러
   const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
@@ -97,7 +97,7 @@ const CommercialRegist: React.FC<{
       return;
     }
 
-    if (!mbti) {
+    if (mbti === "-1") {
       enqueueSnackbar(`mbti를 선택해 주세요 `, {
         variant: "error",
         anchorOrigin: {
@@ -108,7 +108,7 @@ const CommercialRegist: React.FC<{
       return;
     }
 
-    if (!personalColor) {
+    if (personalColor === "-1") {
       enqueueSnackbar(`퍼스널 컬러를 선택해 주세요 `, {
         variant: "error",
         anchorOrigin: {
