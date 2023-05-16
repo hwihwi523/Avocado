@@ -7,12 +7,14 @@ import lombok.Getter;
 public class CartMerchandiseDTO extends DefaultMerchandiseDTO {
     private final Long cartId;
     private final Float score;
+    private final String size;
 
     @QueryProjection
     public CartMerchandiseDTO(Long cartId, String brandName, Long merchandiseId, String merchandiseCategory, String imageUrl,
-                              String merchandiseName, Integer price, Integer discountedPrice, Float score) {
+                              String merchandiseName, Integer price, Integer discountedPrice, Float score, String size) {
         super(brandName, merchandiseId, merchandiseCategory, imageUrl, merchandiseName, price, discountedPrice);
         this.cartId = cartId;
         this.score = score != null ? score : 0;
+        this.size = size;
     }
 }

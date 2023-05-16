@@ -85,7 +85,8 @@ public class CartRepository {
                         merchandise.name,
                         merchandiseGroup.price,
                         merchandiseGroup.discountedPrice,
-                        merchandise.totalScore.divide(merchandise.reviewCount).floatValue()
+                        merchandise.totalScore.divide(merchandise.reviewCount).floatValue(),
+                        cart.size
                 ))
                 .from(cart)
                 .join(cart.merchandise, merchandise)
