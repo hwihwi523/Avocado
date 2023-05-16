@@ -123,7 +123,7 @@ const ProductDetailPage = () => {
               merchandise_name: product?.merchandise_name,
               price: product?.price,
               discounted_price: product?.discounted_price,
-              size,
+              size: "L",
               count,
             },
           ]),

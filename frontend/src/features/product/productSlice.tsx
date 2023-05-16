@@ -22,6 +22,7 @@ export interface ProductDetail {
   brand_name: string;
   merchandise_id: number;
   merchandise_category: string;
+  provider_id: string;
   images: string[];
   merchandise_name: string;
   price: number;
