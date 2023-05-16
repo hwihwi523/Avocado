@@ -1,5 +1,6 @@
 package com.avocado.statistics.api.service;
 
+import com.avocado.ActionType;
 import com.avocado.statistics.api.dto.ScoreResult;
 import com.avocado.statistics.api.response.ConsumerRecommendResp;
 import com.avocado.statistics.api.response.MerchandiseResp;
@@ -17,7 +18,7 @@ import com.avocado.statistics.db.mysql.repository.mybatis.MerchandiseRepository;
 import com.avocado.statistics.db.redis.repository.CategoryType;
 import com.avocado.statistics.db.redis.repository.MerchandiseIdSetRepository;
 import com.avocado.statistics.db.redis.repository.ScoreRepository;
-import com.avocado.statistics.kafka.dto.Type;
+
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -157,11 +158,11 @@ public class ConsumerRecommendService {
             }
             Long score = 0L;
             for (CategoryType cType: cTypes) {
-                Map<Integer, Long> viewMap = scoreRepository.getMapByMerchandiseId(cType, Type.VIEW, merchandiseId);
-                Map<Integer, Long> clickMap = scoreRepository.getMapByMerchandiseId(cType, Type.CLICK, merchandiseId);
-                Map<Integer, Long> likeMap = scoreRepository.getMapByMerchandiseId(cType, Type.LIKE, merchandiseId);
-                Map<Integer, Long> cartMap = scoreRepository.getMapByMerchandiseId(cType, Type.CART, merchandiseId);
-                Map<Integer, Long> paymentMap = scoreRepository.getMapByMerchandiseId(cType, Type.PAYMENT, merchandiseId);
+                Map<Integer, Long> viewMap = scoreRepository.getMapByMerchandiseId(cType, ActionType.VIEW, merchandiseId);
+                Map<Integer, Long> clickMap = scoreRepository.getMapByMerchandiseId(cType, ActionType.CLICK, merchandiseId);
+                Map<Integer, Long> likeMap = scoreRepository.getMapByMerchandiseId(cType, ActionType.LIKE, merchandiseId);
+                Map<Integer, Long> cartMap = scoreRepository.getMapByMerchandiseId(cType, ActionType.CART, merchandiseId);
+                Map<Integer, Long> paymentMap = scoreRepository.getMapByMerchandiseId(cType, ActionType.PAYMENT, merchandiseId);
 
                 int index;
                 switch (cType) {

@@ -1,0 +1,16 @@
+server:
+    port: 8090
+
+spring:
+    application:
+        id: avocado-1
+    kafka:
+        bootstrap-server: a62e5b172168c40419f9a1af18763a94-214776296.ap-northeast-2.elb.amazonaws.com:9094
+        #metrics-recording-level: INFO
+        auto-offset-reset: latest
+        num-stream-threads: 1
+        commit-interval-ms: 5000
+        dest-topic-name: test-result1
+        wait-timeout: 60*1000 # 60 seconds
+        streams:
+            application-id: streaming

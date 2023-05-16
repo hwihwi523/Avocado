@@ -1,0 +1,19 @@
+{
+  "name": "Result",
+  "namespace": "com.avocado",
+  "type": "record",
+  "fields": [
+    {
+      "name": "userId",
+      "type": "string"
+    },
+    {
+      "name": "action",
+      "type": {
+        "type": "enum",
+        "name": "ActionType",
+        "symbols": ["VIEW", "CLICK", "LIKE", "CART", "PAYMENT", "AD_VIEW", "AD_CLICK", "AD_PAYMENT"]
+      }
+    }
+  ]
+}

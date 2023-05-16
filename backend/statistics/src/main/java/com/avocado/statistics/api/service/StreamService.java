@@ -1,5 +1,7 @@
 package com.avocado.statistics.api.service;
 
+import com.avocado.ActionType;
+import com.avocado.Result;
 import com.avocado.statistics.common.error.BaseException;
 import com.avocado.statistics.common.error.ResponseCode;
 import com.avocado.statistics.common.utils.CategoryTypeUtil;
@@ -10,8 +12,6 @@ import com.avocado.statistics.db.redis.repository.AdvertiseCountRepository;
 import com.avocado.statistics.db.redis.repository.CategoryType;
 import com.avocado.statistics.db.redis.repository.MerchandiseIdSetRepository;
 import com.avocado.statistics.db.redis.repository.ScoreRepository;
-import com.avocado.statistics.kafka.dto.Result;
-import com.avocado.statistics.kafka.dto.Type;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,21 +31,21 @@ public class StreamService {
     private final DateUtil dateUtil;
     private final CategoryTypeUtil categoryTypeUtil;
 
-    public void consumeResult(Result result) {
-        Long merchandiseId = result.getMerchandiseId();
-        Type resType = result.getType();
+    public void consumeResult(Result result, Long merchandiseId) {
+
+        ActionType resType = result.getAction();
 
         // 점수가 저장된 merchandise 로 처리하기
         merchandiseIdSetRepository.setUse(merchandiseId);
 
         // 광고 처리하기
-        if (resType.equals(Type.AD_CLICK) || resType.equals(Type.AD_VIEW) || resType.equals(Type.AD_PAYMENT)) {
+        if (resType.equals(ActionType.AD_CLICK) || resType.equals(ActionType.AD_VIEW) || resType.equals(ActionType.AD_PAYMENT)) {
             String date = dateUtil.getNowDate();
             advertiseCountRepository.save(resType, date, merchandiseId);
         }
         // 점수 저장하기
         else {
-            saveScore(result);
+            saveScore(result, merchandiseId);
         }
     }
     
@@ -53,10 +53,9 @@ public class StreamService {
      * 점수 저장 과정
      * @param result
      */
-    private void saveScore(Result result) {
+    private void saveScore(Result result, Long merchandiseId) {
         UUID consumerId = UUID.fromString(result.getUserId());
-        Type resType = result.getType();
-        Long merchandiseId = result.getMerchandiseId();
+        ActionType resType = result.getAction();
 
         Optional<Consumer> consumerO = consumerRepository.getById(consumerId);
         // 없는 소비자면 에러 내기

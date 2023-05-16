@@ -1,10 +1,10 @@
 package com.avocado.statistics.api.service;
 
+import com.avocado.ActionType;
 import com.avocado.statistics.common.utils.DateUtil;
 import com.avocado.statistics.db.redis.repository.AdvertiseCountRepository;
 import com.avocado.statistics.kafka.dto.AdStatus;
 import com.avocado.statistics.kafka.dto.Status;
-import com.avocado.statistics.kafka.dto.Type;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +21,9 @@ public class AdvertiseStatisticsService {
         String nowDate = dateUtil.getNowDate();
         List<Status> statusList = new ArrayList<>();
 
-        Map<Long, Integer> viewMap = advertiseCountRepository.getMap(Type.AD_VIEW, nowDate);
-        Map<Long, Integer> clickMap = advertiseCountRepository.getMap(Type.AD_CLICK, nowDate);
-        Map<Long, Integer> payMap = advertiseCountRepository.getMap(Type.AD_PAYMENT, nowDate);
+        Map<Long, Integer> viewMap = advertiseCountRepository.getMap(ActionType.AD_VIEW, nowDate);
+        Map<Long, Integer> clickMap = advertiseCountRepository.getMap(ActionType.AD_CLICK, nowDate);
+        Map<Long, Integer> payMap = advertiseCountRepository.getMap(ActionType.AD_PAYMENT, nowDate);
 
 
         Set<Long> merchandiseIds = new HashSet<>();

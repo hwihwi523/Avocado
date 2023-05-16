@@ -1,10 +1,11 @@
 package com.avocado.statistics.db.redis.repository;
 
+import com.avocado.ActionType;
 import com.avocado.statistics.common.codes.RedisKeys;
 import com.avocado.statistics.common.error.BaseException;
 import com.avocado.statistics.common.error.ResponseCode;
 import com.avocado.statistics.common.utils.CategoryTypeUtil;
-import com.avocado.statistics.kafka.dto.Type;
+
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
@@ -22,7 +23,7 @@ public class ScoreRepository {
     private final RedisKeys redisKeys;
     private final CategoryTypeUtil categoryTypeUtil;
 
-    private String getKey(long merchandiseId, CategoryType cType, Type resType) {
+    private String getKey(long merchandiseId, CategoryType cType, ActionType resType) {
         StringBuilder sb = new StringBuilder();
         sb.append(redisKeys.commPrefix)
         .append(getCategoryPrefix(cType))
@@ -45,7 +46,7 @@ public class ScoreRepository {
         }
     }
 
-    private String getResultTypePrefix(Type resType) {
+    private String getResultTypePrefix(ActionType resType) {
         switch (resType) {
             case VIEW:
                 return redisKeys.viewPrefix;
@@ -62,19 +63,19 @@ public class ScoreRepository {
         }
     }
 
-    public void save(CategoryType cType, Type resType, Long merchandiseId, int id) {
+    public void save(CategoryType cType, ActionType resType, Long merchandiseId, int id) {
         RMap<Integer, Long> map = redisson.getMap(getKey(merchandiseId, cType, resType));
         map.putIfAbsent(id, 0L);
         Long cnt = map.get(id);
         map.put(id, cnt + 1);
     }
 
-    public Map<Integer, Long> getMapByMerchandiseId(CategoryType cType, Type resType, Long merchandiseId) {
+    public Map<Integer, Long> getMapByMerchandiseId(CategoryType cType, ActionType resType, Long merchandiseId) {
         RMap<Integer, Long> map = redisson.getMap(getKey(merchandiseId, cType, resType));
         return map.readAllMap();
     }
 
-    public List<Long> getByMerchandiseId(CategoryType cType, Type resType, Long merchandiseId) {
+    public List<Long> getByMerchandiseId(CategoryType cType, ActionType resType, Long merchandiseId) {
         RMap<Integer, Long> map = redisson.getMap(getKey(merchandiseId, cType, resType));
         int varSize = categoryTypeUtil.getVarSize(cType);
 

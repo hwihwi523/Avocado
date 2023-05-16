@@ -1,9 +1,10 @@
 package com.avocado.statistics.db.redis.repository;
 
+import com.avocado.ActionType;
 import com.avocado.statistics.common.codes.RedisKeys;
 import com.avocado.statistics.common.error.BaseException;
 import com.avocado.statistics.common.error.ResponseCode;
-import com.avocado.statistics.kafka.dto.Type;
+
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
@@ -22,24 +23,24 @@ public class AdvertiseCountRepository {
     private final RedisKeys redisKeys;
     private final RedissonClient redisson;
 
-    public void save(Type resType, String date, Long merchandiseId) {
+    public void save(ActionType resType, String date, Long merchandiseId) {
         RMap<Long, Integer> map = redisson.getMap(getKey(resType, date));
         map.putIfAbsent(merchandiseId, 0);
         Integer cnt = map.get(merchandiseId);
         map.put(merchandiseId, cnt + 1);
     }
 
-    public Map<Long, Integer> getMap(Type resType, String date) {
+    public Map<Long, Integer> getMap(ActionType resType, String date) {
         RMap<Long, Integer> map = redisson.getMap(getKey(resType, date));
         return map.readAllMap();
     }
 
-    public boolean deleteMap(Type resType, String date) {
+    public boolean deleteMap(ActionType resType, String date) {
         RMap<Long, Integer> map = redisson.getMap(getKey(resType, date));
         return map.delete();
     }
 
-    private String getKey(Type resType, String date) {
+    private String getKey(ActionType resType, String date) {
         StringBuilder sb =  new StringBuilder();
         sb.append(redisKeys.commPrefix)
         .append(redisKeys.adPrefix)
