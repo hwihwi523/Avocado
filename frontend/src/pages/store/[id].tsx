@@ -12,7 +12,7 @@ const Store = () => {
       <Head>
         <title>스토어 이름</title>
         <meta name="description" content="" />
-        스토어 설
+        스토어 설명
         <meta name="keywords" content={`제품카테고리, 제품 종류 , 등등`} />
         <meta property="og:title" content="제품명" />
         <meta property="og:description" content="제품 설명" />
@@ -32,7 +32,7 @@ const Store = () => {
         </Imagebox>
 
         {/* 카테고리 */}
-        <Category setCategory={setCategory}/>
+        <Category setCategory={setCategory} />
 
         {/* 제품들 뭐 하기로 했는데 까먹음  */}
 

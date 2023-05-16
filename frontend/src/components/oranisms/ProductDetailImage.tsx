@@ -31,10 +31,13 @@ const ProductDetailImage: React.FC<ProductDetailImageProps> = ({ product }) => {
     return num.toLocaleString("en-US") + "원";
   }
 
+  // 브랜드 스토어 아이디
+  const brandId = product!.provider_id;
+
   return (
     <>
       <Stack direction="row-reverse" justifyContent="space-between">
-        <Link href="/store/123">
+        <Link href={`/store/${brandId}`}>
           <BlockText type="L" size="1.2rem" style={{ margin: "30px 0 10px 0" }}>
             {brand} STORE <ArrowRightIcon />
           </BlockText>
