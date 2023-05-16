@@ -12,10 +12,10 @@ export interface StatisticDataForProductDetail {
 export interface StatisticDataForPersonalRecommendation {
   consumer_recommends: RecommendItem[];
   personal_color_recommends: RecommendItem[];
-  mbti_recommentds: RecommendItem[];
+  mbti_recommends: RecommendItem[];
 }
 
-interface RecommendItem {
+export interface RecommendItem {
   brand_name: string;
   merchandise_id: number;
   merchandise_category: string;
@@ -75,7 +75,7 @@ const initialState: StatisticState = {
   recommendedProductsData: {
     consumer_recommends: [],
     personal_color_recommends: [],
-    mbti_recommentds: [],
+    mbti_recommends: [],
   },
 };
 
@@ -89,16 +89,24 @@ export const statisticSlice = createSlice({
     ) => {
       state.selectedProductStatisticData = action.payload;
     },
+
+    setRecommendProductsData: (
+      state,
+      action: PayloadAction<StatisticDataForPersonalRecommendation>
+    ) => {
+      state.recommendedProductsData = action.payload;
+    },
   },
   extraReducers: {
     [HYDRATE]: (state, action) => {
       // console.log("HYDRATE-STATISTIC", state, action.payload);
       return {
         ...state,
-        ...action.payload.product,
+        ...action.payload.statistic,
       };
     },
   },
 });
 
-export const { setSelectedProductStatisticData } = statisticSlice.actions;
+export const { setSelectedProductStatisticData, setRecommendProductsData } =
+  statisticSlice.actions;

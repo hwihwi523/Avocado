@@ -44,11 +44,19 @@ export const statisticApi = createApi({
     >({
       query: (productId) => `/merchandises/${productId}`,
     }),
-    getStatisticDataForPersonalRecoimmendation: builder.query<
+    getStatisticDataForPersonalRecommendation: builder.query<
       GetStatisticDataForPersonalRecommendationResponse,
-      void
+      string
     >({
-      query: () => `/recommend`,
+      // query: () => `/recommend`,
+      query: (accessToken) => ({
+        url: "/recommend",
+        method: "GET",
+        // 서버단에서 토큰을 넣어주기 위해 필요
+        headers: accessToken
+          ? { Authorization: `Bearer ${accessToken}` }
+          : undefined,
+      }),
     }),
     getStatisticDataForProvider: builder.query<
       GetStatisticDataForProviderResponse,
@@ -61,6 +69,6 @@ export const statisticApi = createApi({
 
 export const {
   useGetStatisticDataForProductDetailQuery,
-  useGetStatisticDataForPersonalRecoimmendationQuery,
+  useGetStatisticDataForPersonalRecommendationQuery,
   useGetStatisticDataForProviderQuery,
 } = statisticApi;

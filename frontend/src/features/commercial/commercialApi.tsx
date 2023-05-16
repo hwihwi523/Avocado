@@ -75,7 +75,6 @@ export const commercialApi = createApi({
         method: "GET",
         params,
       }),
-      providesTags: () => [{ type: "commercials", id: "LIST" }],
     }),
 
     //광고 하나의 통계

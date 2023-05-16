@@ -8,7 +8,7 @@ import Head from "next/head";
 import { debounce } from "@mui/material";
 
 import {
-  useGetRecommandsQuery,
+  useGetRecommendsQuery,
   useGetProductListQuery,
 } from "../queries/searchApi";
 
@@ -19,23 +19,23 @@ import ListItemButton from "@mui/material/ListItemButton";
 
 const Search = () => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [recommand, setRecommand] = useState("");
+  const [recommend, setRecommend] = useState("");
   const [searchWord, setSearchWord] = useState("");
-  const [recommandListOpen, setRecommandListOpen] = useState(true);
+  const [recommendListOpen, setRecommendListOpen] = useState(true);
 
-  const { data: recommands, isLoading: recommandsLoading } =
-    useGetRecommandsQuery(recommand);
+  const { data: recommends, isLoading: recommendsLoading } =
+    useGetRecommendsQuery(recommend);
   const { data: productList, isLoading: productListLoading } =
     useGetProductListQuery(searchWord);
 
   // 제출 함수
   const submitHandler = (event: any) => {
-    setRecommandListOpen(false);
+    setRecommendListOpen(false);
     event.preventDefault();
-    if(inputRef.current){
-      setSearchWord(inputRef.current.value)
-    }else{
-      setSearchWord("")
+    if (inputRef.current) {
+      setSearchWord(inputRef.current.value);
+    } else {
+      setSearchWord("");
     }
   };
 
@@ -43,12 +43,12 @@ const Search = () => {
   const searchRecommend = useCallback(
     debounce((inputText: string) => {
       // 검색어 추출
-      setRecommand(inputText);
-      setRecommandListOpen(true);
+      setRecommend(inputText);
+      setRecommendListOpen(true);
 
       console.log({
-        recommands,
-        recommandListOpen,
+        recommends,
+        recommendListOpen,
       });
     }, 500),
     []
@@ -69,7 +69,7 @@ const Search = () => {
       {/* 검색창 */}
       <form onSubmit={submitHandler}>
         <TextField
-          onFocus={() => setRecommandListOpen(true)}
+          onFocus={() => setRecommendListOpen(true)}
           inputRef={inputRef}
           onChange={handleInputChange}
           fullWidth
@@ -84,9 +84,8 @@ const Search = () => {
         />
       </form>
 
-
       {/* 추천 검색어 */}
-      {recommandListOpen && recommands && (
+      {recommendListOpen && recommends && (
         <List
           style={{
             position: "absolute",
@@ -97,7 +96,7 @@ const Search = () => {
             zIndex: 100,
           }}
         >
-          {recommands.map((item, i) => (
+          {recommends.map((item, i) => (
             <ListItem
               key={i}
               style={{ border: "1px solid #dddddd", backgroundColor: "white" }}
@@ -108,7 +107,7 @@ const Search = () => {
                 style={{ height: "70px" }}
                 onClick={() => {
                   setSearchWord(item.name);
-                  setRecommandListOpen(false);
+                  setRecommendListOpen(false);
                 }}
               >
                 <ListItemText primary={item.name} />
