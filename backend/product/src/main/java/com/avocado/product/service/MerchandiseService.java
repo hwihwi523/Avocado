@@ -33,6 +33,8 @@ public class MerchandiseService {
 
     // 대표 퍼스널컬러, MBTI, 나이대 등 개인화 정보 조회를 위한 service
     private final ScoreService scoreService;
+    // is_wishlist 업데이트를 위한 service
+    private final WishlistService wishlistService;
 
     private final KafkaProducer kafkaProducer;
 
@@ -60,28 +62,10 @@ public class MerchandiseService {
             throw new RuntimeException();
         }
 
-        // 찜꽁 여부 조회 및 부착
-        if (consumerId != null) {
-            // 상품 ID 취합
-            List<Long> merchandiseIds = new ArrayList<>();
-            for (SimpleMerchandiseDTO data : result)
-                merchandiseIds.add(data.getMerchandiseId());
+        // 사용자가 존재할 경우 찜꽁 여부 조회 및 부착
+        if (consumerId != null)
+            wishlistService.updateIsWishlist(consumerId, respContent);
 
-            // 구매자 ID, 상품 IDs로 찜꽁한 상품 ID 조회
-            List<Long> interestedMerchandiseIds = wishlistRepository
-                    .findWishlistMerchandiseIds(consumerId, merchandiseIds);
-
-            // 찜꽁한 상품의 is_wishlist를 true로 변경
-            int wIdx = 0;
-            for (SimpleMerchandiseResp resp : respContent) {
-                // 찜꽁한 상품이 등장하면 is_wishlist를 true로 바꾸고, 다음 찜꽁 상품 ID로 넘어가기
-                if (wIdx < interestedMerchandiseIds.size()
-                        && resp.getMerchandise_id().equals(interestedMerchandiseIds.get(wIdx))) {
-                    resp.updateIsWishlist(true);
-                    wIdx++;
-                }
-            }
-        }
         // 마지막으로 조회한 ID
         Long newLastMerchandiseId = respContent.isEmpty()
                 ? null
@@ -124,12 +108,12 @@ public class MerchandiseService {
             respContent.updateIsWishlist(wishlist != null);
         }
 
-        if (consumerId != null) {
-            kafkaProducer.sendClick(merchandiseId, consumerId);
-        } else {
-            UUID randomID = UUID.randomUUID();
-            kafkaProducer.sendClick(merchandiseId, randomID);
-        }
+//        if (consumerId != null) {
+//            kafkaProducer.sendClick(merchandiseId, consumerId);
+//        } else {
+//            UUID randomID = UUID.randomUUID();
+//            kafkaProducer.sendClick(merchandiseId, randomID);
+//        }
 
         return respContent;
     }
@@ -145,11 +129,18 @@ public class MerchandiseService {
         List<ClickMerchandiseDTO> recentMerchandises = merchandiseRepository.findRecentMerchandises(consumerId);
 
         // 대표 퍼스널컬러, MBTI, 나이대 추가 + DTO -> Response 변환
+        List<ClickMerchandiseResp> respContent;
         try {
-            return scoreService.insertPersonalInfoIntoList(recentMerchandises, ClickMerchandiseResp.class);
+            respContent = scoreService.insertPersonalInfoIntoList(recentMerchandises, ClickMerchandiseResp.class);
         } catch (Exception e) {
             throw new RuntimeException();
         }
+
+        // 사용자가 존재할 경우 찜꽁 여부 조회 및 부착
+        if (consumerId != null)
+            wishlistService.updateIsWishlist(consumerId, respContent);
+
+        return respContent;
     }
 
     /**
@@ -174,6 +165,10 @@ public class MerchandiseService {
         } catch (Exception e) {
             throw new RuntimeException();
         }
+
+        // 사용자가 존재할 경우 찜꽁 여부 조회 및 부착
+        if (consumerId != null)
+            wishlistService.updateIsWishlist(consumerId, respContent);
 
         // 마지막 상품의 구매일자
         LocalDateTime newLastMerchandiseId = respContent.isEmpty()

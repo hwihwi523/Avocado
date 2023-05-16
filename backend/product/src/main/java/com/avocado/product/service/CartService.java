@@ -25,6 +25,8 @@ public class CartService {
 
     // 대표 퍼스널컬러, MBTI, 나이대 조회용 service
     private final ScoreService scoreService;
+    // is_wishlist 조회 및 부착용 service
+    private final WishlistService wishlistService;
 
     /**
      * 장바구니 내역 등록
@@ -66,11 +68,19 @@ public class CartService {
     public List<CartMerchandiseResp> showMyCart(UUID consumerId) {
         // 상품 정보 리스트 조회
         List<CartMerchandiseDTO> myCart = cartRepository.findMyCart(consumerId);
+
+        List<CartMerchandiseResp> respContent;
         try {
-            return scoreService.insertPersonalInfoIntoList(myCart, CartMerchandiseResp.class);
+            respContent = scoreService.insertPersonalInfoIntoList(myCart, CartMerchandiseResp.class);
         } catch (Exception e) {
             throw new RuntimeException();
         }
+
+        // 사용자가 존재할 경우 찜꽁 여부 조회 및 부착
+        if (consumerId != null)
+            wishlistService.updateIsWishlist(consumerId, respContent);
+
+        return respContent;
     }
 
     /**
