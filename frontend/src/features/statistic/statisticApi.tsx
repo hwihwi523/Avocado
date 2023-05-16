@@ -59,4 +59,8 @@ export const statisticApi = createApi({
   }),
 });
 
-export const {} = statisticApi;
+export const {
+  useGetStatisticDataForProductDetailQuery,
+  useGetStatisticDataForPersonalRecoimmendationQuery,
+  useGetStatisticDataForProviderQuery,
+} = statisticApi;

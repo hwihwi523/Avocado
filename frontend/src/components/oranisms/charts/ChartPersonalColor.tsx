@@ -19,7 +19,6 @@ ChartJS.register(
   Legend
 );
 
-
 //그래프 옵션
 export const options = {
   responsive: true,
@@ -37,53 +36,58 @@ export const options = {
   },
 };
 
-//더미 데이터
-const personal_color_purchase = [
-  {
-    type: "봄 라이트",
-    purchase: 123,
-  },
-  {
-    type: "봄 브라이트",
-    purchase: 12,
-  },
-  {
-    type: "여름 라이트",
-    purchase: 223,
-  },
-  {
-    type: "여름 브라이트",
-    purchase: 323,
-  },
-  {
-    type: "여름 뮤트",
-    purchase: 13,
-  },
-  {
-    type: "가을 뮤트",
-    purchase: 16,
-  },
-  {
-    type: "가을 스트롱",
-    purchase: 18,
-  },
-  {
-    type: "가을 딥",
-    purchase: 53,
-  },
-  {
-    type: "겨울 브라이트",
-    purchase: 93,
-  },
-  {
-    type: "겨울 딥",
-    purchase: 23,
-  },
-];
+interface ChartPersonalColorProps {
+  personalColorData: number[];
+}
 
-const ChartPersonalColor = () => {
+const ChartPersonalColor: React.FC<ChartPersonalColorProps> = ({
+  personalColorData,
+}) => {
+  //더미 데이터
+  const personal_color_purchase = [
+    {
+      type: "봄 라이트",
+      purchase: personalColorData[0],
+    },
+    {
+      type: "봄 브라이트",
+      purchase: personalColorData[1],
+    },
+    {
+      type: "여름 라이트",
+      purchase: personalColorData[2],
+    },
+    {
+      type: "여름 브라이트",
+      purchase: personalColorData[3],
+    },
+    {
+      type: "여름 뮤트",
+      purchase: personalColorData[4],
+    },
+    {
+      type: "가을 뮤트",
+      purchase: personalColorData[5],
+    },
+    {
+      type: "가을 스트롱",
+      purchase: personalColorData[6],
+    },
+    {
+      type: "가을 딥",
+      purchase: personalColorData[7],
+    },
+    {
+      type: "겨울 브라이트",
+      purchase: personalColorData[8],
+    },
+    {
+      type: "겨울 딥",
+      purchase: personalColorData[9],
+    },
+  ];
 
-    //그래프에 넣을 데이터 형태에 맞게 넣어주는 함수
+  //그래프에 넣을 데이터 형태에 맞게 넣어주는 함수
   function dataFormat() {
     //데이터 모양
     let data = {
