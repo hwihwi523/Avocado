@@ -53,7 +53,10 @@ public class WishlistController {
     public ResponseEntity<BaseResp> testExistsWishlist(@RequestParam String merchandise_name,
                                                        HttpServletRequest request) {
         log.info("testExistsWishlist >> \"" + merchandise_name + "\"");
-        UUID consumerId = jwtUtil.getId(request);
+        // 토큰 없으면 Status 200, data: False 반환
+        UUID consumerId;
+        try { consumerId = jwtUtil.getId(request); }
+        catch (Exception e) { return ResponseEntity.ok(BaseResp.of("WRONG_HEADER", false)); }
         log.info("testExistsWishlist >> \"" + consumerId + "\"");
         boolean exists = wishlistService.testExistsWishlist(consumerId, merchandise_name);
         return ResponseEntity.ok(BaseResp.of("찜 존재 여부 확인", exists));
