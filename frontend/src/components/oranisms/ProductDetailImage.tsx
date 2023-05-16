@@ -32,7 +32,7 @@ const ProductDetailImage: React.FC<ProductDetailImageProps> = ({ product }) => {
   }
 
   // 브랜드 스토어 아이디
-  const brandId = product!.provider_id;
+  const brandId = product ? product.provider_id : "";
 
   return (
     <>
