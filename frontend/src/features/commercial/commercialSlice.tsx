@@ -1,14 +1,14 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
 
-export type ExposeCommercialItem = {
+export type commercialItem = {
   imgurl: string;
   merchandise_id: number;
 };
 
 export type CommercialState = {
-  popupCommercialList: ExposeCommercialItem[];
-  carouselCommercialList: ExposeCommercialItem[];
+  popupCommercialList: commercialItem[];
+  carouselCommercialList: commercialItem[];
 };
 
 const initialState: CommercialState = {
@@ -23,13 +23,13 @@ export const commercialSlice = createSlice({
     //입력 함수
     setPopupCommercialList: (
       state,
-      action: PayloadAction<ExposeCommercialItem[]>
+      action: PayloadAction<commercialItem[]>
     ) => {
       state.popupCommercialList = action.payload; //넣어도 원본 데이터를 훼손하는게 아니다
     },
     setCarouselCommercialList: (
       state,
-      action: PayloadAction<ExposeCommercialItem[]>
+      action: PayloadAction<commercialItem[]>
     ) => {
       state.carouselCommercialList = action.payload;
     },

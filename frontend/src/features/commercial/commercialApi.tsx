@@ -20,14 +20,6 @@ export type ResponseType = {
   msg: string;
 };
 
-//광고 요청하는 타입
-export type exposeCommercialRequestType = {
-  age: number;
-  gender: string;
-  mbti_id?: number;
-  personal_color_id?: number;
-};
-
 //광고
 export type commercialItem = {
   imgurl: string;
@@ -35,11 +27,8 @@ export type commercialItem = {
 };
 
 export type commercialList = {
-  msg: string;
-  data: {
-    popup: commercialItem;
-    carousel_list: commercialItem[];
-  };
+  popup_list: commercialItem[];
+  carousel_list: commercialItem[];
 };
 
 export type analyseItem = {
@@ -80,11 +69,8 @@ export const commercialApi = createApi({
     }),
 
     //메인페이지 광고 노출
-    getExpostCommercialList: build.query<
-      commercialList,
-      exposeCommercialRequestType
-    >({
-      query: (params: exposeCommercialRequestType) => ({
+    getExpostCommercialList: build.query<commercialList, any>({
+      query: (params: any) => ({
         url: "/ads",
         method: "GET",
         params,
