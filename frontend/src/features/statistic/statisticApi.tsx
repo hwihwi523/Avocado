@@ -46,9 +46,9 @@ export const statisticApi = createApi({
     }),
     getStatisticDataForPersonalRecoimmendation: builder.query<
       GetStatisticDataForPersonalRecommendationResponse,
-      number
+      void
     >({
-      query: (productId) => `/merchandises/${productId}`,
+      query: () => `/recommend`,
     }),
     getStatisticDataForProvider: builder.query<
       GetStatisticDataForProviderResponse,
