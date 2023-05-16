@@ -5,6 +5,7 @@ import com.avocado.statistics.db.mysql.repository.dto.MerchandiseMainDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Mapper
 public interface MerchandiseRepository {
@@ -18,6 +19,8 @@ public interface MerchandiseRepository {
     String getPersonalColorTag(long merchandiseId);
 
     Integer getAgeGroup(long merchandiseId);
+
+    Optional<Integer> wishlistExists(UUID consumerId, long merchandiseId);
 
 
 }

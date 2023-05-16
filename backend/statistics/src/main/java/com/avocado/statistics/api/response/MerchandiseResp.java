@@ -20,6 +20,8 @@ public class MerchandiseResp {
     private int price; // groupId로 group 에서 찾기
     private int discountedPrice; // groupId로 group 에서 찾기
 
+    private boolean isIsWishlist;
+
     private String mbti; // score 테이블에서 찾아와서 제일 점수 높은 애로 데려오기
     private String personalColor; // score 테이블에서 찾아와서 제일 점수 높은 애로 데려오기
     private String ageGroup; // score 테이블에서 찾아와서 제일 점수 높은 애로 데려오기
@@ -55,5 +57,9 @@ public class MerchandiseResp {
         StringBuilder sb = new StringBuilder();
         sb.append(ageGroup).append("대");
         this.ageGroup =  sb.toString();
+    }
+
+    public void updateWishlist(boolean bool) {
+        this.isIsWishlist = bool;
     }
 }
