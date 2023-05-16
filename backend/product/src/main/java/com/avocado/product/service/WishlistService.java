@@ -1,11 +1,13 @@
 package com.avocado.product.service;
 
+import com.avocado.product.dto.query.SimpleMerchandiseDTO;
 import com.avocado.product.dto.query.WishlistMerchandiseDTO;
+import com.avocado.product.dto.response.DefaultMerchandiseResp;
+import com.avocado.product.dto.response.SimpleMerchandiseResp;
 import com.avocado.product.dto.response.WishlistMerchandiseResp;
 import com.avocado.product.entity.Consumer;
 import com.avocado.product.entity.Merchandise;
 import com.avocado.product.entity.Wishlist;
-import com.avocado.product.exception.AccessDeniedException;
 import com.avocado.product.exception.ErrorCode;
 import com.avocado.product.exception.InvalidValueException;
 import com.avocado.product.repository.*;
@@ -79,6 +81,29 @@ public class WishlistService {
 
         // 삭제
         wishlistRepository.delete(wishlist);
+    }
+
+    @Transactional(readOnly = true)
+    public <T extends DefaultMerchandiseResp> void updateIsWishlist(UUID consumerId, List<T> respContent) {
+        // 상품 ID 취합
+        List<Long> merchandiseIds = new ArrayList<>();
+        for (DefaultMerchandiseResp data : respContent)
+            merchandiseIds.add(data.getMerchandise_id());
+
+        // 구매자 ID, 상품 IDs로 찜꽁한 상품 ID 조회
+        List<Long> interestedMerchandiseIds = wishlistRepository
+                .findWishlistMerchandiseIds(consumerId, merchandiseIds);
+
+        // 찜꽁한 상품의 is_wishlist를 true로 변경
+        int wIdx = 0;
+        for (DefaultMerchandiseResp resp : respContent) {
+            // 찜꽁한 상품이 등장하면 is_wishlist를 true로 바꾸고, 다음 찜꽁 상품 ID로 넘어가기
+            if (wIdx < interestedMerchandiseIds.size()
+                    && resp.getMerchandise_id().equals(interestedMerchandiseIds.get(wIdx))) {
+                resp.updateIsWishlist(true);
+                wIdx++;
+            }
+        }
     }
 
     @Transactional(readOnly = true)
