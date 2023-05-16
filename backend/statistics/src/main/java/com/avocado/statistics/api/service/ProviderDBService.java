@@ -1,5 +1,6 @@
 package com.avocado.statistics.api.service;
 
+import com.avocado.ActionType;
 import com.avocado.statistics.common.codes.ScoreFactor;
 import com.avocado.statistics.common.utils.CategoryTypeUtil;
 import com.avocado.statistics.api.dto.GenderAgeGroup;
@@ -10,7 +11,7 @@ import com.avocado.statistics.db.mysql.repository.mybatis.ScoreMybatisRepository
 import com.avocado.statistics.db.redis.repository.CategoryType;
 import com.avocado.statistics.db.redis.repository.MerchandiseIdSetRepository;
 import com.avocado.statistics.db.redis.repository.ScoreRepository;
-import com.avocado.statistics.kafka.dto.Type;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -55,11 +56,11 @@ public class ProviderDBService {
             // 종류별로 점수 저장하기
             for (CategoryType cType : CategoryType.values()) {
 
-                Map<Integer, Long> viewMap = scoreRepository.getMapByMerchandiseId(cType, Type.VIEW, merchandiseId);
-                Map<Integer, Long> clickMap = scoreRepository.getMapByMerchandiseId(cType, Type.CLICK, merchandiseId);
-                Map<Integer, Long> likeMap = scoreRepository.getMapByMerchandiseId(cType, Type.LIKE, merchandiseId);
-                Map<Integer, Long> cartMap = scoreRepository.getMapByMerchandiseId(cType, Type.CART, merchandiseId);
-                Map<Integer, Long> paymentMap = scoreRepository.getMapByMerchandiseId(cType, Type.PAYMENT, merchandiseId);
+                Map<Integer, Long> viewMap = scoreRepository.getMapByMerchandiseId(cType, ActionType.VIEW, merchandiseId);
+                Map<Integer, Long> clickMap = scoreRepository.getMapByMerchandiseId(cType, ActionType.CLICK, merchandiseId);
+                Map<Integer, Long> likeMap = scoreRepository.getMapByMerchandiseId(cType, ActionType.LIKE, merchandiseId);
+                Map<Integer, Long> cartMap = scoreRepository.getMapByMerchandiseId(cType, ActionType.CART, merchandiseId);
+                Map<Integer, Long> paymentMap = scoreRepository.getMapByMerchandiseId(cType, ActionType.PAYMENT, merchandiseId);
 
                 int varSize = categoryTypeUtil.getVarSize(cType);
                 for (int i = 0; i < varSize; i++) {

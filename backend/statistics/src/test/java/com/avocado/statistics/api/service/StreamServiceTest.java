@@ -1,7 +1,7 @@
 package com.avocado.statistics.api.service;
 
-import com.avocado.statistics.kafka.dto.Result;
-import com.avocado.statistics.kafka.dto.Type;
+import com.avocado.ActionType;
+import com.avocado.Result;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,12 +31,12 @@ class StreamServiceTest {
     @Test
     @DisplayName("광고 DTO INSERT 테스트")
     public void insert_adv_dto() {
-        Type[] values = {Type.AD_CLICK, Type.AD_VIEW, Type.AD_PAYMENT};
+        ActionType[] values = {ActionType.AD_CLICK, ActionType.AD_VIEW, ActionType.AD_PAYMENT};
         for(long id = 0; id < 20; id++) {
             int size = new Random().nextInt(10) + 1;
             for (int i = 0; i < size; i++) {
-                Result result = new Result(userId0, id, values[new Random().nextInt(3)]);
-                streamService.consumeResult(result);
+                Result result = new Result(userId0, values[new Random().nextInt(3)]);
+                streamService.consumeResult(result, id);
             }
         }
     }
@@ -44,12 +44,12 @@ class StreamServiceTest {
     @Test
     @DisplayName("점수 DTO INSERT 테스트")
     public void insert_score_dto() {
-        Type[] values = {Type.CART, Type.CLICK, Type.LIKE, Type.PAYMENT, Type.VIEW};
+        ActionType[] values = {ActionType.CART, ActionType.CLICK, ActionType.LIKE, ActionType.PAYMENT, ActionType.VIEW};
         for(long id = 0; id < 20; id++) {
             int size = new Random().nextInt(10) + 1;
             for (int i = 0; i < size; i++) {
-                Result result = new Result(userId0, id, values[new Random().nextInt(values.length)]);
-                streamService.consumeResult(result);
+                Result result = new Result(userId0, values[new Random().nextInt(values.length)]);
+                streamService.consumeResult(result, id);
             }
         }
     }
@@ -60,8 +60,8 @@ class StreamServiceTest {
         for (String userId: userIds) {
             int size = new Random().nextInt(10) + 1;
             for (int i = 0; i < size; i++) {
-                Result result = new Result(userId, 1L, Type.PAYMENT);
-                streamService.consumeResult(result);
+                Result result = new Result(userId, ActionType.PAYMENT);
+                streamService.consumeResult(result, 1L);
             }
         }
     }
