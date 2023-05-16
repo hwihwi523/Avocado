@@ -13,7 +13,11 @@ import com.avocado.payment.entity.redis.Purchasing;
 import com.avocado.payment.entity.redis.PurchasingMerchandise;
 import com.avocado.payment.enums.DistributedLockName;
 import com.avocado.payment.exception.*;
-import com.avocado.payment.repository.*;
+import com.avocado.payment.kafka.service.KafkaProducer;
+import com.avocado.payment.repository.ConsumerRepository;
+import com.avocado.payment.repository.MerchandiseRepository;
+import com.avocado.payment.repository.PurchaseRepository;
+import com.avocado.payment.repository.PurchasingRepository;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RedissonClient;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +40,7 @@ public class KakaoPayService {
     private final PurchasingRepository purchasingRepository;
     private final ConsumerRepository consumerRepository;
     private final PurchaseRepository purchaseRepository;
+    private final KafkaProducer kafkaProducer;
 
     private final UUIDUtil uuidUtil;
     private final KakaoPayUtil kakaoPayUtil;
@@ -144,6 +149,7 @@ public class KakaoPayService {
      */
     @Transactional
     public String approve(String purchasingId, String pgToken) {
+
         // 구매 대기 내역 조회
         Optional<Purchasing> optionalPurchasing = purchasingRepository.findById(purchasingId);
         if (optionalPurchasing.isEmpty())
@@ -152,6 +158,7 @@ public class KakaoPayService {
 
         // 재고를 파악한 뒤 카카오페이 서버로 승인 요청을 보내 결제 완료 처리
         completeKakaoPay(purchasing, purchasing.getConsumer_id(), pgToken);
+
         return purchasing.getSuccess_url();
     }
 
@@ -195,6 +202,7 @@ public class KakaoPayService {
      */
     @DistributedLock(key = DistributedLockName.PAY)
     private void completeKakaoPay(Purchasing purchasing, String consumerId, String pgToken) {
+
         String purchasingId = purchasing.getId();
 
         // 재고 확인
@@ -229,6 +237,9 @@ public class KakaoPayService {
 
         // 재고 감소
         bulkUpdate(purchasing.getMerchandises());
+
+        // produce to kafka
+        kafkaProducer.sendPurchaseHistory(purchasing);
     }
 
     /**

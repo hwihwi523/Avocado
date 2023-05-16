@@ -48,7 +48,7 @@ dependencies {
 	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}" //  QueryDSL 관련 코드 생성 기능 제공
 
 	// kafka
-	implementation 'org.springframework.kafka:spring-kafka' // 버전을 명시하지 않아 Boot가 compatible version을 찾게 하는 것이 좋음
+	implementation 'org.springframework.kafka:spring-kafka'
 	testImplementation 'org.springframework.kafka:spring-kafka-test'
 
 	// avro, schema

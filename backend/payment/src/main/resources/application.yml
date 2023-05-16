@@ -19,6 +19,13 @@ spring:
     port: 6379
     password: yasim506
 
+  kafka:
+    bootstrap-servers: a62e5b172168c40419f9a1af18763a94-214776296.ap-northeast-2.elb.amazonaws.com:9094
+    purchase-history-config:
+      topic: test-purchase-history1
+    member-event-config:
+      topic: test-member-event
+
 server:
   servlet:
     context-path: /api/payment
@@ -34,6 +41,7 @@ kakao-pay:
       approve: /v1/payment/approve
     handle:
       host: http://k8s-avocado-c6c0ca3c6e-209771398.ap-northeast-2.elb.amazonaws.com/api/payment
+#      host: http://localhost:8080/api/payment
       approve: /approval/
       cancel: /cancel/
       fail: /fail/
