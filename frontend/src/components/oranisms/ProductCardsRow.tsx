@@ -11,7 +11,6 @@ import { RecommendItem } from "@/src/features/statistic/statisticSlice"; //이 �
 
 const ProductCardsRow: React.FC<{ data: RecommendItem[] }> = (props) => {
   const products_list = props.data;
-  console.log("넘어온 products_list 는 : ", products_list);
 
   return (
     <RowScrollable>
