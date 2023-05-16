@@ -165,7 +165,7 @@ const MyProductsList: React.FC<{ provider_id: string }> = (props) => {
           ))}
       </Grid>
 
-{/* 무한 스크롤을 위한 감시 div와 로딩바 */}
+      {/* 무한 스크롤을 위한 감시 div와 로딩바 */}
       {isLastPage ? (
         <BlockText
           style={{ textAlign: "center", padding: "40px 0" }}
@@ -189,7 +189,7 @@ const MyProductsList: React.FC<{ provider_id: string }> = (props) => {
         onClose={handleClose}
         TransitionComponent={Transition}
       >
-        <AppBar sx={{ position: "fixed" }}>
+        <AppBar sx={{ position: "fixed", backgroundColor: "black" }}>
           <Toolbar>
             <Stack
               style={{ width: "100%" }}
