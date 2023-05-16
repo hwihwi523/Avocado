@@ -41,12 +41,13 @@ import {
 import dynamic from "next/dynamic";
 import { statisticApi } from "@/src/features/statistic/statisticApi";
 import { setSelectedProductStatisticData } from "@/src/features/statistic/statisticSlice";
+import ProductBottom from "@/src/components/oranisms/ProductBottom";
 
 const ProductDetailPage = () => {
-  const ProductBottom = dynamic(
-    () => import("@/src/components/oranisms/ProductBottom"),
-    { ssr: false }
-  );
+  // const ProductBottom = dynamic(
+  //   () => import("@/src/components/oranisms/ProductBottom"),
+  //   { ssr: false }
+  // );
 
   const router = useRouter();
   const product = useAppSelector(
@@ -71,7 +72,7 @@ const ProductDetailPage = () => {
   const { data: getIsWishlistData, error } = useGetIsWishlistQuery({
     merchandise_name: product ? product.merchandise_name : "",
   });
-  const isWishlist = getIsWishlistData?.data;
+  const isWishlist = getIsWishlistData ? getIsWishlistData.data : false;
   // Cart
   const [addCart, result] = useAddCartMutation();
 
@@ -269,10 +270,7 @@ const ProductDetailPage = () => {
         </Grid>
       </Dialog>
 
-      <ProductBottom
-        openModal={handleClickOpen}
-        isWishlist={isWishlist ? isWishlist : false}
-      />
+      <ProductBottom openModal={handleClickOpen} isWishlist={isWishlist} />
     </div>
   );
 };
