@@ -4,11 +4,13 @@ import com.avocado.statistics.api.response.*;
 import com.avocado.statistics.common.error.BaseException;
 import com.avocado.statistics.common.error.ResponseCode;
 import com.avocado.statistics.common.utils.JwtUtils;
+import com.avocado.statistics.common.utils.UUIDUtil;
 import com.avocado.statistics.db.mysql.repository.dto.AgeGroupDistributionDTO;
 import com.avocado.statistics.db.mysql.repository.dto.ChartDistributionDTO;
 import com.avocado.statistics.db.mysql.repository.dto.GenderDistributionDTO;
 import com.avocado.statistics.db.mysql.repository.dto.SellCountTotalRevenueDTO;
 import com.avocado.statistics.db.mysql.repository.jpa.StatisticsRepository;
+import com.avocado.statistics.db.redis.repository.ProviderRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ import java.util.UUID;
 public class ProviderStatisticsService {
     private final JwtUtils jwtUtils;
     private final StatisticsRepository jpaStatisticsRepository;
+    private final ProviderRepository providerRepository;  // Redis
 
     public ProviderStatisticsResp getStatisticsInfo(Claims claims) {
         String type = jwtUtils.getType(claims);
@@ -32,6 +35,12 @@ public class ProviderStatisticsService {
 
         // 조회수, 판매수, 총 판매액, 상품수 조회
         UUID providerId = jwtUtils.getId(claims);
+
+        // Redis 데이터 확인 & Hit일 경우 반환, Miss일 경우 DB에서 쿼리 조회
+        ProviderStatisticsResp providerStatisticsResp = providerRepository.load(UUIDUtil.removeHyphen(providerId));
+        if (providerStatisticsResp != null)
+            return providerStatisticsResp;
+
         Long clickCount = jpaStatisticsRepository.getClickCount(providerId);  // 조회수
         SellCountTotalRevenueDTO sellCountTotalRevenueDTO = jpaStatisticsRepository
                 .getSellCountTotalRevenue(providerId);  // 판매수, 총 판매액
@@ -78,7 +87,7 @@ public class ProviderStatisticsService {
         }
 
         // Response DTO 생성
-        ProviderStatisticsResp providerStatisticsResp = new ProviderStatisticsResp();
+        providerStatisticsResp = new ProviderStatisticsResp();
         providerStatisticsResp.updateNumericStatistics(
                 clickCount,
                 sellCountTotalRevenueDTO.getSellCount(),
@@ -89,6 +98,9 @@ public class ProviderStatisticsService {
                 personalColors,
                 ageGroups
         );
+
+        // Redis 저장
+        providerRepository.save(UUIDUtil.removeHyphen(providerId), providerStatisticsResp);
 
         return providerStatisticsResp;
     }
