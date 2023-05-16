@@ -30,6 +30,7 @@ import { AppState, useAppSelector, wrapper } from "@/src/features/store";
 import { authenticateTokenInPages } from "@/src/utils/authenticateTokenInPages";
 import {
   productApi,
+  useAddCartMutation,
   useGetIsWishlistQuery,
   useGetProductReviewsQuery,
 } from "@/src/features/product/productApi";
@@ -68,9 +69,11 @@ const ProductDetailPage = () => {
   const reviews = getReviewsData as ProductReview[] | [];
   // wishlist button 상태관리를 위해
   const { data: getIsWishlistData, error } = useGetIsWishlistQuery({
-    merchandise_name: product!.merchandise_name,
+    merchandise_name: product ? product.merchandise_name : "",
   });
   const isWishlist = getIsWishlistData?.data;
+  // Cart
+  const [addCart, result] = useAddCartMutation();
 
   const [size, setSize] = useState("M");
   const [count, setCount] = useState(1);
@@ -131,11 +134,13 @@ const ProductDetailPage = () => {
 
   // 장바구니에 담기
   function addToCart() {
-    console.log({
-      id: member ? member.id : "",
-      size,
-      count,
-    });
+    if (!member) {
+      return;
+    }
+    addCart({ merchandise_id: product!.merchandise_id, size, quantity: count })
+      .unwrap()
+      .then((res) => router.push("/user/cartList"))
+      .catch((e) => console.log("ADD CART ERROR: ", e));
   }
 
   return (

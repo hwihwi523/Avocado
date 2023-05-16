@@ -30,7 +30,7 @@ const ProductBottom: React.FC<{
   const productId = parseInt(lastSegment || "-1");
   // 상품 상세 정보 -> 찜 상태 가져오기
   const { refetch } = useGetIsWishlistQuery({
-    merchandise_name: product!.merchandise_name,
+    merchandise_name: product ? product.merchandise_name : "",
   });
   // 상품이 wishlist에 포함되어 있는지 여부 가져오기
   const isWishlist = props.isWishlist;
