@@ -86,12 +86,14 @@ const Snapshot = () => {
         {!lastId &&
           data &&
           data.styleshot_list.map((item, i) => (
-            <SnapshotItem data={item} key={i} />
+            <SnapshotItem data={item} key={i} refetch={refetch} />
           ))}
 
         {/* 그다음부터는 무한스크롤에 의해 쌓여가는 데이터 보여줌 */}
         {snapshotList ? (
-          snapshotList.map((item, i) => <SnapshotItem data={item} key={i} refetch={refetch}/>)
+          snapshotList.map((item, i) => (
+            <SnapshotItem data={item} key={i} refetch={refetch} />
+          ))
         ) : (
           <BlockText
             color="grey"
