@@ -6,11 +6,18 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+
   datasource:
     username: root
     password: yasim506
     url: jdbc:mysql://a07c6127933494883b1ce18e5a21f697-895151877.ap-northeast-2.elb.amazonaws.com:3306/community?serverTimezone=UTC&characterEncoding=UTF-8
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+  kafka:
+    bootstrap-servers: a62e5b172168c40419f9a1af18763a94-214776296.ap-northeast-2.elb.amazonaws.com:9094
+    member-event-config:
+      topic: test-member-event1
+
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
