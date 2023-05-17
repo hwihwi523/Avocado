@@ -31,13 +31,13 @@ import java.util.*;
 public class ConsumerRecommendService {
 
     private final ScoreFactor sc;
-    private final RecommendFactor rf;
     private final JwtUtils jwtUtils;
-    private final CategoryTypeUtil categoryTypeUtil;
+    private final RecommendFactor rf;
     private final ScoreRepository scoreRepository;
+    private final CategoryTypeUtil categoryTypeUtil;
+    private final ConsumerRepository consumerRepository;
     private final MerchandiseRepository merchandiseRepository;
     private final MerchandiseIdSetRepository merchandiseIdSetRepository;
-    private final ConsumerRepository consumerRepository;
 
     public ConsumerRecommendResp getConsumerRecommend(Claims claims) {
         UUID id = jwtUtils.getId(claims);

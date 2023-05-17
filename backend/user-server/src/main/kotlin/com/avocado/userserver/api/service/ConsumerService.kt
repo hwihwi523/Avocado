@@ -1,5 +1,8 @@
 package com.avocado.userserver.api.service
 
+import com.avocado.EventType
+import com.avocado.MemberEvent
+import com.avocado.UpdateInfo
 import com.avocado.userserver.api.dto.KakaoUserInfo
 import com.avocado.userserver.api.request.ConsumerNotRequiredInfoReq
 import com.avocado.userserver.api.request.ConsumerPersonalColorReq
@@ -14,6 +17,7 @@ import com.avocado.userserver.db.entity.Wallet
 import com.avocado.userserver.db.repository.ConsumerInsertRepository
 import com.avocado.userserver.db.repository.ConsumerRepository
 import com.avocado.userserver.db.repository.WalletRepository
+import com.avocado.userserver.kafka.service.KafkaProducer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import io.jsonwebtoken.Claims
@@ -30,6 +34,7 @@ class ConsumerService(
     private val oAuthUrlUtil: OAuthUrlUtil,
     private val convertIdUtil: ConvertIdUtil,
     private val jwtProvider: JwtProvider,
+    private val kafkaProducer: KafkaProducer,
 ) {
     val log: Logger = LoggerFactory.getLogger(ConsumerService::class.java)
 
@@ -63,9 +68,12 @@ class ConsumerService(
         consumerInsertRepository.insert(consumer)
         consumerInsertRepository.insertWallet(consumer)
         
-        // TODO - kafka로 새로 회원가입 했음을 알리기
-        consumer.consumerId // 얘 보내기
-        
+        // kafka로 이벤트 날리기
+        val consumerId:String = convertIdUtil.hex(consumer.consumerId)
+        val memberEvent = MemberEvent.newBuilder()
+            .setEvent(EventType.SIGN_UP).build()
+        kafkaProducer.sendMemberEvent(consumerId, memberEvent)
+
         return consumer
     }
 
@@ -95,14 +103,21 @@ class ConsumerService(
         val consumer = consumerRepository.findById(jwtProvider.getId(claims))?:throw BaseException(ResponseCode.NOT_FOUND_VALUE)
         val updatedConsumer = consumer.updateInfo(req)
         consumerRepository.save(updatedConsumer)
-        
-        // TODO - Kafka로 회원정보 수정 알리기
-//        consumer.consumerId
-//        consumer.ageGroup
-//        consumer.gender
-//        consumer.name
-//        consumer.mbtiId
-//        consumer.personalColorId
+
+        // kafka로 이벤트 날리기
+        val consumerId: String = convertIdUtil.hex(consumer.consumerId)
+        val info: UpdateInfo = UpdateInfo.newBuilder()
+            .setAgeGroup(consumer.ageGroup?:throw BaseException(ResponseCode.INVALID_VALUE))
+            .setGender(consumer.gender)
+            .setConsumerName(consumer.name)
+            .setMbtiId(consumer.mbtiId)
+            .setPersonalColorId(consumer.personalColorId).build()
+        val memberEvent = MemberEvent.newBuilder()
+            .setEvent(EventType.UPDATE)
+            .setUpdateInfo(info)
+            .build()
+        kafkaProducer.sendMemberEvent(consumerId, memberEvent)
+
     }
 
     @Transactional
@@ -117,7 +132,12 @@ class ConsumerService(
     suspend fun deleteConsumer(claims: Claims) {
         val consumerId = jwtProvider.getId(claims)
         consumerRepository.deleteById(consumerId)
-        // TODO -  Kafka로 회원 탈퇴 처리 알리기
-        //  consumerId 보내기
+        
+        // kafka 로 회원 탈퇴했음을 알리기
+        val id:String = convertIdUtil.hex(consumerId)
+        val memberEvent = MemberEvent.newBuilder()
+            .setEvent(EventType.SIGN_OUT).build()
+        kafkaProducer.sendMemberEvent(id, memberEvent)
+
     }
 }

@@ -15,10 +15,10 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 
 @Configuration
 @EnableKafka
-class ConsumerConfig {
-
+class ConsumerConfig(
     @Value(value = "\${spring.kafka.bootstrap-servers}")
-    private val bootstrapAddress: String? = null
+    private val bootstrapAddress: String
+) {
 
     fun purchaseHistoryConsumerFactory(groupId: String?): ConsumerFactory<String?, PurchaseHistory?> {
         val props: MutableMap<String, Any?> = HashMap()
