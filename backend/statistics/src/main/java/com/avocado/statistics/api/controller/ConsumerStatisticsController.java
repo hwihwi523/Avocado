@@ -1,6 +1,7 @@
 package com.avocado.statistics.api.controller;
 
 import com.avocado.statistics.api.response.BaseResp;
+import com.avocado.statistics.api.response.BasicConsumerStatisticsResp;
 import com.avocado.statistics.api.service.ConsumerRecommendService;
 import com.avocado.statistics.api.service.ConsumerStatisticsService;
 import com.avocado.statistics.api.service.ProviderDBService;
@@ -41,5 +42,12 @@ public class ConsumerStatisticsController {
         providerDBService.update();
         resMap.put("msg", "점수 업데이트 완료");
         return ResponseEntity.ok(resMap);
+    }
+
+    @GetMapping("/consumer")
+    public ResponseEntity<BaseResp> getBasicConsumerStatistics(HttpServletRequest request) {
+        Claims claims = jwtUtils.getClaims(request);
+        BasicConsumerStatisticsResp resp = consumerStatisticsService.getBasicStatistics(claims);
+        return ResponseEntity.ok(BaseResp.of("구매자 기본 통계 조회 성공", resp));
     }
 }
