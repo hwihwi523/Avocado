@@ -41,7 +41,7 @@ public class ConsumerConfig {
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, PurchaseHistory> purchaseHistoryKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, PurchaseHistory> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(purchaseHistoryConsumerFactory("product-group"));
+        factory.setConsumerFactory(purchaseHistoryConsumerFactory("product-group-testtest"));
         factory.setConcurrency(3);
         factory.getContainerProperties().setPollTimeout(3000);
         return factory;
