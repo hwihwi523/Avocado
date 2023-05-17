@@ -184,6 +184,34 @@ public class MerchandiseService {
         return PageResp.of(respContent, result.isLast(), null, newLastMerchandiseId);
     }
 
+    /**
+     * 상품 인기순으로 조회하기
+     * @param lastMerchandiseId : for pagination
+     * @param size : 조회할 데이터 개수
+     * @return : 인기순으로 조회한 상품
+     */
+    public PageResp showPopularMerchandises_NoOffset(Long lastMerchandiseId, Integer size) {
+        // DB 조회
+        Page<SimpleMerchandiseDTO> result = merchandiseRepository
+                .findPopularMerchandises_NoOffset(lastMerchandiseId, PageRequest.ofSize(size));
+
+        // DTO -> Response 변환
+        List<SimpleMerchandiseResp> respContent;
+
+        try {
+            respContent = scoreService.insertPersonalInfoIntoList(result.getContent(), SimpleMerchandiseResp.class);
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+
+        // 마지막으로 조회한 ID
+        Long newLastMerchandiseId = respContent.isEmpty()
+                ? null
+                : respContent.get(respContent.size() - 1).getMerchandise_id();
+
+        return PageResp.of(respContent, result.isLast(), newLastMerchandiseId, null);
+    }
+
     // Offset 사용 버전.
 //    @Transactional(readOnly = true)
 //    public PageResp showMerchandiseList_Offset(Short categoryId, String brandName,

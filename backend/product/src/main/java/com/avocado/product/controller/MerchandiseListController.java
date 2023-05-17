@@ -78,6 +78,13 @@ public class MerchandiseListController {
         return ResponseEntity.ok(BaseResp.of("구매내역 조회 성공", result));
     }
 
+    @GetMapping("/guest")
+    public ResponseEntity<BaseResp> showPopularMerchandises(@RequestParam @Nullable Long last,
+                                                            @RequestParam(defaultValue = "5") Integer size) {
+        PageResp result = merchandiseService.showPopularMerchandises_NoOffset(last, size);
+        return ResponseEntity.ok(BaseResp.of("인기순 조회 성공", result));
+    }
+
     // 위와 동일. Offset 사용 버전
 //    @GetMapping("/offset")
 //    public ResponseEntity<BaseResp> showMerchandises_Offset(@RequestParam @Nullable String store,
