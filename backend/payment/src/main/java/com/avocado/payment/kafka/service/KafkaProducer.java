@@ -15,6 +15,7 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -29,7 +30,7 @@ public class KafkaProducer {
         this.purchaseHistoryKafkaTemplate = purchaseHistoryKafkaTemplate;
     }
 
-    public void sendPurchaseHistory(Purchasing purchasing) {
+    public void sendPurchaseHistory(Purchasing purchasing, Map<Long, Integer> inventories) {
         // make merchandises list by purchasing
         List<Merchandise> merchandises = new ArrayList<>();
         for (PurchasingMerchandise pm : purchasing.getMerchandises()) {
@@ -39,7 +40,7 @@ public class KafkaProducer {
                     .setQuantity(pm.getQuantity())
                     .setSize(pm.getSize())
                     .setProviderId(pm.getProvider_id())
-                    .setLeftover(1111111)         // <<<< 이거 어떻게 해주셈
+                    .setLeftover(inventories.get(pm.getMerchandise_id()))
                     .build();
             merchandises.add(merchandise);
         }

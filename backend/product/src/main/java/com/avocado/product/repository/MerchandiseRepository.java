@@ -13,15 +13,14 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static com.avocado.product.entity.QClick.click;
 import static com.avocado.product.entity.QMerchandise.merchandise;
 import static com.avocado.product.entity.QMerchandiseAdditionalImg.merchandiseAdditionalImg;
 import static com.avocado.product.entity.QMerchandiseCategory.merchandiseCategory;
 import static com.avocado.product.entity.QMerchandiseGroup.merchandiseGroup;
+import static com.avocado.product.entity.QPurchasedMerchandise.purchasedMerchandise;
 import static com.avocado.product.entity.QStore.store;
 
 @Repository
@@ -198,6 +197,66 @@ public class MerchandiseRepository {
                         eqMerchandiseId(merchandiseId)
                 )
                 .fetch();
+    }
+
+    /**
+     * 가장 많이 팔린 상품 상위 N개를 조회하는 쿼리
+     * @param lastMerchandiseId : for pagination
+     * @param pageable : for pagination
+     * @return : 가장 많이 팔린 상품 상위 N개
+     */
+    public Page<SimpleMerchandiseDTO> findPopularMerchandises_NoOffset(Long lastMerchandiseId, Pageable pageable) {
+        // 가장 많이 팔린 상품 ID N개 조회
+        List<Long> popularIds = queryFactory
+                .select(purchasedMerchandise.merchandise.id)
+                .from(purchasedMerchandise)
+                .groupBy(purchasedMerchandise.merchandise.id)
+                .orderBy(purchasedMerchandise.merchandise.id.count().desc())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        // 데이터 조회
+        List<SimpleMerchandiseDTO> result = queryFactory
+                .select(new QSimpleMerchandiseDTO(
+                        store.name,
+                        merchandise.id,
+                        merchandiseCategory.nameKor,
+                        merchandise.imgurl,
+                        merchandise.name,
+                        merchandiseGroup.price,
+                        merchandiseGroup.discountedPrice,
+                        merchandise.totalScore.divide(merchandise.reviewCount).floatValue()
+                ))
+                .from(merchandise)
+                .join(merchandise.group, merchandiseGroup)
+                .join(merchandiseGroup.provider, store)
+                .join(merchandiseGroup.category, merchandiseCategory)
+                .where(
+                        ltLastMerchandiseId(lastMerchandiseId),
+                        merchandise.id.in(popularIds)
+                )
+                .orderBy(merchandise.id.desc())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        // 인기순으로 순서 재구성
+        Map<Long, Integer> indexOf = new HashMap<>();
+        int index = 0;
+        for (SimpleMerchandiseDTO data : result)
+            indexOf.put(data.getMerchandiseId(), index++);
+
+        List<SimpleMerchandiseDTO> sortedResult = new ArrayList<>();
+        for (Long popularId : popularIds)
+            sortedResult.add(result.get(indexOf.get(popularId)));
+
+        // Count 쿼리
+        JPAQuery<Long> countQuery = queryFactory
+                .select(merchandise.id.count())
+                .from(merchandise)
+                .join(merchandise.group, merchandiseGroup)
+                .join(merchandiseGroup.provider, store);
+
+        return PageableExecutionUtils.getPage(sortedResult, pageable, countQuery::fetchOne);
     }
 
     // 상품 ID 조건
