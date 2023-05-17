@@ -16,11 +16,24 @@ import { authenticateTokenInPages } from "../../utils/authenticateTokenInPages";
 import { removeTokenAll } from "@/src/utils/tokenManager";
 import { useDispatch } from "react-redux";
 import { clearAuth } from "@/src/features/auth/authSlice";
+import { useGetSnapshotCntAndLikeCntQuery } from "@/src/features/snapshot/snapshotApi";
+import {
+  useGetCartQuery,
+  useGetWishlistQuery,
+} from "@/src/features/product/productApi";
 
 const Mypage = () => {
   const member = useAppSelector((state: AppState) => state.auth.member);
   const dispatch = useDispatch();
   const router = useRouter();
+
+  //좋아요 갯수, 스넵샷 게시물 개수
+  const { data: userSummary } = useGetSnapshotCntAndLikeCntQuery();
+
+  //장바구니 목록
+  const { data: cartList, isLoading } = useGetCartQuery();
+
+  const { data: wishList } = useGetWishlistQuery();
 
   //로그인 안했다면 로그인 페이지로 보내버리기
   useEffect(() => {
@@ -62,7 +75,14 @@ const Mypage = () => {
         >
           로그아웃
         </Button>
-        <UserStateSummary />
+        <UserStateSummary
+          data={{
+            cart_cnt: cartList ? cartList.length : 0,
+            wishlist_cnt: wishList ? wishList.length : 0,
+            snapshot_cnt: userSummary ? userSummary.styleshot_cnt : 0,
+            like_cnt: userSummary ? userSummary.like_cnt : 0,
+          }}
+        />
         <ChartPersonalColor personalColorData={personalColorData} />
 
         <Box>

@@ -1,44 +1,45 @@
 import styled from "@emotion/styled";
 import { Stack } from "@mui/material";
 
-
-
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
-import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
-import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
-const UserStateSummary = () => {
-  const cart = 11;
-  const bookmark = 12;
-  const snapshot = 33;
-  const heart = 22;
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
+import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
+import InsertPhotoOutlinedIcon from "@mui/icons-material/InsertPhotoOutlined";
 
+type Item = {
+  cart_cnt: number;
+  wishlist_cnt: number;
+  snapshot_cnt: number;
+  like_cnt: number;
+};
+
+const UserStateSummary: React.FC<{ data: Item }> = (props) => {
+  const { cart_cnt, wishlist_cnt, snapshot_cnt, like_cnt } = props.data;
   return (
     <>
       <Stack direction={"row"} spacing={1}>
-
         {/* 장바구니 */}
         <IconBox>
           <ShoppingCartOutlinedIcon />
-          {cart}
+          {cart_cnt}
         </IconBox>
 
         {/* 찜목록 */}
         <IconBox>
           <BookmarkBorderOutlinedIcon />
-          {bookmark}
+          {wishlist_cnt}
         </IconBox>
 
         {/* 스넵샷 */}
         <IconBox>
           <InsertPhotoOutlinedIcon />
-          {snapshot}
+          {snapshot_cnt}
         </IconBox>
 
         {/* 스넵샷 좋아요 */}
         <IconBox>
           <FavoriteBorderOutlinedIcon />
-          {heart}
+          {like_cnt}
         </IconBox>
       </Stack>
     </>
@@ -57,4 +58,3 @@ const IconBox = styled.div`
   border-radius: 10px;
   width: 100%;
 `;
-
