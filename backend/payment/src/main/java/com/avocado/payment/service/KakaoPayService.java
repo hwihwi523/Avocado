@@ -238,8 +238,18 @@ public class KakaoPayService {
         // 재고 감소
         bulkUpdate(purchasing.getMerchandises());
 
+        // 재고가 변경된 상품 내역 조회
+        List<Long> updatedIds = new ArrayList<>();
+        for (PurchasingMerchandise purchasingMerchandise : purchasing.getMerchandises())
+            updatedIds.add(purchasingMerchandise.getMerchandise_id());
+        List<Merchandise> updatedMerchandises = merchandiseRepository.findByIdIn(updatedIds);
+        // 상품별 재고 Map 생성
+        Map<Long, Integer> inventories = new HashMap<>();
+        for (Merchandise updated : updatedMerchandises)
+            inventories.put(updated.getId(), updated.getInventory());
+
         // produce to kafka
-        kafkaProducer.sendPurchaseHistory(purchasing);
+        kafkaProducer.sendPurchaseHistory(purchasing, inventories);
     }
 
     /**
@@ -336,6 +346,19 @@ public class KakaoPayService {
 
         // 재고 감소
         bulkUpdate(purchasing.getMerchandises());
+
+        // 재고가 변경된 상품 내역 조회
+        List<Long> updatedIds = new ArrayList<>();
+        for (PurchasingMerchandise purchasingMerchandise : purchasing.getMerchandises())
+            updatedIds.add(purchasingMerchandise.getMerchandise_id());
+        List<Merchandise> updatedMerchandises = merchandiseRepository.findByIdIn(updatedIds);
+        // 상품별 재고 Map 생성
+        Map<Long, Integer> inventories = new HashMap<>();
+        for (Merchandise updated : updatedMerchandises)
+            inventories.put(updated.getId(), updated.getInventory());
+
+        // produce to kafka
+        kafkaProducer.sendPurchaseHistory(purchasing, inventories);
     }
 
     /**
