@@ -43,7 +43,7 @@ const WishItem: React.FC<{ item: ProductForWishlist }> = (props) => {
   }
 
   function pageMove() {
-    router.push("product/" + merchandise_id);
+    router.push("/product/" + merchandise_id);
   }
 
   async function removeBtnClickHandler() {

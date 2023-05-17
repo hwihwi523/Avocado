@@ -42,17 +42,24 @@ import dynamic from "next/dynamic";
 import { statisticApi } from "@/src/features/statistic/statisticApi";
 import { setSelectedProductStatisticData } from "@/src/features/statistic/statisticSlice";
 import ProductBottom from "@/src/components/oranisms/ProductBottom";
+import { useSnackbar } from "notistack";
 
 const ProductDetailPage = () => {
-  // const ProductBottom = dynamic(
-  //   () => import("@/src/components/oranisms/ProductBottom"),
-  //   { ssr: false }
-  // );
-
   const router = useRouter();
   const product = useAppSelector(
     (state: AppState) => state.product.selectedProductDetail
   );
+  const { enqueueSnackbar } = useSnackbar();
+  useEffect(() => {
+    enqueueSnackbar(`상품이 존재하지 않습니다.`, {
+      variant: "error", //info(파란색), error(빨간색), success(초록색), warning(노란색)
+      anchorOrigin: {
+        horizontal: "center", //(left, center, right)
+        vertical: "bottom", //top, bottom
+      },
+    });
+    if (!product) router.replace("/");
+  }, []);
   const member = useAppSelector((state: AppState) => state.auth.member);
   //통계 자료
   const statisticData = useAppSelector(

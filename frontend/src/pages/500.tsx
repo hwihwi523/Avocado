@@ -4,7 +4,7 @@ import { BlockText } from "../components/atoms";
 import Image from "next/image";
 import router from "next/router";
 
-const Custom404: React.FC = () => {
+const Custom500: React.FC = () => {
   return (
     <Box
       sx={{
@@ -26,16 +26,16 @@ const Custom404: React.FC = () => {
         style={{ fontFamily: "SeoulNamsanEB", marginBottom: -10 }}
         size="4rem"
       >
-        404
+        500
       </BlockText>
       <BlockText style={{ fontFamily: "SeoulNamsanB" }} size="2rem">
-        Not Found
+        Sever Error
       </BlockText>
       <BlockText size="0.7rem">
-        죄송합니다. 페이지를 찾을 수 없습니다. <br />
-        존재하지 않는 주소를 입력하셨거나, <br />
-        요청하신 페이지의 주소가 <br />
-        변경, 삭제되어 찾을 수 없습니다.
+        죄송합니다. 기술적 문제로 서비스에 접속이 되지 않습니다. <br />
+        일시적인 현상으로, 현재 담당 부서 확인 중입니다.
+        <br />
+        잠시 후 다시 이용해 보시면 정상 접속 될 수 있습니다.
       </BlockText>
       <Button
         variant="outlined"
@@ -49,4 +49,4 @@ const Custom404: React.FC = () => {
   );
 };
 
-export default Custom404;
+export default Custom500;

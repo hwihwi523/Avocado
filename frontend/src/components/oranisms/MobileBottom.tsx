@@ -10,19 +10,54 @@ import IconButton from "@mui/material/IconButton";
 import styled from "@emotion/styled";
 import Link from "next/link";
 import { useAppSelector, AppState } from "@/src/features/store";
+import router from "next/router";
+import { useSnackbar } from "notistack";
 
 const MobileBottom = (props: any) => {
   const member = useAppSelector((state: AppState) => state.auth.member);
+  const { enqueueSnackbar } = useSnackbar();
 
-  function pageRouterHandler() {
+  function wishlistRouterHandler() {
     if (!!member) {
       if (member.type === "provider") {
-        return "/seller";
+        enqueueSnackbar(`일반 사용자 계정으로 로그인해 주세요.`, {
+          variant: "warning", //info(파란색), error(빨간색), success(초록색), warning(노란색)
+          anchorOrigin: {
+            horizontal: "center", //(left, center, right)
+            vertical: "bottom", //top, bottom
+          },
+        });
       } else {
-        return "/user/mypage";
+        router.push("/user/wishList");
       }
     } else {
-      return "/login";
+      enqueueSnackbar(`로그인이 필요한 서비스입니다.`, {
+        variant: "warning", //info(파란색), error(빨간색), success(초록색), warning(노란색)
+        anchorOrigin: {
+          horizontal: "center", //(left, center, right)
+          vertical: "bottom", //top, bottom
+        },
+      });
+      router.push("/login");
+    }
+  }
+
+  function myPageRouterHandler() {
+    if (!!member) {
+      if (member.type === "provider") {
+        router.push("/seller");
+      } else {
+        router.push("/user/mypage");
+      }
+    } else {
+      enqueueSnackbar(`로그인이 필요한 서비스입니다.`, {
+        variant: "warning", //info(파란색), error(빨간색), success(초록색), warning(노란색)
+        anchorOrigin: {
+          horizontal: "center", //(left, center, right)
+          vertical: "bottom", //top, bottom
+        },
+      });
+      router.push("/login");
     }
   }
 
@@ -54,24 +89,20 @@ const MobileBottom = (props: any) => {
         </Link>
 
         {/* 찜 목록 */}
-        <Link href="/user/wishList">
-          <IconButton aria-label="bookmark">
-            <BookmarkBorderOutlinedIcon
-              fontSize="large"
-              style={{ fill: "#FFFFFF" }}
-            />
-          </IconButton>
-        </Link>
+        <IconButton aria-label="bookmark" onClick={wishlistRouterHandler}>
+          <BookmarkBorderOutlinedIcon
+            fontSize="large"
+            style={{ fill: "#FFFFFF" }}
+          />
+        </IconButton>
 
         {/* 마이페이지 */}
-        <Link href={pageRouterHandler()}>
-          <IconButton aria-label="mypage">
-            <AccountCircleOutlinedIcon
-              fontSize="large"
-              style={{ fill: "#FFFFFF" }}
-            />
-          </IconButton>
-        </Link>
+        <IconButton aria-label="mypage" onClick={myPageRouterHandler}>
+          <AccountCircleOutlinedIcon
+            fontSize="large"
+            style={{ fill: "#FFFFFF" }}
+          />
+        </IconButton>
       </Stack>
     </BackgroundDiv>
   );
