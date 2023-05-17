@@ -81,6 +81,7 @@ const ProductCard = (props: any) => {
             alt="제품 이미지"
             fill
             style={{ objectFit: "cover" }}
+            loading="lazy"
           />
         </Imagebox>
 
