@@ -1,0 +1,32 @@
+// 구매내역 + 구매상품
+// 보내는 서버 : payment
+// 받는 서버 : product, member, search
+// topic: test-purchase-history1
+// key: purchaseId (string)
+// value: PurchaseHistory
+{
+  "name": "PurchaseHistory",
+  "namespace": "com.avocado",
+  "type": "record",
+  "fields": [
+    {"name": "userId", "type": "string"},
+    {"name": "totalPrice", "type": "long"},
+    {"name": "merchandises", "type": {
+      "type": "array",
+      "items": {
+        "type": "record",
+        "name": "Merchandise",
+        "namespace": "com.avocado",
+        "fields": [
+          {"name": "merchandiseId", "type": "long"},
+          {"name": "price", "type": "long"},
+          {"name": "quantity", "type": "int"},
+          {"name": "size", "type": "string"},
+          {"name": "providerId", "type": "string"},
+          {"name": "leftover", "type": "int"} // 추가됨
+        ]
+      },
+      "default": []
+    }}
+  ]
+}

@@ -1,4 +1,4 @@
-package com.avocado.search.search.error;
+package com.avocado.search.error;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -10,9 +10,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 public class SearchExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(value = { com.avocado.search.search.error.SearchException.class })
-    protected ResponseEntity<com.avocado.search.search.error.ErrorResponse> handleCustomException(com.avocado.search.search.error.SearchException e) {
+    @ExceptionHandler(value = { SearchException.class })
+    protected ResponseEntity<ErrorResponse> handleCustomException(SearchException e) {
         log.error("handleCustomException throw CustomException : {}", e.getErrorCode());
-        return com.avocado.search.search.error.ErrorResponse.toResponseEntity(e.getErrorCode());
+        return ErrorResponse.toResponseEntity(e.getErrorCode());
     }
 }

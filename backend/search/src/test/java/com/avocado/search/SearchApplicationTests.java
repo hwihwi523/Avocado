@@ -1,4 +1,4 @@
-package com.avocado.search.search;
+package com.avocado.search;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

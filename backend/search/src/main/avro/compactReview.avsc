@@ -1,0 +1,14 @@
+// 리뷰가 등록될때마다
+// 보내는 서버 : product
+// 받는 서버 : search
+// key: review id (long)
+{
+  "name": "CompactReview",
+  "namespace": "com.avocado",
+  "type": "record",
+  "fields": [
+    {"name": "merchandiseId", "type": "long"},
+    {"name": "totalScore", "type": "int"},
+    {"name": "reviewCount", "type": "int"}
+  ]
+}

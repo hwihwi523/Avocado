@@ -1,4 +1,4 @@
-package com.avocado.search.search.Service;
+package com.avocado.search.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -6,14 +6,14 @@ import java.util.List;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
-import com.avocado.search.search.Dto.request.InventoryDto;
-import com.avocado.search.search.Dto.request.ReviewDto;
-import com.avocado.search.search.Dto.response.KeywordRespDto;
-import com.avocado.search.search.Dto.response.ProductRespDto;
-import com.avocado.search.search.Entity.Keyword;
-import com.avocado.search.search.Entity.Product;
-import com.avocado.search.search.error.ErrorCode;
-import com.avocado.search.search.error.SearchException;
+import com.avocado.search.Dto.request.InventoryDto;
+import com.avocado.search.Dto.request.ReviewDto;
+import com.avocado.search.Dto.response.KeywordRespDto;
+import com.avocado.search.Dto.response.ProductRespDto;
+import com.avocado.search.Entity.Keyword;
+import com.avocado.search.Entity.Product;
+import com.avocado.search.error.ErrorCode;
+import com.avocado.search.error.SearchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

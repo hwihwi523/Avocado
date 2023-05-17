@@ -1,4 +1,4 @@
-package com.avocado.search.search.Dto.response;
+package com.avocado.search.Dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
