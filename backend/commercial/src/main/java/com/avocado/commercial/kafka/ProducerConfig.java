@@ -1,6 +1,6 @@
 package com.avocado.commercial.kafka;
 
-import com.avocado.commercial.Adview;
+import com.avocado.Adview;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import org.apache.kafka.common.serialization.LongSerializer;
 import org.springframework.beans.factory.annotation.Value;
