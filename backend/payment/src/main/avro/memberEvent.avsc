@@ -1,7 +1,7 @@
 // 회원 가입/탈퇴/수정
 // 보내는 서버 : member
-// 받는 서버 :  product , community |, payment
-// topic: test-member-event
+// 받는 서버 :  product , community |, payment (수정이면 결제서버는 필요없음)
+// topic: test-member-event1
 // key: consumer id (string)
 {
   "name": "MemberEvent",
@@ -31,8 +31,23 @@
             {"name": "ageGroup", "type": "int"},
             {"name": "gender", "type": "string"},
             {"name": "consumerName", "type": "string"},
-            {"name": "mbtiId", "type": "int"},
-            {"name": "personalColorId", "type": "int"}
+            {"name": "mbtiId", "type": ["int", "null"]},
+            {"name": "personalColorId", "type": ["int", "null"]}
+          ]
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "signupInfo",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "SignupInfo",
+          "fields": [
+            {"name": "consumerName", "type": "string"},
+            {"name": "pictureUrl", "type": "string"}
           ]
         }
       ],
