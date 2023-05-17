@@ -2,6 +2,7 @@ package com.avocado.product.kafka.config;
 
 import com.avocado.Click;
 import com.avocado.CompactReview;
+import com.avocado.View;
 import com.avocado.product.kafka.utils.SpecificAvroSerializer;
 import org.apache.kafka.common.serialization.LongSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +35,20 @@ public class ProducerConfig {
         ProducerFactory<Long, Click> ClickProducerFactory = new DefaultKafkaProducerFactory<>(props);
 
         return new KafkaTemplate<>(ClickProducerFactory);
+    }
+
+    @Bean
+    public KafkaTemplate<Long, View> ViewKafkaTemplate() {
+        Map<String, Object> props = new HashMap<>();
+        props.put(org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
+        props.put(org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class);
+        props.put(org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
+        props.put("schema.registry.url", "http://a5ef82e13fcbc44689f93c4924981608-494875664.ap-northeast-2.elb.amazonaws.com:8081");
+//        props.put("specific.avro.reader", "true");
+
+        ProducerFactory<Long, View> viewProducerFactory = new DefaultKafkaProducerFactory<>(props);
+
+        return new KafkaTemplate<>(viewProducerFactory);
     }
 
     public ProducerFactory<Long, CompactReview> CompactReviewProducerFactory() {

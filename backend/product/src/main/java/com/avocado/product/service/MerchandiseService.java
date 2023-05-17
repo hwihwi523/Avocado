@@ -73,6 +73,10 @@ public class MerchandiseService {
                 ? null
                 : respContent.get(respContent.size() - 1).getMerchandise_id();
 
+        // 카프카에 조회 이벤트 작성
+        for (SimpleMerchandiseResp resp : respContent)
+            kafkaProducer.sendView(resp.getMerchandise_id(), consumerId);
+
         return PageResp.of(respContent, result.isLast(), newLastMerchandiseId, null);
     }
 

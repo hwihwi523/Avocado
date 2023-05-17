@@ -2,6 +2,7 @@ package com.avocado.product.kafka.service;
 
 import com.avocado.Click;
 import com.avocado.CompactReview;
+import com.avocado.View;
 import com.avocado.product.entity.Merchandise;
 import com.avocado.product.entity.Review;
 import lombok.extern.slf4j.Slf4j;
@@ -23,16 +24,47 @@ public class KafkaProducer {
     private String clickTopic;
     @Value(value = "${spring.kafka.review-config.topic}")
     private String reviewTopic;
+    @Value(value = "${spring.kafka.view-config.topic}")
+    private String viewTopic;
+
 
     private final KafkaTemplate<Long, Click> clickKafkaTemplate;
+    private final KafkaTemplate<Long, View> viewKafkaTemplate;
     private final KafkaTemplate<Long, CompactReview> reviewKafkaTemplate;
 
     @Autowired
     public KafkaProducer(
             KafkaTemplate<Long, Click> clickKafkaTemplate,
-            KafkaTemplate<Long, CompactReview> reviewKafkaTemplate) {
+            KafkaTemplate<Long, CompactReview> reviewKafkaTemplate,
+            KafkaTemplate<Long, View> viewKafkaTemplate) {
         this.clickKafkaTemplate = clickKafkaTemplate;
         this.reviewKafkaTemplate = reviewKafkaTemplate;
+        this.viewKafkaTemplate = viewKafkaTemplate;
+    }
+
+    public void sendView(Long merchandiseID, UUID consumerID) {
+        View view;
+        if (consumerID == null) {
+            view = View.newBuilder()
+                    .setUserId(makeRandomUUID().toString())
+                    .build();
+        } else {
+            view = View.newBuilder()
+                    .setUserId(consumerID.toString())
+                    .build();
+        }
+        ListenableFuture<SendResult<Long, View>> future = viewKafkaTemplate.send(viewTopic, merchandiseID, view);
+        future.addCallback(new ListenableFutureCallback<>() {
+            @Override
+            public void onFailure(Throwable ex) {
+                log.warn("Unable to send message: [{}] due to : {}", view, ex.getMessage());
+            }
+
+            @Override
+            public void onSuccess(SendResult<Long, View> result) {
+                log.info("view sent: [{}] with partition = [{}] offset=[{}]", view, result.getRecordMetadata().partition(), result.getRecordMetadata().offset());
+            }
+        });
     }
 
     public void sendClick(Long merchandiseID, UUID consumerID) {
