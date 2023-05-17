@@ -19,7 +19,7 @@ import static com.avocado.statistics.db.mysql.entity.jpa.QPurchasedMerchandise.p
 
 @Repository
 @RequiredArgsConstructor
-public class StatisticsRepository {
+public class ProviderStatisticsRepository {
     private final JPAQueryFactory queryFactory;
 
     /**
