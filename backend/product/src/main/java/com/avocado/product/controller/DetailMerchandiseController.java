@@ -34,6 +34,7 @@ public class DetailMerchandiseController {
         try {  // 토큰이 있을 경우
             consumerId = jwtUtil.getId(request);
         } catch (BusinessLogicException e) {  // 토큰이 없을 경우
+            log.info("ERROR : " + e.getMessage());
             consumerId = null;
         }
 
