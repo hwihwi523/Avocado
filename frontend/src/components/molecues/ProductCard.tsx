@@ -102,7 +102,10 @@ const ProductCard = (props: any) => {
 
           {/* 브랜드 */}
           <Grid item xs={12}>
-            <BlockText color="grey" style={{ margin: "5px 0 30px 0" }}>
+            <BlockText
+              color="grey"
+              style={{ margin: "5px 0 10px 0", fontSize: "0.8rem" }}
+            >
               {brand}
             </BlockText>
           </Grid>
@@ -112,7 +115,10 @@ const ProductCard = (props: any) => {
             <InlineText
               type="L"
               color="grey"
-              style={{ textDecorationLine: "line-through" }}
+              style={{
+                textDecorationLine: "line-through",
+                fontSize: "0.8rem",
+              }}
             >
               {formatCurrency(price)}
             </InlineText>
@@ -121,10 +127,10 @@ const ProductCard = (props: any) => {
           {/* 원가 && 할인률 */}
           <Grid item xs={12}>
             <Stack direction={"row"} justifyContent={"space-between"}>
-              <InlineText size="1.2rem" type="L">
+              <InlineText size="1rem" type="L">
                 {formatCurrency(discount)}
               </InlineText>
-              <InlineText size="1.2rem" type="L" color="red">
+              <InlineText size="1rem" type="L" color="red">
                 {Math.ceil(((price - discount) / price) * 100)}%
               </InlineText>
             </Stack>

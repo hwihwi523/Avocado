@@ -59,7 +59,7 @@ export default MobileHeader;
 
 const Background = styled.div`
   width: 100%;
-  padding: 10px 5px 0px 5px;
+  padding: 10px 5px 10px 15px;
 `;
 
 const ImageBox = styled.div`

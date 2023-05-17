@@ -6,7 +6,9 @@ import Head from "next/head";
 import { useGetWishlistQuery } from "@/src/features/product/productApi";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { AppState, useAppSelector } from "@/src/features/store";
+import { AppState, useAppSelector, wrapper } from "@/src/features/store";
+import { authenticateTokenInPages } from "@/src/utils/authenticateTokenInPages";
+
 const WishList = () => {
   const router = useRouter();
   const member = useAppSelector((state: AppState) => state.auth.member);
@@ -46,3 +48,17 @@ const Background = styled.div`
   height: 100%;
 `;
 
+// 멤버 상태 유지
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) => async (context) => {
+    // 쿠키의 토큰을 통해 로그인 확인, 토큰 리프레시, 실패 시 로그아웃 처리 등
+    await authenticateTokenInPages(
+      { req: context.req, res: context.res },
+      store
+    );
+
+    return {
+      props: {},
+    };
+  }
+);

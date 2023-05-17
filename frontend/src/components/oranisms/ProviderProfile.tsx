@@ -50,7 +50,7 @@ type StyleProps = {
 };
 
 const Background = styled.div`
-  max-width: 390px;
+  max-width: 1200px;
   border: 1px solid #dddddd;
   border-radius: 10px;
   padding: 30px 90px 30px 90px;

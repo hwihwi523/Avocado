@@ -1,6 +1,6 @@
 import { Inter } from "next/font/google";
 import styled from "@emotion/styled";
-import { Grid, Button } from "@mui/material";
+import { Grid, Button, Box } from "@mui/material";
 import Head from "next/head";
 import Image from "next/image";
 import {
@@ -18,7 +18,7 @@ import {
   setProductListBySearch,
   setProductListForGuest,
 } from "../features/product/productSlice";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { mbti_list, personal_color_list } from "../components/atoms/data";
 import PopupCommercial from "../components/oranisms/PopupCommercial";
 import ProviderProfile from "../components/oranisms/ProviderProfile";
@@ -31,6 +31,7 @@ import { statisticApi } from "../features/statistic/statisticApi";
 
 import { setRecommendProductsData } from "../features/statistic/statisticSlice";
 import { RequiredBox } from "../components/molecues";
+import CategoryForMain from "../components/oranisms/CategoryForMain";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -50,8 +51,6 @@ export default function Home() {
   if (consumer_recommends.length !== 0)
     general_recommends = consumer_recommends;
   else general_recommends = guest_recommends;
-
-  console.log("mbti_recommends >>>", mbti_recommends);
 
   const popup_list = useAppSelector(
     (state: AppState) => state.commercial.popupCommercialList
@@ -102,7 +101,7 @@ export default function Home() {
         />
       </Head>
 
-      <Grid container gap={5}>
+      <Grid container gap={3}>
         {/* 사용자 프로필 */}
         <Grid item xs={12}>
           {/* 로그인 안했을 때 */}
@@ -112,18 +111,39 @@ export default function Home() {
               style={{
                 backgroundColor: "white",
                 color: "black",
-                marginTop: "10%",
               }}
               onClick={() => {
                 router.push("/login");
               }}
             >
-              <Image
+              {/* <Image
                 src="/assets/images/kakao_login_bar.png"
                 width={400}
                 height={250}
                 alt="카카오 로그인 바"
-              />
+              /> */}
+              <Box
+                sx={{
+                  display: "flex", // flex 컨테이너로 설정
+                  flexDirection: "column",
+                  width: "100%",
+                  height: "180px",
+                  backgroundColor: "black",
+                  borderRadius: "5px",
+                  color: "white",
+                  fontSize: "2.9rem",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textAlign: "center",
+                  textTransform: "none",
+                  lineHeight: "1.4",
+                  fontFamily: "SeoulNamsanB",
+                }}
+              >
+                Wellcome,
+                <br />
+                Start Avocado!
+              </Box>
             </Button>
           )}
 
@@ -140,7 +160,7 @@ export default function Home() {
 
         {/* 메뉴 카테고리 */}
         <Grid item xs={12}>
-          {/* <Category /> */}
+          <CategoryForMain />
         </Grid>
 
         {/* 개인화 추천 제품 */}
@@ -167,7 +187,7 @@ export default function Home() {
               {!!member &&
               (member.mbti_id || member.mbti_id === 0) &&
               member.mbti_id !== -1
-                ? mbti_list[member.mbti_id]
+                ? '"' + mbti_list[member.mbti_id] + '" '
                 : "??? MBTI "}
             </InlineText>
             사용자들을 위한 추천 아이템
@@ -198,7 +218,7 @@ export default function Home() {
               {!!member &&
               (member.personal_color_id || member.personal_color_id === 0) &&
               member.personal_color_id !== -1
-                ? personal_color_list[member.personal_color_id]
+                ? '"' + personal_color_list[member.personal_color_id] + '" '
                 : "??? 퍼스널 컬러 "}
             </InlineText>
             사용자들을 위한 추천 아이템
