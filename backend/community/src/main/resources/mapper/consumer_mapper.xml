@@ -10,4 +10,18 @@
         where id = #{id}
     </select>
 
+    <insert id="save">
+        insert into consumer (id, name, picture_url)
+        values (#{id}, #{info.consumerName}, #{info.pictureUrl})
+    </insert>
+
+    <update id="updateInfo">
+        update consumer set age_group = #{info.ageGroup}, gender = #{info.gender},
+        mbti_id = #{info.mbtiId}, personal_color_id = #{info.personalColorId} where id = #{id}
+    </update>
+
+    <delete id="delete">
+        delete from consumer where id = #{id}
+    </delete>
+
 </mapper>

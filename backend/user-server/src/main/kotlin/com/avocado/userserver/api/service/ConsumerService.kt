@@ -2,6 +2,7 @@ package com.avocado.userserver.api.service
 
 import com.avocado.EventType
 import com.avocado.MemberEvent
+import com.avocado.SignupInfo
 import com.avocado.UpdateInfo
 import com.avocado.userserver.api.dto.KakaoUserInfo
 import com.avocado.userserver.api.request.ConsumerNotRequiredInfoReq
@@ -70,7 +71,11 @@ class ConsumerService(
         
         // kafka로 이벤트 날리기
         val consumerId:String = convertIdUtil.hex(consumer.consumerId)
+        val signupInfo = SignupInfo.newBuilder()
+            .setConsumerName(consumer.name)
+            .setPictureUrl(consumer.pictureUrl).build()
         val memberEvent = MemberEvent.newBuilder()
+            .setSignupInfo(signupInfo)
             .setEvent(EventType.SIGN_UP).build()
         kafkaProducer.sendMemberEvent(consumerId, memberEvent)
 
@@ -105,13 +110,13 @@ class ConsumerService(
         consumerRepository.save(updatedConsumer)
 
         // kafka로 이벤트 날리기
-        val consumerId: String = convertIdUtil.hex(consumer.consumerId)
+        val consumerId: String = convertIdUtil.hex(updatedConsumer.consumerId)
         val info: UpdateInfo = UpdateInfo.newBuilder()
-            .setAgeGroup(consumer.ageGroup?:throw BaseException(ResponseCode.INVALID_VALUE))
-            .setGender(consumer.gender)
-            .setConsumerName(consumer.name)
-            .setMbtiId(consumer.mbtiId)
-            .setPersonalColorId(consumer.personalColorId).build()
+            .setAgeGroup(updatedConsumer.ageGroup?:throw BaseException(ResponseCode.INVALID_VALUE))
+            .setGender(updatedConsumer.gender)
+            .setConsumerName(updatedConsumer.name)
+            .setMbtiId(updatedConsumer.mbtiId)
+            .setPersonalColorId(updatedConsumer.personalColorId).build()
         val memberEvent = MemberEvent.newBuilder()
             .setEvent(EventType.UPDATE)
             .setUpdateInfo(info)
