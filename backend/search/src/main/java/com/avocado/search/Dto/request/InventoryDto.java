@@ -9,6 +9,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InventoryDto {
-    private int id;
+    private long id;
     private int inventory;
 }
