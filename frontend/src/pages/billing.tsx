@@ -183,10 +183,7 @@ const BillingPage = () => {
             결제 정보
           </BlockText>
           {products.map(
-            (
-              { merchandise_name, count, id, price, discounted_price, size },
-              i
-            ) => (
+            ({ merchandise_name, count, price, discounted_price, size }, i) => (
               <Stack direction={"row"} justifyContent={"space-between"} key={i}>
                 <BlockText>
                   {merchandise_name}{" "}

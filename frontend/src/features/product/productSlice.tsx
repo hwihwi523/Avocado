@@ -55,7 +55,6 @@ export interface ProductForWishlist
 }
 
 export interface ProductForBuy {
-  id: number;
   brand_name: string;
   merchandise_id: number;
   merchandise_category: string;
@@ -64,13 +63,13 @@ export interface ProductForBuy {
   price: number;
   discounted_price: number;
   size: string; // 구매할 사이즈
-  count: number; // 구매할 수량
+  quantity: number; // 구매할 수량
 }
 
 export interface ProductForCart extends Omit<Product, "id" | "is_wishlist"> {
   cart_id: number;
   size: string; // 구매할 사이즈
-  count: number; // 구매할 수량
+  quantity: number; // 구매할 수량
 }
 
 interface ProductState {

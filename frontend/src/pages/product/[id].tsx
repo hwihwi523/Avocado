@@ -54,7 +54,7 @@ const ProductDetailPage = () => {
     (state: AppState) => state.product.selectedProductDetail
   );
   const member = useAppSelector((state: AppState) => state.auth.member);
-  // 통계 자료
+  //통계 자료
   const statisticData = useAppSelector(
     (state: AppState) => state.statistic.selectedProductStatisticData
   );
@@ -116,7 +116,6 @@ const ProductDetailPage = () => {
           member: JSON.stringify(member),
           products: JSON.stringify([
             {
-              id: product?.id,
               brand_namd: product?.brand_name,
               merchandise_id: product?.merchandise_id,
               merchandise_category: product?.merchandise_category,
@@ -125,7 +124,7 @@ const ProductDetailPage = () => {
               price: product?.price,
               discounted_price: product?.discounted_price,
               size,
-              count,
+              quantity: count,
             },
           ]),
         },
@@ -334,7 +333,8 @@ export const getServerSideProps = wrapper.getServerSideProps(
     } else {
       console.log("SERVER_NO_PRODUCT_DETAIL: ", productDetailResponse);
     }
-    const statisticData = statisticDataResponse.data?.data;
+    const statisticData = statisticDataResponse.data;
+    console.log("statisticData >>> ", statisticData);
     if (statisticData) {
       store.dispatch(setSelectedProductStatisticData(statisticData));
     } else {
@@ -345,7 +345,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     }
 
     return {
-      props: {},
+      props: { statisticData },
     };
   }
 );
