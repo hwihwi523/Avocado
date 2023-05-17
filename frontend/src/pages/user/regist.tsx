@@ -55,8 +55,7 @@ const UserInputForm = () => {
       .then((res) => {
         console.log("res : ", res);
         removeToken("ACCESS_TOKEN");
-        router.push("/")
-
+        router.replace("/");
       })
       .catch((error) => {
         console.log("error : ", error);
