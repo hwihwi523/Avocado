@@ -1,29 +1,11 @@
 package com.avocado.commercial;
 
-import com.avocado.commercial.Dto.request.CommercialCancelReqDto;
 import com.avocado.commercial.Dto.request.CommercialReqDto;
-import com.avocado.commercial.Dto.response.Analysis;
-import com.avocado.commercial.Dto.response.CommercialRespDto;
-import com.avocado.commercial.Dto.response.item.Carousel;
-import com.avocado.commercial.Dto.response.item.Click;
-import com.avocado.commercial.Dto.response.item.Exposure;
-import com.avocado.commercial.Dto.response.item.Purchase;
-import com.avocado.commercial.Entity.Commercial;
-import com.avocado.commercial.Entity.CommercialExposure;
-import com.avocado.commercial.Repository.CommercialExposureRepository;
-import com.avocado.commercial.Repository.CommercialRepository;
 import com.avocado.commercial.Service.CommercialService;
-import com.avocado.commercial.Service.ImageService;
 import com.avocado.commercial.error.CommercialException;
 import com.avocado.commercial.error.ErrorCode;
-import com.avocado.commercial.util.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
-import java.util.*;
 
 public class CommercialServiceTest {
 

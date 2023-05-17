@@ -1,6 +1,5 @@
 package com.avocado.statistics.db.redis.repository;
 
-import com.avocado.statistics.kafka.dto.Type;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

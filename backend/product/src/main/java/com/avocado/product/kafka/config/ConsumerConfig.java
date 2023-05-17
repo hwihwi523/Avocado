@@ -1,7 +1,9 @@
 package com.avocado.product.kafka.config;
 
+import com.avocado.MemberEvent;
 import com.avocado.PurchaseHistory;
-import com.avocado.product.kafka.utils.SpecificAvroDeserializer;
+
+import io.confluent.kafka.streams.serdes.avro.SpecificAvroDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -40,6 +42,31 @@ public class ConsumerConfig {
     public ConcurrentKafkaListenerContainerFactory<String, PurchaseHistory> purchaseHistoryKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, PurchaseHistory> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(purchaseHistoryConsumerFactory("product-group"));
+        factory.setConcurrency(3);
+        factory.getContainerProperties().setPollTimeout(3000);
+        return factory;
+    }
+
+
+    public ConsumerFactory<String, MemberEvent> memberEventConsumerFactory(String groupId) {
+        Map<String, Object> props = new HashMap<>();
+        props.put(org.apache.kafka.clients.consumer.ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
+        props.put(org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG, groupId);
+        props.put(org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
+        props.put(org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, SpecificAvroDeserializer.class);
+        props.put("schema.registry.url", "http://a5ef82e13fcbc44689f93c4924981608-494875664.ap-northeast-2.elb.amazonaws.com:8081");
+        props.put("specific.avro.reader", "true");
+
+        return new DefaultKafkaConsumerFactory<>(props,
+                new StringDeserializer(),
+                new SpecificAvroDeserializer<>());
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, MemberEvent> memberEventKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, MemberEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(memberEventConsumerFactory("product-group"));
         factory.setConcurrency(3);
         factory.getContainerProperties().setPollTimeout(3000);
         return factory;
