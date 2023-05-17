@@ -129,7 +129,7 @@ const Background = styled.div`
   background-color: white;
   z-index: 1000;
   position: fixed;
-  bottom: 0px;
+  bottom: 50px;
   height: 70px;
   width: 100%;
   padding: 0 10px;

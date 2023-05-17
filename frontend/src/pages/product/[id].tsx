@@ -39,9 +39,16 @@ import {
   setSelectedProductDetail,
 } from "@/src/features/product/productSlice";
 import dynamic from "next/dynamic";
-import { statisticApi } from "@/src/features/statistic/statisticApi";
-import { setSelectedProductStatisticData } from "@/src/features/statistic/statisticSlice";
+import {
+  statisticApi,
+  useGetStatisticDataForPersonalRecommendationQuery,
+} from "@/src/features/statistic/statisticApi";
+import {
+  setRecommendProductsData,
+  setSelectedProductStatisticData,
+} from "@/src/features/statistic/statisticSlice";
 import ProductBottom from "@/src/components/oranisms/ProductBottom";
+import { InlineText } from "@/src/components/atoms";
 
 const ProductDetailPage = () => {
   // const ProductBottom = dynamic(
@@ -61,6 +68,12 @@ const ProductDetailPage = () => {
   const ageGenderData = statisticData.age_gender_score;
   const mbtiData = statisticData.mbti_score;
   const personalColorData = statisticData.personal_color_score;
+
+  //추천 제품 가져오기
+  const { consumer_recommends, mbti_recommends, personal_color_recommends } =
+    useAppSelector(
+      (state: AppState) => state.statistic.recommendedProductsData
+    );
 
   // url 마지막에서 product Id 가져오기
   const productId = router.asPath.split("/").pop();
@@ -177,17 +190,19 @@ const ProductDetailPage = () => {
           </Grid>
 
           {/* 연관 상품 */}
-          <Grid item xs={12}>
-            <BlockText type="B" size="1.3rem" style={{ marginBottom: "10px" }}>
-              연관 상품
-            </BlockText>
-            {/* <ProductCardsRow  /> */}
-            <DividerBar />
-          </Grid>
+          {consumer_recommends && (
+            <Grid item xs={12}>
+              <BlockText type="L" color="grey">
+                연관 추천 아이템
+              </BlockText>
+              <ProductCardsRow data={consumer_recommends} />
+              <DividerBar />
+            </Grid>
+          )}
 
           {/* 리뷰작성 */}
           <Grid item xs={12}>
-            <BlockText type="B" size="1.3rem" style={{ marginBottom: "10px" }}>
+            <BlockText type="L" color="grey" style={{ marginBottom: "30px" }}>
               리뷰 작성하기
             </BlockText>
             <ProductReviewOrg reviews={reviews} />
@@ -293,7 +308,7 @@ const Transition = React.forwardRef(function Transition(
 const Background = styled.div`
   padding: 10px;
   box-sizing: border-box;
-  margin-bottom: 100px;
+  margin-bottom: 150px;
 `;
 
 const DividerBar = styled.div`
@@ -342,6 +357,26 @@ export const getServerSideProps = wrapper.getServerSideProps(
         "SERVER_NO_STATISTIC_DATA_FOR_DETAIL: ",
         statisticDataResponse
       );
+    }
+
+    //추천 상품 불러오기
+    // 서버에서 토큰을 헤더에 넣어주기 위한 작업
+    let cookie = context.req?.headers.cookie;
+    let accessToken = cookie
+      ?.split(";")
+      .find((c) => c.trim().startsWith("ACCESS_TOKEN="))
+      ?.split("=")[1];
+
+    if (accessToken) {
+      const recommend_products = await store.dispatch(
+        statisticApi.endpoints.getStatisticDataForPersonalRecommendation.initiate(
+          accessToken
+        )
+      );
+
+      if (recommend_products.data) {
+        store.dispatch(setRecommendProductsData(recommend_products.data.data));
+      }
     }
 
     return {
