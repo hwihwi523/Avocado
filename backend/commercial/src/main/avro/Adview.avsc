@@ -1,6 +1,6 @@
 {
   "name": "Adview",
-  "namespace": "com.avocado.commercial",
+  "namespace": "com.avocado",
   "type": "record",
   "fields": [
     {"name": "userId", "type": "string"}

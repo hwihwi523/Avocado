@@ -94,7 +94,7 @@ public class CommercialService {
             commercialExposure.setCommercialId(commercial.getId());
             commercialExposureRepository.save(commercialExposure);
             // kafka
-//            kafkaproducer.sendAdview(commercial.getMerchandiseId(), UUID.randomUUID());
+            kafkaproducer.sendAdview(commercial.getMerchandiseId(), null);
         }
 
         // 캐러셀 리스트 5개
@@ -104,7 +104,7 @@ public class CommercialService {
             commercialExposure.setCommercialId(commercial.getId());
             commercialExposureRepository.save(commercialExposure);
             // produce to kafka
-//            kafkaproducer.sendAdview(commercial.getMerchandiseId(), UUID.randomUUID());
+            kafkaproducer.sendAdview(commercial.getMerchandiseId(), null);
         }
         commercialRespDto.setCarousel_list(carouselList);
         commercialRespDto.setPopup_list(popupList);
