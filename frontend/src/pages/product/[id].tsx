@@ -181,7 +181,7 @@ const ProductDetailPage = () => {
             <BlockText type="B" size="1.3rem" style={{ marginBottom: "10px" }}>
               연관 상품
             </BlockText>
-            <ProductCardsRow isLogin={true} />
+            {/* <ProductCardsRow  /> */}
             <DividerBar />
           </Grid>
 
