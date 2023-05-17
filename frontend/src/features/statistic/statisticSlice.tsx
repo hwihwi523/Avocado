@@ -41,6 +41,11 @@ export interface StatisticDataForProvider {
   age_groups: AgeGroupsData[];
 }
 
+export interface StatisticDataForContumer {
+  total_money: number;
+  categories: CategoriesData[];
+}
+
 interface GendersData {
   gender: string;
   count: number;
@@ -61,9 +66,16 @@ interface AgeGroupsData {
   count: number;
 }
 
+export interface CategoriesData {
+  category: string;
+  count: number;
+}
+
 interface StatisticState {
   selectedProductStatisticData: StatisticDataForProductDetail;
   recommendedProductsData: StatisticDataForPersonalRecommendation;
+  consumerStatisticData: StatisticDataForContumer;
+  providerStatisticData: StatisticDataForProvider;
 }
 
 const initialState: StatisticState = {
@@ -76,6 +88,20 @@ const initialState: StatisticState = {
     consumer_recommends: [],
     personal_color_recommends: [],
     mbti_recommends: [],
+  },
+  consumerStatisticData: {
+    total_money: 0,
+    categories: [],
+  },
+  providerStatisticData: {
+    click_count: 0,
+    sell_count: 0,
+    total_revenue: 0,
+    merchandise_count: 0,
+    genders: [],
+    mbtis: [],
+    personal_colors: [],
+    age_groups: [],
   },
 };
 
@@ -96,6 +122,19 @@ export const statisticSlice = createSlice({
     ) => {
       state.recommendedProductsData = action.payload;
     },
+
+    setConsumerStatisticData: (
+      state,
+      action: PayloadAction<StatisticDataForContumer>
+    ) => {
+      state.consumerStatisticData = action.payload;
+    },
+    setProviderStatisticData: (
+      state,
+      action: PayloadAction<StatisticDataForProvider>
+    ) => {
+      state.providerStatisticData = action.payload;
+    },
   },
   extraReducers: {
     [HYDRATE]: (state, action) => {
@@ -108,5 +147,9 @@ export const statisticSlice = createSlice({
   },
 });
 
-export const { setSelectedProductStatisticData, setRecommendProductsData } =
-  statisticSlice.actions;
+export const {
+  setSelectedProductStatisticData,
+  setRecommendProductsData,
+  setConsumerStatisticData,
+  setProviderStatisticData,
+} = statisticSlice.actions;

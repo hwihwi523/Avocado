@@ -43,7 +43,7 @@ const Background = styled.div`
   padding: 10px;
   box-sizing: border-box;
   background-color: #dddddd;
-  height: 100vh;
+  height: 100%;
 `;
 
 // // 서버에서 Redux Store를 초기화하고, wrapper.useWrappedStore()를 사용해

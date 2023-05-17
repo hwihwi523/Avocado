@@ -5,6 +5,7 @@ import {
   StatisticDataForPersonalRecommendation,
   StatisticDataForProductDetail,
   StatisticDataForProvider,
+  StatisticDataForContumer,
 } from "./statisticSlice";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -14,18 +15,26 @@ interface StatisticBaseResponse {
   data: any;
 }
 
+//상품 디테일 화면 통계
 interface GetStatisticDataForProductDetailResponse
   extends StatisticBaseResponse {
   data: StatisticDataForProductDetail;
 }
 
+//메인페이지 추천 상품
 interface GetStatisticDataForPersonalRecommendationResponse
   extends StatisticBaseResponse {
   data: StatisticDataForPersonalRecommendation;
 }
 
+//판매자 통계
 interface GetStatisticDataForProviderResponse extends StatisticBaseResponse {
   data: StatisticDataForProvider;
+}
+
+//구매자 통계
+interface GetStatisticDataForConsumerResponse extends StatisticBaseResponse {
+  data: StatisticDataForContumer;
 }
 
 export const statisticApi = createApi({
@@ -62,13 +71,40 @@ export const statisticApi = createApi({
         headers: accessToken
           ? { Authorization: `Bearer ${accessToken}` }
           : undefined,
+        transformResponse: (
+          response: GetStatisticDataForProductDetailResponse
+        ) => {
+          // response 변환
+          return response.data;
+        },
       }),
     }),
     getStatisticDataForProvider: builder.query<
       GetStatisticDataForProviderResponse,
-      void
+      string
     >({
-      query: () => `/provider`,
+      query: (accessToken) => ({
+        url: "/provider",
+        method: "GET",
+        // 서버단에서 토큰을 넣어주기 위해 필요
+        headers: accessToken
+          ? { Authorization: `Bearer ${accessToken}` }
+          : undefined,
+      }),
+    }),
+
+    getStatisticDataForConsumer: builder.query<
+      GetStatisticDataForConsumerResponse,
+      string
+    >({
+      query: (accessToken) => ({
+        url: "/consumer",
+        method: "GET",
+        // 서버단에서 토큰을 넣어주기 위해 필요
+        headers: accessToken
+          ? { Authorization: `Bearer ${accessToken}` }
+          : undefined,
+      }),
     }),
   }),
 });
