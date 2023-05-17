@@ -5,6 +5,7 @@ import io.confluent.kafka.serializers.KafkaAvroDeserializer
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.common.serialization.Deserializer
+import java.lang.IllegalArgumentException
 
 class SpecificAvroDeserializer<T : SpecificRecord?> : Deserializer<T> {
     var inner: KafkaAvroDeserializer
@@ -31,9 +32,13 @@ class SpecificAvroDeserializer<T : SpecificRecord?> : Deserializer<T> {
     }
 
     override fun deserialize(s: String, bytes: ByteArray): T {
-        val deserialize = inner.deserialize(s, bytes)
-        println(deserialize)
-        return deserialize as T
+        val deserialized = inner.deserialize(s, bytes)
+        println(deserialized)
+        if (deserialized is SpecificRecord) {
+            return deserialized as T
+        } else {
+            throw IllegalArgumentException("Deserialized value is not of type SpecificRecord")
+        }
     }
 
     override fun close() {
