@@ -58,14 +58,16 @@ const ProductDetailPage = () => {
   );
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
-    enqueueSnackbar(`상품이 존재하지 않습니다.`, {
-      variant: "error", //info(파란색), error(빨간색), success(초록색), warning(노란색)
-      anchorOrigin: {
-        horizontal: "center", //(left, center, right)
-        vertical: "bottom", //top, bottom
-      },
-    });
-    if (!product) router.replace("/");
+    if (!product) {
+      enqueueSnackbar(`상품이 존재하지 않습니다.`, {
+        variant: "error", //info(파란색), error(빨간색), success(초록색), warning(노란색)
+        anchorOrigin: {
+          horizontal: "center", //(left, center, right)
+          vertical: "bottom", //top, bottom
+        },
+      });
+      router.replace("/");
+    }
   }, []);
   const member = useAppSelector((state: AppState) => state.auth.member);
   //통계 자료
@@ -333,15 +335,33 @@ export const getServerSideProps = wrapper.getServerSideProps(
       store
     );
 
+    // 토큰
+    let cookie = context.req?.headers.cookie;
+    let accessToken = cookie
+      ?.split(";")
+      .find((c) => c.trim().startsWith("ACCESS_TOKEN="))
+      ?.split("=")[1];
+
     // URL에서 마지막 경로 세그먼트 가져오기
     const resolvedUrl = context.resolvedUrl;
     const segments = resolvedUrl.split("/");
     const lastSegment = segments[segments.length - 1];
 
-    // lastSegment를 활용하여 필요한 데이터를 가져와서 페이지 렌더링에 활용
-    const productDetailResponse = await store.dispatch(
-      productApi.endpoints.getProductDetail.initiate(lastSegment)
-    );
+    // lastSegment를 활용하여 필요한 데이터를 가져와서 페이지 렌더링에 활용 (로그인, 로그아웃)
+    let productDetailResponse;
+    if (accessToken) {
+      productDetailResponse = await store.dispatch(
+        productApi.endpoints.getProductDetailWithServer.initiate({
+          productId: lastSegment,
+          token: accessToken,
+        })
+      );
+      console.log(productDetailResponse);
+    } else {
+      productDetailResponse = await store.dispatch(
+        productApi.endpoints.getProductDetail.initiate(lastSegment)
+      );
+    }
     const statisticDataResponse = await store.dispatch(
       statisticApi.endpoints.getStatisticDataForProductDetail.initiate(
         parseInt(lastSegment, 10)
@@ -356,7 +376,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       console.log("SERVER_NO_PRODUCT_DETAIL: ", productDetailResponse);
     }
     const statisticData = statisticDataResponse.data;
-    console.log("statisticData >>> ", statisticData);
+    // console.log("statisticData >>> ", statisticData);
     if (statisticData) {
       store.dispatch(setSelectedProductStatisticData(statisticData));
     } else {
@@ -368,26 +388,19 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     //추천 상품 불러오기
     // 서버에서 토큰을 헤더에 넣어주기 위한 작업
-    let cookie = context.req?.headers.cookie;
-    let accessToken = cookie
-      ?.split(";")
-      .find((c) => c.trim().startsWith("ACCESS_TOKEN="))
-      ?.split("=")[1];
-
     if (accessToken) {
       const recommend_products = await store.dispatch(
         statisticApi.endpoints.getStatisticDataForPersonalRecommendation.initiate(
           accessToken
         )
       );
-
       if (recommend_products.data) {
         store.dispatch(setRecommendProductsData(recommend_products.data.data));
       }
     }
 
     return {
-      props: { statisticData },
+      props: {},
     };
   }
 );

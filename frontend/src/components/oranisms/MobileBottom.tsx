@@ -21,10 +21,10 @@ const MobileBottom = (props: any) => {
     if (!!member) {
       if (member.type === "provider") {
         enqueueSnackbar(`일반 사용자 계정으로 로그인해 주세요.`, {
-          variant: "warning", //info(파란색), error(빨간색), success(초록색), warning(노란색)
+          variant: "error", //info(파란색), error(빨간색), success(초록색), warning(노란색)
           anchorOrigin: {
             horizontal: "center", //(left, center, right)
-            vertical: "bottom", //top, bottom
+            vertical: "top", //top, bottom
           },
         });
       } else {
@@ -32,10 +32,10 @@ const MobileBottom = (props: any) => {
       }
     } else {
       enqueueSnackbar(`로그인이 필요한 서비스입니다.`, {
-        variant: "warning", //info(파란색), error(빨간색), success(초록색), warning(노란색)
+        variant: "error", //info(파란색), error(빨간색), success(초록색), warning(노란색)
         anchorOrigin: {
           horizontal: "center", //(left, center, right)
-          vertical: "bottom", //top, bottom
+          vertical: "top", //top, bottom
         },
       });
       router.push("/login");
@@ -51,10 +51,10 @@ const MobileBottom = (props: any) => {
       }
     } else {
       enqueueSnackbar(`로그인이 필요한 서비스입니다.`, {
-        variant: "warning", //info(파란색), error(빨간색), success(초록색), warning(노란색)
+        variant: "error", //info(파란색), error(빨간색), success(초록색), warning(노란색)
         anchorOrigin: {
           horizontal: "center", //(left, center, right)
-          vertical: "bottom", //top, bottom
+          vertical: "top", //top, bottom
         },
       });
       router.push("/login");

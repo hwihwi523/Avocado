@@ -152,7 +152,7 @@ const MainUserProfile: React.FC<{ member: Member }> = (props) => {
               <TextDiv>
                 <StyledTitle>Grade</StyledTitle>
                 <br />
-                <BlockText type="B">{grade ? grade : "???"}.LV</BlockText>
+                <BlockText type="B">LV.{grade ? grade : "???"}</BlockText>
               </TextDiv>
             </Stack>
           </Grid>
