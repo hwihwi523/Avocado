@@ -31,9 +31,8 @@ public class KafkaConsumer {
 //            log.info("header | key: [{}] value: [{}]", key, headers.get(key));
 //        });
 
-
         // do some logics
-        // streamService.consumeResult(result, merchandiseId);
+         streamService.consumeResult(result, merchandiseId);
 
     }
 }
