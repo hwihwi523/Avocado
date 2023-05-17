@@ -86,7 +86,7 @@ const ChartMbti: React.FC<CharMbtiProps> = ({ mbtiData }) => {
 
 export default ChartMbti;
 
-//구매량 순서대로 정렬하는 함수
+//크기 순서대로 정렬하는 함수
 function sortByPurchaseAscending(data: any) {
   return data.sort((a: any, b: any) => a.purchase - b.purchase);
 }
@@ -124,7 +124,7 @@ const options = {
     },
     title: {
       display: true,
-      text: "preference MBTI",
+      text: "MBTI",
     },
   },
 };

@@ -1,6 +1,11 @@
 import styled from "@emotion/styled";
-import { Stack, Button } from "@mui/material";
-import { ChartGender, ChartMbti, ChartPersonalColor } from "../charts";
+import { Stack, Button, Box } from "@mui/material";
+import {
+  ChartAgeGroup,
+  ChartGender,
+  ChartMbti,
+  ChartPersonalColor,
+} from "../charts";
 import MouseOutlinedIcon from "@mui/icons-material/MouseOutlined";
 import LocalAtmOutlinedIcon from "@mui/icons-material/LocalAtmOutlined";
 import CheckroomOutlinedIcon from "@mui/icons-material/CheckroomOutlined";
@@ -17,20 +22,14 @@ import { InlineText, BlockText } from "../../atoms";
 import { AppState, useAppSelector } from "@/src/features/store";
 import { useGetStatisticDataForProviderQuery } from "@/src/features/statistic/statisticApi";
 import CircularProgress from "@mui/material/CircularProgress";
+import { mbti_list, personal_color_list } from "../../atoms/data";
+import { StatisticDataForProvider } from "@/src/features/statistic/statisticSlice";
+
 const StoreState = () => {
   const dispatch = useDispatch();
 
-  const { data: provider_statistic, isLoading } =
-    useGetStatisticDataForProviderQuery();
-  console.log("provider_statistic >>> ", provider_statistic?.data.genders);
-
-  // 통계 자료
-  const statisticData = useAppSelector(
-    (state: AppState) => state.statistic.selectedProductStatisticData
-  );
-  const ageGenderData = statisticData.age_gender_score;
-  const mbtiData = statisticData.mbti_score;
-  const personalColorData = statisticData.personal_color_score;
+  const { data: provider, isLoading } = useGetStatisticDataForProviderQuery();
+  const provider_statistic = provider?.data;
 
   //숫자 변환 함수 3000  => 3,000원
   function formatCurrency(num: number) {
@@ -54,10 +53,54 @@ const StoreState = () => {
     );
   }
 
+  //mbti chart Data에 맞는 형태로 반환하는 함수
+  function chartMbtiDataForm(provider_statistic: StatisticDataForProvider) {
+    const result = [];
+    for (let i = 0; i < mbti_list.length; i++) {
+      let skip = false;
+
+      for (let j = 0; j < provider_statistic?.mbtis.length; j++) {
+        if (mbti_list[i] === provider_statistic.mbtis[j].kind) {
+          result.push(provider_statistic.mbtis[j].count);
+          skip = true;
+          break;
+        }
+      }
+      if (!skip) {
+        result.push(0);
+      }
+    }
+    return result;
+  }
+
+  //personal chat Data에 맞는 형태로 변환하는 함수
+  function chartPersonalColorDataForm(
+    provider_statistic: StatisticDataForProvider
+  ) {
+    const result = [];
+    for (let i = 0; i < personal_color_list.length; i++) {
+      let skip = false;
+      for (let j = 0; j < provider_statistic?.personal_colors.length; j++) {
+        if (
+          personal_color_list[i] === provider_statistic.personal_colors[j].kind
+        ) {
+          result.push(provider_statistic.personal_colors[j].count);
+          skip = true;
+          break;
+        }
+      }
+      if (!skip) {
+        result.push(0);
+      }
+    }
+    return result;
+  }
+
   return (
     <>
       {provider_statistic && (
         <Stack direction="column" spacing={1}>
+          {/* 각종 수치 */}
           <Stack direction="row" justifyContent={"space-between"} spacing={1}>
             <IconBox>
               <MouseOutlinedIcon />
@@ -65,7 +108,7 @@ const StoreState = () => {
                 조회 수
               </InlineText>
               <InlineText>
-                {formatCurrency(provider_statistic.data.click_count)}
+                {formatCurrency(provider_statistic.click_count)}
               </InlineText>
             </IconBox>
             <IconBox>
@@ -74,7 +117,7 @@ const StoreState = () => {
                 판매 수
               </InlineText>
               <InlineText>
-                {formatCurrency(provider_statistic.data.sell_count)}
+                {formatCurrency(provider_statistic.sell_count)}
               </InlineText>
             </IconBox>
           </Stack>
@@ -85,7 +128,7 @@ const StoreState = () => {
                 총 판매 액
               </InlineText>
               <InlineText>
-                {formatCurrency(provider_statistic.data.total_revenue) + "원"}
+                {formatCurrency(provider_statistic.total_revenue) + "원"}
               </InlineText>
             </IconBox>
             <IconBox>
@@ -94,20 +137,67 @@ const StoreState = () => {
                 상품 수
               </InlineText>
               <InlineText>
-                {formatCurrency(provider_statistic.data.merchandise_count)}
+                {formatCurrency(provider_statistic.merchandise_count)}
               </InlineText>
             </IconBox>
           </Stack>
+
+          {/* 그래프 */}
           <Stack spacing={2}>
-            <ChartGender data={provider_statistic.data.genders} />
-            <ChartMbti mbtiData={mbtiData} />
-            <ChartPersonalColor personalColorData={personalColorData} />
+            <Box>
+              <BlockText
+                type="L"
+                style={{ marginTop: "30px", marginBottom: "10px" }}
+              >
+                {" "}
+                성별 구매 통계{" "}
+              </BlockText>
+              <ChartGender data={provider_statistic.genders} />
+            </Box>
+
+            <Box>
+              <BlockText
+                type="L"
+                style={{ marginTop: "30px", marginBottom: "10px" }}
+              >
+                {" "}
+                MBTI별 구매 통계{" "}
+              </BlockText>
+              <ChartMbti mbtiData={chartMbtiDataForm(provider_statistic)} />
+            </Box>
+
+            <Box>
+              <BlockText
+                type="L"
+                style={{ marginTop: "30px", marginBottom: "10px" }}
+              >
+                {" "}
+                Personal Color별 구매 통계{" "}
+              </BlockText>
+              <ChartPersonalColor
+                personalColorData={chartPersonalColorDataForm(
+                  provider_statistic
+                )}
+              />
+            </Box>
+
+            <Box>
+              <BlockText
+                type="L"
+                style={{ marginTop: "30px", marginBottom: "10px" }}
+              >
+                {" "}
+                나이대별 구매 통계{" "}
+              </BlockText>
+              <ChartAgeGroup data={provider_statistic.age_groups} />
+            </Box>
+
             {/* 로그아웃 버튼 */}
             <Button
               fullWidth
               color="error"
               variant="outlined"
-              style={{ padding: "20px" }}
+              style={{ padding: "20px", marginTop: "20px" }}
               onClick={handleLogout}
             >
               로그아웃

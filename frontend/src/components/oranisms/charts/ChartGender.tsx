@@ -26,7 +26,7 @@ export const options = {
   plugins: {
     title: {
       display: true,
-      text: "성별 구매 비율",
+      text: "Gender",
     },
   },
   responsive: true,
@@ -50,11 +50,11 @@ const ChartGender: React.FC<{ data: GendersData[] }> = (props) => {
   function dataFormat() {
     //데이터 모양
     let data = {
-      labels: ["성별 구매 현황"],
+      labels: ["Gender"],
       datasets: gender_data.map((item: GendersData, i: number) => ({
         label: item.gender === "M" ? "남자" : "여자",
         data: [item.count],
-        BackgroundColor: color_bar[i],
+        backgroundColor: color_bar[i],
       })),
     };
 

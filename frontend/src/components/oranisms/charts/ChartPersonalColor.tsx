@@ -31,7 +31,7 @@ export const options = {
     //타이틀 옵션
     title: {
       display: true,
-      text: "preference Personal Color",
+      text: "Personal Color",
     },
   },
 };
