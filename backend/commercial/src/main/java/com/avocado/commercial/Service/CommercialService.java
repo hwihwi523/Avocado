@@ -1,5 +1,7 @@
 package com.avocado.commercial.Service;
 
+import com.avocado.AdStatus;
+import com.avocado.Status;
 import com.avocado.commercial.Dto.request.CommercialCancelReqDto;
 import com.avocado.commercial.Dto.request.CommercialReqDto;
 import com.avocado.commercial.Dto.response.Analysis;
@@ -134,7 +136,15 @@ public class CommercialService {
         }
     }
 
-    public void saveCommercialStatistic(List<CommercialStatistic> commercialStatisticList){
+    public void saveCommercialStatistic(AdStatus adStatus){
+
+        List<CommercialStatistic> commercialStatisticList = new ArrayList<>();
+
+        for(Status status : adStatus.getStatusList()){
+            // 마저 만들어야함
+            // amount가 없음
+        }
+
         commercialStatisticRepository.saveAll(commercialStatisticList);
     }
 
