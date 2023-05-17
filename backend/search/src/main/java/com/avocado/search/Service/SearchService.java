@@ -6,12 +6,12 @@ import java.util.List;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import com.avocado.search.Entity.Keyword;
+import com.avocado.search.Entity.Product;
 import com.avocado.search.Dto.request.InventoryDto;
 import com.avocado.search.Dto.request.ReviewDto;
 import com.avocado.search.Dto.response.KeywordRespDto;
 import com.avocado.search.Dto.response.ProductRespDto;
-import com.avocado.search.Entity.Keyword;
-import com.avocado.search.Entity.Product;
 import com.avocado.search.error.ErrorCode;
 import com.avocado.search.error.SearchException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,14 +47,23 @@ public class SearchService {
                 .field("category_eng")
                 .query(category)
         )._toQuery();
+        Query byCategoryKor = MatchQuery.of(r -> r
+                .field("category_kor")
+                .query(keyword)
+        )._toQuery();
 
         try {
-            if(category.equals("All")){
+            if(keyword.equals("전체")){
+                search = elasticsearchClient.search(s -> s
+                                .index("products").size(20),
+                        Product.class);
+            }else if(category.equals("All")){
                 search = elasticsearchClient.search(s -> s
                                 .index("products")
                                 .query(q -> q
                                         .bool(b -> b
-                                                .must(byName)
+                                                .should(byName)
+                                                .should(byCategoryKor)
                                         )).size(20),
                         Product.class);
             }else {
@@ -62,7 +71,7 @@ public class SearchService {
                                 .index("products")
                                 .query(q -> q
                                         .bool(b -> b
-                                                .must(byName)
+                                                .should(byName)
                                                 .must(byCategory)
                                         )).size(20),
                         Product.class);
@@ -96,6 +105,10 @@ public class SearchService {
                 .field("category_eng")
                 .query(category)
         )._toQuery();
+        Query byCategoryKor = MatchQuery.of(r -> r
+                .field("category_kor")
+                .query(keyword)
+        )._toQuery();
 
         try {
             if(category.equals("All")){
@@ -103,7 +116,8 @@ public class SearchService {
                                 .index("keywords")
                                 .query(q -> q
                                         .bool(b -> b
-                                                .must(byName)
+                                                .should(byName)
+                                                .should(byCategoryKor)
                                         )).size(5),
                         Keyword.class);
             }else {
@@ -111,7 +125,7 @@ public class SearchService {
                                 .index("keywords")
                                 .query(q -> q
                                         .bool(b -> b
-                                                .must(byName)
+                                                .should(byName)
                                                 .must(byCategory)
                                         )).size(5),
                         Keyword.class);
