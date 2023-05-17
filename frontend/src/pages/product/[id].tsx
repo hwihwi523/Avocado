@@ -170,7 +170,7 @@ const ProductDetailPage = () => {
   return (
     <div>
       <Head>
-        <title>제품이름</title>
+        <title>{product?.merchandise_name}</title>
         <meta name="description" content="스토어 설명" />
         <meta name="keywords" content={`제품카테고리, 제품 종류 , 등등`} />
         <meta property="og:title" content="스토어 이름" />
