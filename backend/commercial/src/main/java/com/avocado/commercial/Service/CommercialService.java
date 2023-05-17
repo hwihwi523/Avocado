@@ -6,9 +6,7 @@ import com.avocado.commercial.Dto.response.Analysis;
 import com.avocado.commercial.Dto.response.item.*;
 import com.avocado.commercial.Dto.response.CommercialRespDto;
 import com.avocado.commercial.Entity.Commercial;
-import com.avocado.commercial.Entity.CommercialExposure;
 import com.avocado.commercial.Entity.CommercialStatistic;
-import com.avocado.commercial.Repository.CommercialExposureRepository;
 import com.avocado.commercial.Repository.CommercialRepository;
 import com.avocado.commercial.Repository.CommercialStatisticRepository;
 import com.avocado.commercial.error.CommercialException;
@@ -27,7 +25,6 @@ import java.util.*;
 public class CommercialService {
 
     private CommercialRepository commercialRepository;
-    private CommercialExposureRepository commercialExposureRepository;
     private CommercialStatisticRepository commercialStatisticRepository;
     private ImageService imageService;
     private JwtUtil jwtUtil;
@@ -36,10 +33,9 @@ public class CommercialService {
     private final int TYPE_CAROUSEL = 1;
 
     @Autowired
-    public CommercialService(CommercialRepository commercialRepository, CommercialExposureRepository commercialExposureRepository,
+    public CommercialService(CommercialRepository commercialRepository,
                              ImageService imageService, JwtUtil jwtUtil, KafkaProducer kafkaproducer, CommercialStatisticRepository commercialStatisticRepository){
         this.commercialRepository = commercialRepository;
-        this.commercialExposureRepository = commercialExposureRepository;
         this.commercialStatisticRepository = commercialStatisticRepository;
         this.imageService = imageService;
         this.jwtUtil = jwtUtil;
@@ -89,89 +85,21 @@ public class CommercialService {
             if(i++ == 3){
                 break;
             }
-            CommercialExposure commercialExposure = new CommercialExposure();
             popupList.add(commercial.toPopup());
-            commercialExposure.setCommercialId(commercial.getId());
-            commercialExposureRepository.save(commercialExposure);
             // kafka
-//            kafkaproducer.sendAdview(commercial.getMerchandiseId(), UUID.randomUUID());
+            kafkaproducer.sendAdview(commercial.getMerchandiseId(), UUID.randomUUID());
         }
 
         // 캐러셀 리스트 5개
         for(Commercial commercial : carouselEntityList){
-            CommercialExposure commercialExposure = new CommercialExposure();
             carouselList.add(commercial.toCarousel());
-            commercialExposure.setCommercialId(commercial.getId());
-            commercialExposureRepository.save(commercialExposure);
             // produce to kafka
-//            kafkaproducer.sendAdview(commercial.getMerchandiseId(), UUID.randomUUID());
+            kafkaproducer.sendAdview(commercial.getMerchandiseId(), UUID.randomUUID());
         }
         commercialRespDto.setCarousel_list(carouselList);
         commercialRespDto.setPopup_list(popupList);
 
         return commercialRespDto;
-    }
-
-
-    public List<Analysis> getAnalyses(int commercialId){
-        List<Analysis> analysisList = new ArrayList<>();
-
-        Commercial commercial = commercialRepository.findById(commercialId);
-
-        if(commercial == null){
-            throw new CommercialException(ErrorCode.COMMERCIAL_NOT_FOUND);
-        }
-
-        List<Exposure> exposureList = commercialRepository.countExposureByCommercialId(commercialId);
-        List<Click> clickList = commercialRepository.countClickByMerchandiseId(commercial.getMerchandiseId());
-        List<Purchase> purchaseList = commercialRepository.countPurchaseByMerchandiseId(commercial.getMerchandiseId());
-
-        Map<String,Analysis> analysisMap = new TreeMap<>();
-
-        for(Exposure e : exposureList){
-            Analysis analysis = new Analysis();
-            analysis.setDate(e.getDate());
-            analysis.setExposure_cnt(e.getExposure_Cnt());
-            analysisMap.put(e.getDate(),analysis);
-        }
-
-        for(Click c : clickList){
-            Analysis analysis;
-            if(analysisMap.containsKey(c.getDate())){
-                analysis = analysisMap.get(c.getDate());
-                analysis.setClick_cnt(c.getClick_Cnt());
-            }
-            else{
-                analysis = new Analysis();
-                analysis.setClick_cnt(c.getClick_Cnt());
-                analysis.setDate(c.getDate());
-                analysisMap.put(c.getDate(),analysis);
-            }
-
-        }
-
-        for(Purchase p : purchaseList){
-            Analysis analysis;
-            if(analysisMap.containsKey(p.getDate())){
-                analysis = analysisMap.get(p.getDate());
-                analysis.setPurchase_amount(p.getPurchase_Amount());
-                analysis.setQuantity(p.getQuantity());
-            }else{
-                analysis = new Analysis();
-                analysis.setDate(p.getDate());
-                analysis.setQuantity(p.getQuantity());
-                analysis.setPurchase_amount(p.getPurchase_Amount());
-                analysisMap.put(p.getDate(),analysis);
-            }
-
-        }
-
-        for(String key : analysisMap.keySet()){
-            System.out.println(analysisMap.get(key));
-            analysisList.add(analysisMap.get(key));
-        }
-
-        return analysisList;
     }
     
 
@@ -201,7 +129,6 @@ public class CommercialService {
     public void removeCommercial(CommercialCancelReqDto commercialCancelReqDto, HttpServletRequest request) {
         UUID uuid = jwtUtil.getId(request);
         System.out.println(commercialCancelReqDto);
-        commercialExposureRepository.deleteByCommercialId(commercialCancelReqDto.getCommercial_id());
         if(0 == commercialRepository.deleteByIdAndProviderId(commercialCancelReqDto.getCommercial_id(),uuid)){
             throw new CommercialException(ErrorCode.COMMERCIAL_NOT_FOUND);
         }
