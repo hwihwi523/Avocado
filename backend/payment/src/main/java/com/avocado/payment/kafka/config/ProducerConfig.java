@@ -1,7 +1,7 @@
 package com.avocado.payment.kafka.config;
 
 import com.avocado.PurchaseHistory;
-import com.avocado.payment.kafka.utils.SpecificAvroSerializer;
+import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
