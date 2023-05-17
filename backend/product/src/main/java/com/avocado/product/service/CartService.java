@@ -9,6 +9,7 @@ import com.avocado.product.entity.Merchandise;
 import com.avocado.product.exception.AccessDeniedException;
 import com.avocado.product.exception.ErrorCode;
 import com.avocado.product.exception.InvalidValueException;
+import com.avocado.product.kafka.service.KafkaProducer;
 import com.avocado.product.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class CartService {
     private final ScoreService scoreService;
     // is_wishlist 조회 및 부착용 service
     private final WishlistService wishlistService;
+    private final KafkaProducer kafkaProducer;
 
     /**
      * 장바구니 내역 등록
@@ -57,6 +59,8 @@ public class CartService {
                     .build();
             cartRepository.save(newCart);
         }
+
+        kafkaProducer.sendCart(merchandiseId, consumerId);
     }
 
     /**

@@ -1,0 +1,8 @@
+{
+  "name": "CartAdd",
+  "namespace": "com.avocado",
+  "type": "record",
+  "fields": [
+    {"name": "userId", "type": "string"}
+  ]
+}

@@ -1,5 +1,6 @@
 package com.avocado.product.kafka.service;
 
+import com.avocado.CartAdd;
 import com.avocado.Click;
 import com.avocado.CompactReview;
 import com.avocado.View;
@@ -26,20 +27,25 @@ public class KafkaProducer {
     private String reviewTopic;
     @Value(value = "${spring.kafka.view-config.topic}")
     private String viewTopic;
+    @Value(value = "${spring.kafka.cart-config.topic}")
+    private String cartTopic;
 
 
     private final KafkaTemplate<Long, Click> clickKafkaTemplate;
     private final KafkaTemplate<Long, View> viewKafkaTemplate;
+    private final KafkaTemplate<Long, CartAdd> cartKafkaTemplate;
     private final KafkaTemplate<Long, CompactReview> reviewKafkaTemplate;
 
     @Autowired
     public KafkaProducer(
             KafkaTemplate<Long, Click> clickKafkaTemplate,
             KafkaTemplate<Long, CompactReview> reviewKafkaTemplate,
-            KafkaTemplate<Long, View> viewKafkaTemplate) {
+            KafkaTemplate<Long, View> viewKafkaTemplate,
+            KafkaTemplate<Long, CartAdd> cartKafkaTemplate) {
         this.clickKafkaTemplate = clickKafkaTemplate;
         this.reviewKafkaTemplate = reviewKafkaTemplate;
         this.viewKafkaTemplate = viewKafkaTemplate;
+        this.cartKafkaTemplate = cartKafkaTemplate;
     }
 
     public void sendView(Long merchandiseID, UUID consumerID) {
@@ -88,6 +94,31 @@ public class KafkaProducer {
             @Override
             public void onSuccess(SendResult<Long, Click> result) {
                 log.info("click sent: [{}] with partition = [{}] offset=[{}]", click, result.getRecordMetadata().partition(), result.getRecordMetadata().offset());
+            }
+        });
+    }
+
+    public void sendCart(Long merchandiseID, UUID consumerID) {
+        CartAdd cartAdd;
+        if (consumerID == null) {
+            cartAdd = CartAdd.newBuilder()
+                    .setUserId(makeRandomUUID().toString())
+                    .build();
+        } else {
+            cartAdd = CartAdd.newBuilder()
+                    .setUserId(consumerID.toString())
+                    .build();
+        }
+        ListenableFuture<SendResult<Long, CartAdd>> future = cartKafkaTemplate.send(cartTopic, merchandiseID, cartAdd);
+        future.addCallback(new ListenableFutureCallback<>() {
+            @Override
+            public void onFailure(Throwable ex) {
+                log.warn("Unable to send message: [{}] due to : {}", cartAdd, ex.getMessage());
+            }
+
+            @Override
+            public void onSuccess(SendResult<Long, CartAdd> result) {
+                log.info("cart add sent: [{}] with partition = [{}] offset=[{}]", cartAdd, result.getRecordMetadata().partition(), result.getRecordMetadata().offset());
             }
         });
     }
