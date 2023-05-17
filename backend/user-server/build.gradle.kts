@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version "3.0.6"
     id("io.spring.dependency-management") version "1.1.0"
+    id("com.github.davidmc24.gradle.plugin.avro") version "1.7.1"
     kotlin("jvm") version "1.7.22"
     kotlin("plugin.spring") version "1.7.22"
 }
@@ -22,6 +23,9 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven {
+        url = uri("https://packages.confluent.io/maven")
+    }
 }
 
 dependencies {
@@ -43,6 +47,10 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-jackson:0.11.2")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.2")
 
+    // kafka
+    implementation("org.springframework.kafka:spring-kafka")
+    testImplementation("org.springframework.kafka:spring-kafka-test")
+
     // logger
     implementation("org.springframework.boot:spring-boot-starter-log4j2")
 
@@ -51,6 +59,10 @@ dependencies {
 
     // aop
     implementation("org.springframework.boot:spring-boot-starter-aop")
+
+    // avro, schema
+    implementation("org.apache.avro:avro:1.11.1")
+    implementation("io.confluent:kafka-avro-serializer:7.3.3")
 
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
