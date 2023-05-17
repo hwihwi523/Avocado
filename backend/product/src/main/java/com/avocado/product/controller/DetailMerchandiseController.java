@@ -30,6 +30,7 @@ public class DetailMerchandiseController {
     @GetMapping("")
     public ResponseEntity<BaseResp> showDetailMerchandise(@PathVariable Long merchandise_id,
                                                           HttpServletRequest request) {
+        log.info("showDetailMerchandise");
         UUID consumerId;
         try {  // 토큰이 있을 경우
             consumerId = jwtUtil.getId(request);
@@ -47,6 +48,7 @@ public class DetailMerchandiseController {
     public ResponseEntity<BaseResp> createReview(@PathVariable Long merchandise_id,
                                                  @RequestBody AddReviewReq addReviewReq,
                                                  HttpServletRequest request) {
+        log.info("createReview");
         UUID reviewerId = jwtUtil.getId(request);
         reviewService.createReview(reviewerId, merchandise_id, addReviewReq.getScore(), addReviewReq.getContent());
         return ResponseEntity.ok(BaseResp.of("리뷰가 등록되었습니다."));
@@ -54,6 +56,7 @@ public class DetailMerchandiseController {
 
     @GetMapping("/reviews")
     public ResponseEntity<BaseResp> searchReviews(@PathVariable Long merchandise_id) {
+        log.info("searchReviews");
         List<ReviewResp> reviews = reviewService.searchReviews(merchandise_id);
         return ResponseEntity.ok(BaseResp.of("리뷰를 조회했습니다.", reviews));
     }
@@ -62,6 +65,7 @@ public class DetailMerchandiseController {
     public ResponseEntity<BaseResp> removeReview(@PathVariable Long merchandise_id,
                                                  @RequestBody RemoveReviewReq removeReviewReq,
                                                  HttpServletRequest request) {
+        log.info("removeReview");
         UUID consumerId = jwtUtil.getId(request);
         reviewService.removeReview(consumerId, removeReviewReq.getReview_id());
         return ResponseEntity.ok(BaseResp.of("리뷰가 삭제되었습니다."));

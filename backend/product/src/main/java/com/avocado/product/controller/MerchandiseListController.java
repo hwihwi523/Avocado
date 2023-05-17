@@ -5,6 +5,7 @@ import com.avocado.product.config.UUIDUtil;
 import com.avocado.product.dto.response.*;
 import com.avocado.product.service.MerchandiseService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/merchandises")
 public class MerchandiseListController {
@@ -40,6 +42,7 @@ public class MerchandiseListController {
                                                               @RequestParam @Nullable Long last,
                                                               @RequestParam(defaultValue = "12") Integer size,
                                                               HttpServletRequest request) {
+        log.info("showMerchandises_NoOffset");
         UUID consumerId = null;
         try { consumerId = jwtUtil.getId(request); }
         catch (Exception ignore) {}
@@ -57,6 +60,7 @@ public class MerchandiseListController {
      */
     @GetMapping("/recents")
     public ResponseEntity<BaseResp> showRecentMerchandises(HttpServletRequest request) {
+        log.info("showRecentMerchandises");
         UUID consumerId = jwtUtil.getId(request);
         List<ClickMerchandiseResp> result = merchandiseService.showRecentMerchandises(consumerId);
         return ResponseEntity.ok(BaseResp.of("최근 본 상품 조회 성공", result));
@@ -72,6 +76,7 @@ public class MerchandiseListController {
     public ResponseEntity<BaseResp> showPurchaseHistories(@RequestParam @Nullable String last_date,
                                                           @RequestParam @Nullable Integer size,
                                                           HttpServletRequest request) {
+        log.info("showPurchaseHistories");
         UUID consumerId = jwtUtil.getId(request);
         LocalDateTime purchaseDate = last_date != null ? LocalDateTime.parse(last_date) : null;
         PageResp result = merchandiseService.showPurchaseMerchandises(consumerId, purchaseDate, size);
@@ -81,6 +86,7 @@ public class MerchandiseListController {
     @GetMapping("/guest")
     public ResponseEntity<BaseResp> showPopularMerchandises(@RequestParam(defaultValue = "0") Integer page,
                                                             @RequestParam(defaultValue = "5") Integer size) {
+        log.info("showPopularMerchandises");
         PageResp result = merchandiseService.showPopularMerchandises(page, size);
         return ResponseEntity.ok(BaseResp.of("인기순 조회 성공", result));
     }
