@@ -8,7 +8,7 @@ import Chip from "@mui/material/Chip";
 import { BlockText, InlineText } from "../atoms";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { ProductDetail } from "@/src/features/product/productSlice";
-
+import router from "next/router";
 type ProductDetailImageProps = {
   product: ProductDetail | null;
 };
@@ -34,14 +34,25 @@ const ProductDetailImage: React.FC<ProductDetailImageProps> = ({ product }) => {
   // 브랜드 스토어 아이디
   const brandId = product ? product.provider_id : "";
 
+  function redirectionToStorePage() {
+    router.push({
+      pathname: `/store/${product?.brand_name.replace(" ", "_")}`,
+      query: {
+        provider_id: product?.provider_id,
+      },
+    });
+  }
+
   return (
     <>
-      <Stack direction="row-reverse" justifyContent="space-between">
-        <Link href={`/store/${brandId}`}>
-          <BlockText type="L" size="1.2rem" style={{ margin: "30px 0 10px 0" }}>
-            {brand} STORE <ArrowRightIcon />
-          </BlockText>
-        </Link>
+      <Stack
+        direction="row-reverse"
+        justifyContent="space-between"
+        onClick={redirectionToStorePage}
+      >
+        <BlockText type="L" size="1.2rem" style={{ margin: "30px 0 10px 0" }}>
+          {brand} STORE <ArrowRightIcon />
+        </BlockText>
       </Stack>
       <Carousel animation="slide" autoPlay={true}>
         {images?.map((url: string, i) => (
