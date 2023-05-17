@@ -72,7 +72,7 @@ export default function Home() {
     }
   }, [member]);
 
-  const name = "김싸피";
+  const name = member ? member.name + " " : "??? ";
   return (
     <BackgroundDiv>
       <Head>
@@ -146,7 +146,7 @@ export default function Home() {
 
         {/* 브랜드 광고 */}
         <Grid item xs={12}>
-          <BlockText>맞춤형 광고</BlockText>
+          <BlockText>Today`s 스페셜 이슈</BlockText>
           <Commercials data={carousel_list} />
         </Grid>
 

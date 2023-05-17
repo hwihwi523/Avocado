@@ -11,13 +11,14 @@ import { useGetCartQuery } from "@/src/features/product/productApi";
 
 const CartList = () => {
   const member = useAppSelector((state: AppState) => state.auth.member);
-  const { data: cartlistData, isLoading } = useGetCartQuery();
+  const { data: cartlistData, isLoading, refetch } = useGetCartQuery();
 
   //로그인 정보 없으면 로그인 화면으로 보내기
   useEffect(() => {
     if (!member) {
       router.replace("/login");
     }
+    refetch();
   }, []);
 
   //숫자 변환 함수 3000  => 3,000원
