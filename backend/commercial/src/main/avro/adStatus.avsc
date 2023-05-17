@@ -1,0 +1,31 @@
+// 광고 현황
+// 보내는 서버 : statistics
+// 받는 서버 : commercial
+// topic: test-ad-status
+// key: date (unix date int)
+{
+  "name": "AdStatus",
+  "namespace": "com.avocado",
+  "type": "record",
+  "fields": [
+//    {"name": "date", "type": {
+//      "type": "int",
+//      "logicalType": "date"
+//    }},
+    {"name": "statusList", "type": {
+      "type": "array",
+      "items": {
+        "type": "record",
+        "name": "Status",
+        "namespace": "com.avocado",
+        "fields": [
+          {"name": "merchandiseId", "type": "long"},
+          {"name": "exposureCnt", "type": "int"},
+          {"name": "clickCnt", "type": "int"},
+          {"name": "quantity", "type": "int"}
+        ]
+      },
+      "default": []
+    }}
+  ]
+}

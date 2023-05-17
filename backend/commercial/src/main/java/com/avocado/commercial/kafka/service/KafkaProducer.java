@@ -1,4 +1,4 @@
-package com.avocado.commercial.kafka;
+package com.avocado.commercial.kafka.service;
 
 import com.avocado.Adview;
 import lombok.extern.slf4j.Slf4j;

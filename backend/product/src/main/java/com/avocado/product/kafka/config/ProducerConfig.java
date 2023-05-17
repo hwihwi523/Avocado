@@ -4,8 +4,10 @@ import com.avocado.CartAdd;
 import com.avocado.Click;
 import com.avocado.CompactReview;
 import com.avocado.View;
-import com.avocado.product.entity.Cart;
-import com.avocado.product.kafka.utils.SpecificAvroSerializer;
+
+import io.confluent.kafka.serializers.KafkaAvroSerializer;
+import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerializer;
+
 import org.apache.kafka.common.serialization.LongSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +16,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
-import io.confluent.kafka.serializers.KafkaAvroSerializer;
+
 
 import java.util.HashMap;
 import java.util.Map;
