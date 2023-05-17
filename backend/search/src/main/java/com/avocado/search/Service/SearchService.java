@@ -6,6 +6,9 @@ import java.util.List;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import com.avocado.CompactReview;
+import com.avocado.Merchandise;
+import com.avocado.PurchaseHistory;
 import com.avocado.search.Entity.Keyword;
 import com.avocado.search.Entity.Product;
 import com.avocado.search.Dto.request.InventoryDto;
@@ -146,13 +149,13 @@ public class SearchService {
         return keywordRespDtoList;
     }
 
-    public void modifyProductReview(){
+    public void modifyProductReview(CompactReview compactReview){
         
         // 카프카로 데이터 받아오면 데이터 교체할 것
         ReviewDto product = new ReviewDto();
-        product.setId(1);
-        product.setTotal_score(150);
-        product.setReview_count(30);
+        product.setId(compactReview.getMerchandiseId());
+        product.setTotal_score(compactReview.getTotalScore());
+        product.setReview_count(compactReview.getReviewCount());
         try {
             elasticsearchClient.update(u -> u
                             .index("products")
@@ -165,18 +168,38 @@ public class SearchService {
 
     }
 
-    public void modifyProductInventory(){
+    public void modifyProductInventory(PurchaseHistory purchaseHistory){
 
+
+        System.out.println(purchaseHistory.getMerchandises().size());
         // 카프카로 데이터 받아오면 데이터 교체할 것
-        InventoryDto product = new InventoryDto();
-        product.setId(1);
-        product.setInventory(150);
         try {
-            elasticsearchClient.update(u -> u
-                            .index("products")
-                            .id(String.valueOf(product.getId()))
-                            .doc(product)
-                    , ReviewDto.class);
+            for(Merchandise merchandise : purchaseHistory.getMerchandises()) {
+                System.out.println(merchandise.getMerchandiseId());
+                long id = merchandise.getMerchandiseId();
+                Query byId = MatchQuery.of(m -> m
+                        .field("id")
+                        .query(id)
+                )._toQuery();
+
+                SearchResponse<Product> search = elasticsearchClient.search(s -> s
+                                .index("products")
+                                .query(q -> q
+                                        .bool(b -> b
+                                                .must(byId)
+                                        )).size(1),
+                        Product.class);
+                InventoryDto product = new InventoryDto();
+                product.setId(merchandise.getMerchandiseId());
+                System.out.println(search.hits().hits());
+                product.setInventory(search.hits().hits().get(0).source().getInventory()-merchandise.getQuantity());
+                System.out.println(product);
+                elasticsearchClient.update(u -> u
+                                .index("products")
+                                .id(String.valueOf(product.getId()))
+                                .doc(product)
+                        , ReviewDto.class);
+            }
         }catch (IOException e){
             e.printStackTrace();
         }

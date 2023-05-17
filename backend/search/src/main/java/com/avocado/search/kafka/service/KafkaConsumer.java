@@ -2,7 +2,9 @@ package com.avocado.search.kafka.service;
 
 import com.avocado.CompactReview;
 import com.avocado.PurchaseHistory;
+import com.avocado.search.Service.SearchService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.MessageHeaders;
@@ -15,12 +17,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class KafkaConsumer {
 
+    private SearchService searchService;
+
+    @Autowired
+    public KafkaConsumer(SearchService searchService){
+        this.searchService = searchService;
+    }
+
     @KafkaListener(topics = "${spring.kafka.purchase-history-config.topic}", containerFactory = "purchaseHistoryKafkaListenerContainerFactory")
     public void purchaseHistoryListener(
             @Payload PurchaseHistory purchaseHistory,
             @Headers MessageHeaders headers) {
 
-        log.info("Received new review message: [{}]", purchaseHistory);
+        log.info("Received new purchase message: [{}]", purchaseHistory);
+        searchService.modifyProductInventory(purchaseHistory);
 //        headers.keySet().forEach(key -> {
 //            log.info("header | key: [{}] value: [{}]", key, headers.get(key));
 //        });
@@ -36,11 +46,11 @@ public class KafkaConsumer {
             @Payload CompactReview compactReview,
             @Headers MessageHeaders headers) {
 
-        log.info("Received purchase history message: [{}]", compactReview);
+        log.info("Received review history message: [{}]", compactReview);
 //        headers.keySet().forEach(key -> {
 //            log.info("header | key: [{}] value: [{}]", key, headers.get(key));
 //        });
-
+        searchService.modifyProductReview(compactReview);
 
         // do some logics
 
