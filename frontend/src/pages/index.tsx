@@ -14,7 +14,10 @@ import { BlockText, InlineText } from "../components/atoms";
 import { AppState, useAppSelector, wrapper } from "../features/store";
 import { authenticateTokenInPages } from "../utils/authenticateTokenInPages";
 import { productApi } from "../features/product/productApi";
-import { setProductListBySearch } from "../features/product/productSlice";
+import {
+  setProductListBySearch,
+  setProductListForGuest,
+} from "../features/product/productSlice";
 import { useState, useEffect } from "react";
 import { mbti_list, personal_color_list } from "../components/atoms/data";
 import PopupCommercial from "../components/oranisms/PopupCommercial";
@@ -40,6 +43,13 @@ export default function Home() {
     useAppSelector(
       (state: AppState) => state.statistic.recommendedProductsData
     ); //추천 제품 가져오기
+  const guest_recommends = useAppSelector(
+    (state: AppState) => state.product.productListForGuest
+  );
+  let general_recommends = [];
+  if (consumer_recommends.length !== 0)
+    general_recommends = consumer_recommends;
+  else general_recommends = guest_recommends;
 
   console.log("mbti_recommends >>>", mbti_recommends);
 
@@ -141,7 +151,7 @@ export default function Home() {
             </InlineText>
             님을 위한 추천 아이템
           </BlockText>
-          <ProductCardsRow data={consumer_recommends} />
+          <ProductCardsRow data={general_recommends} />
         </Grid>
 
         {/* 브랜드 광고 */}
@@ -158,7 +168,7 @@ export default function Home() {
               (member.mbti_id || member.mbti_id === 0) &&
               member.mbti_id !== -1
                 ? mbti_list[member.mbti_id]
-                : "??? "}
+                : "??? MBTI "}
             </InlineText>
             사용자들을 위한 추천 아이템
           </BlockText>
@@ -189,7 +199,7 @@ export default function Home() {
               (member.personal_color_id || member.personal_color_id === 0) &&
               member.personal_color_id !== -1
                 ? personal_color_list[member.personal_color_id]
-                : "??? "}
+                : "??? 퍼스널 컬러 "}
             </InlineText>
             사용자들을 위한 추천 아이템
           </BlockText>
@@ -304,6 +314,14 @@ export const getServerSideProps = wrapper.getServerSideProps(
       }
 
       // store.dispatch()
+    } else {
+      // 로그인 상태가 아니라면 게스트용 데이터 가져오기
+      const guest_recommend_products = await store.dispatch(
+        productApi.endpoints.getGuestRecommendProductList.initiate()
+      );
+      if (guest_recommend_products.data) {
+        store.dispatch(setProductListForGuest(guest_recommend_products.data));
+      }
     }
 
     return {
@@ -311,33 +329,3 @@ export const getServerSideProps = wrapper.getServerSideProps(
     };
   }
 );
-
-// // 서버에서 Redux Store를 초기화하고, wrapper.useWrappedStore()를 사용해
-// // 클라이언트에서도 동일한 store를 사용하도록 설정
-// export const getServerSideProps = wrapper.getServerSideProps(
-//   (store) => async (context) => {
-//     // 쿠키의 토큰을 통해 로그인 확인, 토큰 리프레시, 실패 시 로그아웃 처리 등
-//     await authenticateTokenInPages(
-//       { req: context.req, res: context.res },
-//       store
-//     );
-//     // 서버에서 토큰을 헤더에 넣어주기 위한 작업
-//     let cookie = context.req?.headers.cookie;
-//     let accessToken = cookie
-//       ?.split(";")
-//       .find((c) => c.trim().startsWith("ACCESS_TOKEN="))
-//       ?.split("=")[1];
-//     // wishlist 가져오기
-//     const wishlistResponse = await store.dispatch(
-//       productApi.endpoints.getWishlist.initiate({ token: accessToken })
-//     );
-//     const wishlist = wishlistResponse.data;
-//     {
-//       wishlist && store.dispatch(setProductListForWishlist(wishlist));
-//     }
-
-//     return {
-//       props: {},
-//     };
-//   }
-// );

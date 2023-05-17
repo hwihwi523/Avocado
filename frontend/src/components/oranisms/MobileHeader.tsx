@@ -15,10 +15,10 @@ const MobileHeader = (props: any) => {
   function cartBtnClickHandler() {
     if (!member) {
       enqueueSnackbar(`로그인이 필요한 서비스입니다.`, {
-        variant: "warning", //info(파란색), error(빨간색), success(초록색), warning(노란색)
+        variant: "error", //info(파란색), error(빨간색), success(초록색), warning(노란색)
         anchorOrigin: {
           horizontal: "center", //(left, center, right)
-          vertical: "bottom", //top, bottom
+          vertical: "top", //top, bottom
         },
       });
       router.push("/login");

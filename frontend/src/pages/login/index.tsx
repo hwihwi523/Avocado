@@ -52,7 +52,7 @@ export default function Login() {
             style={{
               objectFit: "cover",
               margin: "0 auto",
-              marginBottom: "30%",
+              marginBottom: "10%",
             }}
             alt="로고"
           />
@@ -80,7 +80,7 @@ export default function Login() {
 
 const ImageBox = styled.div`
   position: relative;
-  width: 400px;
+  width: auto;
   height: 20%;
 `;
 

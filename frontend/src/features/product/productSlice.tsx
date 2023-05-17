@@ -1,5 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
+import { ProductItem } from "@/src/features/statistic/statisticSlice";
 
 export interface Product {
   id: number;
@@ -74,6 +75,7 @@ export interface ProductForCart extends Omit<Product, "id" | "is_wishlist"> {
 
 interface ProductState {
   selectedProductDetail: ProductDetail | null;
+  productListForGuest: ProductItem[];
   productListBySearch: Product[];
   productListByMbti: Product[];
   productListByPersonalColor: Product[];
@@ -84,6 +86,7 @@ interface ProductState {
 
 const initialState: ProductState = {
   selectedProductDetail: null,
+  productListForGuest: [],
   productListBySearch: [],
   productListByMbti: [],
   productListByPersonalColor: [],
@@ -98,6 +101,9 @@ export const productSlice = createSlice({
   reducers: {
     setSelectedProductDetail: (state, action: PayloadAction<ProductDetail>) => {
       state.selectedProductDetail = action.payload;
+    },
+    setProductListForGuest: (state, action: PayloadAction<ProductItem[]>) => {
+      state.productListForGuest = action.payload;
     },
     setProductListBySearch: (state, action: PayloadAction<Product[]>) => {
       state.productListBySearch = action.payload;
@@ -148,6 +154,7 @@ export const productSlice = createSlice({
 
 export const {
   setSelectedProductDetail,
+  setProductListForGuest,
   setProductListBySearch,
   setProductListByMbti,
   setProductListByPersonalColor,

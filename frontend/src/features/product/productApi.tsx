@@ -9,6 +9,7 @@ import {
 } from "./productSlice";
 import { customFetchBaseQuery } from "@/src/utils/customFetchBaseQuery";
 import { headers } from "next/dist/client/components/headers";
+import { ProductItem } from "./../statistic/statisticSlice";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -36,6 +37,10 @@ interface Data {
 }
 
 // /merchandises/{merchandise_id}?user_id={user_id}
+interface GetProductDetailWithServerRequest {
+  productId: string;
+  token: string;
+}
 interface ProductDetailResponse {
   message: string;
   data: ProductDetail;
@@ -98,6 +103,14 @@ interface AddCartRequest {
   quantity: number;
 }
 
+// /recommend -> 게스트 추천
+interface GetGuestRecommendResponse extends ProductBaseResponse {
+  data: Content;
+}
+type Content = {
+  content: ProductItem[];
+};
+
 export const productApi = createApi({
   reducerPath: "productApi",
   baseQuery: customFetchBaseQuery({ baseUrl: API_URL + "/merchandise" }),
@@ -116,8 +129,34 @@ export const productApi = createApi({
       }),
       providesTags: ["ProductList"],
     }),
+    getGuestRecommendProductList: builder.query<ProductItem[], void>({
+      query: () => ({
+        url: "/merchandises/guest",
+        params: {
+          size: 10,
+        },
+      }),
+      transformResponse: (response: GetGuestRecommendResponse) => {
+        return response.data.content;
+      },
+    }),
     getProductDetail: builder.query<ProductDetail, string>({
-      query: (id) => `/merchandises/${id}`,
+      query: (productId) => `/merchandises/${productId}`,
+      transformResponse: (response: ProductDetailResponse) => {
+        // response 변환
+        return response.data;
+      },
+    }),
+    getProductDetailWithServer: builder.query<
+      ProductDetail,
+      GetProductDetailWithServerRequest
+    >({
+      query: (body) => ({
+        url: `/merchandises/${body.productId}`,
+        headers: {
+          Authorization: `Bearer ${body.token}`,
+        },
+      }),
       transformResponse: (response: ProductDetailResponse) => {
         // response 변환
         return response.data;
@@ -206,7 +245,6 @@ export const productApi = createApi({
         },
       }),
     }),
-
     getRecentlyViewProductsList: builder.query<GetRecentlyViewResponse, void>({
       query: () => ({
         url: "merchandises/recents",
@@ -221,7 +259,9 @@ export const productApi = createApi({
 
 export const {
   useGetProductListQuery,
+  useGetGuestRecommendProductListQuery,
   useGetProductDetailQuery,
+  useGetProductDetailWithServerQuery,
   useGetProductReviewsQuery,
   useRegistProductReviewMutation,
   useRemoveProductReviewMutation,
