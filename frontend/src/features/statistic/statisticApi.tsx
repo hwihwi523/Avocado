@@ -81,15 +81,11 @@ export const statisticApi = createApi({
     }),
     getStatisticDataForProvider: builder.query<
       GetStatisticDataForProviderResponse,
-      string
+      void
     >({
-      query: (accessToken) => ({
+      query: () => ({
         url: "/provider",
         method: "GET",
-        // 서버단에서 토큰을 넣어주기 위해 필요
-        headers: accessToken
-          ? { Authorization: `Bearer ${accessToken}` }
-          : undefined,
       }),
     }),
 
@@ -113,4 +109,5 @@ export const {
   useGetStatisticDataForProductDetailQuery,
   useGetStatisticDataForPersonalRecommendationQuery,
   useGetStatisticDataForProviderQuery,
+  useLazyGetStatisticDataForConsumerQuery,
 } = statisticApi;

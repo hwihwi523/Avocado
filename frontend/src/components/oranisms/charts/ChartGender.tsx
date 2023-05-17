@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-
+import { GendersData } from "@/src/features/statistic/statisticSlice";
 import React from "react";
 import {
   Chart as ChartJS,
@@ -26,7 +26,7 @@ export const options = {
   plugins: {
     title: {
       display: true,
-      text: "Chart.js Bar Chart - Stacked",
+      text: "Gender",
     },
   },
   responsive: true,
@@ -40,37 +40,22 @@ export const options = {
   },
 };
 
+const color_bar = ["rgb(53, 162, 235)", "rgb(255, 131, 157)"];
 
-//성별 구매정보 더미 데이터
-const gender_data = [
-  { type: "man", value: 300 },
-  {
-    type: "woman",
-    value: 503,
-  },
-];
+const ChartGender: React.FC<{ data: GendersData[] }> = (props) => {
+  const gender_data = props.data;
 
-
-
-const ChartGender = () => {
-
+  console.log("gender_data >>> ", gender_data);
   //그래프에 들어갈 데이터
   function dataFormat() {
     //데이터 모양
     let data = {
-      labels: ["성별 구매 현황"],
-      datasets: [
-        {
-          label: "남자",
-          data: [gender_data[0].value],
-          backgroundColor: "rgb(53, 162, 235)",
-        },
-        {
-          label: "여자",
-          data: [gender_data[1].value],
-          backgroundColor: "rgb(255, 131, 157)",
-        },
-      ],
+      labels: ["Gender"],
+      datasets: gender_data.map((item: GendersData, i: number) => ({
+        label: item.gender === "M" ? "남자" : "여자",
+        data: [item.count],
+        backgroundColor: color_bar[i],
+      })),
     };
 
     return data;

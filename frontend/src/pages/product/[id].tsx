@@ -78,6 +78,8 @@ const ProductDetailPage = () => {
   const mbtiData = statisticData.mbti_score;
   const personalColorData = statisticData.personal_color_score;
 
+  console.log("personalColorData >>> ", personalColorData);
+
   //추천 제품 가져오기
   const { consumer_recommends, mbti_recommends, personal_color_recommends } =
     useAppSelector(
