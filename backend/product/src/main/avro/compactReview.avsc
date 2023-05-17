@@ -1,7 +1,7 @@
 // 리뷰가 등록될때마다
 // 보내는 서버 : product
 // 받는 서버 : search
-// key:
+// key: review id (long)
 {
   "name": "CompactReview",
   "namespace": "com.avocado",

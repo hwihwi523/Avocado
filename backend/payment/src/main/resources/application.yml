@@ -24,7 +24,7 @@ spring:
     purchase-history-config:
       topic: test-purchase-history1
     member-event-config:
-      topic: test-member-event
+      topic: test-member-event1
 
 server:
   servlet:

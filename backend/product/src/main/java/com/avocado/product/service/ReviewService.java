@@ -50,7 +50,7 @@ public class ReviewService {
         Merchandise updatedMerchandise = merchandiseRepository.findById(merchandiseId);
 
         // send to kafka
-        kafkaProducer.sendCompactReview(updatedMerchandise);
+        kafkaProducer.sendCompactReview(updatedMerchandise, review.getId());
     }
 
     @Transactional(readOnly = true)
