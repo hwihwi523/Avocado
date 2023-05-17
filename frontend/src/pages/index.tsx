@@ -39,19 +39,27 @@ export default function Home() {
   const router = useRouter();
   const [popup, setPopup] = useState<boolean>(false);
 
+  //유저 정보 가져오기
   const member = useAppSelector((state: AppState) => state.auth.member);
+
+  //추천 제품 가져오기
   const { consumer_recommends, mbti_recommends, personal_color_recommends } =
     useAppSelector(
       (state: AppState) => state.statistic.recommendedProductsData
-    ); //추천 제품 가져오기
+    );
+
+  //로그인 안한사람 추천제품 가져오기
   const guest_recommends = useAppSelector(
     (state: AppState) => state.product.productListForGuest
   );
+
+  // 사용자와 게스트의 컴포넌트 공유
   let general_recommends = [];
   if (consumer_recommends.length !== 0)
     general_recommends = consumer_recommends;
   else general_recommends = guest_recommends;
 
+  //광고 정보 가져오기
   const popup_list = useAppSelector(
     (state: AppState) => state.commercial.popupCommercialList
   );
@@ -62,6 +70,8 @@ export default function Home() {
   useEffect(() => {
     //팝업 함수
     let expiration = localStorage.getItem("commercial_expiration_time");
+
+    //팝업은 로그인한 고객한테서만 사용됨 => 게스트나 판매자는 광고가 넘어오지 않음
     if (member?.type === "consumer") {
       if (expiration) {
         const currentTime = new Date().getTime();
@@ -72,13 +82,6 @@ export default function Home() {
         }
       } else {
         setPopup(true);
-      }
-    }
-
-    //성별 나이대 입력 안했으면 등록 페이지로 보내버리기
-    if (!!member) {
-      if (member.gender === "") {
-        router.push("/register");
       }
     }
   }, [member]);
@@ -118,12 +121,6 @@ export default function Home() {
                 router.push("/login");
               }}
             >
-              {/* <Image
-                src="/assets/images/kakao_login_bar.png"
-                width={400}
-                height={250}
-                alt="카카오 로그인 바"
-              /> */}
               <Box
                 sx={{
                   display: "flex", // flex 컨테이너로 설정

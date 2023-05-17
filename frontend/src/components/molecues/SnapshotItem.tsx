@@ -12,7 +12,11 @@ import {
   useRemoveSnapshotLikeMutation,
 } from "@/src/features/snapshot/snapshotApi";
 import { useRemoveSnapshotMutation } from "@/src/features/snapshot/snapshotApi";
-import { mbti_list, personal_color_list } from "../atoms/data";
+import {
+  mbti_list,
+  personal_color_list,
+  personal_color_list_eng,
+} from "../atoms/data";
 import { useSnackbar } from "notistack";
 
 const SnapshotItem: React.FC<{ data: snapshotItemType; refetch: any }> = (
@@ -135,7 +139,9 @@ const SnapshotItem: React.FC<{ data: snapshotItemType; refetch: any }> = (
           height={50}
           alt="아바타 이미지"
           src={`/assets/avatar/${
-            personal_color_list[item.user_info.personal_color_id].split("_")[0]
+            personal_color_list_eng[item.user_info.personal_color_id].split(
+              "_"
+            )[0]
           }_${item.user_info.gender === "M" ? "man" : "woman"}.png`}
         />
         <Stack style={{ color: "gray", width: "100%" }}>

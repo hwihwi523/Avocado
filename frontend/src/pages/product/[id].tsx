@@ -57,8 +57,10 @@ const ProductDetailPage = () => {
     (state: AppState) => state.product.selectedProductDetail
   );
   const { enqueueSnackbar } = useSnackbar();
+
+  console.log("product_detail >>>>> ", product);
   useEffect(() => {
-    if (!product) {
+    if (product === null) {
       enqueueSnackbar(`상품이 존재하지 않습니다.`, {
         variant: "error", //info(파란색), error(빨간색), success(초록색), warning(노란색)
         anchorOrigin: {
@@ -337,6 +339,8 @@ export const getServerSideProps = wrapper.getServerSideProps(
       store
     );
 
+    const member = store.getState().auth.member;
+
     // 토큰
     let cookie = context.req?.headers.cookie;
     let accessToken = cookie
@@ -351,15 +355,17 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
     // lastSegment를 활용하여 필요한 데이터를 가져와서 페이지 렌더링에 활용 (로그인, 로그아웃)
     let productDetailResponse;
-    if (accessToken) {
+    if (accessToken && member?.type === "consumer") {
+      //판매자 로그인해서 이 if문 통과하면 제품 안불러와짐
+      //로그인 한사람 제품 디테일
       productDetailResponse = await store.dispatch(
         productApi.endpoints.getProductDetailWithServer.initiate({
           productId: lastSegment,
           token: accessToken,
         })
       );
-      console.log(productDetailResponse);
     } else {
+      //로그인 안한사람 제품 디테일
       productDetailResponse = await store.dispatch(
         productApi.endpoints.getProductDetail.initiate(lastSegment)
       );
