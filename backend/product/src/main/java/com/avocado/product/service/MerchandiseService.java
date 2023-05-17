@@ -12,6 +12,7 @@ import com.avocado.product.entity.Wishlist;
 import com.avocado.product.kafka.service.KafkaProducer;
 import com.avocado.product.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MerchandiseService {
     private final MerchandiseRepository merchandiseRepository;
     private final ConsumerRepository consumerRepository;
@@ -108,7 +110,9 @@ public class MerchandiseService {
             respContent.updateIsWishlist(wishlist != null);
         }
 
+        log.info("showDetailMerchandise >> begin sendClick()");
         kafkaProducer.sendClick(merchandiseId, consumerId);
+        log.info("showDetailMerchandise >> end sendClick()");
 
         return respContent;
     }
