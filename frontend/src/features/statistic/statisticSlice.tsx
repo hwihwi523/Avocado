@@ -10,12 +10,12 @@ export interface StatisticDataForProductDetail {
 
 // 메인 페이지 추천
 export interface StatisticDataForPersonalRecommendation {
-  consumer_recommends: RecommendItem[];
-  personal_color_recommends: RecommendItem[];
-  mbti_recommends: RecommendItem[];
+  consumer_recommends: ProductItem[];
+  personal_color_recommends: ProductItem[];
+  mbti_recommends: ProductItem[];
 }
 
-export interface RecommendItem {
+export interface ProductItem {
   brand_name: string;
   merchandise_id: number;
   merchandise_category: string;

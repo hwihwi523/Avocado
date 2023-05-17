@@ -78,7 +78,7 @@ const BillingPage = () => {
         variant: "error",
         anchorOrigin: {
           horizontal: "center",
-          vertical: "bottom",
+          vertical: "top",
         },
       });
       return;
@@ -189,12 +189,21 @@ const BillingPage = () => {
               i
             ) => (
               <Stack direction={"row"} justifyContent={"space-between"} key={i}>
-                <BlockText>
-                  {merchandise_name}{" "}
+                <Stack style={{ width: "75%" }}>
+                  <BlockText
+                    style={{
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      width: "80%",
+                    }}
+                  >
+                    {merchandise_name}{" "}
+                  </BlockText>
                   <InlineText size="0.8rem" color="grey">
                     / {size} {quantity}개
                   </InlineText>
-                </BlockText>
+                </Stack>
                 <BlockText>{formatCurrency(price * quantity)}</BlockText>
               </Stack>
             )

@@ -24,6 +24,7 @@ import { TransitionProps } from "@mui/material/transitions";
 import * as React from "react";
 import TotalCommercialGraph from "./TotalCommercialGraph";
 import CloseIcon from "@mui/icons-material/Close";
+import { useEffect } from "react";
 
 const MyCommercial = () => {
   //광고 리스트 출력
@@ -70,6 +71,10 @@ const MyCommercial = () => {
       });
   }
 
+  useEffect(() => {
+    refetch();
+  }, []);
+
   console.log(data);
 
   return (
@@ -92,9 +97,9 @@ const MyCommercial = () => {
         {/* 광고 리스트 */}
         {data &&
           data.map((item, i) => (
-            <>
+            <div key={i}>
               {/* 광고 표시 */}
-              <CommercialItem data={item} key={i} />
+              <CommercialItem data={item} />
               <Stack direction={"row"} spacing={1}>
                 <Button
                   style={{
@@ -129,7 +134,7 @@ const MyCommercial = () => {
                 </Button>
               </Stack>
               <Divider />
-            </>
+            </div>
           ))}
       </Stack>
 
