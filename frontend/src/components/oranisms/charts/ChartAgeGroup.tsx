@@ -21,15 +21,10 @@ const ChartAgeGroup: React.FC<{ data: ChartAgeGroup[] }> = (props) => {
 
 export default ChartAgeGroup;
 
-//크기 순서대로 정렬하는 함수
-function sortByPurchaseAscending(data: ChartAgeGroup[]) {
-  return data.sort((a: any, b: any) => a.count - b.count);
-}
-
 //가져온 데이터를 그래프에 넣을 수 있는 형태로 변환
 export const dataFormat = (mbti_datas: any) => {
   //정렬하기
-  const mbti_data = sortByPurchaseAscending(mbti_datas);
+  const mbti_data = mbti_datas;
 
   const data = {
     labels: [""],
