@@ -12,7 +12,7 @@ import com.avocado.commercial.Repository.CommercialStatisticRepository;
 import com.avocado.commercial.error.CommercialException;
 import com.avocado.commercial.error.ErrorCode;
 import com.avocado.commercial.util.JwtUtil;
-import com.avocado.commercial.kafka.KafkaProducer;
+import com.avocado.commercial.kafka.service.KafkaProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;

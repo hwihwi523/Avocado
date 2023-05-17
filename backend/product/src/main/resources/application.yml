@@ -26,7 +26,8 @@ spring:
       topic: test-purchase-history1
     review-config:
       topic: test-review
-
+    member-event-config:
+      topic: test-member-event
 
 
 server:

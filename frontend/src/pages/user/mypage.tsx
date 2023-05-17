@@ -40,7 +40,6 @@ const Mypage = () => {
   const consumer_statistic = useAppSelector(
     (state: AppState) => state.statistic.consumerStatisticData
   );
-  console.log("consumer_statistic >>> ", consumer_statistic);
 
   //숫자 변환 함수 3000  => 3,000원
   function formatCurrency(num: number) {

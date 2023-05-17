@@ -1,6 +1,7 @@
 package com.avocado.product.kafka.service;
 
 import com.avocado.Merchandise;
+import com.avocado.MemberEvent;
 import com.avocado.PurchaseHistory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -39,6 +40,7 @@ public class KafkaConsumer {
 
 
     }
+
     /**
      * 구매 완료 상품 bulk insert
      */
@@ -62,4 +64,23 @@ public class KafkaConsumer {
                 + ", \"" + merchandise.getSize() + "\""
                 +")";
     }
+
+    @KafkaListener(topics = "${spring.kafka.member-event-config.topic}", containerFactory = "memberEventKafkaListenerContainerFactory")
+    public void memberEventListener(
+            @Payload MemberEvent memberEvent,
+            @Headers MessageHeaders headers,
+            @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String userId) {
+
+        log.info("Received user ID: {}", userId);
+        log.info("Received member event message: [{}]", memberEvent);
+//        headers.keySet().forEach(key -> {
+//            log.info("header | key: [{}] value: [{}]", key, headers.get(key));
+//        });
+
+
+        // do some logics
+
+
+    }
+
 }

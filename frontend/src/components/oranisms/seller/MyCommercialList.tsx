@@ -75,25 +75,17 @@ const MyCommercial = () => {
     refetch();
   }, []);
 
-  console.log(data);
+  if (isLoading) {
+    return (
+      <LoadingBox>
+        <CircularProgress />
+      </LoadingBox>
+    );
+  }
 
   return (
     <>
       <Stack direction="column" spacing={5}>
-        {/* 로딩중 */}
-        {isLoading && (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "100%",
-            }}
-          >
-            <CircularProgress />
-          </Box>
-        )}
-
         {/* 광고 리스트 */}
         {data &&
           data.map((item, i) => (
@@ -188,17 +180,12 @@ const MyCommercial = () => {
 
 export default MyCommercial;
 
-const RegistButton = styled.button`
-  position: fixed;
-  border-radius: 50px;
-  right: 30px;
-  bottom: 10%;
-  background-color: black;
-  color: white;
-  font-size: 1rem;
-  box-shadow: 3px 3px 10px grey;
-  padding: 20px;
-  box-sizing: border-box;
+const LoadingBox = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 80vh;
 `;
 
 //풀스크린 모달창을 위한 옵션
