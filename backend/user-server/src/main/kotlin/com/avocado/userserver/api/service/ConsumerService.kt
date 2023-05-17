@@ -106,11 +106,11 @@ class ConsumerService(
     }
 
     @Transactional
-    suspend fun updateWallet() {
-//        val consumerId = convertIdUtil.unHex(dto.userId)
-//        val wallet: Wallet = walletRepository.findByConsumerId(consumerId)?:throw BaseException(ResponseCode.NOT_FOUND_VALUE)
-//        val updatedWallet = wallet.updateTotalExpense(dto.totalPrice)
-//        walletRepository.save(updatedWallet)
+    suspend fun updateWallet(totalPrice: Long, userId: String) {
+        val consumerId = convertIdUtil.unHex(userId.replace("-",""))
+        val wallet: Wallet = walletRepository.findByConsumerId(consumerId)?:throw BaseException(ResponseCode.NOT_FOUND_VALUE)
+        val updatedWallet = wallet.updateTotalExpense(totalPrice)
+        walletRepository.save(updatedWallet)
     }
 
     @Transactional
