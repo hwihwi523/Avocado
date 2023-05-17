@@ -26,7 +26,12 @@ public class StyleshotController {
     @GetMapping
     public ResponseEntity<?> getStyleshotList(@RequestParam @Nullable Long lastId, @RequestParam(defaultValue = "12") Integer size, HttpServletRequest request) {
         log.info("get all styleshot list");
-        Claims claims = jwtUtils.getClaims(request);
+        Claims claims = null;
+        try {
+            claims = jwtUtils.getClaims(request);
+        } catch(Exception e) {
+            log.info("미로그인");
+        }
         return ResponseEntity.ok(styleshotService.styleshotList(lastId, size, claims));
     }
 

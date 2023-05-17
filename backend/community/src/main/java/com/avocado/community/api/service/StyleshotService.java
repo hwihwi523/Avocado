@@ -100,7 +100,10 @@ public class StyleshotService {
     }
 
     public StyleshotPagingResp styleshotList(Long lastId, Integer resultSize, Claims claims) {
-        UUID myId = jwtUtils.getId(claims);
+        UUID myId = null;
+        if (claims != null) {
+            myId = jwtUtils.getId(claims);
+        }
 
         List<Styleshot> styleshotList;
         if (lastId == null) {
@@ -194,10 +197,13 @@ public class StyleshotService {
         }
 
         // 내가 좋아요를 했는지 추가
-        int check = styleshotLikeRepository.checkExist(styleshot.getId(), myId);
-        if (check > 0) {
-            resp.setILiked(true);
+        if (myId != null) {
+            int check = styleshotLikeRepository.checkExist(styleshot.getId(), myId);
+            if (check > 0) {
+                resp.setILiked(true);
+            }
         }
+
         return resp;
     }
 
