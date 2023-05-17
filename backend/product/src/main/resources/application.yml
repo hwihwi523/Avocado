@@ -27,7 +27,7 @@ spring:
     review-config:
       topic: test-review
     member-event-config:
-      topic: test-member-event
+      topic: test-member-event1
 
 
 server:

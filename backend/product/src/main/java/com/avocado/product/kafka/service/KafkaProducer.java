@@ -123,7 +123,7 @@ public class KafkaProducer {
         });
     }
 
-    public void sendCompactReview(Merchandise updatedMerchandise) {
+    public void sendCompactReview(Merchandise updatedMerchandise, long reviewId) {
         CompactReview compactReview = CompactReview.newBuilder()
                 .setMerchandiseId(updatedMerchandise.getId())
                 .setReviewCount(updatedMerchandise.getReviewCount().intValue())
@@ -131,7 +131,7 @@ public class KafkaProducer {
                 .build();
 
         ListenableFuture<SendResult<Long, CompactReview>> future = reviewKafkaTemplate.send(
-                reviewTopic, updatedMerchandise.getId(), compactReview
+                reviewTopic, reviewId, compactReview
         );
         future.addCallback(new ListenableFutureCallback<>() {
             @Override
@@ -141,7 +141,7 @@ public class KafkaProducer {
 
             @Override
             public void onSuccess(SendResult<Long, CompactReview> result) {
-                log.info("click sent: [{}] with partition = [{}] offset=[{}]", compactReview, result.getRecordMetadata().partition(), result.getRecordMetadata().offset());
+                log.info("New Review sent: [{}] with partition = [{}] offset=[{}]", compactReview, result.getRecordMetadata().partition(), result.getRecordMetadata().offset());
             }
         });
     }
