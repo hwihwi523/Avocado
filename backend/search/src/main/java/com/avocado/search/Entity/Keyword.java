@@ -1,6 +1,6 @@
-package com.avocado.search.search.Entity;
+package com.avocado.search.Entity;
 
-import com.avocado.search.search.Dto.response.KeywordRespDto;
+import com.avocado.search.Dto.response.KeywordRespDto;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;

@@ -1,10 +1,8 @@
-package com.avocado.search.search.Controller;
+package com.avocado.search.Controller;
 
-import com.avocado.search.search.Dto.response.KeywordRespDto;
-import com.avocado.search.search.Dto.response.ProductRespDto;
-import com.avocado.search.search.Entity.Keyword;
-import com.avocado.search.search.Entity.Product;
-import com.avocado.search.search.Service.SearchService;
+import com.avocado.search.Dto.response.KeywordRespDto;
+import com.avocado.search.Dto.response.ProductRespDto;
+import com.avocado.search.Service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.avocado.search.search.config;
+package com.avocado.search.config;
 
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;

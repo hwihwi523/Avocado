@@ -1,4 +1,4 @@
-package com.avocado.search.search.Dto.request;
+package com.avocado.search.Dto.request;
 
 import lombok.*;
 

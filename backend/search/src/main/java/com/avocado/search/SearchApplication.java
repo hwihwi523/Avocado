@@ -1,4 +1,4 @@
-package com.avocado.search.search;
+package com.avocado.search;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
