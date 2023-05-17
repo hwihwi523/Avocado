@@ -26,6 +26,7 @@ public class WishlistController {
     @PostMapping("")
     public ResponseEntity<BaseResp> addProductToWishlist(@RequestBody AddWishlistReq addWishlistReq,
                                          HttpServletRequest request) {
+        log.info("addProductToWishlist");
         UUID consumerId = jwtUtil.getId(request);
         wishlistService.addProductToWishlist(addWishlistReq.getMerchandise_id(), consumerId);
         return ResponseEntity.ok(BaseResp.of("찜 성공"));
@@ -44,6 +45,7 @@ public class WishlistController {
     @DeleteMapping("")
     public ResponseEntity<BaseResp> removeProductFromWishlist(@RequestBody RemoveWishlistReq removeWishlistReq,
                                               HttpServletRequest request) {
+        log.info("removeProductFromWishlist");
         UUID consumerId = jwtUtil.getId(request);
         wishlistService.removeProductFromWishList(consumerId, removeWishlistReq.getMerchandise_id());
         return ResponseEntity.ok(BaseResp.of("찜 해제 성공"));

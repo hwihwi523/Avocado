@@ -53,6 +53,7 @@ public class KafkaConsumer {
                 "VALUES " + getValue(purchaseId, merchandises.get(0));
         for (int i = 1; i < merchandises.size(); i++)
             bulkQuery += ", " + getValue(purchaseId, merchandises.get(i));
+        log.info("Insert purchase history: " + bulkQuery);
         em.createNativeQuery(bulkQuery).executeUpdate();
     }
     private String getValue(String purchaseId, Merchandise merchandise) {
@@ -60,7 +61,7 @@ public class KafkaConsumer {
                 + ", UNHEX(\"" + purchaseId + "\")"
                 + ", UNHEX(\"" + merchandise.getProviderId() + "\")"
                 + ", " + merchandise.getPrice()
-                + ", " + merchandise.getQuantity()
+                + ", " + merchandise.getLeftover()
                 + ", \"" + merchandise.getSize() + "\""
                 +")";
     }

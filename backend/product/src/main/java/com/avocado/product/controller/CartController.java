@@ -6,6 +6,7 @@ import com.avocado.product.dto.request.RemoveCartReq;
 import com.avocado.product.dto.response.BaseResp;
 import com.avocado.product.service.CartService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/carts")
 @RequiredArgsConstructor
+@Slf4j
 public class CartController {
     private final CartService cartService;
     private final JwtUtil jwtUtil;
@@ -22,6 +24,7 @@ public class CartController {
     @PostMapping("")
     public ResponseEntity<BaseResp> addProductToCart(@RequestBody AddCartReq addCartReq,
                                                      HttpServletRequest request) {
+        log.info("addProductToCart");
         UUID consumerId = jwtUtil.getId(request);
         cartService.addProductToCart(consumerId, addCartReq);
         return ResponseEntity.ok(BaseResp.of("장바구니 내역 등록 성공"));
@@ -29,6 +32,7 @@ public class CartController {
 
     @GetMapping("")
     public ResponseEntity<BaseResp> showMyCart(HttpServletRequest request) {
+        log.info("showMyCart");
         UUID consumerId = jwtUtil.getId(request);
         return ResponseEntity.ok(BaseResp.of(
                 "장바구니 목록 조회 성공", cartService.showMyCart(consumerId)
@@ -38,6 +42,7 @@ public class CartController {
     @DeleteMapping("")
     public ResponseEntity<BaseResp> removeProductFromCart(@RequestBody RemoveCartReq removeCartReq,
                                                           HttpServletRequest request) {
+        log.info("removeProductFromCart");
         UUID consumerId = jwtUtil.getId(request);
         cartService.removeProductFromCart(consumerId, removeCartReq.getCart_id());
         return ResponseEntity.ok(BaseResp.of("장바구니 내역 삭제 성공"));
