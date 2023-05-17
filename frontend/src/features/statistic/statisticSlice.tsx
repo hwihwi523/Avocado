@@ -46,22 +46,22 @@ export interface StatisticDataForContumer {
   categories: CategoriesData[];
 }
 
-interface GendersData {
+export interface GendersData {
   gender: string;
   count: number;
 }
 
-interface MbtisData {
+export interface MbtisData {
   kind: string;
   count: number;
 }
 
-interface PersonalColorsData {
+export interface PersonalColorsData {
   kind: string;
   count: number;
 }
 
-interface AgeGroupsData {
+export interface AgeGroupsData {
   age_group: number;
   count: number;
 }

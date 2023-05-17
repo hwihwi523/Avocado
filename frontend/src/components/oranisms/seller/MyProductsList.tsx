@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import Category from "../Category";
 import ProductCardsGrid from "../ProductCardsGrid";
 import { useInView } from "react-intersection-observer";
-import LinearProgress from "@mui/material/LinearProgress";
+import CircularProgress from "@mui/material/CircularProgress";
 import { BlockText, InlineText } from "../../atoms";
 import {
   Box,
@@ -174,9 +174,9 @@ const MyProductsList: React.FC<{ provider_id: string }> = (props) => {
           마지막 페이지 입니다.{" "}
         </BlockText>
       ) : isLoading ? (
-        <Box sx={{ width: "100%" }}>
-          <LinearProgress />
-        </Box>
+        <LoadingBox>
+          <CircularProgress />
+        </LoadingBox>
       ) : (
         <InfinityScroll ref={ref} />
       )}
@@ -220,6 +220,14 @@ const MyProductsList: React.FC<{ provider_id: string }> = (props) => {
 };
 
 export default MyProductsList;
+
+const LoadingBox = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 80vh;
+`;
 
 //모달창을 위한 옵션
 const Transition = React.forwardRef(function Transition(

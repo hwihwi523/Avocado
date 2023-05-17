@@ -42,17 +42,18 @@ const ProductCard = (props: any) => {
   function addWishListHandler() {
     addWishList(id)
       .unwrap()
-      .then((res) => console.log(res))
+      .then((res) => {
+        console.log(res);
+        setBookmark(true);
+      })
       .catch((err) => {
-        enqueueSnackbar(`로그인이 필요합니다. `, {
+        enqueueSnackbar(`로그인이 필요한 서비스입니다. `, {
           variant: "error", //info(파란색), error(빨간색), success(초록색), warning(노란색)
           anchorOrigin: {
             horizontal: "center", //(left, center, right)
             vertical: "top", //top, bottom
           },
         });
-        return;
-
         console.log(err);
       });
   }
@@ -60,7 +61,10 @@ const ProductCard = (props: any) => {
   function removeWishListHandler() {
     removeWishList(id)
       .unwrap()
-      .then((res) => console.log(res))
+      .then((res) => {
+        console.log(res);
+        setBookmark(false);
+      })
       .catch((err) => {
         console.log(err);
       });
@@ -138,9 +142,6 @@ const ProductCard = (props: any) => {
             backgroundColor: "black",
             color: "white",
             opacity: "0.5",
-          }}
-          onClick={() => {
-            setBookmark(!bookmark);
           }}
         >
           <Tooltip title="찜하기" placement="top">
