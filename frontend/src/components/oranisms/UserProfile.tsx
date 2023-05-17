@@ -17,8 +17,6 @@ const MainUserProfile: React.FC<{ member: Member }> = (props) => {
   const { gender, mbti_id, name, personal_color_id, picture_url, grade } =
     props.member;
 
-  console.log("props.member >>>> ", props.member);
-
   const personalColors = [
     {
       avatar_path: ["spring_man", "spring_woman"],
