@@ -170,13 +170,13 @@ export default Store;
 
 const HeaderBox = styled.div`
   background: linear-gradient(to bottom, #000000, #555555);
-  border-radius: 0 0 40px 40px;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 20vh;
+  height: 17vh;
   margin-bottom: 5vh;
 `;
 

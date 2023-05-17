@@ -14,10 +14,7 @@ import { BlockText, InlineText } from "../components/atoms";
 import { AppState, useAppSelector, wrapper } from "../features/store";
 import { authenticateTokenInPages } from "../utils/authenticateTokenInPages";
 import { productApi } from "../features/product/productApi";
-import {
-  setProductListBySearch,
-  setProductListForGuest,
-} from "../features/product/productSlice";
+import { setProductListForGuest } from "../features/product/productSlice";
 import { useState, useEffect, useRef } from "react";
 import { mbti_list, personal_color_list } from "../components/atoms/data";
 import PopupCommercial from "../components/oranisms/PopupCommercial";
@@ -321,7 +318,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       .find((c) => c.trim().startsWith("ACCESS_TOKEN="))
       ?.split("=")[1];
 
-    if (accessToken) {
+    if (accessToken && !!member && member.type === "consumer") {
       const recommend_products = await store.dispatch(
         statisticApi.endpoints.getStatisticDataForPersonalRecommendation.initiate(
           accessToken

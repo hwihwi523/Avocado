@@ -38,10 +38,8 @@ import {
   ProductReview,
   setSelectedProductDetail,
 } from "@/src/features/product/productSlice";
-import dynamic from "next/dynamic";
 import {
   statisticApi,
-  useGetStatisticDataForPersonalRecommendationQuery,
 } from "@/src/features/statistic/statisticApi";
 import {
   setRecommendProductsData,
@@ -49,7 +47,6 @@ import {
 } from "@/src/features/statistic/statisticSlice";
 import ProductBottom from "@/src/components/oranisms/ProductBottom";
 import { useSnackbar } from "notistack";
-import { InlineText } from "@/src/components/atoms";
 
 const ProductDetailPage = () => {
   const router = useRouter();
