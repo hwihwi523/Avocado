@@ -69,7 +69,7 @@ const Mypage = () => {
           <Stack direction={"row"} justifyContent={"space-between"}>
             <InlineText>최근 본 상품</InlineText>
           </Stack>
-          <ProductCardsRow isLogin={!!member} />
+          {/* <ProductCardsRow isLogin={!!member} /> */}
         </Box>
 
         <Box>
@@ -79,7 +79,7 @@ const Mypage = () => {
               <InlineText>더보기 +</InlineText>
             </Link>
           </Stack>
-          <ProductCardsRow isLogin={!!member} />
+          {/* <ProductCardsRow isLogin={!!member} /> */}
         </Box>
       </Stack>
     </Background>
