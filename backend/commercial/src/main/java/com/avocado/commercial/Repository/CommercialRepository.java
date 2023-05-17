@@ -2,9 +2,6 @@ package com.avocado.commercial.Repository;
 
 import com.avocado.commercial.Dto.response.Analysis;
 import com.avocado.commercial.Dto.response.RegistedCommercial;
-import com.avocado.commercial.Dto.response.item.Click;
-import com.avocado.commercial.Dto.response.item.Exposure;
-import com.avocado.commercial.Dto.response.item.Purchase;
 import com.avocado.commercial.Entity.Commercial;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
