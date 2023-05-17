@@ -29,7 +29,7 @@ public class SearchController {
         return new ResponseEntity<List<ProductRespDto>>(searchService.searchProduct(category,keyword), HttpStatus.OK);
     }
 
-    @GetMapping("/recommands")
+    @GetMapping("/recommends")
     public ResponseEntity<List<KeywordRespDto>> recommandKeyword(@RequestParam(name = "category", defaultValue = "All")String category, @RequestParam(name = "keyword", defaultValue = " ")String keyword){
         return new ResponseEntity<List<KeywordRespDto>>(searchService.searchKeyword(category,keyword), HttpStatus.OK);
     }

@@ -16,7 +16,7 @@ import java.util.UUID;
 public interface CommercialRepository extends Repository<Commercial,Long> {
 
     @Query(nativeQuery = true, value = "select * from commercial \n" +
-            "where commercial_type_id = :commercialTypeId AND (mbti_id = :mbtiId OR age = :age OR personal_color_id = :personalColorId OR gender = :gender)\n" +
+            "where commercial_type_id = :commercialTypeId AND (personal_color_id = :personalColorId OR mbti_id = :mbtiId OR age = :age OR gender = :gender)\n" +
             "ORDER BY RAND()\n" +
             "LIMIT 5")
     List<Commercial> findByMbtiIdAndAgeAndCommercialTypeIdAndPersonalColorIdAndGender
@@ -30,7 +30,7 @@ public interface CommercialRepository extends Repository<Commercial,Long> {
             (int mbtiId, int age, int commercialTypeId, char gender);
 
     @Query(nativeQuery = true, value = "select * from commercial \n" +
-            "where commercial_type_id = :commercialTypeId AND (age = :age OR personal_color_id = :personalColorId OR gender = :gender)\n" +
+            "where commercial_type_id = :commercialTypeId AND (personal_color_id = :personalColorId OR age = :age OR gender = :gender)\n" +
             "ORDER BY RAND()\n" +
             "LIMIT 5")
     List<Commercial> findByAgeAndCommercialTypeIdAndPersonalColorIdAndGender
