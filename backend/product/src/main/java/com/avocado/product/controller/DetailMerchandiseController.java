@@ -34,15 +34,12 @@ public class DetailMerchandiseController {
         try {  // 토큰이 있을 경우
             consumerId = jwtUtil.getId(request);
         } catch (BusinessLogicException e) {  // 토큰이 없을 경우
-            log.info("ERROR : " + e.getMessage());
             consumerId = null;
         }
 
         DetailMerchandiseResp detailMerchandiseResp = merchandiseService.showDetailMerchandise(consumerId, merchandise_id);
-        log.info("begin checking consumer >> " + consumerId);
         if (consumerId != null)
             merchandiseService.addClick(consumerId, merchandise_id);
-        log.info("end checking consumer >> " + consumerId);
         return ResponseEntity.ok(BaseResp.of("상품 상세정보 조회 성공", detailMerchandiseResp));
     }
 

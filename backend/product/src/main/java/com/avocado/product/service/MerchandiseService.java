@@ -114,30 +114,20 @@ public class MerchandiseService {
             respContent.updateIsWishlist(wishlist != null);
         }
 
-        log.info("showDetailMerchandise >> begin sendClick()");
         kafkaProducer.sendClick(merchandiseId, consumerId);
-        log.info("showDetailMerchandise >> end sendClick()");
 
         return respContent;
     }
     @Transactional
     public void addClick(UUID consumerId, Long merchandiseId) {
-        log.info("begin addClick()");
-        log.info("begin create proxy");
         // 최근 본 물품 조회를 위해 조회 데이터 추가
         Consumer proxyConsumer = consumerRepository.getOne(consumerId);
         Merchandise proxyMerchandise = merchandiseRepository.getOne(merchandiseId);
-        log.info("end create proxy");
-        log.info("begin create click");
         Click click = Click.builder()
                 .consumer(proxyConsumer)
                 .merchandise(proxyMerchandise)
                 .build();
-        log.info("end create click");
-        log.info("begin save");
         clickRepository.save(click);
-        log.info("end save");
-        log.info("end addClick()");
     }
 
     /**
@@ -202,14 +192,14 @@ public class MerchandiseService {
 
     /**
      * 상품 인기순으로 조회하기
-     * @param lastMerchandiseId : for pagination
+     * @param page : 조회할 페이지
      * @param size : 조회할 데이터 개수
      * @return : 인기순으로 조회한 상품
      */
-    public PageResp showPopularMerchandises_NoOffset(Long lastMerchandiseId, Integer size) {
+    public PageResp showPopularMerchandises(Integer page, Integer size) {
         // DB 조회
         Page<SimpleMerchandiseDTO> result = merchandiseRepository
-                .findPopularMerchandises_NoOffset(lastMerchandiseId, PageRequest.ofSize(size));
+                .findPopularMerchandises(PageRequest.of(page, size));
 
         // DTO -> Response 변환
         List<SimpleMerchandiseResp> respContent;

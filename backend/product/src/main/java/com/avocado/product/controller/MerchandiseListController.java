@@ -79,9 +79,9 @@ public class MerchandiseListController {
     }
 
     @GetMapping("/guest")
-    public ResponseEntity<BaseResp> showPopularMerchandises(@RequestParam @Nullable Long last,
+    public ResponseEntity<BaseResp> showPopularMerchandises(@RequestParam(defaultValue = "0") Integer page,
                                                             @RequestParam(defaultValue = "5") Integer size) {
-        PageResp result = merchandiseService.showPopularMerchandises_NoOffset(last, size);
+        PageResp result = merchandiseService.showPopularMerchandises(page, size);
         return ResponseEntity.ok(BaseResp.of("인기순 조회 성공", result));
     }
 
