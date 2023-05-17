@@ -35,12 +35,14 @@ import authenticateMemberInPages from "@/src/utils/authenticateMemberInPages";
 import { authenticateTokenInPages } from "@/src/utils/authenticateTokenInPages";
 import { BlockText } from "@/src/components/atoms";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import { useSnackbar } from "notistack";
 
 const SECRET = process.env.NEXT_PUBLIC_JWT_SECRET
   ? process.env.NEXT_PUBLIC_JWT_SECRET
   : "";
 
 export default function SellerLogin() {
+  const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const member = useSelector((state: AppState) => state.auth.member);
   const router = useRouter();
@@ -53,7 +55,7 @@ export default function SellerLogin() {
   }, [member, router]);
 
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState("avocado506");
   const [login, { isLoading }] = useSellerLoginMutation();
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -106,6 +108,15 @@ export default function SellerLogin() {
       dispatch(setMember(member));
       router.push("/");
     } catch (error) {
+      enqueueSnackbar(`로그인 실패`, {
+        variant: "error", //info(파란색), error(빨간색), success(초록색), warning(노란색)
+        anchorOrigin: {
+          horizontal: "center", //(left, center, right)
+          vertical: "top", //top, bottom
+        },
+      });
+      return;
+
       console.error("로그인 실패:", error);
     }
   };
@@ -183,6 +194,7 @@ export default function SellerLogin() {
                 Password
               </InputLabel>
               <OutlinedInput
+                value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 id="outlined-adornment-password"
                 type={showPassword ? "text" : "password"}

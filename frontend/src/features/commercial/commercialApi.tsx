@@ -92,13 +92,13 @@ export const commercialApi = createApi({
         url: "/ads/registed",
         method: "GET",
       }),
-      providesTags: (result) =>
-        result
-          ? [
-              ...result.map(({ id }) => ({ type: "commercials", id } as const)),
-              { type: "commercials", id: "LIST" },
-            ]
-          : [{ type: "commercials", id: "LIST" }],
+      // providesTags: (result) =>
+      //   result
+      //     ? [
+      //         ...result.map(({ id }) => ({ type: "commercials", id } as const)),
+      //         { type: "commercials", id: "LIST" },
+      //       ]
+      //     : [{ type: "commercials", id: "LIST" }],
     }),
 
     //광고 삭제
