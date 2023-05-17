@@ -9,7 +9,7 @@ import com.avocado.statistics.db.mysql.repository.dto.AgeGroupDistributionDTO;
 import com.avocado.statistics.db.mysql.repository.dto.ChartDistributionDTO;
 import com.avocado.statistics.db.mysql.repository.dto.GenderDistributionDTO;
 import com.avocado.statistics.db.mysql.repository.dto.SellCountTotalRevenueDTO;
-import com.avocado.statistics.db.mysql.repository.jpa.StatisticsRepository;
+import com.avocado.statistics.db.mysql.repository.jpa.ProviderStatisticsRepository;
 import com.avocado.statistics.db.redis.repository.ProviderRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ProviderStatisticsService {
     private final JwtUtils jwtUtils;
-    private final StatisticsRepository jpaStatisticsRepository;
+    private final ProviderStatisticsRepository jpaProviderStatisticsRepository;
     private final ProviderRepository providerRepository;  // Redis
 
     public ProviderStatisticsResp getStatisticsInfo(Claims claims) {
@@ -41,13 +41,13 @@ public class ProviderStatisticsService {
         if (providerStatisticsResp != null)
             return providerStatisticsResp;
 
-        Long clickCount = jpaStatisticsRepository.getClickCount(providerId);  // 조회수
-        SellCountTotalRevenueDTO sellCountTotalRevenueDTO = jpaStatisticsRepository
+        Long clickCount = jpaProviderStatisticsRepository.getClickCount(providerId);  // 조회수
+        SellCountTotalRevenueDTO sellCountTotalRevenueDTO = jpaProviderStatisticsRepository
                 .getSellCountTotalRevenue(providerId);  // 판매수, 총 판매액
-        Long merchandiseCount = jpaStatisticsRepository.getMerchandiseCount(providerId);
+        Long merchandiseCount = jpaProviderStatisticsRepository.getMerchandiseCount(providerId);
 
         // 성별 분포 조회
-        List<GenderDistributionDTO> genderDist = jpaStatisticsRepository
+        List<GenderDistributionDTO> genderDist = jpaProviderStatisticsRepository
                 .getGenderDistribution(providerId);
         // Response 생성
         List<GenderDistributionResp> genders = new ArrayList<>();
@@ -57,7 +57,7 @@ public class ProviderStatisticsService {
         }
 
         // MBTI 분포 조회
-        List<ChartDistributionDTO> mbtiDist = jpaStatisticsRepository
+        List<ChartDistributionDTO> mbtiDist = jpaProviderStatisticsRepository
                 .getMBTIDistribution(providerId);
         // Response 생성
         List<MBTIDistributionResp> mbtis = new ArrayList<>();
@@ -67,7 +67,7 @@ public class ProviderStatisticsService {
         }
 
         // 퍼스널컬러 분포 조회
-        List<ChartDistributionDTO> personalColorDist = jpaStatisticsRepository
+        List<ChartDistributionDTO> personalColorDist = jpaProviderStatisticsRepository
                 .getPersonalColorDistribution(providerId);
         // Response 생성
         List<PersonalColorDistributionResp> personalColors = new ArrayList<>();
@@ -77,7 +77,7 @@ public class ProviderStatisticsService {
         }
 
         // 연령대 분포 조회
-        List<AgeGroupDistributionDTO> ageGroupDist = jpaStatisticsRepository
+        List<AgeGroupDistributionDTO> ageGroupDist = jpaProviderStatisticsRepository
                 .getAgeGroupDistribution(providerId);
         // Response 생성
         List<AgeGroupDistributionResp> ageGroups = new ArrayList<>();
