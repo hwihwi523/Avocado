@@ -12,4 +12,5 @@ import lombok.ToString;
 public class Popup{
     private String imgurl;
     private long merchandise_id;
+    String name;
 }

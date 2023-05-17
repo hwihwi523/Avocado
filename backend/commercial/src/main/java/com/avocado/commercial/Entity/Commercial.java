@@ -63,6 +63,7 @@ public class Commercial {
         Carousel carousel = Carousel.builder()
                 .imgurl(this.imgurl)
                 .merchandise_id(this.merchandiseId)
+                .name(this.merchandiseName)
                 .build();
         return carousel;
     }
@@ -70,6 +71,7 @@ public class Commercial {
         Popup popup = Popup.builder()
                 .imgurl(this.imgurl)
                 .merchandise_id(this.merchandiseId)
+                .name(merchandiseName)
                 .build();
         return popup;
     }

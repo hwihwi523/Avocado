@@ -16,10 +16,11 @@ import {
   useAddWishlistMutation,
   useRemoveWishlistMutation,
 } from "@/src/features/product/productApi";
+import { useSnackbar } from "notistack";
 
 const ProductCard = (props: any) => {
   const router = useRouter();
-
+  const { enqueueSnackbar } = useSnackbar();
   const { id, img_url, price, discount, brand, isBookmark, tags } = props.data;
 
   const [bookmark, setBookmark] = useState(isBookmark);
@@ -43,6 +44,15 @@ const ProductCard = (props: any) => {
       .unwrap()
       .then((res) => console.log(res))
       .catch((err) => {
+        enqueueSnackbar(`로그인이 필요합니다. `, {
+          variant: "error", //info(파란색), error(빨간색), success(초록색), warning(노란색)
+          anchorOrigin: {
+            horizontal: "center", //(left, center, right)
+            vertical: "top", //top, bottom
+          },
+        });
+        return;
+
         console.log(err);
       });
   }

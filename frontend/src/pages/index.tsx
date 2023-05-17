@@ -154,9 +154,11 @@ export default function Home() {
         <Grid item xs={12}>
           <BlockText color="grey" type="L">
             <InlineText size="1.2rem" color="black" type="B">
-              {!!member && member.mbti_id && member.mbti_id !== -1
+              {!!member &&
+              (member.mbti_id || member.mbti_id === 0) &&
+              member.mbti_id !== -1
                 ? mbti_list[member.mbti_id]
-                : "???"}{" "}
+                : "??? "}
             </InlineText>
             사용자들을 위한 추천 아이템
           </BlockText>
@@ -184,10 +186,10 @@ export default function Home() {
           <BlockText color="grey" type="L">
             <InlineText size="1.2rem" color="black" type="B">
               {!!member &&
-              member.personal_color_id &&
+              (member.personal_color_id || member.personal_color_id === 0) &&
               member.personal_color_id !== -1
                 ? personal_color_list[member.personal_color_id]
-                : "???"}{" "}
+                : "??? "}
             </InlineText>
             사용자들을 위한 추천 아이템
           </BlockText>
@@ -296,8 +298,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
           accessToken
         )
       );
-
-      console.log(recommend_products);
 
       if (recommend_products.data) {
         store.dispatch(setRecommendProductsData(recommend_products.data.data));

@@ -5,12 +5,12 @@ import com.avocado.product.dto.query.DetailMerchandiseDTO;
 import com.avocado.product.dto.query.PurchaseHistoryMerchandiseDTO;
 import com.avocado.product.dto.query.SimpleMerchandiseDTO;
 import com.avocado.product.dto.response.*;
+import com.avocado.product.entity.Click;
+import com.avocado.product.entity.Consumer;
+import com.avocado.product.entity.Merchandise;
 import com.avocado.product.entity.Wishlist;
 import com.avocado.product.kafka.service.KafkaProducer;
-import com.avocado.product.repository.MerchandiseRepository;
-import com.avocado.product.repository.PurchaseRepository;
-import com.avocado.product.repository.ReviewRepository;
-import com.avocado.product.repository.WishlistRepository;
+import com.avocado.product.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +25,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class MerchandiseService {
     private final MerchandiseRepository merchandiseRepository;
+    private final ConsumerRepository consumerRepository;
+    private final ClickRepository clickRepository;
     private final PurchaseRepository purchaseRepository;  // 구매 여부 조회하기 위한 repo
     private final ReviewRepository reviewRepository;  // 리뷰 여부 조회하기 위한 repo
     private final WishlistRepository wishlistRepository;  // 찜꽁 여부를 조회하기 위한 repo
@@ -109,6 +111,17 @@ public class MerchandiseService {
         kafkaProducer.sendClick(merchandiseId, consumerId);
 
         return respContent;
+    }
+    @Transactional
+    public void addClick(UUID consumerId, Long merchandiseId) {
+        // 최근 본 물품 조회를 위해 조회 데이터 추가
+        Consumer proxyConsumer = consumerRepository.getOne(consumerId);
+        Merchandise proxyMerchandise = merchandiseRepository.getOne(merchandiseId);
+        Click click = Click.builder()
+                .consumer(proxyConsumer)
+                .merchandise(proxyMerchandise)
+                .build();
+        clickRepository.save(click);
     }
 
     /**

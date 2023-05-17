@@ -73,6 +73,11 @@ interface GetWishlistRequest {
 interface GetWishlistResponse extends ProductBaseResponse {
   data: ProductForWishlist[] | [];
 }
+
+interface GetRecentlyViewResponse extends ProductBaseResponse {
+  data: Product[] | [];
+}
+
 interface UpdateWishlistResponse extends ProductBaseResponse {
   data: null;
 }
@@ -201,6 +206,16 @@ export const productApi = createApi({
         },
       }),
     }),
+
+    getRecentlyViewProductsList: builder.query<GetRecentlyViewResponse, void>({
+      query: () => ({
+        url: "merchandises/recents",
+        method: "GET",
+        transformResponse: (response: GetRecentlyViewResponse) => {
+          return response.data;
+        },
+      }),
+    }),
   }),
 });
 
@@ -217,4 +232,5 @@ export const {
   useGetCartQuery,
   useAddCartMutation,
   useRemoveCartMutation,
+  useGetRecentlyViewProductsListQuery,
 } = productApi;

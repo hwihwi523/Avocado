@@ -5,12 +5,18 @@ r2dbc:
   password: yasim506
   port: 3306
   database: member
-#r2dbc:
-#  host: localhost
-#  username: root
-#  password: ssafy
-#  port: 3306
-#  database: avocado_member
+
+spring:
+  kafka:
+    bootstrap-servers: a62e5b172168c40419f9a1af18763a94-214776296.ap-northeast-2.elb.amazonaws.com:9094
+    view-config:
+      topic: test-view
+    click-config:
+      topic: test-click1
+    purchase-history-config:
+      topic: test-purchase-history1
+    review-config:
+      topic: test-review
 
 oauth2:
   kakao:
@@ -29,7 +35,7 @@ jwt:
 
 front:
   redirect_uri: http://localhost:3000/login/oauth-redirect
-#  redirect_uri: http://a38e577e39a114a1ca68e6cc57d19636-137764516.ap-northeast-2.elb.amazonaws.com/member/redirect
+#  redirect_uri: http://k8s-avocado-c6c0ca3c6e-209771398.ap-northeast-2.elb.amazonaws.com/login/oauth-redirect
 
 logging:
   level:

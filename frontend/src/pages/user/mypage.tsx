@@ -16,11 +16,38 @@ import { authenticateTokenInPages } from "../../utils/authenticateTokenInPages";
 import { removeTokenAll } from "@/src/utils/tokenManager";
 import { useDispatch } from "react-redux";
 import { clearAuth } from "@/src/features/auth/authSlice";
+import {
+  useGetOrderListQuery,
+  useGetSnapshotCntAndLikeCntQuery,
+} from "@/src/features/snapshot/snapshotApi";
+import {
+  useGetCartQuery,
+  useGetRecentlyViewProductsListQuery,
+  useGetWishlistQuery,
+} from "@/src/features/product/productApi";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const Mypage = () => {
   const member = useAppSelector((state: AppState) => state.auth.member);
   const dispatch = useDispatch();
   const router = useRouter();
+
+  //좋아요 갯수, 스넵샷 게시물 개수
+  const { data: userSummary } = useGetSnapshotCntAndLikeCntQuery();
+
+  //장바구니 목록
+  const { data: cartList, isLoading: cartList_loading } = useGetCartQuery();
+
+  //구매목록
+  const { data: orderList, isLoading: orderList_loading } =
+    useGetOrderListQuery();
+
+  //찜목록
+  const { data: wishList, isLoading: wishList_laoding } = useGetWishlistQuery();
+
+  //최근 본 상품 목록
+  const { data: recentlyView, isLoading: recentlyView_laoding } =
+    useGetRecentlyViewProductsListQuery();
 
   //로그인 안했다면 로그인 페이지로 보내버리기
   useEffect(() => {
@@ -62,24 +89,72 @@ const Mypage = () => {
         >
           로그아웃
         </Button>
-        <UserStateSummary />
+        <UserStateSummary
+          data={{
+            cart_cnt: cartList ? cartList.length : 0,
+            wishlist_cnt: wishList ? wishList.length : 0,
+            snapshot_cnt: userSummary ? userSummary.styleshot_cnt : 0,
+            like_cnt: userSummary ? userSummary.like_cnt : 0,
+          }}
+        />
         <ChartPersonalColor personalColorData={personalColorData} />
 
         <Box>
           <Stack direction={"row"} justifyContent={"space-between"}>
-            <InlineText>최근 본 상품</InlineText>
+            <InlineText>최근 본 상품 </InlineText>
           </Stack>
-          {/* <ProductCardsRow isLogin={!!member} /> */}
+          {recentlyView && recentlyView.data.length !== 0 ? (
+            <ProductCardsRow data={recentlyView.data as any[]} />
+          ) : (
+            <EmptyBox>
+              {recentlyView_laoding ? (
+                <CircularProgress />
+              ) : (
+                "최근 본 상품이 없습니다."
+              )}
+            </EmptyBox>
+          )}
         </Box>
 
         <Box>
           <Stack direction={"row"} justifyContent={"space-between"}>
-            <InlineText>구매 내역</InlineText>
+            <InlineText>장바구니 </InlineText>
+            <Link href="/user/cartList">
+              <InlineText>더보기 +</InlineText>
+            </Link>
+          </Stack>
+
+          {cartList && cartList.length !== 0 ? (
+            <ProductCardsRow data={cartList as any[]} />
+          ) : (
+            <EmptyBox>
+              {cartList_loading ? (
+                <CircularProgress />
+              ) : (
+                "장바구니에 감긴 제품이 없습니다."
+              )}
+            </EmptyBox>
+          )}
+        </Box>
+
+        <Box>
+          <Stack direction={"row"} justifyContent={"space-between"}>
+            <InlineText>구매목록 </InlineText>
             <Link href="/user/orderList">
               <InlineText>더보기 +</InlineText>
             </Link>
           </Stack>
-          {/* <ProductCardsRow isLogin={!!member} /> */}
+          {orderList && orderList.data.content.length !== 0 ? (
+            <ProductCardsRow data={orderList.data.content as any[]} />
+          ) : (
+            <EmptyBox>
+              {orderList_loading ? (
+                <CircularProgress />
+              ) : (
+                "구매한 제품이 없습니다. "
+              )}
+            </EmptyBox>
+          )}
         </Box>
       </Stack>
     </Background>
@@ -94,6 +169,17 @@ const Background = styled.div`
 
 const Box = styled.div`
   padding-top: 100px;
+`;
+
+const EmptyBox = styled.div`
+  margin-top: 10px;
+  border-radius: 10px;
+  border: 1px solid #dddddd;
+  height: 200px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const getServerSideProps = wrapper.getServerSideProps(

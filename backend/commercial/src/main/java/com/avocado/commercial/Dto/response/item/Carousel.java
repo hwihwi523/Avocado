@@ -12,4 +12,5 @@ import lombok.ToString;
 public class Carousel {
     private String imgurl;
     private long merchandise_id;
+    private String name;
 }

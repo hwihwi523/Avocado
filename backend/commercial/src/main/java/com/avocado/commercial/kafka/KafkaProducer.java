@@ -1,6 +1,6 @@
 package com.avocado.commercial.kafka;
 
-import com.avocado.commercial.Adview;
+import com.avocado.Adview;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,11 +26,20 @@ public class KafkaProducer {
         this.adviewKafkaTemplate = adviewKafkaTemplate;
     }
 
-    public void sendAdview(Long adId, UUID userId) {
-        Adview adview = Adview.newBuilder()
-                .setUserId(makeRandomUUID().toString())
-                .build();
-        ListenableFuture<SendResult<Long, Adview>> future = adviewKafkaTemplate.send(adTopic, adId, adview);
+    public void sendAdview(Long merchandiseId, UUID userId) {
+
+        Adview adview;
+        if (userId == null) {
+             adview = Adview.newBuilder()
+                     .setUserId(makeRandomUUID().toString())
+                     .build();
+        } else {
+            adview = Adview.newBuilder()
+                    .setUserId(userId.toString())
+                    .build();
+        }
+
+        ListenableFuture<SendResult<Long, Adview>> future = adviewKafkaTemplate.send(adTopic, merchandiseId, adview);
         future.addCallback(new ListenableFutureCallback<>() {
             @Override
             public void onFailure(Throwable ex) {
