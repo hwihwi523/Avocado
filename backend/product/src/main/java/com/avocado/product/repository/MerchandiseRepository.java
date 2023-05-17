@@ -201,17 +201,17 @@ public class MerchandiseRepository {
 
     /**
      * 가장 많이 팔린 상품 상위 N개를 조회하는 쿼리
-     * @param lastMerchandiseId : for pagination
      * @param pageable : for pagination
      * @return : 가장 많이 팔린 상품 상위 N개
      */
-    public Page<SimpleMerchandiseDTO> findPopularMerchandises_NoOffset(Long lastMerchandiseId, Pageable pageable) {
+    public Page<SimpleMerchandiseDTO> findPopularMerchandises(Pageable pageable) {
         // 가장 많이 팔린 상품 ID N개 조회
         List<Long> popularIds = queryFactory
                 .select(purchasedMerchandise.merchandise.id)
                 .from(purchasedMerchandise)
                 .groupBy(purchasedMerchandise.merchandise.id)
                 .orderBy(purchasedMerchandise.merchandise.id.count().desc())
+                .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
@@ -231,12 +231,7 @@ public class MerchandiseRepository {
                 .join(merchandise.group, merchandiseGroup)
                 .join(merchandiseGroup.provider, store)
                 .join(merchandiseGroup.category, merchandiseCategory)
-                .where(
-                        ltLastMerchandiseId(lastMerchandiseId),
-                        merchandise.id.in(popularIds)
-                )
-                .orderBy(merchandise.id.desc())
-                .limit(pageable.getPageSize())
+                .where(merchandise.id.in(popularIds))
                 .fetch();
 
         // 인기순으로 순서 재구성
@@ -252,9 +247,7 @@ public class MerchandiseRepository {
         // Count 쿼리
         JPAQuery<Long> countQuery = queryFactory
                 .select(merchandise.id.count())
-                .from(merchandise)
-                .join(merchandise.group, merchandiseGroup)
-                .join(merchandiseGroup.provider, store);
+                .from(merchandise);
 
         return PageableExecutionUtils.getPage(sortedResult, pageable, countQuery::fetchOne);
     }
