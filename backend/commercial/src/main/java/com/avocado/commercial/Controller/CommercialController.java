@@ -4,7 +4,6 @@ import com.avocado.commercial.Dto.request.CommercialCancelReqDto;
 import com.avocado.commercial.Dto.request.CommercialReqDto;
 import com.avocado.commercial.Dto.response.Analysis;
 import com.avocado.commercial.Dto.response.RegistedCommercial;
-import com.avocado.commercial.Dto.response.item.Exposure;
 import com.avocado.commercial.Entity.Commercial;
 import com.avocado.commercial.Service.CommercialService;
 import com.avocado.commercial.Dto.response.CommercialRespDto;
