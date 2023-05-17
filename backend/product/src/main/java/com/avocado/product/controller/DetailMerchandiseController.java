@@ -10,6 +10,7 @@ import com.avocado.product.exception.BusinessLogicException;
 import com.avocado.product.service.MerchandiseService;
 import com.avocado.product.service.ReviewService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,7 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/merchandises/{merchandise_id}")
+@Slf4j
 public class DetailMerchandiseController {
     private final MerchandiseService merchandiseService;
     private final ReviewService reviewService;
@@ -36,8 +38,10 @@ public class DetailMerchandiseController {
         }
 
         DetailMerchandiseResp detailMerchandiseResp = merchandiseService.showDetailMerchandise(consumerId, merchandise_id);
+        log.info("begin checking consumer >> " + consumerId);
         if (consumerId != null)
             merchandiseService.addClick(consumerId, merchandise_id);
+        log.info("end checking consumer >> " + consumerId);
         return ResponseEntity.ok(BaseResp.of("상품 상세정보 조회 성공", detailMerchandiseResp));
     }
 

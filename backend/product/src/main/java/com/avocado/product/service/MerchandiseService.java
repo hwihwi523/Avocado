@@ -122,14 +122,22 @@ public class MerchandiseService {
     }
     @Transactional
     public void addClick(UUID consumerId, Long merchandiseId) {
+        log.info("begin addClick()");
+        log.info("begin create proxy");
         // 최근 본 물품 조회를 위해 조회 데이터 추가
         Consumer proxyConsumer = consumerRepository.getOne(consumerId);
         Merchandise proxyMerchandise = merchandiseRepository.getOne(merchandiseId);
+        log.info("end create proxy");
+        log.info("begin create click");
         Click click = Click.builder()
                 .consumer(proxyConsumer)
                 .merchandise(proxyMerchandise)
                 .build();
+        log.info("end create click");
+        log.info("begin save");
         clickRepository.save(click);
+        log.info("end save");
+        log.info("end addClick()");
     }
 
     /**
