@@ -8,7 +8,7 @@ import { authenticateTokenInPages } from "../../utils/authenticateTokenInPages";
 import router from "next/router";
 import { useEffect } from "react";
 import { useGetCartQuery } from "@/src/features/product/productApi";
-
+import { InlineText } from "../../components/atoms";
 const CartList = () => {
   const member = useAppSelector((state: AppState) => state.auth.member);
   const { data: cartlistData, isLoading, refetch } = useGetCartQuery();
@@ -80,11 +80,13 @@ const CartList = () => {
           </BlockText>
         </Total>
         <Button
-          style={{ padding: "10px", backgroundColor: "black", color: "white" }}
+          style={{ padding: "20px", backgroundColor: "black", color: "white" }}
           fullWidth
           onClick={purchaseHandler}
         >
-          결제하기
+          <InlineText type="L" size="1.1rem" color="white">
+            결제하기
+          </InlineText>
         </Button>
       </Stack>
     </Background>
@@ -111,7 +113,8 @@ const Background = styled.div`
   padding: 10px;
   box-sizing: border-box;
   background-color: #dddddd;
-  height: 100vh;
+  padding-bottom: 100px;
+  height: 100%;
 `;
 
 const Total = styled.div`

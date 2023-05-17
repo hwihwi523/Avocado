@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { Button, Stack } from "@mui/material";
-import { InlineText } from "../../components/atoms";
+import { InlineText, BlockText } from "../../components/atoms";
 import { useEffect } from "react";
 import {
   ProductCardsRow,
@@ -8,7 +8,10 @@ import {
   UserStateSummary,
 } from "../../components/oranisms";
 import { useRouter } from "next/router";
-import { ChartPersonalColor } from "../../components/oranisms/charts";
+import {
+  ChartCategoryPurchase,
+  ChartPersonalColor,
+} from "../../components/oranisms/charts";
 import Link from "next/link";
 import Head from "next/head";
 import { AppState, useAppSelector, wrapper } from "../../features/store";
@@ -26,11 +29,23 @@ import {
   useGetWishlistQuery,
 } from "@/src/features/product/productApi";
 import CircularProgress from "@mui/material/CircularProgress";
+import { statisticApi } from "@/src/features/statistic/statisticApi";
+import { setConsumerStatisticData } from "@/src/features/statistic/statisticSlice";
 
 const Mypage = () => {
   const member = useAppSelector((state: AppState) => state.auth.member);
   const dispatch = useDispatch();
   const router = useRouter();
+
+  const consumer_statistic = useAppSelector(
+    (state: AppState) => state.statistic.consumerStatisticData
+  );
+  console.log("consumer_statistic >>> ", consumer_statistic);
+
+  //숫자 변환 함수 3000  => 3,000원
+  function formatCurrency(num: number) {
+    return num.toLocaleString("en-US") + "원";
+  }
 
   //좋아요 갯수, 스넵샷 게시물 개수
   const { data: userSummary } = useGetSnapshotCntAndLikeCntQuery();
@@ -65,14 +80,6 @@ const Mypage = () => {
     router.replace("/");
   };
 
-  // 통계 자료
-  const statisticData = useAppSelector(
-    (state: AppState) => state.statistic.selectedProductStatisticData
-  );
-  const ageGenderData = statisticData.age_gender_score;
-  const mbtiData = statisticData.mbti_score;
-  const personalColorData = statisticData.personal_color_score;
-
   return (
     <Background>
       <Head>
@@ -97,7 +104,22 @@ const Mypage = () => {
             like_cnt: userSummary ? userSummary.like_cnt : 0,
           }}
         />
-        <ChartPersonalColor personalColorData={personalColorData} />
+        <ChartCategoryPurchase data={consumer_statistic.categories} />
+
+        <div
+          style={{
+            border: "1px solid #dddddd",
+            borderRadius: "10px",
+            padding: "20px",
+          }}
+        >
+          <Stack direction="row" justifyContent={"space-between"}>
+            <BlockText>총 구매액 : </BlockText>
+            <BlockText>
+              {formatCurrency(consumer_statistic.total_money)}
+            </BlockText>
+          </Stack>
+        </div>
 
         <Box>
           <Stack direction={"row"} justifyContent={"space-between"}>
@@ -189,6 +211,23 @@ export const getServerSideProps = wrapper.getServerSideProps(
       { req: context.req, res: context.res },
       store
     );
+
+    let cookie = context.req?.headers.cookie;
+    let accessToken = cookie
+      ?.split(";")
+      .find((c) => c.trim().startsWith("ACCESS_TOKEN="))
+      ?.split("=")[1];
+
+    if (accessToken) {
+      //사용자 통계정보 가져오기
+      const consumer_statistic = await store.dispatch(
+        statisticApi.endpoints.getStatisticDataForConsumer.initiate(accessToken)
+      );
+
+      if (consumer_statistic.data) {
+        store.dispatch(setConsumerStatisticData(consumer_statistic.data.data));
+      }
+    }
 
     return {
       props: {},

@@ -92,9 +92,7 @@ const WishItem: React.FC<{ item: ProductForWishlist }> = (props) => {
                 </IconButton>
               </Stack>
               <BlockText>{merchandise_name}</BlockText>
-              <BlockText>
-                <StarIcon /> {score}
-              </BlockText>
+
               <BlockText
                 color="grey"
                 style={{ textAlign: "right", textDecoration: "line-through" }}
@@ -107,7 +105,9 @@ const WishItem: React.FC<{ item: ProductForWishlist }> = (props) => {
                 alignItems={"center"}
                 justifyContent={"space-between"}
               >
-                <BlockText type="L" color="grey"></BlockText>
+                <BlockText>
+                  <StarIcon /> {score}
+                </BlockText>
                 <BlockText color="red" size="1.5rem" type="L">
                   {formatCurrency(discounted_price)}
                 </BlockText>
