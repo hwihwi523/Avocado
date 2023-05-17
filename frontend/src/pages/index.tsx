@@ -62,15 +62,17 @@ export default function Home() {
   useEffect(() => {
     //팝업 함수
     let expiration = localStorage.getItem("commercial_expiration_time");
-    if (expiration) {
-      const currentTime = new Date().getTime();
-      if (currentTime < Number(expiration)) {
-        setPopup(false);
+    if (member?.type === "consumer") {
+      if (expiration) {
+        const currentTime = new Date().getTime();
+        if (currentTime < Number(expiration)) {
+          setPopup(false);
+        } else {
+          setPopup(true);
+        }
       } else {
         setPopup(true);
       }
-    } else {
-      setPopup(true);
     }
 
     //성별 나이대 입력 안했으면 등록 페이지로 보내버리기
