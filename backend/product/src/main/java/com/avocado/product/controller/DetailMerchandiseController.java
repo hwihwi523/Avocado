@@ -36,7 +36,8 @@ public class DetailMerchandiseController {
         }
 
         DetailMerchandiseResp detailMerchandiseResp = merchandiseService.showDetailMerchandise(consumerId, merchandise_id);
-        merchandiseService.addClick(consumerId, merchandise_id);
+        if (consumerId != null)
+            merchandiseService.addClick(consumerId, merchandise_id);
         return ResponseEntity.ok(BaseResp.of("상품 상세정보 조회 성공", detailMerchandiseResp));
     }
 
