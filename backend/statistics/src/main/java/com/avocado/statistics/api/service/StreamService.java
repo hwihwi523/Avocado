@@ -6,6 +6,7 @@ import com.avocado.statistics.common.error.BaseException;
 import com.avocado.statistics.common.error.ResponseCode;
 import com.avocado.statistics.common.utils.CategoryTypeUtil;
 import com.avocado.statistics.common.utils.DateUtil;
+import com.avocado.statistics.common.utils.UUIDUtil;
 import com.avocado.statistics.db.mysql.repository.mybatis.ConsumerRepository;
 import com.avocado.statistics.db.mysql.entity.mybatis.Consumer;
 import com.avocado.statistics.db.redis.repository.AdvertiseCountRepository;
@@ -30,6 +31,7 @@ public class StreamService {
     private final AdvertiseCountRepository advertiseCountRepository;
     private final DateUtil dateUtil;
     private final CategoryTypeUtil categoryTypeUtil;
+    private final UUIDUtil uuidUtil;
 
     public void consumeResult(Result result, Long merchandiseId) {
 
@@ -54,7 +56,8 @@ public class StreamService {
      * @param result
      */
     private void saveScore(Result result, Long merchandiseId) {
-        UUID consumerId = UUID.fromString(result.getUserId());
+        String userId = result.getUserId().replace("-", "");
+        UUID consumerId = uuidUtil.joinByHyphen(userId);
         ActionType resType = result.getAction();
 
         Optional<Consumer> consumerO = consumerRepository.getById(consumerId);
