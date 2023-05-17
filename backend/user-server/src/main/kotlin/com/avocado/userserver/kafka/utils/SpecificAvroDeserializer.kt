@@ -1,7 +1,5 @@
 package com.avocado.userserver.kafka.utils
 
-import com.avocado.userserver.common.error.BaseException
-import com.avocado.userserver.common.error.ResponseCode
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient
 import io.confluent.kafka.serializers.KafkaAvroDeserializer
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG
@@ -33,7 +31,9 @@ class SpecificAvroDeserializer<T : SpecificRecord?> : Deserializer<T> {
     }
 
     override fun deserialize(s: String, bytes: ByteArray): T {
-        return inner.deserialize(s, bytes) as T ?:throw BaseException(ResponseCode.TYPE_CASTING_ERROR)
+        val deserialize = inner.deserialize(s, bytes)
+        println(deserialize)
+        return deserialize as T
     }
 
     override fun close() {
