@@ -31,6 +31,7 @@ import { statisticApi } from "../features/statistic/statisticApi";
 
 import { setRecommendProductsData } from "../features/statistic/statisticSlice";
 import { RequiredBox } from "../components/molecues";
+import CategoryForMain from "../components/oranisms/CategoryForMain";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -159,7 +160,7 @@ export default function Home() {
 
         {/* 메뉴 카테고리 */}
         <Grid item xs={12}>
-          <Category />
+          <CategoryForMain />
         </Grid>
 
         {/* 개인화 추천 제품 */}
