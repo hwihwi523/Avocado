@@ -125,7 +125,7 @@ const CommercialRegist: React.FC<{
     formData.set("merchandise_name", merchandise_name);
     formData.set("mbti_id", mbti);
     formData.set("personal_color_id", personalColor);
-    formData.set("commercial_type_id", "0");
+    formData.set("commercial_type_id", type);
     formData.set("file", image);
     formData.set("age", age);
     formData.set("gender", gender);

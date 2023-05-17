@@ -174,6 +174,16 @@ export const snapshotApi = createApi({
             ]
           : [{ type: "merchandise", id: "LIST" }],
     }),
+
+    getSnapshotCntAndLikeCnt: build.query<
+      { styleshot_cnt: number; like_cnt: number },
+      void
+    >({
+      query: () => ({
+        url: "community/my-statistics",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -185,4 +195,5 @@ export const {
   useRemoveSnapshotLikeMutation,
   useRemoveSnapshotMutation,
   useGetOrderListQuery,
+  useGetSnapshotCntAndLikeCntQuery,
 } = snapshotApi;

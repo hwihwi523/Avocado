@@ -57,7 +57,8 @@ const BillingPage = () => {
     let result = 0;
     for (let i = 0; i < products.length; i++) {
       result +=
-        (products[i].price - products[i].discounted_price) * products[i].count;
+        (products[i].price - products[i].discounted_price) *
+        products[i].quantity;
     }
     return formatCurrency(result);
   }
@@ -66,7 +67,7 @@ const BillingPage = () => {
   function totalPrice() {
     let result = 0;
     for (let i = 0; i < products.length; i++) {
-      result += products[i].discounted_price * products[i].count;
+      result += products[i].discounted_price * products[i].quantity;
     }
     return formatCurrency(result);
   }
@@ -89,7 +90,7 @@ const BillingPage = () => {
     products.forEach((product) => {
       const merchandise: ProductForPayment = {
         merchandise_id: product.merchandise_id,
-        quantity: product.count,
+        quantity: product.quantity,
         price: product.discounted_price,
         size: product.size,
       };
@@ -184,17 +185,17 @@ const BillingPage = () => {
           </BlockText>
           {products.map(
             (
-              { merchandise_name, count, id, price, discounted_price, size },
+              { merchandise_name, quantity, price, discounted_price, size },
               i
             ) => (
               <Stack direction={"row"} justifyContent={"space-between"} key={i}>
                 <BlockText>
                   {merchandise_name}{" "}
                   <InlineText size="0.8rem" color="grey">
-                    / {size} {count}개
+                    / {size} {quantity}개
                   </InlineText>
                 </BlockText>
-                <BlockText>{formatCurrency(price * count)}</BlockText>
+                <BlockText>{formatCurrency(price * quantity)}</BlockText>
               </Stack>
             )
           )}
