@@ -7,6 +7,7 @@ import org.apache.kafka.common.serialization.IntegerDeserializer;
 import org.apache.kafka.common.serialization.LongDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
@@ -14,12 +15,14 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
+
+@Configuration
 public class ConsumerConfig {
 
     @Value(value = "${spring.kafka.bootstrap-servers}")
     private String bootstrapAddress;
 
-    public ConsumerFactory<Integer, AdStatus> AdStatusConsumerFactory(String groupId) {
+    public ConsumerFactory<Integer, AdStatus> adStatusConsumerFactory(String groupId) {
         Map<String, Object> props = new HashMap<>();
         props.put(org.apache.kafka.clients.consumer.ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         props.put(org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG, groupId);
@@ -35,9 +38,9 @@ public class ConsumerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<Integer, AdStatus> AdStatusKafkaListenerContainerFactory() {
+    public ConcurrentKafkaListenerContainerFactory<Integer, AdStatus> adStatusKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<Integer, AdStatus> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(AdStatusConsumerFactory("commercial-group"));
+        factory.setConsumerFactory(adStatusConsumerFactory("commercial-group"));
         factory.setConcurrency(3);
         factory.getContainerProperties().setPollTimeout(3000);
         return factory;
