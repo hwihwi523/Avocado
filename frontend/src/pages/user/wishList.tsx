@@ -6,7 +6,9 @@ import Head from "next/head";
 import { useGetWishlistQuery } from "@/src/features/product/productApi";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { AppState, useAppSelector } from "@/src/features/store";
+import { AppState, useAppSelector, wrapper } from "@/src/features/store";
+import { authenticateTokenInPages } from "@/src/utils/authenticateTokenInPages";
+
 const WishList = () => {
   const router = useRouter();
   const member = useAppSelector((state: AppState) => state.auth.member);
@@ -46,32 +48,17 @@ const Background = styled.div`
   height: 100%;
 `;
 
-// // 서버에서 Redux Store를 초기화하고, wrapper.useWrappedStore()를 사용해
-// // 클라이언트에서도 동일한 store를 사용하도록 설정
-// export const getServerSideProps = wrapper.getServerSideProps(
-//   (store) => async (context) => {
-//     // 쿠키의 토큰을 통해 로그인 확인, 토큰 리프레시, 실패 시 로그아웃 처리 등
-//     await authenticateTokenInPages(
-//       { req: context.req, res: context.res },
-//       store
-//     );
-//     // 서버에서 토큰을 헤더에 넣어주기 위한 작업
-//     let cookie = context.req?.headers.cookie;
-//     let accessToken = cookie
-//       ?.split(";")
-//       .find((c) => c.trim().startsWith("ACCESS_TOKEN="))
-//       ?.split("=")[1];
-//     // wishlist 가져오기
-//     const wishlistResponse = await store.dispatch(
-//       productApi.endpoints.getWishlist.initiate({ token: accessToken })
-//     );
-//     const wishlist = wishlistResponse.data;
-//     {
-//       wishlist && store.dispatch(setProductListForWishlist(wishlist));
-//     }
+// 멤버 상태 유지
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) => async (context) => {
+    // 쿠키의 토큰을 통해 로그인 확인, 토큰 리프레시, 실패 시 로그아웃 처리 등
+    await authenticateTokenInPages(
+      { req: context.req, res: context.res },
+      store
+    );
 
-//     return {
-//       props: {},
-//     };
-//   }
-// );
+    return {
+      props: {},
+    };
+  }
+);

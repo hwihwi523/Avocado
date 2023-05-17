@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { TextField, InputAdornment } from "@mui/material";
-import { useRef, useState, ChangeEvent, useCallback } from "react";
+import { useRef, useState, ChangeEvent, useCallback, useEffect } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import { ProductCardsGrid } from "../components/oranisms";
 import { BlockText } from "../components/atoms";
@@ -16,8 +16,10 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemButton from "@mui/material/ListItemButton";
+import { useRouter } from "next/router";
 
 const Search = () => {
+  const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const [recommend, setRecommend] = useState("");
   const [searchWord, setSearchWord] = useState("");
@@ -27,6 +29,12 @@ const Search = () => {
     useGetRecommendsQuery(recommend);
   const { data: productList, isLoading: productListLoading } =
     useGetProductListQuery(searchWord);
+
+  // 메인 페이지에서 router.push로 이동해 왔을 때 query가 있다면 이를 검색한 결과를 표출
+  useEffect(() => {
+    const { query } = router;
+    if (query.categoryName) setSearchWord(query.categoryName as string);
+  }, []);
 
   // 제출 함수
   const submitHandler = (event: any) => {

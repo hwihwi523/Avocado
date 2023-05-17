@@ -1,6 +1,6 @@
 //컴포넌트를 만들 때 테스트 하는 곳
 
-import { Stack } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import HomeIconOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import ImageIcon from "@mui/icons-material/Image";
@@ -62,49 +62,53 @@ const MobileBottom = (props: any) => {
   }
 
   return (
-    <BackgroundDiv>
-      {/* 홈 */}
-      <Stack direction={"row"} justifyContent="space-around">
-        <Link href="/">
-          <IconButton aria-label="home">
-            <HomeIconOutlinedIcon
+    <div>
+      <BackgroundDiv>
+        {/* 홈 */}
+        <Stack direction={"row"} justifyContent="space-around">
+          <Link href="/">
+            <IconButton aria-label="home">
+              <HomeIconOutlinedIcon
+                fontSize="large"
+                style={{ fill: "#FFFFFF" }}
+              />
+            </IconButton>
+          </Link>
+
+          {/* 찾기 */}
+          <Link href="/search">
+            <IconButton aria-label="search">
+              <SearchIcon fontSize="large" style={{ fill: "#FFFFFF" }} />
+            </IconButton>
+          </Link>
+
+          {/* 스넵샷 */}
+          <Link href="/snapshot">
+            <IconButton aria-label="snapshot">
+              <ImageIcon fontSize="large" style={{ fill: "#FFFFFF" }} />
+            </IconButton>
+          </Link>
+
+          {/* 찜 목록 */}
+          <IconButton aria-label="bookmark" onClick={wishlistRouterHandler}>
+            <BookmarkBorderOutlinedIcon
               fontSize="large"
               style={{ fill: "#FFFFFF" }}
             />
           </IconButton>
-        </Link>
 
-        {/* 찾기 */}
-        <Link href="/search">
-          <IconButton aria-label="search">
-            <SearchIcon fontSize="large" style={{ fill: "#FFFFFF" }} />
+          {/* 마이페이지 */}
+          <IconButton aria-label="mypage" onClick={myPageRouterHandler}>
+            <AccountCircleOutlinedIcon
+              fontSize="large"
+              style={{ fill: "#FFFFFF" }}
+            />
           </IconButton>
-        </Link>
-
-        {/* 스넵샷 */}
-        <Link href="/snapshot">
-          <IconButton aria-label="snapshot">
-            <ImageIcon fontSize="large" style={{ fill: "#FFFFFF" }} />
-          </IconButton>
-        </Link>
-
-        {/* 찜 목록 */}
-        <IconButton aria-label="bookmark" onClick={wishlistRouterHandler}>
-          <BookmarkBorderOutlinedIcon
-            fontSize="large"
-            style={{ fill: "#FFFFFF" }}
-          />
-        </IconButton>
-
-        {/* 마이페이지 */}
-        <IconButton aria-label="mypage" onClick={myPageRouterHandler}>
-          <AccountCircleOutlinedIcon
-            fontSize="large"
-            style={{ fill: "#FFFFFF" }}
-          />
-        </IconButton>
-      </Stack>
-    </BackgroundDiv>
+        </Stack>
+      </BackgroundDiv>
+      {/* 공간 지정 */}
+      <Box sx={{ height: "51px" }}></Box>
+    </div>
   );
 };
 

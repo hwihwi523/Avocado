@@ -3,17 +3,15 @@ import Grid from "@mui/material/Grid";
 import Link from "next/link";
 import { category_list } from "../atoms/data";
 import Image from "next/image";
+import router from "next/router";
+
 //할일 링크 설정하기
 const iconStyle = {
   textAlign: "center",
   fontWeight: "bold",
 };
 
-const Category: React.FC<{
-  setCategory: (num: number) => void;
-}> = (props) => {
-  const { setCategory } = props;
-
+const Category: React.FC<{}> = () => {
   const icons = ["전체", "상의", "하의", "원피스", "신발", "백", "액세서리"];
 
   return (
@@ -25,7 +23,11 @@ const Category: React.FC<{
             sx={iconStyle}
             key={item}
             onClick={() => {
-              setCategory((i + 6) % 7);
+              // 검색창으로 보내고 선택된 카테고리의 검색 결과 보여주기
+              router.push({
+                pathname: `/search`,
+                query: { categoryName: `${item}` },
+              });
             }}
           >
             <Image

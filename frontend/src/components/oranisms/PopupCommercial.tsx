@@ -62,7 +62,7 @@ const PopupCommercial: React.FC<{
           ))}
         </Carousel>
         <DialogActions>
-          <Button onClick={handleClose} color="success" autoFocus>
+          <Button onClick={handleClose} color="success">
             닫기
           </Button>
           <Button onClick={handleOneDayClose} color="primary">
