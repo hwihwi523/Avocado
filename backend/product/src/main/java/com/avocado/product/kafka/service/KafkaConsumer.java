@@ -47,6 +47,7 @@ public class KafkaConsumer {
 
         // do some logics
         bulkInsert(purchaseHistory, purchaseId);  // 구매내역 + 구매상품 등록
+        bulkUpdate(purchaseHistory.getMerchandises());  // 변경된 재고 반영
         tagService.updateByPurchaseHistoryEvent(purchaseHistory.getMerchandises());  // 태그 다시 계산
     }
 
@@ -86,6 +87,24 @@ public class KafkaConsumer {
                 + ", " + merchandise.getQuantity()
                 + ", \"" + merchandise.getSize() + "\""
                 +")";
+    }
+
+    /**
+     * 재고 bulk update
+     */
+    @Transactional
+    public void bulkUpdate(List<Merchandise> merchandises) {
+        String bulkUpdate = "update merchandise m set m.inventory = case m.id";
+        String whereClause = " where m.id in (null";
+        for (Merchandise merchandise : merchandises) {
+            bulkUpdate += " when " + merchandise.getMerchandiseId()
+                    + " then " + merchandise.getLeftover();
+            whereClause += ", " + merchandise.getMerchandiseId();
+        }
+        whereClause += ")";
+        bulkUpdate += " else 0 end" + whereClause;
+        // 업데이트
+        em.createNativeQuery(bulkUpdate).executeUpdate();
     }
 
     @Transactional
