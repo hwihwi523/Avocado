@@ -42,6 +42,7 @@ public class StyleshotService {
         UUID consumerId = jwtUtils.getId(claims);
         int styleshotCnt = styleshotRepository.getStyleshotCnt(consumerId);
         int likeCnt = styleshotRepository.getLikeCnt(consumerId);
+        log.info("styleshotCnt: {}, likeCnt: {}", styleshotCnt, likeCnt);
         return CountsResp.builder()
                 .styleshotCnt(styleshotCnt)
                 .likeCnt(likeCnt)

@@ -5,6 +5,7 @@ import com.avocado.userserver.common.error.ResponseCode
 import com.avocado.userserver.common.utils.ConvertIdUtil
 import com.avocado.userserver.db.entity.Consumer
 import com.avocado.userserver.db.entity.Provider
+import com.avocado.userserver.db.repository.ConsumerRepository
 import com.avocado.userserver.db.repository.ProviderRepository
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException
@@ -22,6 +23,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 internal class JwtProviderTest @Autowired constructor(
     private val jwtProvider: JwtProvider,
     private val providerRepository: ProviderRepository,
+    private val consumerRepository: ConsumerRepository,
     private val convertIdUtil: ConvertIdUtil,
     private val consumerService: ConsumerService
 ) {
@@ -34,6 +36,16 @@ internal class JwtProviderTest @Autowired constructor(
             println(jwtProvider.getAccessToken(member))
         }
     }
+
+    @Test
+    fun `소비자 Access Token 출력`() {
+        runBlocking{
+            val id:ByteArray = convertIdUtil.unHex("CD9C70A576D543FF9A7BA34A211F3240")
+            val member: Consumer = consumerRepository.findById(id)?: throw BaseException(ResponseCode.INVALID_VALUE)
+            println(jwtProvider.getAccessToken(member))
+        }
+    }
+    
 
     @Test
     fun `access token 생성`() {
