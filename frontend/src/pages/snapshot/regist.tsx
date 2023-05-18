@@ -36,9 +36,7 @@ const SnapshotRegist = () => {
   const [value, setValue] = useState("");
   const [picture, setPicture] = useState<any>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const [content, setContent] = useState<string>(
-    "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-  );
+  const [content, setContent] = useState<string>("");
   const [products, setProducts] = useState<Item[]>([]);
 
   //이미지 핸들러 => 선택한 이미지 화면에 보이게 하기
