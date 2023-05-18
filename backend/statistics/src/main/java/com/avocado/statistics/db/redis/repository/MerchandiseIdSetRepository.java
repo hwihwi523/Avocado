@@ -28,4 +28,8 @@ public class MerchandiseIdSetRepository {
         return bitSet.asBitSet();
     }
 
+    public void deleteBitSet() {
+        bitSet.delete();
+    }
+
 }

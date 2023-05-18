@@ -33,6 +33,15 @@ public class ScoreRepository {
         return sb.toString();
     }
 
+    private String getPattern(CategoryType cType, ActionType resType) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(redisKeys.commPrefix)
+        .append(getCategoryPrefix(cType))
+        .append(getResultTypePrefix(resType))
+        .append("*");
+        return sb.toString();
+    }
+
     private String getCategoryPrefix(CategoryType cType) {
         switch(cType) {
             case AGE_GENDER:
@@ -87,6 +96,16 @@ public class ScoreRepository {
     }
 
     public void deleteAll() {
-//        redisson.
+        CategoryType[] cTypes = CategoryType.values();
+        ActionType[] resTypes = { ActionType.VIEW, ActionType.CLICK, ActionType.CART, ActionType.LIKE, ActionType.PAYMENT };
+        for (CategoryType cType: cTypes) {
+            for(ActionType resType: resTypes) {
+                String pattern = getPattern(cType, resType);
+                Iterable<String> keysByPattern = redisson.getKeys().getKeysByPattern(pattern);
+                for (String key: keysByPattern) {
+                    redisson.getMap(key).delete();
+                }
+            }
+        }
     }
 }
