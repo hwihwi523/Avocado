@@ -8,6 +8,7 @@ import com.avocado.statistics.db.mysql.repository.mybatis.MerchandiseRepository;
 import com.avocado.statistics.db.redis.repository.AdvertiseCountRepository;
 import com.avocado.statistics.kafka.service.KafkaProducer;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -22,7 +23,9 @@ public class AdvertiseStatisticsService {
     private final MerchandiseRepository merchandiseRepository;
     private final DateUtil dateUtil;
     private final KafkaProducer kafkaProducer;
-
+    
+    // 매일 밤 12시 10분에 처리
+    @Scheduled(cron = "0 10 0 * * *", zone = "Asia/Seoul")
     public void sendAdvertiseInfo() {
         String nowDate = dateUtil.getNowDate();
         List<Status> statusList = new ArrayList<>();

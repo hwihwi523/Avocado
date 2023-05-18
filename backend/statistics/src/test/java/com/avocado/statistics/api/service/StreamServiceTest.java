@@ -27,19 +27,35 @@ class StreamServiceTest {
     String userId6 = "B39228A9-F3AF-11ED-8C69-66C892933BB2";
     String[] userIds = {userId1, userId2, userId3, userId4, userId5, userId6};
 
+    long[] merchandiseIds = {4858, 4854, 29985, 30369, 18092, 12492, 28979, 30028, 17194, 15326, 15346, 15350, 16950, 16931, 22378, 30280, 30242, 25689, 30933, 29824, 23791,31865};
+
+
+//    @Test
+//    @DisplayName("광고 DTO INSERT 테스트")
+//    public void insert_adv_dto() {
+//        ActionType[] values = {ActionType.AD_CLICK, ActionType.AD_VIEW, ActionType.AD_PAYMENT};
+//        for(long id = 0; id < 20; id++) {
+//            int size = new Random().nextInt(10) + 1;
+//            for (int i = 0; i < size; i++) {
+//                Result result = new Result(userId0, values[new Random().nextInt(3)]);
+//                streamService.consumeResult(result, id);
+//            }
+//        }
+//    }
 
     @Test
-    @DisplayName("광고 DTO INSERT 테스트")
-    public void insert_adv_dto() {
+    @DisplayName("실제 존재하는 광고 DTO INSERT 테스트")
+    public void real_insert_adv_dto() {
         ActionType[] values = {ActionType.AD_CLICK, ActionType.AD_VIEW, ActionType.AD_PAYMENT};
-        for(long id = 0; id < 20; id++) {
-            int size = new Random().nextInt(10) + 1;
+        for (long id: merchandiseIds) {
+            int size = new Random().nextInt(10) + 5;
             for (int i = 0; i < size; i++) {
                 Result result = new Result(userId0, values[new Random().nextInt(3)]);
                 streamService.consumeResult(result, id);
             }
         }
     }
+
 
     @Test
     @DisplayName("점수 DTO INSERT 테스트")

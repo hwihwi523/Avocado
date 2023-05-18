@@ -33,7 +33,7 @@ public class KafkaProducer {
     }
 
     public void sendAdStatus(AdStatus adStatus) {
-
+        log.info("sending adStatus: [{}]", adStatus);
         // date를 key로 쓰는 것은 좋지 않은 듯.
         ListenableFuture<SendResult<Integer, AdStatus>> future = adStatusKafkaTemplate.send(adStatusTopic, DateUtil.getUnixDate(), adStatus);
         future.addCallback(new ListenableFutureCallback<>() {
