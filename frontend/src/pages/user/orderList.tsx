@@ -55,7 +55,8 @@ const Background = styled.div`
   padding: 10px;
   box-sizing: border-box;
   background-color: #dddddd;
-  height: 100vh;
+  padding-bottom: 50px;
+  height: 100%;
 `;
 
 export const getServerSideProps = wrapper.getServerSideProps(

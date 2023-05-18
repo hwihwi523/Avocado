@@ -43,7 +43,7 @@ const ChartCategoryPurchase: React.FC<{ data: CategoriesData[] }> = (props) => {
   function dataFormat() {
     //데이터 모양
     let data = {
-      labels: ["순위"],
+      labels: ["※ 클릭 시 카테고리명을 볼 수 있습니다."],
       datasets: [
         {
           label: "",

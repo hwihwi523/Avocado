@@ -35,7 +35,7 @@ const SnapshotItem: React.FC<{ data: snapshotItemType; refetch: any }> = (
     removeSnapshot(item.id)
       .unwrap()
       .then((res) => {
-        enqueueSnackbar(`게시물이 삭제되었씁니다. `, {
+        enqueueSnackbar(`게시물이 삭제되었습니다. `, {
           variant: "info",
           anchorOrigin: {
             horizontal: "center",
@@ -102,7 +102,7 @@ const SnapshotItem: React.FC<{ data: snapshotItemType; refetch: any }> = (
       <Stack
         direction="row"
         justifyContent={"space-between"}
-        alignItems={"flex-end"}
+        alignItems={"center"}
       >
         {/* 스넵샷 이미지 */}
         <BlockText color="grey" size="0.8rem" style={{ textAlign: "right" }}>
@@ -110,12 +110,21 @@ const SnapshotItem: React.FC<{ data: snapshotItemType; refetch: any }> = (
         </BlockText>
 
         {item.my_styleshot && (
-          <Button color="error" onClick={deleteHandler}>
+          <Button
+            color="error"
+            onClick={deleteHandler}
+            style={{
+              display: "flex",
+              alignItems: "flex-end",
+              padding: 0,
+              marginRight: "-11px",
+            }}
+          >
             삭제
           </Button>
         )}
       </Stack>
-      <Imagebox>
+      <Imagebox style={{ marginTop: "1px" }}>
         {isImageLoading && (
           <Box
             sx={{

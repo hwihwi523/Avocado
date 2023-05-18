@@ -3,6 +3,8 @@ import { Button, Dialog, DialogActions } from "@mui/material";
 import Image from "next/image";
 import Carousel from "react-material-ui-carousel";
 import router from "next/router";
+import { useState } from "react";
+import { ThreeDots } from "react-loader-spinner";
 
 type CommercialItem = {
   imgurl: string;
@@ -35,6 +37,11 @@ const PopupCommercial: React.FC<{
     setOpen(false);
   };
 
+  const [isPopUpLoading, setIsPopUpLoading] = useState(true); // 로딩 상태 추가
+  const handleImageLoad = () => {
+    setIsPopUpLoading(false); // 이미지 로드가 완료될 때 로딩 상태 변경
+  };
+
   return (
     <Commercial>
       <Dialog
@@ -52,11 +59,37 @@ const PopupCommercial: React.FC<{
                 router.push("product/" + item.merchandise_id);
               }}
             >
+              {isPopUpLoading && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    height: "100%",
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <ThreeDots
+                    height={80}
+                    width={80}
+                    radius={9}
+                    color="#000"
+                    ariaLabel="three-dots-loading"
+                    wrapperStyle={{}}
+                    visible={true}
+                  />
+                </div>
+              )}
               <Image
                 src={item.imgurl}
                 alt="광고 이미지"
                 fill
                 style={{ objectFit: "cover" }}
+                loading="lazy"
+                onLoad={handleImageLoad} // 이미지 로드 완료 후 로딩 상태 변경
               />
             </ImageBox>
           ))}
