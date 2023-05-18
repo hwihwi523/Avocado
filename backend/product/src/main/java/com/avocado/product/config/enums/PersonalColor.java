@@ -15,6 +15,8 @@ public enum PersonalColor {
 
     private static final PersonalColor[] personalColors = PersonalColor.values();
     public static String getPersonalColor(Byte index) {
+        if (index == null)
+            return null;
         return personalColors[index].name();
     }
 }
