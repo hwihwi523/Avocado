@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,7 @@ public class KafkaProducer {
         this.purchaseHistoryKafkaTemplate = purchaseHistoryKafkaTemplate;
     }
 
-    public void sendPurchaseHistory(Purchasing purchasing, Map<Long, Integer> inventories) {
+    public void sendPurchaseHistory(Purchasing purchasing, Map<Long, Integer> inventories, String createdAt) {
         // make merchandises list by purchasing
         List<Merchandise> merchandises = new ArrayList<>();
         for (PurchasingMerchandise pm : purchasing.getMerchandises()) {
@@ -50,6 +51,7 @@ public class KafkaProducer {
                 .setUserId(purchasing.getConsumer_id())
                 .setTotalPrice(purchasing.getTotal_price())
                 .setMerchandises(merchandises)
+                .setCreatedAt(createdAt)
                 .build();
 
         ListenableFuture<SendResult<String, PurchaseHistory>> future = purchaseHistoryKafkaTemplate.send(purchaseHistoryTopic, purchasing.getId(), purchaseHistory);

@@ -249,7 +249,7 @@ public class KakaoPayService {
             inventories.put(updated.getId(), updated.getInventory());
 
         // produce to kafka
-        kafkaProducer.sendPurchaseHistory(purchasing, inventories);
+        kafkaProducer.sendPurchaseHistory(purchasing, inventories, purchase.getCreatedAt().toString());
     }
 
     /**
@@ -358,7 +358,7 @@ public class KakaoPayService {
             inventories.put(updated.getId(), updated.getInventory());
 
         // produce to kafka
-        kafkaProducer.sendPurchaseHistory(purchasing, inventories);
+        kafkaProducer.sendPurchaseHistory(purchasing, inventories, purchase.getCreatedAt().toString());
     }
 
     /**

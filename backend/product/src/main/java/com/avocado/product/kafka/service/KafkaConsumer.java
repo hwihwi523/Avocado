@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -62,6 +63,7 @@ public class KafkaConsumer {
                     .id(uuidUtil.joinByHyphen(purchaseId))
                     .consumer(proxyConsumer)
                     .totalPrice(purchaseHistory.getTotalPrice())
+                    .createdAt(LocalDateTime.parse(purchaseHistory.getCreatedAt()))
                     .build();
             em.persist(purchase);
         } catch (DataManipulationException ignored) { return; }  // 이미 존재할 경우 메서드 종료
