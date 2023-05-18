@@ -17,12 +17,12 @@ import java.util.UUID;
 public class UuidTypeHandler extends BaseTypeHandler<UUID> {
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, UUID parameter, JdbcType jdbcType) throws SQLException {
-        log.info("setNotNullParameter - uuid: {}", parameter);
+//        log.info("setNotNullParameter - uuid: {}", parameter);
         ps.setBytes(i, uuidToBytes(parameter));
     }
 
     private static byte[] uuidToBytes(UUID uuid) {
-        log.info("uuidToBytes - uuid: {}", uuid);
+//        log.info("uuidToBytes - uuid: {}", uuid);
         ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
         bb.putLong(uuid.getMostSignificantBits());
         bb.putLong(uuid.getLeastSignificantBits());
@@ -45,7 +45,7 @@ public class UuidTypeHandler extends BaseTypeHandler<UUID> {
     }
 
     private static UUID bytesToUuid(byte[] bytes) {
-        log.info("bytesToUuid - bytes: {}", bytes);
+//        log.info("bytesToUuid - bytes: {}", bytes);
         if (bytes == null) {
             return null;
         }
@@ -54,7 +54,7 @@ public class UuidTypeHandler extends BaseTypeHandler<UUID> {
         Long low = byteBuffer.getLong();
 
         UUID uuid = new UUID(high, low);
-        log.info("uuid: {}", uuid);
+//        log.info("uuid: {}", uuid);
         return uuid;
     }
 }
