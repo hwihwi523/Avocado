@@ -14,11 +14,9 @@ import { Router } from "next/router";
 
 export const appCookies = createCookiesInstance(); // 앱에서 사용할 쿠키 생성
 
-const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
+const MyApp: FC<AppProps> = ({ Component, ...rest }) => {
   // console.log("rest: ", pageProps);
-  const { store } = wrapper.useWrappedStore({
-    ...pageProps,
-  });
+  const { store, props } = wrapper.useWrappedStore(rest);
 
   // 테마 생성
   const theme = createTheme({
@@ -31,13 +29,18 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
   });
 
   // 로딩 스피너
-  const [isLoading, setIsLoading] = useState(false);
+  const [isAppLoading, setIsAppLoading] = useState(false);
+  const handleRouteChangeStart = () => {
+    setIsAppLoading(true);
+  };
+  const handleRouteChangeComplete = () => {
+    setIsAppLoading(false);
+  };
   useEffect(() => {
-    // 라우터 이벤트 핸들러 등록
     Router.events.on("routeChangeStart", handleRouteChangeStart);
     Router.events.on("routeChangeComplete", handleRouteChangeComplete);
     Router.events.on("routeChangeError", handleRouteChangeComplete);
-    // 컴포넌트 언마운트 시 이벤트 핸들러 제거
+
     return () => {
       Router.events.off("routeChangeStart", handleRouteChangeStart);
       Router.events.off("routeChangeComplete", handleRouteChangeComplete);
@@ -45,27 +48,19 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
     };
   }, []);
 
-  const handleRouteChangeStart = () => {
-    setIsLoading(true);
-  };
-
-  const handleRouteChangeComplete = () => {
-    setIsLoading(false);
-  };
-
   return (
     <ThemeProvider theme={theme}>
       <Provider store={store}>
         <CookiesProvider>
           <SnackbarProvider maxSnack={3} autoHideDuration={1000}>
             <MobileHeader />
-            {isLoading && (
+            {isAppLoading && (
               <Box sx={{ width: "100%" }}>
                 <LinearProgress sx={{ color: "primary.main" }} />
               </Box>
             )}
             {/* 여기서 pageProps를 컴포넌트에 내려주지 않으면 SSR 불가 */}
-            <Component {...pageProps} />
+            <Component {...props.pageProps} />
             <MobileBottom />
           </SnackbarProvider>
         </CookiesProvider>
