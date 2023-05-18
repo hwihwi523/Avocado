@@ -103,7 +103,7 @@ export default function Home() {
         />
       </Head>
 
-      <Grid container gap={8}>
+      <Grid container gap={3}>
         {/* 사용자 프로필 */}
         <Grid item xs={12}>
           {/* 로그인 안했을 때 */}

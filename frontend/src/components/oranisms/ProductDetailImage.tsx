@@ -10,6 +10,7 @@ import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { ProductDetail } from "@/src/features/product/productSlice";
 import { useState } from "react";
 import router from "next/router";
+import StarIcon from "@mui/icons-material/Star";
 
 type ProductDetailImageProps = {
   product: ProductDetail | null;
@@ -27,6 +28,7 @@ const ProductDetailImage: React.FC<ProductDetailImageProps> = ({ product }) => {
   const discount = product?.discounted_price; //할인된 가격
   const price = product?.price; //원가
   const remaining = product?.inventory; //재고
+  const score = product?.score; // 별점
 
   //숫자 변환 함수 3000  => 3,000원
   function formatCurrency(num: number) {
@@ -129,7 +131,7 @@ const ProductDetailImage: React.FC<ProductDetailImageProps> = ({ product }) => {
         <Grid item xs={12}>
           <BlockText
             type="L"
-            size="1.5rem"
+            size="1.3rem"
             style={{ textDecoration: "line-through", color: "grey" }}
           >
             {price && formatCurrency(price)}
@@ -139,10 +141,10 @@ const ProductDetailImage: React.FC<ProductDetailImageProps> = ({ product }) => {
         {/* 할인가 + 할인률 */}
         <Grid item xs={12}>
           <Stack direction={"row"} justifyContent={"space-between"}>
-            <InlineText type="L" size="2rem">
+            <InlineText type="L" size="1.7rem">
               {price && discount && formatCurrency(discount)}
             </InlineText>
-            <InlineText type="L" size="2rem" color="red">
+            <InlineText type="L" size="1.7rem" color="red">
               {price &&
                 discount &&
                 Math.ceil(((price - discount) / price) * 100)}
@@ -153,8 +155,16 @@ const ProductDetailImage: React.FC<ProductDetailImageProps> = ({ product }) => {
             size="1rem"
             type="L"
             color="grey"
-            style={{ marginTop: "20px" }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginTop: "20px",
+            }}
           >
+            <div>
+              <StarIcon style={{ fontSize: "1.5rem" }} /> {score}
+            </div>
             {remaining && <> 남은 수량 : {remaining}</>}
           </BlockText>
         </Grid>
