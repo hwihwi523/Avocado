@@ -2,10 +2,7 @@ package com.avocado.product.repository;
 
 import com.avocado.product.dto.query.QSimpleMerchandiseDTO;
 import com.avocado.product.dto.query.SimpleMerchandiseDTO;
-import com.avocado.product.entity.QMerchandise;
-import com.avocado.product.entity.QMerchandiseGroup;
-import com.avocado.product.entity.QTag;
-import com.avocado.product.entity.Tag;
+import com.avocado.product.entity.*;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.BooleanPath;
@@ -56,8 +53,8 @@ public class TagRepository {
                 .where(
                         merchandiseGroup.category.id.eq(keyTag.getMerchandise().getGroup().getCategory().getId()),
                         checkRelated(
-                                keyTag.getMbti().getId(),
-                                keyTag.getPersonalColor().getId(),
+                                keyTag.getMbti(),
+                                keyTag.getPersonalColor(),
                                 keyTag.getAgeGroup()
                         )
                 )
@@ -67,13 +64,13 @@ public class TagRepository {
         return merchandiseRepository.findMerchandises(merchandiseIds);
     }
 
-    private BooleanBuilder checkRelated(Byte mbtiId, Byte personalColorId, Short ageGroup) {
+    private BooleanBuilder checkRelated(Mbti mbti, PersonalColor personalColor, Short ageGroup) {
         BooleanBuilder builder = new BooleanBuilder();
 
-        if (mbtiId != null)
-            builder.or(tag.mbti.id.eq(mbtiId));
-        if (personalColorId != null)
-            builder.or(tag.personalColor.id.eq(personalColorId));
+        if (mbti != null)
+            builder.or(tag.mbti.id.eq(mbti.getId()));
+        if (personalColor != null)
+            builder.or(tag.personalColor.id.eq(personalColor.getId()));
         if (ageGroup != null)
             builder.or(tag.ageGroup.eq(ageGroup));
 

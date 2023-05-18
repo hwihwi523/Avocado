@@ -96,7 +96,10 @@ public class MerchandiseRepository {
                         merchandise.id.in(merchandiseIds)
                 )
                 .groupBy(
-                        merchandise.id
+                        merchandise.id,
+                        tag.mbti.id,
+                        tag.personalColor.id,
+                        tag.ageGroup
                 )
                 .orderBy(
                         click.id.max().desc()

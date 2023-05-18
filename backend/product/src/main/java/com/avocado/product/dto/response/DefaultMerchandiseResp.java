@@ -32,7 +32,9 @@ public class DefaultMerchandiseResp {
         this.is_wishlist = false;
         this.mbti = MBTI.getMBTI(defaultMerchandiseDTO.getMbtiId());
         this.personal_color = PersonalColor.getPersonalColor(defaultMerchandiseDTO.getPersonalColorId());
-        this.age_group = defaultMerchandiseDTO.getAgeGroup().toString() + "대";
+        this.age_group = defaultMerchandiseDTO.getAgeGroup() != null
+                ? defaultMerchandiseDTO.getAgeGroup().toString() + "대"
+                : null;
     }
     
     public void updateIsWishlist(Boolean is_wishlist) {
