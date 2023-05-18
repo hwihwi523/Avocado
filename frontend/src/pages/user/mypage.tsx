@@ -35,6 +35,7 @@ const Mypage = () => {
   const dispatch = useDispatch();
   const router = useRouter();
 
+  //구매자 정보
   const consumer_statistic = useAppSelector(
     (state: AppState) => state.statistic.consumerStatisticData
   );

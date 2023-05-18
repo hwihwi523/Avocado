@@ -69,7 +69,6 @@ const Snapshot = () => {
   }, [inView, member]);
 
   // 잘 넘어오는지 출력해 보기
-  console.log("data >>>> ", data);
 
   console.log("snapshotList   >>>> ", snapshotList);
 
