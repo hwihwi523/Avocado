@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -136,16 +137,22 @@ public class CommercialService {
         }
     }
 
-    public void saveCommercialStatistic(AdStatus adStatus){
+    public void saveCommercialStatistic(AdStatus adStatus,int today){
+        LocalDate epoch = LocalDate.of(1970, 1, 1);
 
         List<CommercialStatistic> commercialStatisticList = new ArrayList<>();
 
         for(Status status : adStatus.getStatusList()){
-            // 마저 만들어야함
-            // amount가 없음
+            CommercialStatistic commercialStatistic = CommercialStatistic.builder()
+                    .clickCnt(status.getClickCnt())
+                    .exposureCnt(status.getExposureCnt())
+                    .quantity(status.getQuantity())
+                    .date(epoch.plusDays(today).toString())
+                    .purchaseAmount(status.getAmount())
+                    .build();
+            commercialStatisticRepository.saveByMerchandiseId(status.getMerchandiseId(),commercialStatistic);
         }
 
-        commercialStatisticRepository.saveAll(commercialStatisticList);
     }
 
 

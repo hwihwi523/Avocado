@@ -38,7 +38,7 @@ public class KafkaConsumer {
 //        });
 
         // do some logics
-        commercialService.saveCommercialStatistic(adStatus);
+        commercialService.saveCommercialStatistic(adStatus, today);
 
     }
 }

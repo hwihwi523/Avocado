@@ -102,7 +102,6 @@ public class SearchService {
         Query byName = MatchQuery.of(m -> m
                 .field("name")
                 .query(keyword)
-
         )._toQuery();
         Query byCategory = MatchQuery.of(r -> r
                 .field("category_eng")
@@ -150,8 +149,7 @@ public class SearchService {
     }
 
     public void modifyProductReview(CompactReview compactReview){
-        
-        // 카프카로 데이터 받아오면 데이터 교체할 것
+
         ReviewDto product = new ReviewDto();
         product.setId(compactReview.getMerchandiseId());
         product.setTotal_score(compactReview.getTotalScore());
@@ -171,37 +169,19 @@ public class SearchService {
     public void modifyProductInventory(PurchaseHistory purchaseHistory){
 
 
-        System.out.println(purchaseHistory.getMerchandises().size());
-        // 카프카로 데이터 받아오면 데이터 교체할 것
-        try {
-            for(Merchandise merchandise : purchaseHistory.getMerchandises()) {
-                System.out.println(merchandise.getMerchandiseId());
-                long id = merchandise.getMerchandiseId();
-                Query byId = MatchQuery.of(m -> m
-                        .field("id")
-                        .query(id)
-                )._toQuery();
-
-                SearchResponse<Product> search = elasticsearchClient.search(s -> s
-                                .index("products")
-                                .query(q -> q
-                                        .bool(b -> b
-                                                .must(byId)
-                                        )).size(1),
-                        Product.class);
-                InventoryDto product = new InventoryDto();
-                product.setId(merchandise.getMerchandiseId());
-                System.out.println(search.hits().hits());
-                product.setInventory(search.hits().hits().get(0).source().getInventory()-merchandise.getQuantity());
-                System.out.println(product);
-                elasticsearchClient.update(u -> u
-                                .index("products")
-                                .id(String.valueOf(product.getId()))
-                                .doc(product)
-                        , ReviewDto.class);
+        for(Merchandise merchandise : purchaseHistory.getMerchandises()) {
+            InventoryDto product = new InventoryDto();
+            product.setId(merchandise.getMerchandiseId());
+            product.setInventory(merchandise.getLeftover());
+            try {
+                    elasticsearchClient.update(u -> u
+                                    .index("products")
+                                    .id(String.valueOf(product.getId()))
+                                    .doc(product)
+                            , ReviewDto.class);
+            }catch (IOException e){
+                e.printStackTrace();
             }
-        }catch (IOException e){
-            e.printStackTrace();
         }
     }
 
