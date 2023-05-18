@@ -117,10 +117,6 @@ public class KafkaConsumer {
             case SIGN_UP:
                 Consumer newConsumer = Consumer.builder()
                         .id(consumerId)
-                        .age((short)updateInfo.getAgeGroup())
-                        .gender(updateInfo.getGender())
-                        .mbti(proxyMbti)
-                        .personalColor(proxyPersonalColor)
                         .pictureUrl(signupInfo.getPictureUrl())
                         .name(signupInfo.getConsumerName())
                         .build();
@@ -139,10 +135,8 @@ public class KafkaConsumer {
                     updateConsumer.update(
                             proxyPersonalColor,
                             proxyMbti,
-                            signupInfo.getConsumerName(),
-                            signupInfo.getPictureUrl(),
-                            updateConsumer.getGender(),
-                            updateConsumer.getAge()
+                            updateInfo.getGender(),
+                            (short) updateInfo.getAgeGroup()
                     );
                 }
                 break;
