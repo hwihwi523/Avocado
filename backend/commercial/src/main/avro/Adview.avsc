@@ -4,6 +4,6 @@
   "type": "record",
   "fields": [
     {"name": "userId", "type": "string"},
-    {"name": "timestamp", "type": "long", "logicalType": "timestamp-millis", "default": "0"}
+    {"name": "timestamp", "type": "long", "logicalType": "timestamp-millis", "default": 0}
   ]
 }
