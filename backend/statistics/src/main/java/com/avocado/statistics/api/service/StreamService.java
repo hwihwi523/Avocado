@@ -34,6 +34,7 @@ public class StreamService {
     private final UUIDUtil uuidUtil;
 
     public void consumeResult(Result result, Long merchandiseId) {
+        log.info("merchandiseId: {}, Result: {}", merchandiseId, result);
 
         ActionType resType = result.getAction();
 
