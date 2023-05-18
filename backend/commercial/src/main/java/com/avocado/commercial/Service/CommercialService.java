@@ -137,12 +137,14 @@ public class CommercialService {
         }
     }
 
+    @Transactional
     public void saveCommercialStatistic(AdStatus adStatus,int today){
+
         LocalDate epoch = LocalDate.of(1970, 1, 1);
 
         List<CommercialStatistic> commercialStatisticList = new ArrayList<>();
+        for (Status status : adStatus.getStatusList()) {
 
-        for(Status status : adStatus.getStatusList()){
             CommercialStatistic commercialStatistic = CommercialStatistic.builder()
                     .clickCnt(status.getClickCnt())
                     .exposureCnt(status.getExposureCnt())
@@ -150,7 +152,7 @@ public class CommercialService {
                     .date(epoch.plusDays(today).toString())
                     .purchaseAmount(status.getAmount())
                     .build();
-            commercialStatisticRepository.saveByMerchandiseId(status.getMerchandiseId(),commercialStatistic);
+            commercialStatisticRepository.saveByMerchandiseId(status.getMerchandiseId(), commercialStatistic.getExposureCnt(), commercialStatistic.getClickCnt(), commercialStatistic.getPurchaseAmount(), commercialStatistic.getQuantity(), commercialStatistic.getDate());
         }
 
     }

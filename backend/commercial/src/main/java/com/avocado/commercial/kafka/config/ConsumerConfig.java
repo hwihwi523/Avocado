@@ -40,7 +40,7 @@ public class ConsumerConfig {
     @Bean
     public ConcurrentKafkaListenerContainerFactory<Integer, AdStatus> adStatusKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<Integer, AdStatus> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(adStatusConsumerFactory("commercial-group-test"));
+        factory.setConsumerFactory(adStatusConsumerFactory("commercial-group"));
         factory.setConcurrency(3);
         factory.getContainerProperties().setPollTimeout(3000);
         return factory;
