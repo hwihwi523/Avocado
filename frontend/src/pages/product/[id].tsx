@@ -38,9 +38,7 @@ import {
   ProductReview,
   setSelectedProductDetail,
 } from "@/src/features/product/productSlice";
-import {
-  statisticApi,
-} from "@/src/features/statistic/statisticApi";
+import { statisticApi } from "@/src/features/statistic/statisticApi";
 import {
   setRecommendProductsData,
   setSelectedProductStatisticData,
@@ -176,20 +174,20 @@ const ProductDetailPage = () => {
         <meta property="og:description" content="스토어 설명" />
       </Head>
       <Background>
-        <Grid container gap={2}>
+        <Grid container>
           {/* 제품 이미지 */}
-          <Grid item xs={12}>
+          <Grid item xs={12} gap={1}>
             <ProductDetailImage product={product} />
             <DividerBar />
           </Grid>
 
           {/* mbti chart */}
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={6}>
             <ChartMbti mbtiData={mbtiData} />
           </Grid>
 
           {/* personal color chart */}
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={6}>
             <ChartPersonalColor personalColorData={personalColorData} />
           </Grid>
 
