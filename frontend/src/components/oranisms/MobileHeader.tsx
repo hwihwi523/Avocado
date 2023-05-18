@@ -6,14 +6,16 @@ import Image from "next/image";
 import { AppState, useAppSelector } from "@/src/features/store";
 import { useSnackbar } from "notistack";
 import router from "next/router";
+import { appCookies } from "@/src/pages/_app";
 
 const MobileHeader = () => {
-  const member = useAppSelector((state: AppState) => state.auth.member);
+  // 모든 페이지에서 SSR을 하지 않으므로, 헤더에서 로그인 여부를 판단하기 위해 쿠키 이용
+  const token = appCookies.get("ACCESS_TOKEN");
 
   const { enqueueSnackbar } = useSnackbar();
 
   function cartBtnClickHandler() {
-    if (!member) {
+    if (!token) {
       enqueueSnackbar(`로그인이 필요한 서비스입니다.`, {
         variant: "error", //info(파란색), error(빨간색), success(초록색), warning(노란색)
         anchorOrigin: {
@@ -47,7 +49,7 @@ const MobileHeader = () => {
         </ImageBox>
 
         {/* 장바구니  */}
-        <IconButton onClick={cartBtnClickHandler}>
+        <IconButton onClick={cartBtnClickHandler} className="cart_btn">
           <ShoppingCartOutlinedIcon style={{ fontSize: "1.8rem" }} />
         </IconButton>
       </Stack>

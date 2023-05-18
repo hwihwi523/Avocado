@@ -13,6 +13,7 @@ import {
 import { AppState, useAppSelector } from "@/src/features/store";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { appCookies } from "@/src/pages/_app";
 
 const ProductBottom: React.FC<{
   openModal: () => void;
@@ -21,7 +22,8 @@ const ProductBottom: React.FC<{
   const router = useRouter();
   const [addWishlist, addWishlistResult] = useAddWishlistMutation();
   const [removeWishlist, removeWishlistResult] = useRemoveWishlistMutation();
-  const member = useAppSelector((state: AppState) => state.auth.member);
+  // const member = useAppSelector((state: AppState) => state.auth.member);
+  const token = appCookies.get("ACCESS_TOKEN");
   const product = useAppSelector(
     (state: AppState) => state.product.selectedProductDetail
   );
@@ -49,7 +51,7 @@ const ProductBottom: React.FC<{
     }
     setIsButtonClicked(true);
 
-    if (member) {
+    if (token) {
       if (isWishlist) {
         setIsButtonDisabled(true);
         // 삭제

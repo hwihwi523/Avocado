@@ -46,6 +46,7 @@ export const statisticApi = createApi({
     }
   },
   tagTypes: [],
+  keepUnusedDataFor: 5 * 60 * 1000,
   endpoints: (builder) => ({
     getStatisticDataForProductDetail: builder.query<
       StatisticDataForProductDetail,

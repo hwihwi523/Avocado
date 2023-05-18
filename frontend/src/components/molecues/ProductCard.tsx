@@ -71,6 +71,7 @@ const ProductCard = (props: any) => {
       });
   }
 
+  // 이미지 로딩 중 처리
   const [isImageLoading, setIsImageLoading] = useState(true);
   const handleImageLoad = () => {
     setIsImageLoading(false);
@@ -177,11 +178,13 @@ const ProductCard = (props: any) => {
               <BookmarkOutlinedIcon
                 fontSize="small"
                 onClick={removeWishListHandler}
+                className="bookmark_btn"
               />
             ) : (
               <BookmarkBorderOutlinedIcon
                 fontSize="small"
                 onClick={addWishListHandler}
+                className="remove_bookmark_btn"
               />
             )}
           </Tooltip>

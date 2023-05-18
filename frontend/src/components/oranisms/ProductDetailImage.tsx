@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Stack } from "@mui/material";
+import { Box, Skeleton, Stack } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Carousel from "react-material-ui-carousel";
 import Image from "next/image";
@@ -8,7 +8,9 @@ import Chip from "@mui/material/Chip";
 import { BlockText, InlineText } from "../atoms";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { ProductDetail } from "@/src/features/product/productSlice";
+import { useState } from "react";
 import router from "next/router";
+
 type ProductDetailImageProps = {
   product: ProductDetail | null;
 };
@@ -43,6 +45,12 @@ const ProductDetailImage: React.FC<ProductDetailImageProps> = ({ product }) => {
     });
   }
 
+  // 이미지 로딩 중 처리
+  const [isImageLoading, setIsImageLoading] = useState(true);
+  const handleImageLoad = () => {
+    setIsImageLoading(false);
+  };
+
   return (
     <>
       <Stack
@@ -57,11 +65,27 @@ const ProductDetailImage: React.FC<ProductDetailImageProps> = ({ product }) => {
       <Carousel animation="slide" autoPlay={true}>
         {images?.map((url: string, i) => (
           <Imagebox key={i}>
+            {isImageLoading && (
+              <Box
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Skeleton variant="rounded" width={"100%"} height={"100%"} />
+              </Box>
+            )}{" "}
+            {/* 로딩 스피너 */}
             <Image
               src={url}
               alt="제품 이미지"
               fill
               style={{ objectFit: "cover" }}
+              loading="lazy"
+              onLoad={handleImageLoad}
             />
           </Imagebox>
         ))}

@@ -53,7 +53,6 @@ const ProductDetailPage = () => {
   );
   const { enqueueSnackbar } = useSnackbar();
 
-  console.log("product_detail >>>>> ", product);
   useEffect(() => {
     if (product === null) {
       enqueueSnackbar(`상품이 존재하지 않습니다.`, {
@@ -74,8 +73,6 @@ const ProductDetailPage = () => {
   const ageGenderData = statisticData.age_gender_score;
   const mbtiData = statisticData.mbti_score;
   const personalColorData = statisticData.personal_color_score;
-
-  console.log("personalColorData >>> ", personalColorData);
 
   //추천 제품 가져오기
   const { consumer_recommends, mbti_recommends, personal_color_recommends } =

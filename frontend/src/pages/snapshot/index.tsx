@@ -31,7 +31,6 @@ const Snapshot = () => {
   );
   //유저정보 가져오기 => 글쓰기를 할 수 있냐 없냐 판별하기 위해서
   const member = useAppSelector((state: AppState) => state.auth.member);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   //무한스크롤을 위해 게시글을 담아둘 객체
   const [snapshotList, setSnapshotList] = useState<snapshotItemType[]>([]);
@@ -51,9 +50,6 @@ const Snapshot = () => {
   }
 
   useEffect(() => {
-    //로그인 상태 확인
-    if (member) setIsLoggedIn(true);
-
     //data 안에 변하지 않는 변수가 있을거임 그거 찾으셈
     if (data && data.styleshot_list.length > 0) {
       setLastId(data.last_id);
@@ -67,10 +63,6 @@ const Snapshot = () => {
       });
     }
   }, [inView, member]);
-
-  // 잘 넘어오는지 출력해 보기
-
-  console.log("snapshotList   >>>> ", snapshotList);
 
   return (
     <Background>
