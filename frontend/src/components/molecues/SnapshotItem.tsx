@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Stack, Chip, IconButton, Button } from "@mui/material";
+import { Stack, Chip, IconButton, Button, Box, Skeleton } from "@mui/material";
 import Image from "next/image";
 import { BlockText, InlineText } from "../atoms";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -91,6 +91,12 @@ const SnapshotItem: React.FC<{ data: snapshotItemType; refetch: any }> = (
       .catch((err) => console.log(err));
   }
 
+  // 이미지 로딩 중 처리
+  const [isImageLoading, setIsImageLoading] = useState(true);
+  const handleImageLoad = () => {
+    setIsImageLoading(false);
+  };
+
   return (
     <Stack spacing={1}>
       <Stack
@@ -110,11 +116,27 @@ const SnapshotItem: React.FC<{ data: snapshotItemType; refetch: any }> = (
         )}
       </Stack>
       <Imagebox>
+        {isImageLoading && (
+          <Box
+            sx={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Skeleton variant="rounded" width={"100%"} height={"100%"} />
+          </Box>
+        )}{" "}
+        {/* 로딩 스피너 */}
         <Image
           src={item.picture_url}
           alt="제품 이미지"
           fill
           style={{ objectFit: "cover" }}
+          loading="lazy"
+          onLoad={handleImageLoad}
         />
       </Imagebox>
 
