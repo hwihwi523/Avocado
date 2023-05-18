@@ -161,6 +161,44 @@ public class MerchandiseRepository {
     }
 
     /**
+     * 여러 상품들 검색
+     * @param merchandiseIds : 검색할 상품 ID 리스트
+     * @return : 상품 정보 리스트
+     */
+    public List<SimpleMerchandiseDTO> findMerchandises(List<Long> merchandiseIds) {
+        if (merchandiseIds == null || merchandiseIds.isEmpty())
+            return new ArrayList<>();
+
+        // 데이터 조회
+        return queryFactory
+                .select(new QSimpleMerchandiseDTO(
+                        store.name,
+                        merchandise.id,
+                        merchandiseCategory.nameKor,
+                        merchandise.imgurl,
+                        merchandise.name,
+                        merchandiseGroup.price,
+                        merchandiseGroup.discountedPrice,
+                        merchandise.totalScore.divide(merchandise.reviewCount).floatValue(),
+                        tag.mbti.id,
+                        tag.personalColor.id,
+                        tag.ageGroup
+                ))
+                .from(tag)
+                .join(tag.merchandise, merchandise)
+                .join(merchandise.group, merchandiseGroup)
+                .join(merchandiseGroup.provider, store)
+                .join(merchandiseGroup.category, merchandiseCategory)
+                .where(
+                        merchandise.id.in(merchandiseIds)
+                )
+                .orderBy(
+                        merchandise.id.desc()
+                )
+                .fetch();
+    }
+
+    /**
      * 특정 상품의 상세정보를 조회하는 쿼리
      * @param merchandiseId : 조회하려는 상품 ID
      * @return : 해당 상품의 상세정보

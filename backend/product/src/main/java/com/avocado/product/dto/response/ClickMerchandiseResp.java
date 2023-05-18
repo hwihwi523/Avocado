@@ -11,7 +11,7 @@ public class ClickMerchandiseResp extends DefaultMerchandiseResp {
     private String image_url;
     private Float score;
 
-    public void updateClick(ClickMerchandiseDTO clickMerchandiseDTO) {
+    public ClickMerchandiseResp(ClickMerchandiseDTO clickMerchandiseDTO) {
         super.updateDefault(clickMerchandiseDTO);
         this.click_id = clickMerchandiseDTO.getClickId();
         this.image_url = clickMerchandiseDTO.getImageUrl();

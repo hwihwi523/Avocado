@@ -29,6 +29,7 @@ public class DetailMerchandiseController {
 
     @GetMapping("")
     public ResponseEntity<BaseResp> showDetailMerchandise(@PathVariable Long merchandise_id,
+                                                          @RequestParam(defaultValue = "5") Integer related_size,
                                                           HttpServletRequest request) {
         log.info("showDetailMerchandise");
         UUID consumerId;
@@ -38,7 +39,8 @@ public class DetailMerchandiseController {
             consumerId = null;
         }
 
-        DetailMerchandiseResp detailMerchandiseResp = merchandiseService.showDetailMerchandise(consumerId, merchandise_id);
+        DetailMerchandiseResp detailMerchandiseResp = merchandiseService
+                .showDetailMerchandise(consumerId, merchandise_id, related_size);
         if (consumerId != null)
             merchandiseService.addClick(consumerId, merchandise_id);
         return ResponseEntity.ok(BaseResp.of("상품 상세정보 조회 성공", detailMerchandiseResp));

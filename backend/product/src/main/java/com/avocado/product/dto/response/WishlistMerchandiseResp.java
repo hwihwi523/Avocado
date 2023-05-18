@@ -11,7 +11,7 @@ public class WishlistMerchandiseResp extends DefaultMerchandiseResp {
     private String image_url;
     private Float score;
 
-    public void updateWishlist(WishlistMerchandiseDTO wishlistMerchandiseDTO) {
+    public WishlistMerchandiseResp(WishlistMerchandiseDTO wishlistMerchandiseDTO) {
         super.updateDefault(wishlistMerchandiseDTO);
         this.wishlist_id = wishlistMerchandiseDTO.getWishlistId();
         this.image_url = wishlistMerchandiseDTO.getImageUrl();

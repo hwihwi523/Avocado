@@ -4,6 +4,7 @@ import com.avocado.product.dto.query.*;
 import com.avocado.product.entity.QAgeGenderScore;
 import com.avocado.product.entity.QMbtiScore;
 import com.avocado.product.entity.QPersonalColorScore;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -25,7 +26,7 @@ public class ScoreRepository {
      * 행동점수를 갖는 모든 상품들의 대표 퍼스널컬러를 한 번에 조회하는 쿼리
      * @return : 모든 상품들의 대표 퍼스널컬러
      */
-    public List<MaxPersonalColorDTO> findPersonalColors() {
+    public List<MaxPersonalColorDTO> findPersonalColors(List<Long> merchandiseIds) {
         // 최대 행동 점수를 갖는 퍼스널컬러를 찾기 위한 서브 쿼리
         QPersonalColorScore sub_pc_score = new QPersonalColorScore("sub_personal_color_score");
         JPQLQuery<Long> subQuery = JPAExpressions
@@ -41,17 +42,21 @@ public class ScoreRepository {
                 ))
                 .from(personalColorScore)
                 .where(
+                        inPersonalColorMerchandiseId(merchandiseIds),
                         personalColorScore.score.eq(subQuery)  // 최대 행동점수를 갖는 퍼스널컬러 찾기
                 )
                 .orderBy(personalColorScore.merchandise.id.desc())
                 .fetch();
+    }
+    private BooleanExpression inPersonalColorMerchandiseId(List<Long> merchandiseIds) {
+        return merchandiseIds != null ? personalColorScore.merchandise.id.in(merchandiseIds) : null;
     }
 
     /**
      * 행동점수를 갖는 모든 상품의 대표 MBTI를 조회하는 쿼리
      * @return : 모든 상품의 대표 MBTI
      */
-    public List<MaxMbtiDTO> findMbtis() {
+    public List<MaxMbtiDTO> findMbtis(List<Long> merchandiseIds) {
         // 최대 행동 점수를 갖는 MBTI를 찾기 위한 서브 쿼리
         QMbtiScore sub_mbti_score = new QMbtiScore("sub_mbti_score");
         JPQLQuery<Long> subQuery = JPAExpressions
@@ -67,17 +72,21 @@ public class ScoreRepository {
                 ))
                 .from(mbtiScore)
                 .where(
+                        inMbtiMerchandiseId(merchandiseIds),
                         mbtiScore.score.eq(subQuery)  // 최대 행동점수를 갖는 MBTI 찾기
                 )
                 .orderBy(mbtiScore.merchandise.id.desc())
                 .fetch();
+    }
+    private BooleanExpression inMbtiMerchandiseId(List<Long> merchandiseIds) {
+        return merchandiseIds != null ? mbtiScore.merchandise.id.in(merchandiseIds) : null;
     }
 
     /**
      * 행동점수를 갖는 모든 특정 상품의 대표 나이대를 조회하는 쿼리
      * @return : 모든 상품들의 대표 MBTI
      */
-    public List<MaxAgeGroupDTO> findAges() {
+    public List<MaxAgeGroupDTO> findAges(List<Long> merchandiseIds) {
         // 성별을 제외하고 나이대별 행동 점수 합을 구하는 쿼리
         QAgeGenderScore ags_for_total = new QAgeGenderScore("ags_for_total");
         List<TotalScoreDTO> totalData = queryFactory
@@ -88,6 +97,9 @@ public class ScoreRepository {
                         )
                 )
                 .from(ags_for_total)
+                .where(
+                        inAgsMerchandiseId(ags_for_total, merchandiseIds)
+                )
                 .groupBy(
                         ags_for_total.merchandise.id,
                         ags_for_total.age
@@ -119,5 +131,8 @@ public class ScoreRepository {
         }
 
         return result;
+    }
+    private BooleanExpression inAgsMerchandiseId(QAgeGenderScore ags_for_total, List<Long> merchandiseIds) {
+        return merchandiseIds != null ? ags_for_total.merchandise.id.in(merchandiseIds) : null;
     }
 }

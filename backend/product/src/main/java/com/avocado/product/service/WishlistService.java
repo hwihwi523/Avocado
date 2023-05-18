@@ -26,9 +26,6 @@ public class WishlistService {
     private final MerchandiseRepository merchandiseRepository;
     private final ConsumerRepository consumerRepository;
 
-    // 퍼스널컬러, MBTI, 나이대 등 개인화 정보를 조회하기 위한 service
-    private final ScoreService scoreService;
-
     @Transactional
     public void addProductToWishlist(Long merchandiseId, UUID consumerId) {
         // 기존 찜 내역 조회 (구매자 ID, 상품 ID로 조회)
@@ -63,11 +60,11 @@ public class WishlistService {
     public List<WishlistMerchandiseResp> showMyWishlist(UUID consumerId) {
         // 상품 정보 리스트 조회
         List<WishlistMerchandiseDTO> myWishlist = wishlistRepository.findMyWishlist(consumerId);
-        try {
-            return scoreService.insertPersonalInfoIntoList(myWishlist, WishlistMerchandiseResp.class);
-        } catch (Exception e) {
-            throw new RuntimeException();
-        }
+
+        List<WishlistMerchandiseResp> respContent = new ArrayList<>();
+        for (WishlistMerchandiseDTO dto : myWishlist)
+            respContent.add(new WishlistMerchandiseResp(dto));
+        return respContent;
     }
 
     @Transactional

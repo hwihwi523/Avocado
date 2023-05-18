@@ -14,7 +14,7 @@ public class PurchaseHistoryMerchandiseResp extends DefaultMerchandiseResp {
     private Integer quantity;
     private Float score;
 
-    public void updatePurchaseHistory(PurchaseHistoryMerchandiseDTO purchaseHistoryMerchandiseDTO) {
+    public PurchaseHistoryMerchandiseResp(PurchaseHistoryMerchandiseDTO purchaseHistoryMerchandiseDTO) {
         super.updateDefault(purchaseHistoryMerchandiseDTO);
         this.purchase_id = purchaseHistoryMerchandiseDTO.getPurchaseId().toString().replace("-", "");
         this.purchase_date = purchaseHistoryMerchandiseDTO.getPurchaseDate();

@@ -14,7 +14,7 @@ public class CartMerchandiseResp extends DefaultMerchandiseResp {
     private String size;
     private Integer quantity;
 
-    public void updateCart(CartMerchandiseDTO cartMerchandiseDTO) {
+    public CartMerchandiseResp(CartMerchandiseDTO cartMerchandiseDTO) {
         super.updateDefault(cartMerchandiseDTO);
         this.cart_id = cartMerchandiseDTO.getCartId();
         this.image_url = cartMerchandiseDTO.getImageUrl();

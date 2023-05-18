@@ -8,6 +8,7 @@ import com.avocado.product.entity.PersonalColor;
 import com.avocado.product.entity.Purchase;
 import com.avocado.product.exception.DataManipulationException;
 import com.avocado.product.repository.ConsumerRepository;
+import com.avocado.product.service.TagService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -33,6 +34,7 @@ public class KafkaConsumer {
     private final EntityManager em;
     private final UUIDUtil uuidUtil;
     private final ConsumerRepository consumerRepository;
+    private final TagService tagService;
 
     @Transactional
     @KafkaListener(topics = "${spring.kafka.purchase-history-config.topic}", containerFactory = "purchaseHistoryKafkaListenerContainerFactory")
@@ -42,13 +44,10 @@ public class KafkaConsumer {
             @Headers MessageHeaders headers) {
 
         log.info("Received purchase history message: [{}]", purchaseHistory);
-//        headers.keySet().forEach(key -> {
-//            log.info("header | key: [{}] value: [{}]", key, headers.get(key));
-//        });
-
 
         // do some logics
-        bulkInsert(purchaseHistory, purchaseId);
+        bulkInsert(purchaseHistory, purchaseId);  // 구매내역 + 구매상품 등록
+        tagService.updateByPurchaseHistoryEvent(purchaseHistory.getMerchandises());  // 태그 다시 계산
     }
 
     /**

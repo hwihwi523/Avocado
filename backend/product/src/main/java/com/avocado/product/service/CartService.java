@@ -23,9 +23,6 @@ public class CartService {
     private final CartRepository cartRepository;
     private final ConsumerRepository consumerRepository;
     private final MerchandiseRepository merchandiseRepository;
-
-    // 대표 퍼스널컬러, MBTI, 나이대 조회용 service
-    private final ScoreService scoreService;
     // is_wishlist 조회 및 부착용 service
     private final WishlistService wishlistService;
     private final KafkaProducer kafkaProducer;
@@ -73,12 +70,9 @@ public class CartService {
         // 상품 정보 리스트 조회
         List<CartMerchandiseDTO> myCart = cartRepository.findMyCart(consumerId);
 
-        List<CartMerchandiseResp> respContent;
-        try {
-            respContent = scoreService.insertPersonalInfoIntoList(myCart, CartMerchandiseResp.class);
-        } catch (Exception e) {
-            throw new RuntimeException();
-        }
+        List<CartMerchandiseResp> respContent = new ArrayList<>();
+        for (CartMerchandiseDTO dto : myCart)
+            respContent.add(new CartMerchandiseResp(dto));
 
         // 사용자가 존재할 경우 찜꽁 여부 조회 및 부착
         if (consumerId != null)
