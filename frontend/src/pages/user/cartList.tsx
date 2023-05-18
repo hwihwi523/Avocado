@@ -123,7 +123,7 @@ const Background = styled.div`
   padding: 10px;
   box-sizing: border-box;
   background-color: #dddddd;
-  padding-bottom: 100px;
+  padding-bottom: 50px;
   height: 100%;
 `;
 

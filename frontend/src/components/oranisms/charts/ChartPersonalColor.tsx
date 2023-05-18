@@ -91,7 +91,7 @@ const ChartPersonalColor: React.FC<ChartPersonalColorProps> = ({
   function dataFormat() {
     //데이터 모양
     let data = {
-      labels: ["순위"],
+      labels: ["※ 클릭 시 컬러명을 볼 수 있습니다."],
       datasets: [
         {
           label: "",
