@@ -43,7 +43,7 @@ const SnapshotItem: React.FC<{ data: snapshotItemType; refetch: any }> = (
           },
         });
         props.refetch();
-        return;
+        router.reload();
       })
       .catch((err) => {
         console.log(err);

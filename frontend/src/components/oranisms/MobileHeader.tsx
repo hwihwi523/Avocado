@@ -7,7 +7,7 @@ import { AppState, useAppSelector } from "@/src/features/store";
 import { useSnackbar } from "notistack";
 import router from "next/router";
 
-const MobileHeader = (props: any) => {
+const MobileHeader = () => {
   const member = useAppSelector((state: AppState) => state.auth.member);
 
   const { enqueueSnackbar } = useSnackbar();
