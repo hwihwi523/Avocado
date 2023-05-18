@@ -85,4 +85,8 @@ public class ScoreRepository {
         }
         return resList;
     }
+
+    public void deleteAll() {
+//        redisson.
+    }
 }
