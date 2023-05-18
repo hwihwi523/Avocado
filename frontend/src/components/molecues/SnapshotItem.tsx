@@ -181,19 +181,14 @@ const SnapshotItem: React.FC<{ data: snapshotItemType; refetch: any }> = (
                 </InlineText>
               </Stack>
               <div>
-                <IconButton aria-label="delete">
+                <IconButton
+                  aria-label="delete"
+                  onClick={isLike ? removeLikeHandler : addLikeHandler}
+                >
                   {isLike ? (
-                    <FavoriteIcon
-                      color="error"
-                      fontSize="large"
-                      onClick={removeLikeHandler}
-                    />
+                    <FavoriteIcon color="error" fontSize="large" />
                   ) : (
-                    <FavoriteBorderIcon
-                      color="error"
-                      fontSize="large"
-                      onClick={addLikeHandler}
-                    />
+                    <FavoriteBorderIcon color="error" fontSize="large" />
                   )}
                 </IconButton>
               </div>
