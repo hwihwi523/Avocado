@@ -49,37 +49,10 @@ export type RequestType = {
   wears: number[];
 };
 
-//구매내역에서 가져올 값들
-export type ProductItem = {
-  brand_name: string;
-  merchandise_id: number;
-  merchandise_icategory: string;
-  merchandise_name: string;
-  price: number;
-  discounted_price: number;
-  mbti: string | null;
-  personal_color: string | null;
-  age_group: string;
-  purchase_id: string;
-  purchase_data: string;
-  size: string;
-};
-
-//구매내역 조회시 반환될 값
-export type OrderListResponse = {
-  message: string;
-  data: {
-    content: ProductItem[];
-    is_last_page: boolean;
-    last_id: null;
-    last_date: string; //무한 스크롤 사용시 해당정보 넘겨야함
-  };
-};
-
 export const snapshotApi = createApi({
   reducerPath: "snapshotApi",
   baseQuery: customFetchBaseQuery({ baseUrl: API_URL! }),
-  tagTypes: ["snapshot", "merchandise"],
+  tagTypes: ["snapshot"],
   endpoints: (build) => ({
     //내 스넵샷 조회
     getMySnapshotList: build.query<SnapshotList, void>({
@@ -153,28 +126,6 @@ export const snapshotApi = createApi({
       invalidatesTags: [{ type: "snapshot", id: "LIST" }],
     }),
 
-    //구매내역 => 스넵샷에 올릴 상품을 고르기 위해서는 구매내역이 필요하기 때문에 snapshotApi에 잠시 설정해둠
-    getOrderList: build.query<OrderListResponse, void>({
-      query: () => ({
-        url: "/merchandise/merchandises/histories",
-        method: "GET",
-        params: {
-          last_date: "2023-05-23T15:00:00", //전부다 불러올거기 때문에 임의로 설정해둠
-          size: 100,
-        },
-      }),
-      providesTags: (result) =>
-        result
-          ? [
-              ...result.data.content.map(
-                ({ merchandise_id }) =>
-                  ({ type: "merchandise", id: merchandise_id } as const)
-              ),
-              { type: "merchandise", id: "LIST" },
-            ]
-          : [{ type: "merchandise", id: "LIST" }],
-    }),
-
     getSnapshotCntAndLikeCnt: build.query<
       { styleshot_cnt: number; like_cnt: number },
       void
@@ -194,6 +145,5 @@ export const {
   useGetSnapshotListQuery,
   useRemoveSnapshotLikeMutation,
   useRemoveSnapshotMutation,
-  useGetOrderListQuery,
   useGetSnapshotCntAndLikeCntQuery,
 } = snapshotApi;

@@ -4,12 +4,13 @@ import {
   Product,
   ProductDetail,
   ProductForCart,
+  ProductForOrderlist,
   ProductForWishlist,
   ProductReview,
 } from "./productSlice";
 import { customFetchBaseQuery } from "@/src/utils/customFetchBaseQuery";
 import { headers } from "next/dist/client/components/headers";
-import { ProductItem } from "./../statistic/statisticSlice";
+import { RecommendProductItem } from "../statistic/statisticSlice";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -108,7 +109,35 @@ interface GetGuestRecommendResponse extends ProductBaseResponse {
   data: Content;
 }
 type Content = {
-  content: ProductItem[];
+  content: RecommendProductItem[];
+};
+
+// 구매내역에서 가져올 값들
+export type ProductItem = {
+  brand_name: string;
+  merchandise_id: number;
+  merchandise_category: string;
+  merchandise_name: string;
+  price: number;
+  discounted_price: number;
+  is_wishlist: boolean;
+  mbti: string | null;
+  personal_color: string | null;
+  age_group: string;
+  purchase_id: string;
+  purchase_data: string;
+  size: string;
+};
+
+// 구매내역 조회시 반환될 값
+export type OrderListResponse = {
+  message: string;
+  data: {
+    content: ProductForOrderlist[];
+    is_last_page: boolean;
+    last_id: null;
+    last_date: string; //무한 스크롤 사용시 해당정보 넘겨야함
+  };
 };
 
 export const productApi = createApi({
@@ -119,7 +148,7 @@ export const productApi = createApi({
       return action.payload[reducerPath];
     }
   },
-  tagTypes: ["ProductList", "ProductDetail", "ProductReviews"],
+  tagTypes: ["ProductList", "ProductDetail", "ProductReviews", "merchandise"],
   endpoints: (builder) => ({
     getProductList: builder.query<ProductListResponse, ProductListRequest>({
       query: (params) => ({
@@ -129,7 +158,7 @@ export const productApi = createApi({
       }),
       providesTags: ["ProductList"],
     }),
-    getGuestRecommendProductList: builder.query<ProductItem[], void>({
+    getGuestRecommendProductList: builder.query<RecommendProductItem[], void>({
       query: () => ({
         url: "/merchandises/guest",
         params: {
@@ -254,6 +283,50 @@ export const productApi = createApi({
         },
       }),
     }),
+    //구매내역 => 스넵샷에 올릴 상품을 고르기 위해서는 구매내역이 필요하기 때문에 snapshotApi에 잠시 설정해둠
+    getOrderList: builder.query<OrderListResponse, void>({
+      query: () => ({
+        url: "/merchandises/histories",
+        method: "GET",
+        params: {
+          last_date: "2023-05-23T15:00:00", //전부다 불러올거기 때문에 임의로 설정해둠
+          size: 100,
+        },
+      }),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.data.content.map(
+                ({ merchandise_id }) =>
+                  ({ type: "merchandise", id: merchandise_id } as const)
+              ),
+              { type: "merchandise", id: "LIST" },
+            ]
+          : [{ type: "merchandise", id: "LIST" }],
+    }),
+    getOrderListWithServer: builder.query<OrderListResponse, string>({
+      query: (token) => ({
+        url: "/merchandises/histories",
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          last_date: "2023-05-23T15:00:00", //전부다 불러올거기 때문에 임의로 설정해둠
+          size: 100,
+        },
+      }),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.data.content.map(
+                ({ merchandise_id }) =>
+                  ({ type: "merchandise", id: merchandise_id } as const)
+              ),
+              { type: "merchandise", id: "LIST" },
+            ]
+          : [{ type: "merchandise", id: "LIST" }],
+    }),
   }),
 });
 
@@ -273,4 +346,6 @@ export const {
   useAddCartMutation,
   useRemoveCartMutation,
   useGetRecentlyViewProductsListQuery,
+  useGetOrderListQuery,
+  useGetOrderListWithServerQuery,
 } = productApi;

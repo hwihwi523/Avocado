@@ -1,6 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
-import { ProductItem } from "@/src/features/statistic/statisticSlice";
+import { RecommendProductItem } from "../statistic/statisticSlice";
+import { ProductItem } from "./productApi";
 
 export interface Product {
   id: number;
@@ -73,15 +74,23 @@ export interface ProductForCart extends Omit<Product, "id" | "is_wishlist"> {
   quantity: number; // 구매할 수량
 }
 
+export interface ProductForOrderlist extends Omit<Product, "id"> {
+  purchase_id: string;
+  purchase_date: string;
+  size: string;
+  quantity: number;
+}
+
 interface ProductState {
   selectedProductDetail: ProductDetail | null;
-  productListForGuest: ProductItem[];
+  productListForGuest: RecommendProductItem[];
   productListBySearch: Product[];
   productListByMbti: Product[];
   productListByPersonalColor: Product[];
   productReiews: ProductReview[];
   productListForCart: ProductForCart[];
   productListForWishlist: ProductForWishlist[];
+  productListForOrderlist: ProductForOrderlist[];
 }
 
 const initialState: ProductState = {
@@ -93,6 +102,7 @@ const initialState: ProductState = {
   productReiews: [],
   productListForCart: [],
   productListForWishlist: [],
+  productListForOrderlist: [],
 };
 
 export const productSlice = createSlice({
@@ -102,7 +112,10 @@ export const productSlice = createSlice({
     setSelectedProductDetail: (state, action: PayloadAction<ProductDetail>) => {
       state.selectedProductDetail = action.payload;
     },
-    setProductListForGuest: (state, action: PayloadAction<ProductItem[]>) => {
+    setProductListForGuest: (
+      state,
+      action: PayloadAction<RecommendProductItem[]>
+    ) => {
       state.productListForGuest = action.payload;
     },
     setProductListBySearch: (state, action: PayloadAction<Product[]>) => {
@@ -128,6 +141,12 @@ export const productSlice = createSlice({
       action: PayloadAction<ProductForWishlist[]>
     ) => {
       state.productListForWishlist = action.payload;
+    },
+    setProductListForOrderlist: (
+      state,
+      action: PayloadAction<ProductForOrderlist[]>
+    ) => {
+      state.productListForOrderlist = action.payload;
     },
     clearSelectedProductDetail: (state) => {
       state.selectedProductDetail = null;
@@ -161,6 +180,7 @@ export const {
   setProductReviews,
   setProductListForCart,
   setProductListForWishlist,
+  setProductListForOrderlist,
   clearSelectedProductDetail,
   clearProductListAll,
   clearProductReviews,

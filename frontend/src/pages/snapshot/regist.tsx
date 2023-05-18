@@ -13,12 +13,10 @@ import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { AppState, useAppSelector, wrapper } from "../../features/store";
 import { authenticateTokenInPages } from "../../utils/authenticateTokenInPages";
-import {
-  useAddSnapshotMutation,
-  useGetOrderListQuery,
-} from "@/src/features/snapshot/snapshotApi";
+import { useAddSnapshotMutation } from "@/src/features/snapshot/snapshotApi";
 import LinearProgress from "@mui/material/LinearProgress";
 import router from "next/router";
+import { useGetOrderListQuery } from "@/src/features/product/productApi";
 //구매 목록 더미 데이터
 
 type Item = {
@@ -205,7 +203,7 @@ const SnapshotRegist = () => {
             onChange={handleChange}
             value={value}
           >
-            {orderList && orderList.data.content && orderList.data.content ? (
+            {orderList && orderList.data && orderList.data.content ? (
               orderList.data.content.map((item, i) => (
                 <MenuItem value={item.merchandise_name} key={i}>
                   {item.merchandise_name}

@@ -9,13 +9,23 @@ import router from "next/router";
 import { useEffect } from "react";
 import { useGetCartQuery } from "@/src/features/product/productApi";
 import { InlineText } from "../../components/atoms";
+import { useSnackbar } from "notistack";
 const CartList = () => {
-  const member = useAppSelector((state: AppState) => state.auth.member);
   const { data: cartlistData, isLoading, refetch } = useGetCartQuery();
 
   //로그인 정보 없으면 로그인 화면으로 보내기
+  const member = useAppSelector((state: AppState) => state.auth.member);
+  const { enqueueSnackbar } = useSnackbar();
+
   useEffect(() => {
     if (!member) {
+      enqueueSnackbar(`로그인이 필요한 서비스입니다.`, {
+        variant: "error", //info(파란색), error(빨간색), success(초록색), warning(노란색)
+        anchorOrigin: {
+          horizontal: "center", //(left, center, right)
+          vertical: "top", //top, bottom
+        },
+      });
       router.replace("/login");
     }
     refetch();
@@ -74,7 +84,7 @@ const CartList = () => {
           cartlistData.map((item, i) => <CartItem data={item} key={i} />)}
         <Total>
           <BlockText size="1.2rem">총 금액 :</BlockText>
-          <BlockText size="1.8rem" color="red">
+          <BlockText size="1.6rem" color="red">
             {" "}
             {formatCurrency(totalPrice())}
           </BlockText>
