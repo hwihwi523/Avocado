@@ -8,8 +8,6 @@ import com.avocado.product.entity.Consumer;
 import com.avocado.product.entity.Purchase;
 import com.avocado.product.exception.DataManipulationException;
 import com.avocado.product.repository.ConsumerRepository;
-import com.avocado.product.repository.MerchandiseRepository;
-import com.avocado.product.repository.PurchaseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
