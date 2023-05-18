@@ -4,11 +4,14 @@ import com.avocado.ActionType;
 import com.avocado.AdStatus;
 import com.avocado.Status;
 import com.avocado.statistics.common.utils.DateUtil;
+import com.avocado.statistics.db.mysql.repository.mybatis.MerchandiseRepository;
 import com.avocado.statistics.db.redis.repository.AdvertiseCountRepository;
 import com.avocado.statistics.kafka.service.KafkaProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -16,6 +19,7 @@ import java.util.*;
 public class AdvertiseStatisticsService {
 
     private final AdvertiseCountRepository advertiseCountRepository;
+    private final MerchandiseRepository merchandiseRepository;
     private final DateUtil dateUtil;
     private final KafkaProducer kafkaProducer;
 
@@ -37,12 +41,18 @@ public class AdvertiseStatisticsService {
             Integer exposureCnt = viewMap.getOrDefault(merchandiseId, 0);
             Integer clickCnt = clickMap.getOrDefault(merchandiseId, 0);
             Integer quantity = payMap.getOrDefault(merchandiseId, 0);
+            Optional<Integer> discountedPriceO = merchandiseRepository.getDiscountedPrice(merchandiseId);
+
+            if (discountedPriceO.isEmpty()) {
+                continue;
+            }
 
             Status status = Status.newBuilder()
                     .setMerchandiseId(merchandiseId)
                     .setExposureCnt(exposureCnt)
                     .setClickCnt(clickCnt)
                     .setQuantity(quantity)
+                    .setAmount(discountedPriceO.get() * quantity)
                     .build();
             statusList.add(status);
         }
@@ -51,6 +61,7 @@ public class AdvertiseStatisticsService {
         AdStatus adStatus = AdStatus.newBuilder()
                 .setStatusList(statusList)
                 .build();
+        System.out.println(adStatus);
         kafkaProducer.sendAdStatus(adStatus);
     }
 
