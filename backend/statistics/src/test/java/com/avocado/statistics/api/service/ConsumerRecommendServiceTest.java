@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class ConsumerRecommendServiceTest {
 
-    @Autowired private ConsumerRecommendService consumerRecommendService;
+//    @Autowired private ConsumerRecommendService consumerRecommendService;
     @Autowired private ConsumerRepository consumerRepository;
     @Autowired private MerchandiseIdSetRepository merchandiseIdSetRepository;
 
@@ -41,7 +41,7 @@ class ConsumerRecommendServiceTest {
         List<CategoryType> cTypes = new ArrayList<>();
         cTypes.add(CategoryType.PERSONAL_COLOR);
 
-        List<MerchandiseResp> merchandiseList = consumerRecommendService.getMerchandiseList(consumer, cTypes, bitSet);
-        System.out.println(merchandiseList);
+//        List<MerchandiseResp> merchandiseList = consumerRecommendService.getMerchandiseList(consumer, cTypes, bitSet);
+//        System.out.println(merchandiseList);
     }
 }

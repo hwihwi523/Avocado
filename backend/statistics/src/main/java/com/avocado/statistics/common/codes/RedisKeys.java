@@ -13,6 +13,9 @@ public class RedisKeys {
     // Advertise Prefix
     public final String adPrefix = "ad-";
 
+    // Recommend Prefix
+    public final String recPrefix = "rec-";
+
     // Category Type
     public final String ageGenderPrefix = "ag-";
     public final String mbtiPrefix = "mbti-";

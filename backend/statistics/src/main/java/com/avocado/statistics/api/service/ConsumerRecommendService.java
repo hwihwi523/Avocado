@@ -1,11 +1,9 @@
 package com.avocado.statistics.api.service;
 
-import com.avocado.ActionType;
 import com.avocado.statistics.api.dto.ScoreResult;
 import com.avocado.statistics.api.response.ConsumerRecommendResp;
 import com.avocado.statistics.api.response.MerchandiseResp;
 import com.avocado.statistics.common.codes.RecommendFactor;
-import com.avocado.statistics.common.codes.ScoreFactor;
 import com.avocado.statistics.common.error.BaseException;
 import com.avocado.statistics.common.error.ResponseCode;
 import com.avocado.statistics.common.utils.CategoryTypeUtil;
@@ -16,28 +14,29 @@ import com.avocado.statistics.db.mysql.repository.dto.MerchandiseMainDTO;
 import com.avocado.statistics.db.mysql.repository.mybatis.ConsumerRepository;
 import com.avocado.statistics.db.mysql.repository.mybatis.MerchandiseRepository;
 import com.avocado.statistics.db.redis.repository.CategoryType;
-import com.avocado.statistics.db.redis.repository.MerchandiseIdSetRepository;
-import com.avocado.statistics.db.redis.repository.ScoreRepository;
 
+import com.avocado.statistics.db.redis.repository.ScoreConsumerRecommendRepository;
+import com.avocado.statistics.db.redis.repository.ScoreTypeRecommendRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ConsumerRecommendService {
 
-    private final ScoreFactor sc;
     private final JwtUtils jwtUtils;
     private final RecommendFactor rf;
-    private final ScoreRepository scoreRepository;
-    private final CategoryTypeUtil categoryTypeUtil;
     private final ConsumerRepository consumerRepository;
+    private final CategoryTypeUtil categoryTypeUtil;
     private final MerchandiseRepository merchandiseRepository;
-    private final MerchandiseIdSetRepository merchandiseIdSetRepository;
+    private final ScoreConsumerRecommendRepository scoreConsumerRecommendRepository;
+    private final ScoreTypeRecommendRepository scoreTypeRecommendRepository;
 
     public ConsumerRecommendResp getConsumerRecommend(Claims claims) {
         UUID id = jwtUtils.getId(claims);
@@ -46,32 +45,34 @@ public class ConsumerRecommendService {
             throw new BaseException(HttpStatus.BAD_REQUEST, "존재하지 않는 유저입니다.");
         }
         Consumer consumer = consumerO.get();
-        List<CategoryType> consumerTypes = new ArrayList<>();
-        List<CategoryType> mbtiType = new ArrayList<>();
-        List<CategoryType> personalColorType = new ArrayList<>();
 
-        if (consumer.getAge() != null && consumer.getGender() != null) {
-            consumerTypes.add(CategoryType.AGE_GENDER);
+        List<MerchandiseResp> consumerRecommends = new ArrayList<>();
+        List<MerchandiseResp> personalColorRecommends = new ArrayList<>();
+        List<MerchandiseResp> mbtiRecommends = new ArrayList<>();
+
+        Integer personalColorId = consumer.getPersonalColorId();
+        Integer mbtiId = consumer.getMbtiId();
+        Integer age = consumer.getAge();
+        String gender = consumer.getGender();
+
+        if (personalColorId != null) {
+            List<ScoreResult> scoreResults = getCategoryTypeScoreResults(personalColorId, CategoryType.PERSONAL_COLOR);
+            personalColorRecommends.addAll(getMerchandiseList(scoreResults, id));
         }
 
-        if (consumer.getMbtiId() != null) {
-            consumerTypes.add(CategoryType.MBTI);
-            mbtiType.add(CategoryType.MBTI);
+
+        if (mbtiId != null) {
+            List<ScoreResult> scoreResults = getCategoryTypeScoreResults(mbtiId, CategoryType.MBTI);
+            mbtiRecommends.addAll(getMerchandiseList(scoreResults, id));
         }
 
-        if (consumer.getPersonalColorId() != null) {
-            consumerTypes.add(CategoryType.PERSONAL_COLOR);
-            personalColorType.add(CategoryType.PERSONAL_COLOR);
+        if (personalColorId != null && mbtiId != null) {
+            List<ScoreResult> scoreResults = getConsumerScoreResults(consumer);
+            consumerRecommends.addAll(getMerchandiseList(scoreResults, id));
+        } else if (consumer.getAge() != null && consumer.getGender() != null) {
+            List<ScoreResult> scoreResults = getCategoryTypeScoreResults(categoryTypeUtil.getIndexOfGenderAgeGroup(age, gender), CategoryType.AGE_GENDER);
+            consumerRecommends.addAll(getMerchandiseList(scoreResults, id));
         }
-
-        BitSet bitSet = merchandiseIdSetRepository.getBitSet();
-
-        List<MerchandiseResp> consumerRecommends = getMerchandiseList(consumer, consumerTypes, bitSet);
-        System.out.println(consumerRecommends);
-        List<MerchandiseResp> personalColorRecommends = getMerchandiseList(consumer, personalColorType, bitSet);
-        System.out.println(personalColorRecommends);
-        List<MerchandiseResp> mbtiRecommends = getMerchandiseList(consumer, mbtiType, bitSet);
-        System.out.println(mbtiRecommends);
 
         return ConsumerRecommendResp.builder()
                 .consumerRecommends(consumerRecommends)
@@ -79,17 +80,45 @@ public class ConsumerRecommendService {
                 .mbtiRecommends(mbtiRecommends).build();
     }
 
-    public List<MerchandiseResp> getMerchandiseList(Consumer consumer, List<CategoryType> cTypes, BitSet bitset) {
-        List<ScoreResult> scoreResults = calculateRecommend(consumer, cTypes, bitset);
+    public List<ScoreResult> getConsumerScoreResults(Consumer consumer) {
+        List<ScoreResult> scoreResults = new ArrayList<>();
+
+        Integer mbtiId = consumer.getMbtiId();
+        Integer personalColorId = consumer.getPersonalColorId();
+        String gender = consumer.getGender();
+        Integer age = consumer.getAge();
+        int ageGenderIndex = categoryTypeUtil.getIndexOfGenderAgeGroup(age, gender);
+        Map<Long, Long> map = scoreConsumerRecommendRepository.getMap(ageGenderIndex, personalColorId, mbtiId);
+        for (Long merchandiseId: map.keySet()) {
+            Long score = map.get(merchandiseId);
+            scoreResults.add(new ScoreResult(merchandiseId, score));
+        }
+        Collections.sort(scoreResults);
+        return scoreResults;
+    }
+
+    public List<ScoreResult> getCategoryTypeScoreResults(int index, CategoryType cType) {
+        List<ScoreResult> scoreResults = new ArrayList<>();
+        Map<Long, Long> map = scoreTypeRecommendRepository.getMap(cType, index);
+        for (Long merchandiseId: map.keySet()) {
+            Long score = map.get(merchandiseId);
+            scoreResults.add(new ScoreResult(merchandiseId, score));
+        }
+        Collections.sort(scoreResults);
+        return scoreResults;
+    }
+
+    public List<MerchandiseResp> getMerchandiseList(List<ScoreResult> scoreResults, UUID id) {
 
         List<MerchandiseResp> respList = new LinkedList<>();
         Set<Long> idSet = new HashSet<>();
-        
-        // 추천 기준으로 넣은 물품들
+        for (ScoreResult sc:scoreResults) {
+            idSet.add(sc.getMerchandiseId());
+        }
         int i = 0;
         for (ScoreResult sc: scoreResults) {
             long merchandiseId = sc.getMerchandiseId();
-            MerchandiseResp resp = merchandiseRespFrom(merchandiseId, consumer.getId());
+            MerchandiseResp resp = merchandiseRespFrom(merchandiseId, id);
             respList.add(resp);
             idSet.add(merchandiseId);
             i++;
@@ -97,7 +126,6 @@ public class ConsumerRecommendService {
                 break;
             }
         }
-
         // 랜덤으로 넣은 물품들
         int randomLen = rf.TOTAL_SIZE - respList.size();
         i = 0;
@@ -107,7 +135,7 @@ public class ConsumerRecommendService {
                 continue;
             }
             idSet.add(merchandiseId);
-            MerchandiseResp resp = merchandiseRespFrom(merchandiseId, consumer.getId());
+            MerchandiseResp resp = merchandiseRespFrom(merchandiseId, id);
             if (respList.size() == 0) {
                 respList.add(resp);
             } else {
@@ -115,9 +143,9 @@ public class ConsumerRecommendService {
             }
             i++;
         }
-
         return respList;
     }
+
 
     private MerchandiseResp merchandiseRespFrom(long merchandiseId, UUID consumerId) {
         Optional<MerchandiseMainDTO> mainInfoO = merchandiseRepository.getInfoById(merchandiseId);
@@ -147,58 +175,4 @@ public class ConsumerRecommendService {
     }
 
 
-    private List<ScoreResult> calculateRecommend(Consumer consumer, List<CategoryType> cTypes, BitSet bitSet) {
-        int bitSetLen = bitSet.length();
-
-        List<ScoreResult> scoreResults = new ArrayList<>();
-
-        for (long merchandiseId = 0; merchandiseId < bitSetLen; merchandiseId++) {
-            if (!bitSet.get((int) merchandiseId)) {
-                continue;
-            }
-            Long score = 0L;
-            for (CategoryType cType: cTypes) {
-                Map<Integer, Long> viewMap = scoreRepository.getMapByMerchandiseId(cType, ActionType.VIEW, merchandiseId);
-                Map<Integer, Long> clickMap = scoreRepository.getMapByMerchandiseId(cType, ActionType.CLICK, merchandiseId);
-                Map<Integer, Long> likeMap = scoreRepository.getMapByMerchandiseId(cType, ActionType.LIKE, merchandiseId);
-                Map<Integer, Long> cartMap = scoreRepository.getMapByMerchandiseId(cType, ActionType.CART, merchandiseId);
-                Map<Integer, Long> paymentMap = scoreRepository.getMapByMerchandiseId(cType, ActionType.PAYMENT, merchandiseId);
-
-                int index;
-                switch (cType) {
-                    case MBTI:
-                        index = consumer.getMbtiId();
-                        break;
-                    case AGE_GENDER:
-                        index = categoryTypeUtil.getIndexOfGenderAgeGroup(consumer.getAge(), consumer.getGender());
-                        break;
-                    case PERSONAL_COLOR:
-                        index = consumer.getPersonalColorId();
-                        break;
-                    default:
-                        throw new BaseException(ResponseCode.INVALID_VALUE);
-                }
-
-                Long view = viewMap.getOrDefault(index, 0L);
-                Long click = clickMap.getOrDefault(index, 0L);
-                Long like = likeMap.getOrDefault(index, 0L);
-                Long cart = cartMap.getOrDefault(index, 0L);
-                Long payment = paymentMap.getOrDefault(index, 0L);
-
-                score += view * sc.VIEW + click * sc.CLICK + like * sc.LIKE + cart * sc.CART + payment * sc.PAY;
-
-            }
-            if (score.equals(0L)) {
-                continue;
-            }
-
-            ScoreResult scoreResult = ScoreResult.builder()
-                    .score(score).merchandiseId(merchandiseId).build();
-
-            scoreResults.add(scoreResult);
-        }
-        Collections.sort(scoreResults);
-
-        return scoreResults;
-    }
 }
