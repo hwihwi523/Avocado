@@ -6,7 +6,9 @@ import com.avocado.product.entity.QMerchandise;
 import com.avocado.product.entity.QMerchandiseGroup;
 import com.avocado.product.entity.QTag;
 import com.avocado.product.entity.Tag;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.BooleanPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -53,9 +55,11 @@ public class TagRepository {
                 .join(merchandise.group, merchandiseGroup)
                 .where(
                         merchandiseGroup.category.id.eq(keyTag.getMerchandise().getGroup().getCategory().getId()),
-                        eqPersonalColorId(keyTag.getPersonalColor().getId()),
-                        eqMbtiId(keyTag.getMbti().getId()),
-                        eqAgeGroup(keyTag.getAgeGroup())
+                        checkRelated(
+                                keyTag.getMbti().getId(),
+                                keyTag.getPersonalColor().getId(),
+                                keyTag.getAgeGroup()
+                        )
                 )
                 .limit(size)
                 .fetch();
@@ -63,6 +67,18 @@ public class TagRepository {
         return merchandiseRepository.findMerchandises(merchandiseIds);
     }
 
+    private BooleanBuilder checkRelated(Byte mbtiId, Byte personalColorId, Short ageGroup) {
+        BooleanBuilder builder = new BooleanBuilder();
+
+        if (mbtiId != null)
+            builder.or(tag.mbti.id.eq(mbtiId));
+        if (personalColorId != null)
+            builder.or(tag.personalColor.id.eq(personalColorId));
+        if (ageGroup != null)
+            builder.or(tag.ageGroup.eq(ageGroup));
+
+        return builder;
+    }
     private BooleanExpression eqMbtiId(Byte mbtiId) {
         return mbtiId != null ? tag.mbti.id.eq(mbtiId) : null;
     }
