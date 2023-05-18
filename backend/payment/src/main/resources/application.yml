@@ -41,12 +41,11 @@ kakao-pay:
       approve: /v1/payment/approve
     handle:
       host: http://k8s-avocado-c6c0ca3c6e-209771398.ap-northeast-2.elb.amazonaws.com/api/payment
-#      host: http://localhost:8080/api/payment
       approve: /approval/
       cancel: /cancel/
       fail: /fail/
     redirect:
-      host: http://localhost:3000
+      host: http://k8s-avocado-c6c0ca3c6e-209771398.ap-northeast-2.elb.amazonaws.com
 
 jwt:
   issuer: avocado.com
