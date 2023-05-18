@@ -52,6 +52,7 @@ public interface CommercialRepository extends Repository<Commercial,Long> {
 
     Commercial findById(long id);
 
+    List<Commercial> findByMerchandiseId(long merchandiseId);
 
     long deleteByIdAndProviderId(long commercial_id, UUID provider_id);
 }

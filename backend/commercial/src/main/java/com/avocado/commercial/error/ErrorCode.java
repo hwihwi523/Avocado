@@ -30,7 +30,7 @@ public enum ErrorCode {
     COMMERCIAL_NOT_FOUND(NOT_FOUND, "해당 조건에 맞는 광고를 찾을 수 없습니다."),
 
     /* 409 CONFLICT : Resource 의 현재 상태와 충돌. 보통 중복된 데이터 존재 */
-    //DUPLICATE_RESOURCE(CONFLICT, "데이터가 이미 존재합니다")
+    DUPLICATE_COMMERCIAL(CONFLICT, "해당 제품에 광고가 이미 존재합니다")
 
     ;
 
