@@ -17,6 +17,7 @@ import {
   useRemoveWishlistMutation,
 } from "@/src/features/product/productApi";
 import { useSnackbar } from "notistack";
+import { Box, Skeleton } from "@mui/material";
 
 const ProductCard = (props: any) => {
   const router = useRouter();
@@ -70,18 +71,38 @@ const ProductCard = (props: any) => {
       });
   }
 
+  const [isImageLoading, setIsImageLoading] = useState(true);
+  const handleImageLoad = () => {
+    setIsImageLoading(false);
+  };
+
   return (
     <Background>
       {/*북마크를 아래에 위치한 박스*/}
       <Card onClick={pageMove}>
         {/* 이미지 */}
         <Imagebox>
+          {isImageLoading && (
+            <Box
+              sx={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Skeleton variant="rounded" width={"100%"} height={"100%"} />
+            </Box>
+          )}{" "}
+          {/* 로딩 스피너 */}
           <Image
             src={img_url}
             alt="제품 이미지"
             fill
             style={{ objectFit: "cover" }}
             loading="lazy"
+            onLoad={handleImageLoad}
           />
         </Imagebox>
 
