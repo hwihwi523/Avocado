@@ -70,7 +70,7 @@ const Snapshot = () => {
 
   // 잘 넘어오는지 출력해 보기
 
-  console.log("snapshotList   >>>> ", snapshotList);
+  // console.log("snapshotList   >>>> ", snapshotList);
 
   return (
     <Background>
@@ -120,8 +120,11 @@ const Snapshot = () => {
       </Stack>
 
       <RegistButton>
-        <IconButton style={{ color: "white", fontSize: "1rem" }}>
-          글 작성 <AddIcon onClick={redirectToRegistrationPage} />
+        <IconButton
+          style={{ color: "white", fontSize: "1rem" }}
+          onClick={redirectToRegistrationPage}
+        >
+          글 작성 <AddIcon />
         </IconButton>
       </RegistButton>
     </Background>
