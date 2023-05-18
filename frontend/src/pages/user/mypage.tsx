@@ -46,28 +46,55 @@ const Mypage = () => {
   }
 
   //좋아요 갯수, 스넵샷 게시물 개수
-  const { data: userSummary } = useGetSnapshotCntAndLikeCntQuery();
+  const { data: userSummary, refetch: userSummaryRefetch } =
+    useGetSnapshotCntAndLikeCntQuery();
 
   //장바구니 목록
-  const { data: cartList, isLoading: cartList_loading } = useGetCartQuery();
+  const {
+    data: cartList,
+    isLoading: cartList_loading,
+    refetch: cartListRefetch,
+  } = useGetCartQuery();
 
   //구매목록
-  const { data: orderList, isLoading: orderList_loading } =
-    useGetOrderListQuery();
+  const {
+    data: orderList,
+    isLoading: orderList_loading,
+    refetch: orderListRefetch,
+  } = useGetOrderListQuery();
 
   //찜목록
-  const { data: wishList, isLoading: wishList_laoding } = useGetWishlistQuery();
+  const {
+    data: wishList,
+    isLoading: wishList_laoding,
+    refetch: wishListRefetch,
+  } = useGetWishlistQuery();
 
   //최근 본 상품 목록
-  const { data: recentlyView, isLoading: recentlyView_laoding } =
-    useGetRecentlyViewProductsListQuery();
+  const {
+    data: recentlyView,
+    isLoading: recentlyView_laoding,
+    refetch: recentlyViewRefetch,
+  } = useGetRecentlyViewProductsListQuery();
 
   //로그인 안했다면 로그인 페이지로 보내버리기
   useEffect(() => {
     if (!member) {
       router.push("/login");
     }
-  }, []);
+    userSummaryRefetch();
+    cartListRefetch();
+    orderListRefetch();
+    wishListRefetch();
+    recentlyViewRefetch();
+  }, [
+    member,
+    userSummaryRefetch,
+    cartListRefetch,
+    orderListRefetch,
+    wishListRefetch,
+    recentlyViewRefetch,
+  ]);
 
   //로그아웃 핸들러
   const handleLogout = () => {
