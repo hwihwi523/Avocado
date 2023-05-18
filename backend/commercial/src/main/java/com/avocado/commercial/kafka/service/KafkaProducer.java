@@ -32,10 +32,12 @@ public class KafkaProducer {
         if (userId == null) {
              adview = Adview.newBuilder()
                      .setUserId(makeRandomUUID().toString())
+                     .setTimestamp(System.currentTimeMillis())
                      .build();
         } else {
             adview = Adview.newBuilder()
                     .setUserId(userId.toString())
+                    .setTimestamp(System.currentTimeMillis())
                     .build();
         }
 
