@@ -11,6 +11,8 @@ public class PurchaseHistoryMerchandiseResp extends DefaultMerchandiseResp {
     private LocalDateTime purchase_date;
     private String image_url;
     private String size;
+    private Integer quantity;
+    private Float score;
 
     public void updatePurchaseHistory(PurchaseHistoryMerchandiseDTO purchaseHistoryMerchandiseDTO) {
         super.updateDefault(purchaseHistoryMerchandiseDTO);
@@ -18,5 +20,7 @@ public class PurchaseHistoryMerchandiseResp extends DefaultMerchandiseResp {
         this.purchase_date = purchaseHistoryMerchandiseDTO.getPurchaseDate();
         this.image_url = purchaseHistoryMerchandiseDTO.getImageUrl();
         this.size = purchaseHistoryMerchandiseDTO.getSize();
+        this.quantity = purchaseHistoryMerchandiseDTO.getQuantity();
+        this.score = purchaseHistoryMerchandiseDTO.getScore();
     }
 }

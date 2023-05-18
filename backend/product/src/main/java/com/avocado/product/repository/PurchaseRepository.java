@@ -85,7 +85,9 @@ public class PurchaseRepository {
                         merchandiseGroup.price,
                         merchandiseGroup.discountedPrice,
                         purchase.createdAt,
-                        purchasedMerchandise.size
+                        purchasedMerchandise.size,
+                        purchasedMerchandise.quantity,
+                        merchandise.totalScore.divide(merchandise.reviewCount).floatValue()
                 ))
                 .from(purchasedMerchandise)
                 .join(purchasedMerchandise.provider, store)
