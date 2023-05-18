@@ -83,7 +83,7 @@ public class KafkaConsumer {
                 + ", UNHEX(\"" + purchaseId + "\")"
                 + ", UNHEX(\"" + merchandise.getProviderId() + "\")"
                 + ", " + merchandise.getPrice()
-                + ", " + merchandise.getLeftover()
+                + ", " + merchandise.getQuantity()
                 + ", \"" + merchandise.getSize() + "\""
                 +")";
     }
