@@ -38,22 +38,15 @@ public class Consumer {
     private Short age;
 
     @Builder
-    public Consumer(UUID id, PersonalColor personalColor, Mbti mbti, String name, String pictureUrl,
-                    String gender, Short age) {
+    public Consumer(UUID id, String name, String pictureUrl) {
         this.id = id;
-        this.personalColor = personalColor;
-        this.mbti = mbti;
         this.name = name;
         this.pictureUrl = pictureUrl;
-        this.gender = gender;
-        this.age = age;
     }
 
-    public void update(PersonalColor personalColor, Mbti mbti, String name, String pictureUrl, String gender, Short age) {
+    public void update(PersonalColor personalColor, Mbti mbti, String gender, Short age) {
         this.personalColor = personalColor;
         this.mbti = mbti;
-        this.name = name;
-        this.pictureUrl = pictureUrl;
         this.gender = gender;
         this.age = age;
     }
