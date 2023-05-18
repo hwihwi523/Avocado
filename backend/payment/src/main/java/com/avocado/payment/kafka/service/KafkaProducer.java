@@ -41,7 +41,7 @@ public class KafkaProducer {
                     .setQuantity(pm.getQuantity())
                     .setSize(pm.getSize())
                     .setProviderId(pm.getProvider_id())
-                    .setLeftover(inventories.get(pm.getMerchandise_id()))
+                    .setLeftover(inventories.get(pm.getMerchandise_id()) - pm.getQuantity())
                     .build();
             merchandises.add(merchandise);
         }
