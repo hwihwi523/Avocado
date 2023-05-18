@@ -42,7 +42,7 @@ class ConsumerConfig(
     fun purchaseHistoryKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, PurchaseHistory>? {
         val factory: ConcurrentKafkaListenerContainerFactory<String, PurchaseHistory> =
             ConcurrentKafkaListenerContainerFactory<String, PurchaseHistory>()
-        factory.consumerFactory = purchaseHistoryConsumerFactory("product-group")
+        factory.consumerFactory = purchaseHistoryConsumerFactory("member-group")
         factory.setConcurrency(3)
         factory.containerProperties.pollTimeout = 3000
         return factory
