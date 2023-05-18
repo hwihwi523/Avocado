@@ -12,7 +12,8 @@ import { useState, useEffect } from "react";
 const CommercialState: React.FC<{ commercialId: number }> = (props) => {
   const { commercialId } = props;
 
-  const { data: analyses } = useGetCommercialAnalysesQuery(commercialId);
+  const { data: analyses, refetch } =
+    useGetCommercialAnalysesQuery(commercialId);
 
   const [date, setDate] = useState<string[]>([]);
   const [exposureCnt, setExposureCnt] = useState<number[]>([]);
@@ -20,14 +21,15 @@ const CommercialState: React.FC<{ commercialId: number }> = (props) => {
   const [purchaseAmount, setPurchaseAmount] = useState<number[]>([]);
   const [quantity, setQuantity] = useState<number[]>([]);
 
-  console.log("analyses >>>", analyses);
+  // console.log("analyses >>>", analyses);
 
   useEffect(() => {
     if (analyses) {
+      refetch();
       setDate(analyses.map((item) => item.date));
       setExposureCnt(analyses.map((item) => item.exposure_cnt));
       setClickCnt(analyses.map((item) => item.click_cnt));
-      setPurchaseAmount(analyses.map((item) => item.purshase_amount));
+      setPurchaseAmount(analyses.map((item) => item.purchase_amount));
       setQuantity(analyses.map((item) => item.quantity));
     }
   }, [commercialId]);
