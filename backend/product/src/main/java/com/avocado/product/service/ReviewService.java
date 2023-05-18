@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -22,6 +24,8 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
+    @PersistenceContext
+    private final EntityManager em;
     private final MerchandiseRepository merchandiseRepository;
     private final ReviewRepository reviewRepository;
     private final ConsumerRepository consumerRepository;
@@ -49,6 +53,9 @@ public class ReviewService {
         // Kafka Produce 용도로 상품 ID, 별점 총점, 리뷰 개수 조회
         Merchandise updatedMerchandise = merchandiseRepository.findById(merchandiseId);
 
+        // 추가된 리뷰 업데이트
+        updatedMerchandise.updateReview(1, score);
+
         // send to kafka
         kafkaProducer.sendCompactReview(updatedMerchandise, review.getId());
     }
@@ -66,7 +73,7 @@ public class ReviewService {
     @Transactional
     public void removeReview(UUID consumerId, Long reviewId) {
         // 기존 리뷰 찾기
-        Review review = reviewRepository.findById(reviewId);
+        Review review = reviewRepository.findByIdWithMerchandise(reviewId);
 
         // 리뷰 주인 확인
         if (review != null && !review.getConsumer().getId().equals(consumerId))
@@ -77,5 +84,11 @@ public class ReviewService {
 
         // 삭제
         reviewRepository.delete(review);
+
+        // 상품 정보에 반영
+        review.getMerchandise().updateReview(-1, -review.getScore());
+
+        // send to kafka
+        kafkaProducer.sendCompactReview(review.getMerchandise(), review.getId());
     }
 }

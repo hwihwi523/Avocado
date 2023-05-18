@@ -41,9 +41,15 @@ public class ReviewRepository {
         em.remove(review);
     }
 
-    public Review findById(Long reviewId) {
+    /**
+     * 리뷰 + 상품 Fetch Join / 상품 정보 수정하기 위해 한 번에 조회
+     * @param reviewId : 리뷰 ID
+     * @return : 해당 ID를 가진 리뷰
+     */
+    public Review findByIdWithMerchandise(Long reviewId) {
         return queryFactory
                 .selectFrom(review)
+                .join(review.merchandise, merchandise).fetchJoin()
                 .where(
                         eqReviewId(reviewId)
                 )
