@@ -107,6 +107,9 @@ public class CommercialService {
     
 
     public void saveCommercial(CommercialReqDto commercialReqDto, HttpServletRequest request){
+        if(commercialRepository.findByMerchandiseId(commercialReqDto.getMerchandise_id()).size() != 0){
+            throw new CommercialException(ErrorCode.DUPLICATE_COMMERCIAL);
+        }
         checkCommercialRequest(commercialReqDto);
         String imgurl = imageService.createCommercialImages(commercialReqDto.getFile()[0]);
         if(imgurl == null){
@@ -142,17 +145,22 @@ public class CommercialService {
 
         LocalDate epoch = LocalDate.of(1970, 1, 1);
 
-        List<CommercialStatistic> commercialStatisticList = new ArrayList<>();
+        String todayStr = epoch.plusDays(today).toString();
+
+        commercialStatisticRepository.deleteByDate(todayStr);
+
         for (Status status : adStatus.getStatusList()) {
 
             CommercialStatistic commercialStatistic = CommercialStatistic.builder()
                     .clickCnt(status.getClickCnt())
                     .exposureCnt(status.getExposureCnt())
                     .quantity(status.getQuantity())
-                    .date(epoch.plusDays(today).toString())
+                    .date(todayStr)
                     .purchaseAmount(status.getAmount())
                     .build();
+
             commercialStatisticRepository.saveByMerchandiseId(status.getMerchandiseId(), commercialStatistic.getExposureCnt(), commercialStatistic.getClickCnt(), commercialStatistic.getPurchaseAmount(), commercialStatistic.getQuantity(), commercialStatistic.getDate());
+
         }
 
     }

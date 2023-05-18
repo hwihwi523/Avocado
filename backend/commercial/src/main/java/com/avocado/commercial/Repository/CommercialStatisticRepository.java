@@ -21,5 +21,10 @@ public interface CommercialStatisticRepository extends JpaRepository<CommercialS
             "(select id from commercial where merchandise_id = :merchandiseId limit 1),:date)")
     void saveByMerchandiseId(long merchandiseId, long exposure_cnt, long click_cnt, long purchase_amount, long quantity, String date);
 
+
     List<CommercialStatistic> findByCommercialId(long commercialId, Sort sort);
+
+    List<CommercialStatistic> findByCommercialId(long commercialId);
+
+    void deleteByDate(String date);
 }
