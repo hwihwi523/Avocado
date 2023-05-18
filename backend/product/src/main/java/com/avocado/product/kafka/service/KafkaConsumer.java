@@ -110,8 +110,8 @@ public class KafkaConsumer {
         SignupInfo signupInfo = memberEvent.getSignupInfo();
 
         // 회원가입, 정보 수정에서 사용될 프록시 객체 MBTI, Personal Color
-        Mbti proxyMbti = em.getReference(Mbti.class, updateInfo.getMbtiId());
-        PersonalColor proxyPersonalColor = em.getReference(PersonalColor.class, updateInfo.getPersonalColorId());
+        Mbti proxyMbti = em.getReference(Mbti.class, updateInfo.getMbtiId().byteValue());
+        PersonalColor proxyPersonalColor = em.getReference(PersonalColor.class, updateInfo.getPersonalColorId().byteValue());
 
         switch (memberEvent.getEvent()) {
             case SIGN_UP:
