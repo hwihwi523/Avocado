@@ -3,6 +3,12 @@ package com.avocado.product.kafka.service;
 import com.avocado.Merchandise;
 import com.avocado.MemberEvent;
 import com.avocado.PurchaseHistory;
+import com.avocado.product.config.UUIDUtil;
+import com.avocado.product.entity.Consumer;
+import com.avocado.product.entity.Purchase;
+import com.avocado.product.exception.DataManipulationException;
+import com.avocado.product.repository.ConsumerRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -15,30 +21,33 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class KafkaConsumer {
     @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
+    private final UUIDUtil uuidUtil;
+    private final ConsumerRepository consumerRepository;
 
+    @Transactional
     @KafkaListener(topics = "${spring.kafka.purchase-history-config.topic}", containerFactory = "purchaseHistoryKafkaListenerContainerFactory")
     public void purchaseHistoryListener(
             @Payload PurchaseHistory purchaseHistory,
-            @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String purchasedId,
+            @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String purchaseId,
             @Headers MessageHeaders headers) {
 
         log.info("Received purchase history message: [{}]", purchaseHistory);
-        bulkInsert(purchaseHistory, purchasedId);
 //        headers.keySet().forEach(key -> {
 //            log.info("header | key: [{}] value: [{}]", key, headers.get(key));
 //        });
 
 
         // do some logics
-
-
+        bulkInsert(purchaseHistory, purchaseId);
     }
 
     /**
@@ -46,6 +55,19 @@ public class KafkaConsumer {
      */
     @Transactional
     public void bulkInsert(PurchaseHistory purchaseHistory, String purchaseId) {
+        try {
+            // 구매내역 넣기
+            Consumer proxyConsumer = consumerRepository.getOne(uuidUtil.joinByHyphen(purchaseHistory.getUserId()));
+
+            Purchase purchase = Purchase.builder()
+                    .id(uuidUtil.joinByHyphen(purchaseId))
+                    .consumer(proxyConsumer)
+                    .totalPrice(purchaseHistory.getTotalPrice())
+                    .createdAt(LocalDateTime.parse(purchaseHistory.getCreatedAt()))
+                    .build();
+            em.persist(purchase);
+        } catch (DataManipulationException ignored) { return; }  // 이미 존재할 경우 메서드 종료
+
         List<Merchandise> merchandises = purchaseHistory.getMerchandises();
 
         // 상품 ID, 구매대기내역 ID 모두 내부 데이터를 사용하기 때문에 sql injection 문제 없을 듯 (아마)

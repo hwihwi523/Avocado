@@ -57,6 +57,11 @@ public class Merchandise {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    public void updateReview(int reviewCount, int totalScore) {
+        this.reviewCount += reviewCount;
+        this.totalScore += totalScore;
+    }
+
 //    @Builder
 //    public Merchandise(Long id, MerchandiseGroup group, Color baseColor, Color color1, Color color2,
 //                       String name, String imgurl, Integer inventory, LocalDateTime createdAt, LocalDateTime updatedAt) {
