@@ -244,7 +244,7 @@ const TopBox = styled.div`
   color: white;
   width: 100%;
   height: 200px;
-  border-radius: 0px 0px 40px 40px;
+  border-radius: 0px 0px 15px 15px;
   padding-top: 80px;
   margin-bottom: 30%;
 `;

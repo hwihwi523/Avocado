@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Stack, Box, Button } from "@mui/material";
+import { Stack, Box, IconButton } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
 import { SnapshotItem } from "../../components/molecues";
@@ -116,9 +116,9 @@ const Snapshot = () => {
       </Stack>
 
       <RegistButton>
-        <Button style={{ color: "white" }} onClick={redirectToRegistrationPage}>
-          글 작성 <AddIcon />
-        </Button>
+        <IconButton style={{ color: "white", fontSize: "1rem" }}>
+          글 작성 <AddIcon onClick={redirectToRegistrationPage} />
+        </IconButton>
       </RegistButton>
     </Background>
   );
