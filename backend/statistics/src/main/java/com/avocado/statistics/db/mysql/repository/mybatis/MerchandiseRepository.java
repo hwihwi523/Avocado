@@ -22,4 +22,6 @@ public interface MerchandiseRepository {
 
     Optional<Integer> wishlistExists(UUID consumerId, long merchandiseId);
 
+    Optional<Integer> getDiscountedPrice(long merchandiseId);
+
 }

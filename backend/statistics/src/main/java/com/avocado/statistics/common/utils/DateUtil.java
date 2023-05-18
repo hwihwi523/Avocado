@@ -18,9 +18,7 @@ public class DateUtil {
 
     public static int getUnixDate() {
         LocalDate epoch = LocalDate.of(1970, 1, 1);
-        LocalDate today = LocalDate.now();
-
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         return (int) ChronoUnit.DAYS.between(epoch, today);
     }
-
 }

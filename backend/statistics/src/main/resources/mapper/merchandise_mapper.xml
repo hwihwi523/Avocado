@@ -34,4 +34,9 @@
         SELECT id FROM interest WHERE consumer_id = #{consumerId} AND merchandise_id = #{merchandiseId}
     </select>
 
+    <select id="getDiscountedPrice" resultType="Integer">
+        SELECT discounted_price FROM merchandise_group
+        WHERE id = (SELECT group_id FROM merchandise WHERE id = #{merchandiseId});
+    </select>
+
 </mapper>
