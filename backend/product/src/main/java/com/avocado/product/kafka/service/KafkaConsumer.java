@@ -1,10 +1,10 @@
 package com.avocado.product.kafka.service;
 
-import com.avocado.Merchandise;
-import com.avocado.MemberEvent;
-import com.avocado.PurchaseHistory;
+import com.avocado.*;
 import com.avocado.product.config.UUIDUtil;
 import com.avocado.product.entity.Consumer;
+import com.avocado.product.entity.Mbti;
+import com.avocado.product.entity.PersonalColor;
 import com.avocado.product.entity.Purchase;
 import com.avocado.product.exception.DataManipulationException;
 import com.avocado.product.repository.ConsumerRepository;
@@ -23,6 +23,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -88,6 +89,7 @@ public class KafkaConsumer {
                 +")";
     }
 
+    @Transactional
     @KafkaListener(topics = "${spring.kafka.member-event-config.topic}", containerFactory = "memberEventKafkaListenerContainerFactory")
     public void memberEventListener(
             @Payload MemberEvent memberEvent,
@@ -96,14 +98,54 @@ public class KafkaConsumer {
 
         log.info("Received user ID: {}", userId);
         log.info("Received member event message: [{}]", memberEvent);
-//        headers.keySet().forEach(key -> {
-//            log.info("header | key: [{}] value: [{}]", key, headers.get(key));
-//        });
-
 
         // do some logics
-
-
+        updateConsumer(memberEvent, userId);
     }
 
+    @Transactional
+    public void updateConsumer(MemberEvent memberEvent, String userId) {
+        UUID consumerId = uuidUtil.joinByHyphen(userId.replace("-", ""));
+        UpdateInfo updateInfo = memberEvent.getUpdateInfo();
+        SignupInfo signupInfo = memberEvent.getSignupInfo();
+
+        // 회원가입, 정보 수정에서 사용될 프록시 객체 MBTI, Personal Color
+        Mbti proxyMbti = em.getReference(Mbti.class, updateInfo.getMbtiId());
+        PersonalColor proxyPersonalColor = em.getReference(PersonalColor.class, updateInfo.getPersonalColorId());
+
+        switch (memberEvent.getEvent()) {
+            case SIGN_UP:
+                Consumer newConsumer = Consumer.builder()
+                        .id(consumerId)
+                        .age((short)updateInfo.getAgeGroup())
+                        .gender(updateInfo.getGender())
+                        .mbti(proxyMbti)
+                        .personalColor(proxyPersonalColor)
+                        .pictureUrl(signupInfo.getPictureUrl())
+                        .name(signupInfo.getConsumerName())
+                        .build();
+                em.persist(newConsumer);
+                break;
+
+            case SIGN_OUT:
+                Consumer removeConsumer = consumerRepository.findById(consumerId);
+                if (removeConsumer != null)
+                    em.remove(removeConsumer);
+                break;
+
+            case UPDATE:
+                Consumer updateConsumer = consumerRepository.findById(consumerId);
+                if (updateConsumer != null) {
+                    updateConsumer.update(
+                            proxyPersonalColor,
+                            proxyMbti,
+                            signupInfo.getConsumerName(),
+                            signupInfo.getPictureUrl(),
+                            updateConsumer.getGender(),
+                            updateConsumer.getAge()
+                    );
+                }
+                break;
+        }
+    }
 }
