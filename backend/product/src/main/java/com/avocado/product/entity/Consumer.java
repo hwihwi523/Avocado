@@ -48,4 +48,13 @@ public class Consumer {
         this.gender = gender;
         this.age = age;
     }
+
+    public void update(PersonalColor personalColor, Mbti mbti, String name, String pictureUrl, String gender, Short age) {
+        this.personalColor = personalColor;
+        this.mbti = mbti;
+        this.name = name;
+        this.pictureUrl = pictureUrl;
+        this.gender = gender;
+        this.age = age;
+    }
 }
