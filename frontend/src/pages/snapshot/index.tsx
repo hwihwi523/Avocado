@@ -85,6 +85,11 @@ const Snapshot = () => {
         <meta property="og:title" content="snapshot" />
         <meta property="og:description" content="snapshot 페이지" />
       </Head>
+      {isLoading && (
+        <Box sx={{ width: "100%" }}>
+          <LinearProgress sx={{ color: "primary.main" }} />
+        </Box>
+      )}
       <Stack direction={"column"} spacing={10}>
         {/* 초반에는 api로 불러온 초기 데이터 보여줌 */}
         {!lastId &&
