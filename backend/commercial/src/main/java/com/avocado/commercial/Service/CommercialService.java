@@ -1,5 +1,7 @@
 package com.avocado.commercial.Service;
 
+import com.avocado.AdStatus;
+import com.avocado.Status;
 import com.avocado.commercial.Dto.request.CommercialCancelReqDto;
 import com.avocado.commercial.Dto.request.CommercialReqDto;
 import com.avocado.commercial.Dto.response.Analysis;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -134,8 +137,22 @@ public class CommercialService {
         }
     }
 
-    public void saveCommercialStatistic(List<CommercialStatistic> commercialStatisticList){
-        commercialStatisticRepository.saveAll(commercialStatisticList);
+    public void saveCommercialStatistic(AdStatus adStatus,int today){
+        LocalDate epoch = LocalDate.of(1970, 1, 1);
+
+        List<CommercialStatistic> commercialStatisticList = new ArrayList<>();
+
+        for(Status status : adStatus.getStatusList()){
+            CommercialStatistic commercialStatistic = CommercialStatistic.builder()
+                    .clickCnt(status.getClickCnt())
+                    .exposureCnt(status.getExposureCnt())
+                    .quantity(status.getQuantity())
+                    .date(epoch.plusDays(today).toString())
+                    .purchaseAmount(status.getAmount())
+                    .build();
+            commercialStatisticRepository.saveByMerchandiseId(status.getMerchandiseId(),commercialStatistic);
+        }
+
     }
 
 

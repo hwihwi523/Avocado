@@ -25,6 +25,15 @@ repositories {
 }
 
 dependencies {
+
+    // kafka
+    implementation 'org.springframework.kafka:spring-kafka' // 버전을 명시하지 않아 Boot가 compatible version을 찾게 하는 것이 좋음
+    testImplementation 'org.springframework.kafka:spring-kafka-test'
+
+    // avro
+    implementation "org.apache.avro:avro:1.11.1"
+    implementation 'io.confluent:kafka-streams-avro-serde:7.3.3'
+
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
@@ -42,14 +51,6 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
-
-    // kafka
-    implementation 'org.springframework.kafka:spring-kafka' // 버전을 명시하지 않아 Boot가 compatible version을 찾게 하는 것이 좋음
-    testImplementation 'org.springframework.kafka:spring-kafka-test'
-
-    // avro
-    implementation "org.apache.avro:avro:1.11.1"
-    implementation 'io.confluent:kafka-streams-avro-serde:7.3.3'
 }
 
 tasks.named('test') {

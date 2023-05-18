@@ -2,7 +2,9 @@ package com.avocado.commercial.kafka.service;
 
 
 import com.avocado.AdStatus;
+import com.avocado.commercial.Service.CommercialService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.MessageHeaders;
@@ -14,6 +16,13 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class KafkaConsumer {
+
+    private CommercialService commercialService;
+
+    @Autowired
+    public KafkaConsumer(CommercialService commercialService){
+        this.commercialService = commercialService;
+    }
 
 
     @KafkaListener(topics = "${spring.kafka.ad-status-config.topic}", containerFactory = "adStatusKafkaListenerContainerFactory")
@@ -29,6 +38,7 @@ public class KafkaConsumer {
 //        });
 
         // do some logics
+        commercialService.saveCommercialStatistic(adStatus, today);
 
     }
 }

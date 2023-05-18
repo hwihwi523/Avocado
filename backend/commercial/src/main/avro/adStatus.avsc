@@ -22,7 +22,8 @@
           {"name": "merchandiseId", "type": "long"},
           {"name": "exposureCnt", "type": "int"},
           {"name": "clickCnt", "type": "int"},
-          {"name": "quantity", "type": "int"}
+          {"name": "quantity", "type": "int"},
+          {"name": "amount", "type": "int", "default": 0 }
         ]
       },
       "default": []
