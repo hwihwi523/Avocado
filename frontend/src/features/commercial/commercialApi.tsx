@@ -35,7 +35,7 @@ export type analyseItem = {
   date: string;
   exposure_cnt: number;
   click_cnt: number;
-  purshase_amount: number;
+  purchase_amount: number;
   quantity: number;
 };
 

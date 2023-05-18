@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import AddIcon from "@mui/icons-material/Add";
 import {
   Button,
   Stack,
@@ -25,6 +24,7 @@ import * as React from "react";
 import TotalCommercialGraph from "./TotalCommercialGraph";
 import CloseIcon from "@mui/icons-material/Close";
 import { useEffect } from "react";
+import { InlineText } from "../../atoms";
 
 const MyCommercial = () => {
   //광고 리스트 출력
@@ -149,7 +149,9 @@ const MyCommercial = () => {
               justifyContent={"space-between"}
               alignItems={"center"}
             >
-              {merchandiseName}
+              <InlineText color="white" size="0.9rem">
+                {merchandiseName}
+              </InlineText>
               <IconButton
                 edge="start"
                 color="inherit"
