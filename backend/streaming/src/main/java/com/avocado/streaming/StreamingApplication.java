@@ -9,26 +9,19 @@ import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import com.avocado.Result;
 import com.avocado.ActionType;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-
-import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
-
-import org.apache.avro.Schema;
-import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.kstream.*;
 
-import java.io.File;
 import java.io.IOException;
-import java.sql.Time;
-import java.time.Duration;
 import java.util.*;
 
+@Slf4j
 @SpringBootApplication
 public class StreamingApplication {
 	private static String applicationId = "streaming-v2";
@@ -39,8 +32,6 @@ public class StreamingApplication {
 	public static void main(String[] args) throws IOException {
 		System.setProperty("spring.devtools.restart.enabled", "false"); // restart / launcher 클래스 로더 이슈 없애줌
 		SpringApplication.run(StreamingApplication.class, args);
-
-
 
 		final Serde<String> stringSerde = Serdes.String();
 		final Serde<Long> longSerde = Serdes.Long();
@@ -70,8 +61,7 @@ public class StreamingApplication {
 
 		streamsConfiguration.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://a5ef82e13fcbc44689f93c4924981608-494875664.ap-northeast-2.elb.amazonaws.com:8081");
 		streamsConfiguration.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, longSerde.getClass());
-		streamsConfiguration.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, GenericAvroSerde.class);
-//		streamsConfiguration.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, resultSerde.getClass());
+		streamsConfiguration.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, SpecificAvroSerde.class);
 
 		StreamsBuilder builder = new StreamsBuilder();
 
@@ -91,18 +81,13 @@ public class StreamingApplication {
 							result.add(KeyValue.pair(merchandise.getMerchandiseId(), Result.newBuilder()
 									.setUserId(value.getUserId())
 									.setAction(ActionType.PAYMENT)
+									.setTimestamp(System.currentTimeMillis())
 									.build()));
 						}
 					}
 					return result;
 				});
-//				.map((key, value) -> {
-//					Result result = Result.newBuilder()
-//							.setUserId(key)
-//							.setAction(ActionType.PAYMENT)
-//							.build();
-//					return new KeyValue<>(key, result);
-//				});
+
 		paymentStream.foreach((key, value) -> System.out.println("purchase result stream >> key: " + key + ", value: " + value));
 		paymentStream.to("test-result1", Produced.with(longSerde, resultSerde));
 
@@ -133,89 +118,91 @@ public class StreamingApplication {
 		cartResult.foreach((key, value) -> System.out.println("Cart Stream >> key: " + key + ", value: " + value));
 		cartResult.to("test-result1", Produced.with(longSerde, resultSerde));
 
-//		KGroupedStream<Long, GenericRecord> clickGroup = clickStream.groupByKey(Grouped.with(longSerde, genericAvroSerde));
-
-//		KTable<Windowed<Long>, Long> clickTable = clickGroup
-//				//				.windowedBy(TimeWindows.ofSizeAndGrace())
-//				.windowedBy(TimeWindows.ofSizeWithNoGrace(Duration.ofMillis(5000)))
-//				.count();
-//		clickTable.toStream().foreach((key, value) -> System.out.println("Click Table - Key: " + key + ", Value: " + value));
-
-
 		// adview counter
 		KStream<Long, GenericRecord> adviewStream = builder.stream("test-ad-view1", Consumed.with(longSerde, genericAvroSerde));
 		adviewStream.foreach((key, value) -> System.out.println("Adview Stream - Key: " + key + ", Value: " + value));
 
 
-//		KGroupedStream<Long, GenericRecord> adviewGroup = adviewStream.groupByKey(Grouped.with(longSerde, genericAvroSerde));
-////		clickGroup.foreach((key, value) -> System.out.println("Grouped Stream - Key: " + key + ", Value: " + value));
-//
-//		KTable<Windowed<Long>, Long> adviewTable = adviewGroup
-////								.windowedBy(TimeWindows.ofSizeAndGrace(Duration.ofMillis(5000)))
-//				.windowedBy(TimeWindows.ofSizeWithNoGrace(Duration.ofMillis(5000)))
-//				.count();
-//		adviewTable.toStream().foreach((key, value) -> System.out.println("Adview Table - Key: " + key + ", Value: " + value));
-
-		///////////// inner join click & adview
 		// define join windows
-		JoinWindows adClickJoinWindows = JoinWindows
-				.ofTimeDifferenceWithNoGrace(Duration.ofSeconds(30))  // 30 seconds tolerance
-				.after(Duration.ofSeconds(30)) // click event must happen within 15 seconds after adview event
-				.before(Duration.ZERO);  // click event must happen after adview event
-//
-//		KStream<Long, String> joined = adviewStream
-//				.join(
-//						clickStream,
-//						(adviewValue, clickValue) -> {
-////							// cast to GenericRecord and read the userId field
-////							GenericRecord adviewRecord = (GenericRecord) adviewValue;
-////							GenericRecord clickRecord = (GenericRecord) clickValue;
-//							String adviewUserId = adviewValue.get("userId").toString();
-//							String clickUserId = clickValue.get("userId").toString();
-//							return adviewUserId + "/" + clickUserId;
-//						},
-//						adClickJoinWindows
-//				)
-//				.filter(
-//						(key, value) -> {
-//							String[] parts = value.split("/");
-////							System.out.println("  join with key: " + key + ", left val: " + parts[0] + ", right val: " + parts[1]);
-//							return parts[0].equals(parts[1]);  // only keep events where user id is the same
-//						}
-//				);
-//
-//		KStream<Long, Result> ad_click_stream = joined.map(((key, value) -> KeyValue.pair(key, Result.newBuilder()
-//				.setUserId(value.split("/")[0])
-//				.setAction(ActionType.AD_CLICK)
-//				.build())));
-//		ad_click_stream.foreach((k, v) -> System.out.println("ad click >> key: " + k + ", value: " + v));
-//		ad_click_stream.to("test-result1", Produced.with(Serdes.Long(), resultSerde));
+//		JoinWindows adClickJoinWindows = JoinWindows
+//				.ofTimeDifferenceWithNoGrace(Duration.ofSeconds(30))  // 30 seconds tolerance
+//				.after(Duration.ofSeconds(30)) // click event must happen within 15 seconds after adview event
+//				.before(Duration.ZERO);  // click event must happen after adview event
+
+		// Ad view table
+		KTable<Long, GenericRecord> adviewTable = adviewStream.toTable();
+
+		KStream<Long, String> joined = clickStream
+				.join(
+						adviewTable,
+						(clickValue, adviewValue) -> {
+							String clickUserId = clickValue.get("userId").toString();
+							String adviewUserId = adviewValue.get("userId").toString();
+							long adviewTimestamp = (Long) adviewValue.get("timestamp");
+							long clickTimestamp = System.currentTimeMillis();
+
+							// Return null if the click event is not within 30 seconds of the ad view event
+							if (clickTimestamp - adviewTimestamp > 30 * 1000 || clickTimestamp < adviewTimestamp) {
+								return null;
+							}
+
+							return adviewUserId + "/" + clickUserId;
+						}
+				)
+				.filter(
+						(key, value) -> {
+							if (value == null) {
+								return false;
+							}
+
+							String[] parts = value.split("/");
+							return parts[0].equals(parts[1]);  // only keep events where user id is the same
+						}
+				);
+
+		KStream<Long, Result> ad_click_stream = joined.map(((key, value) -> KeyValue.pair(key, Result.newBuilder()
+				.setUserId(value.split("/")[0])
+				.setAction(ActionType.AD_CLICK)
+				.setTimestamp(System.currentTimeMillis())
+				.build())));
+		ad_click_stream.foreach((k, v) -> System.out.println("ad click >> key: " + k + ", value: " + v));
+		ad_click_stream.to("test-result1", Produced.with(longSerde, resultSerde));
 
 
-		//////////// ad click + payment join
-		// define join windows
-		JoinWindows adPaymentJoinWindows = JoinWindows
-				.ofTimeDifferenceWithNoGrace(Duration.ofSeconds(3*60))  // 30 seconds tolerance
-				.after(Duration.ofSeconds(3*60)) // click event must happen within 15 seconds after adview event
-				.before(Duration.ZERO);  // click event must happen after adview event
+		// ad click + payment
+		KStream<Long, String> ad_payment_joined = paymentStream
+				.join(
+						ad_click_stream.toTable(),
+						(paymentResult, adclickResult) -> {
 
-//		KStream<Long, String> ad_payment_joined = ad_click_stream
-//				.join(
-//						paymentStream,
-//						(adclickResult, paymentResult) -> adclickResult.getUserId() + "/" + paymentResult.getUserId(),
-//						adPaymentJoinWindows
-//				)
-//				.filter(
-//						(key, value) -> {
-//							String[] parts = value.split("/");
-//							return parts[0].equals(parts[1]);  // only keep events where user id is the same
-//						}
-//				);
-//		KStream<Long, Result> ad_payment_stream = ad_payment_joined.map((key, value) -> KeyValue.pair(key, Result.newBuilder()
-//						.setUserId(value.split("/")[0])
-//						.setAction(ActionType.AD_PAYMENT)
-//						.build()));
-//		ad_payment_stream.foreach((k, v) -> System.out.println("ad payment >> key: " + k + ", value: " + v));
+							long paymentTimestamp = paymentResult.getTimestamp();
+							long adclickTimestamp = adclickResult.getTimestamp();
+
+							// Return null if the click event is not within 180 seconds of the ad view event
+							if (paymentTimestamp - adclickTimestamp > 180 * 1000 || paymentTimestamp < adclickTimestamp) {
+								return null;
+							}
+							return paymentResult.getUserId().replace("-", "") + "/" + adclickResult.getUserId().replace("-", "");
+						},
+						Joined.with(longSerde, resultSerde, resultSerde)
+				)
+				.filter(
+						(key, value) -> {
+							if (value == null) return false;
+
+							String[] parts = value.split("/");
+							return parts[0].equals(parts[1]);  // only keep events where user id is the same
+						}
+				);
+
+		KStream<Long, Result> ad_payment_stream = ad_payment_joined.map((key, value) -> KeyValue.pair(key, Result.newBuilder()
+						.setUserId(value.split("/")[0])
+						.setAction(ActionType.AD_PAYMENT)
+						.setTimestamp(System.currentTimeMillis())
+						.build()));
+		ad_payment_stream.foreach((k, v) -> System.out.println("ad payment >> key: " + k + ", value: " + v));
+		ad_payment_stream.to("test-result1", Produced.with(longSerde, resultSerde));
+
 
 		Topology topology = builder.build();
 		KafkaStreams streams = new KafkaStreams(topology, streamsConfiguration);

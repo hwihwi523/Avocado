@@ -3,6 +3,7 @@
   "namespace": "com.avocado",
   "type": "record",
   "fields": [
-    {"name": "userId", "type": "string"}
+    {"name": "userId", "type": "string"},
+    {"name": "timestamp", "type": "long", "logicalType": "timestamp-millis"}
   ]
 }
