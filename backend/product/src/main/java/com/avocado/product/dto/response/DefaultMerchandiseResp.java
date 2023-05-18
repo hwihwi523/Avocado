@@ -1,5 +1,7 @@
 package com.avocado.product.dto.response;
 
+import com.avocado.product.config.enums.MBTI;
+import com.avocado.product.config.enums.PersonalColor;
 import com.avocado.product.dto.query.DefaultMerchandiseDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,17 +30,11 @@ public class DefaultMerchandiseResp {
         this.price = defaultMerchandiseDTO.getPrice();
         this.discounted_price = defaultMerchandiseDTO.getDiscountedPrice();
         this.is_wishlist = false;
+        this.mbti = MBTI.getMBTI(defaultMerchandiseDTO.getMbtiId());
+        this.personal_color = PersonalColor.getPersonalColor(defaultMerchandiseDTO.getPersonalColorId());
+        this.age_group = defaultMerchandiseDTO.getAgeGroup().toString() + "대";
     }
-
-    public void updateMBTI(String mbti) {
-        this.mbti = mbti;
-    }
-    public void updatePersonalColor(String personal_color) {
-        this.personal_color = personal_color;
-    }
-    public void updateAgeGroup(String ageGroup) {
-        this.age_group = ageGroup + "대";
-    }
+    
     public void updateIsWishlist(Boolean is_wishlist) {
         this.is_wishlist = is_wishlist;
     }

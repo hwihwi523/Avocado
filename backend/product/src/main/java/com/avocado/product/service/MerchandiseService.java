@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -202,13 +203,9 @@ public class MerchandiseService {
                 .findPopularMerchandises(PageRequest.of(page, size));
 
         // DTO -> Response 변환
-        List<SimpleMerchandiseResp> respContent;
-
-        try {
-            respContent = scoreService.insertPersonalInfoIntoList(result.getContent(), SimpleMerchandiseResp.class);
-        } catch (Exception e) {
-            throw new RuntimeException();
-        }
+        List<SimpleMerchandiseResp> respContent = new ArrayList<>();
+        for (SimpleMerchandiseDTO dto : result)
+            respContent.add(new SimpleMerchandiseResp(dto));
 
         // 마지막으로 조회한 ID
         Long newLastMerchandiseId = respContent.isEmpty()

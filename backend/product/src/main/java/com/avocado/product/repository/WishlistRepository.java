@@ -2,6 +2,7 @@ package com.avocado.product.repository;
 
 import com.avocado.product.dto.query.QWishlistMerchandiseDTO;
 import com.avocado.product.dto.query.WishlistMerchandiseDTO;
+import com.avocado.product.entity.QTag;
 import com.avocado.product.entity.Wishlist;
 import com.avocado.product.exception.DataManipulationException;
 import com.avocado.product.exception.ErrorCode;
@@ -21,6 +22,7 @@ import static com.avocado.product.entity.QMerchandise.merchandise;
 import static com.avocado.product.entity.QMerchandiseCategory.merchandiseCategory;
 import static com.avocado.product.entity.QMerchandiseGroup.merchandiseGroup;
 import static com.avocado.product.entity.QStore.store;
+import static com.avocado.product.entity.QTag.tag;
 import static com.avocado.product.entity.QWishlist.wishlist;
 
 @Repository
@@ -76,7 +78,10 @@ public class WishlistRepository {
                         merchandise.name,
                         merchandiseGroup.price,
                         merchandiseGroup.discountedPrice,
-                        merchandise.totalScore.divide(merchandise.reviewCount).floatValue().as("score")
+                        merchandise.totalScore.divide(merchandise.reviewCount).floatValue().as("score"),
+                        tag.mbti.id,
+                        tag.personalColor.id,
+                        tag.ageGroup
                 ))
                 .from(wishlist)
                 .join(wishlist.consumer, consumer)
@@ -84,6 +89,7 @@ public class WishlistRepository {
                 .join(merchandise.group, merchandiseGroup)
                 .join(merchandiseGroup.provider, store)
                 .join(merchandiseGroup.category, merchandiseCategory)
+                .join(tag).on(merchandise.eq(tag.merchandise))
                 .where(
                         eqConsumerId(consumerId)
                 )

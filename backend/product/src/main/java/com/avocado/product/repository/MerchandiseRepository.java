@@ -22,6 +22,7 @@ import static com.avocado.product.entity.QMerchandiseCategory.merchandiseCategor
 import static com.avocado.product.entity.QMerchandiseGroup.merchandiseGroup;
 import static com.avocado.product.entity.QPurchasedMerchandise.purchasedMerchandise;
 import static com.avocado.product.entity.QStore.store;
+import static com.avocado.product.entity.QTag.tag;
 
 @Repository
 @RequiredArgsConstructor
@@ -80,10 +81,14 @@ public class MerchandiseRepository {
                         merchandise.name,
                         merchandiseGroup.price,
                         merchandiseGroup.discountedPrice,
-                        merchandise.totalScore.divide(merchandise.reviewCount).floatValue()
+                        merchandise.totalScore.divide(merchandise.reviewCount).floatValue(),
+                        tag.mbti.id,
+                        tag.personalColor.id,
+                        tag.ageGroup
                 ))
                 .from(click)
                 .join(click.merchandise, merchandise)
+                .join(tag).on(merchandise.eq(tag.merchandise))
                 .join(merchandise.group, merchandiseGroup)
                 .join(merchandiseGroup.provider, store)
                 .join(merchandiseGroup.category, merchandiseCategory)
@@ -120,9 +125,13 @@ public class MerchandiseRepository {
                         merchandise.name,
                         merchandiseGroup.price,
                         merchandiseGroup.discountedPrice,
-                        merchandise.totalScore.divide(merchandise.reviewCount).floatValue()
+                        merchandise.totalScore.divide(merchandise.reviewCount).floatValue(),
+                        tag.mbti.id,
+                        tag.personalColor.id,
+                        tag.ageGroup
                 ))
-                .from(merchandise)
+                .from(tag)
+                .join(tag.merchandise, merchandise)
                 .join(merchandise.group, merchandiseGroup)
                 .join(merchandiseGroup.provider, store)
                 .join(merchandiseGroup.category, merchandiseCategory)
@@ -169,9 +178,13 @@ public class MerchandiseRepository {
                         store.providerId,
                         merchandise.inventory,
                         merchandise.totalScore.divide(merchandise.reviewCount).floatValue(),
-                        merchandiseGroup.description
+                        merchandiseGroup.description,
+                        tag.mbti.id,
+                        tag.personalColor.id,
+                        tag.ageGroup
                 ))
-                .from(merchandise)
+                .from(tag)
+                .join(tag.merchandise, merchandise)
                 .join(merchandise.group, merchandiseGroup)
                 .join(merchandiseGroup.provider, store)
                 .join(merchandiseGroup.category, merchandiseCategory)
@@ -225,9 +238,13 @@ public class MerchandiseRepository {
                         merchandise.name,
                         merchandiseGroup.price,
                         merchandiseGroup.discountedPrice,
-                        merchandise.totalScore.divide(merchandise.reviewCount).floatValue()
+                        merchandise.totalScore.divide(merchandise.reviewCount).floatValue(),
+                        tag.mbti.id,
+                        tag.personalColor.id,
+                        tag.ageGroup
                 ))
-                .from(merchandise)
+                .from(tag)
+                .join(tag.merchandise, merchandise)
                 .join(merchandise.group, merchandiseGroup)
                 .join(merchandiseGroup.provider, store)
                 .join(merchandiseGroup.category, merchandiseCategory)

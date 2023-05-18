@@ -13,8 +13,9 @@ public class CartMerchandiseDTO extends DefaultMerchandiseDTO {
     @QueryProjection
     public CartMerchandiseDTO(Long cartId, String brandName, Long merchandiseId, String merchandiseCategory, String imageUrl,
                               String merchandiseName, Integer price, Integer discountedPrice, Float score, String size,
-                              Integer quantity) {
-        super(brandName, merchandiseId, merchandiseCategory, imageUrl, merchandiseName, price, discountedPrice);
+                              Integer quantity, Byte mbtiId, Byte personalColorId, Short ageGroup) {
+        super(brandName, merchandiseId, merchandiseCategory, imageUrl, merchandiseName, price, discountedPrice,
+                mbtiId, personalColorId, ageGroup);
         this.cartId = cartId;
         this.score = score != null ? score : 0;
         this.size = size;

@@ -15,8 +15,10 @@ public class DetailMerchandiseDTO extends DefaultMerchandiseDTO {
     @QueryProjection
     public DetailMerchandiseDTO(String brandName, Long merchandiseId, String merchandiseCategory, String imageUrl,
                                 String merchandiseName, Integer price, Integer discountedPrice, UUID providerId,
-                                Integer inventory, Float score, String description) {
-        super(brandName, merchandiseId, merchandiseCategory, imageUrl, merchandiseName, price, discountedPrice);
+                                Integer inventory, Float score, String description, Byte mbtiId, Byte personalColorId,
+                                Short ageGroup) {
+        super(brandName, merchandiseId, merchandiseCategory, imageUrl, merchandiseName, price, discountedPrice,
+                mbtiId, personalColorId, ageGroup);
         this.providerId = providerId;
         this.inventory = inventory;
         this.score = score;

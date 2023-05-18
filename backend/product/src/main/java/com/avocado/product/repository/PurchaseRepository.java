@@ -2,6 +2,7 @@ package com.avocado.product.repository;
 
 import com.avocado.product.dto.query.PurchaseHistoryMerchandiseDTO;
 import com.avocado.product.dto.query.QPurchaseHistoryMerchandiseDTO;
+import com.avocado.product.entity.QTag;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -22,6 +23,7 @@ import static com.avocado.product.entity.QMerchandiseGroup.merchandiseGroup;
 import static com.avocado.product.entity.QPurchase.purchase;
 import static com.avocado.product.entity.QPurchasedMerchandise.purchasedMerchandise;
 import static com.avocado.product.entity.QStore.store;
+import static com.avocado.product.entity.QTag.tag;
 
 @Repository
 @RequiredArgsConstructor
@@ -87,7 +89,10 @@ public class PurchaseRepository {
                         purchase.createdAt,
                         purchasedMerchandise.size,
                         purchasedMerchandise.quantity,
-                        merchandise.totalScore.divide(merchandise.reviewCount).floatValue()
+                        merchandise.totalScore.divide(merchandise.reviewCount).floatValue(),
+                        tag.mbti.id,
+                        tag.personalColor.id,
+                        tag.ageGroup
                 ))
                 .from(purchasedMerchandise)
                 .join(purchasedMerchandise.provider, store)
@@ -95,6 +100,7 @@ public class PurchaseRepository {
                 .join(purchasedMerchandise.merchandise, merchandise)
                 .join(merchandise.group, merchandiseGroup)
                 .join(merchandiseGroup.category, merchandiseCategory)
+                .join(tag).on(merchandise.eq(tag.merchandise))
                 .where(
                         purchase.consumer.id.eq(consumerId),
                         ltCreatedAt(lastPurchaseDate)
