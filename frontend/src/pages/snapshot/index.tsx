@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Stack, Box } from "@mui/material";
+import { Stack, Box, Button } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
 import { SnapshotItem } from "../../components/molecues";
@@ -31,6 +31,7 @@ const Snapshot = () => {
   );
   //유저정보 가져오기 => 글쓰기를 할 수 있냐 없냐 판별하기 위해서
   const member = useAppSelector((state: AppState) => state.auth.member);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   //무한스크롤을 위해 게시글을 담아둘 객체
   const [snapshotList, setSnapshotList] = useState<snapshotItemType[]>([]);
@@ -50,6 +51,9 @@ const Snapshot = () => {
   }
 
   useEffect(() => {
+    //로그인 상태 확인
+    if (member) setIsLoggedIn(true);
+
     //data 안에 변하지 않는 변수가 있을거임 그거 찾으셈
     if (data && data.styleshot_list.length > 0) {
       setLastId(data.last_id);
@@ -62,7 +66,7 @@ const Snapshot = () => {
         return [...prevValue, ...filteredData];
       });
     }
-  }, [inView]);
+  }, [inView, member]);
 
   // 잘 넘어오는지 출력해 보기
   console.log("data >>>> ", data);
@@ -106,17 +110,15 @@ const Snapshot = () => {
         )}
         {isLastPage ? (
           <BlockText>마지막 페이지 입니다. </BlockText>
-        ) : isLoading ? (
-          <Box sx={{ width: "100%" }}>
-            <LinearProgress />
-          </Box>
         ) : (
           <InfinityScroll ref={ref} />
         )}
       </Stack>
 
-      <RegistButton onClick={redirectToRegistrationPage}>
-        글 쓰기 <AddIcon />
+      <RegistButton>
+        <Button style={{ color: "white" }} onClick={redirectToRegistrationPage}>
+          글 작성 <AddIcon />
+        </Button>
       </RegistButton>
     </Background>
   );
@@ -133,8 +135,13 @@ const Background = styled.div`
   box-sizing: border-box;
 `;
 
-const RegistButton = styled.button`
+const RegistButton = styled.div`
   position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: cneter;
+  padding-left: 4px;
   border-radius: 50px;
   width: 110px;
   height: 50px;

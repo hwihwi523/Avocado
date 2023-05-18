@@ -7,15 +7,17 @@ import Carousel from "react-material-ui-carousel";
 import { ProductCard } from "../molecues";
 import Button from "@mui/material/Button";
 import router from "next/router";
-import { ProductItem } from "@/src/features/statistic/statisticSlice"; //이 형태로 넣는게 제일 안전함
+import { Product } from "@/src/features/product/productSlice";
+import { ProductItem } from "@/src/features/product/productApi";
+import { RecommendProductItem } from "@/src/features/statistic/statisticSlice";
 
-const ProductCardsRow: React.FC<{ data: ProductItem[] }> = (props) => {
+const ProductCardsRow: React.FC<{ data: RecommendProductItem[] }> = (props) => {
   const products_list = props.data;
 
   return (
     <RowScrollable>
       {products_list &&
-        products_list.map((item: ProductItem, i) => (
+        products_list.map((item: RecommendProductItem, i) => (
           <ProductCard
             data={{
               id: item.merchandise_id,

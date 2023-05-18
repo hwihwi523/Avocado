@@ -19,12 +19,10 @@ import { authenticateTokenInPages } from "../../utils/authenticateTokenInPages";
 import { removeTokenAll } from "@/src/utils/tokenManager";
 import { useDispatch } from "react-redux";
 import { clearAuth } from "@/src/features/auth/authSlice";
-import {
-  useGetOrderListQuery,
-  useGetSnapshotCntAndLikeCntQuery,
-} from "@/src/features/snapshot/snapshotApi";
+import { useGetSnapshotCntAndLikeCntQuery } from "@/src/features/snapshot/snapshotApi";
 import {
   useGetCartQuery,
+  useGetOrderListQuery,
   useGetRecentlyViewProductsListQuery,
   useGetWishlistQuery,
 } from "@/src/features/product/productApi";
@@ -152,7 +150,7 @@ const Mypage = () => {
               {cartList_loading ? (
                 <CircularProgress />
               ) : (
-                "장바구니에 감긴 제품이 없습니다."
+                "장바구니에 담긴 제품이 없습니다."
               )}
             </EmptyBox>
           )}
@@ -189,7 +187,7 @@ const Background = styled.div`
 `;
 
 const Box = styled.div`
-  padding-top: 100px;
+  padding-top: 20px;
 `;
 
 const EmptyBox = styled.div`

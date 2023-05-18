@@ -8,14 +8,24 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { AppState, useAppSelector, wrapper } from "@/src/features/store";
 import { authenticateTokenInPages } from "@/src/utils/authenticateTokenInPages";
+import { useSnackbar } from "notistack";
 
 const WishList = () => {
   const router = useRouter();
-  const member = useAppSelector((state: AppState) => state.auth.member);
 
   //로그인 정보 없으면 로그인 화면으로 보내기
+  const member = useAppSelector((state: AppState) => state.auth.member);
+  const { enqueueSnackbar } = useSnackbar();
+
   useEffect(() => {
     if (!member) {
+      enqueueSnackbar(`로그인이 필요한 서비스입니다.`, {
+        variant: "error", //info(파란색), error(빨간색), success(초록색), warning(노란색)
+        anchorOrigin: {
+          horizontal: "center", //(left, center, right)
+          vertical: "top", //top, bottom
+        },
+      });
       router.replace("/login");
     }
   }, []);

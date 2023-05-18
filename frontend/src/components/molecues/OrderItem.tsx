@@ -6,6 +6,7 @@ import Grid from "@mui/material/Grid";
 import router from "next/router";
 import ClearIcon from "@mui/icons-material/Clear";
 import StarIcon from "@mui/icons-material/Star";
+import { ProductForOrderlist } from "@/src/features/product/productSlice";
 
 type Item = {
   img_url: string;
@@ -17,21 +18,27 @@ type Item = {
   count: number;
   price: number;
   discount: number;
-  order_date:string;
+  order_date: string;
 };
 
-const OrderItem: React.FC<{ data: Item }> = (props) => {
+const OrderItem: React.FC<{ data: ProductForOrderlist }> = (props) => {
   const {
-    img_url,
     brand_name,
-    product_name,
-    product_id,
-    rating,
-    size,
-    count,
+    discounted_price,
+    image_url,
+    is_wishlist,
+    merchandise_category,
+    merchandise_id,
+    merchandise_name,
     price,
-    discount,
-    order_date,
+    purchase_date,
+    purchase_id,
+    score,
+    size,
+    quantity,
+    age_group,
+    mbti,
+    personal_color,
   } = props.data;
 
   //숫자 변환 함수 3000  => 3,000원
@@ -40,7 +47,7 @@ const OrderItem: React.FC<{ data: Item }> = (props) => {
   }
 
   function pageMove() {
-    router.push("product/" + product_id);
+    router.push("product/" + merchandise_id);
   }
 
   return (
@@ -50,7 +57,7 @@ const OrderItem: React.FC<{ data: Item }> = (props) => {
           <ImageBox>
             <Image
               onClick={pageMove}
-              src={img_url}
+              src={image_url}
               alt="제품 이미지"
               fill
               style={{ objectFit: "cover" }}
@@ -70,16 +77,28 @@ const OrderItem: React.FC<{ data: Item }> = (props) => {
                 </BlockText>
 
                 <BlockText size="0.8rem" type="L">
-                    {order_date}
+                  {purchase_date}
                 </BlockText>
               </Stack>
-              <BlockText>{product_name}</BlockText>
-              <BlockText>
-                <StarIcon /> {rating}
+              <BlockText style={{ fontSize: "0.9rem", marginTop: "0.3rem" }}>
+                {merchandise_name}
+              </BlockText>
+              <BlockText
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: "0.9rem",
+                }}
+              >
+                <StarIcon style={{ fontSize: "1.1rem" }} /> {score}
               </BlockText>
               <BlockText
                 color="grey"
-                style={{ textAlign: "right", textDecoration: "line-through" }}
+                style={{
+                  textAlign: "right",
+                  textDecoration: "line-through",
+                  fontSize: "0.9rem",
+                }}
               >
                 {formatCurrency(price)}
               </BlockText>
@@ -90,10 +109,10 @@ const OrderItem: React.FC<{ data: Item }> = (props) => {
                 justifyContent={"space-between"}
               >
                 <BlockText type="L" color="grey">
-                  {size} {count}개
+                  {size} {quantity}개
                 </BlockText>
-                <BlockText color="red" size="1.5rem" type="L">
-                  {formatCurrency(price - discount)}
+                <BlockText color="red" size="1.1rem" type="L">
+                  {formatCurrency(discounted_price)}
                 </BlockText>
               </Stack>
             </Stack>
