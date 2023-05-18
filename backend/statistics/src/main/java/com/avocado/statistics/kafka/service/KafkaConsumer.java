@@ -25,8 +25,7 @@ public class KafkaConsumer {
             @Headers MessageHeaders headers,
             @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) Long merchandiseId) {
 
-        log.info("Received result message: [{}]", result);
-        log.info("Received merchandiseId: [{}]", merchandiseId);
+        log.info("Received result message: [{}], merchandiseId: [{}]", result, merchandiseId);
 //        headers.keySet().forEach(key -> {
 //            log.info("header | key: [{}] value: [{}]", key, headers.get(key));
 //        });
