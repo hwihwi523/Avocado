@@ -17,8 +17,9 @@ public class PurchaseHistoryMerchandiseDTO extends DefaultMerchandiseDTO {
     @QueryProjection
     public PurchaseHistoryMerchandiseDTO(UUID purchaseId, String brandName, Long merchandiseId, String merchandiseCategory, String imageUrl,
                                          String merchandiseName, Integer price, Integer discountedPrice, LocalDateTime purchaseDate, String size,
-                                         Integer quantity, Float score) {
-        super(brandName, merchandiseId, merchandiseCategory, imageUrl, merchandiseName, price, discountedPrice);
+                                         Integer quantity, Float score, Byte mbtiId, Byte personalColorId, Short ageGroup) {
+        super(brandName, merchandiseId, merchandiseCategory, imageUrl, merchandiseName, price, discountedPrice,
+                mbtiId, personalColorId, ageGroup);
         this.purchaseId = purchaseId;
         this.purchaseDate = purchaseDate;
         this.size = size;

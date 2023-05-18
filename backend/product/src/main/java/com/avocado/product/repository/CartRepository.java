@@ -21,6 +21,7 @@ import static com.avocado.product.entity.QMerchandise.merchandise;
 import static com.avocado.product.entity.QMerchandiseCategory.merchandiseCategory;
 import static com.avocado.product.entity.QMerchandiseGroup.merchandiseGroup;
 import static com.avocado.product.entity.QStore.store;
+import static com.avocado.product.entity.QTag.tag;
 
 @Repository
 @RequiredArgsConstructor
@@ -87,10 +88,14 @@ public class CartRepository {
                         merchandiseGroup.discountedPrice,
                         merchandise.totalScore.divide(merchandise.reviewCount).floatValue(),
                         cart.size,
-                        cart.quantity
+                        cart.quantity,
+                        tag.mbti.id,
+                        tag.personalColor.id,
+                        tag.ageGroup
                 ))
                 .from(cart)
                 .join(cart.merchandise, merchandise)
+                .join(tag).on(merchandise.eq(tag.merchandise))
                 .join(merchandise.group, merchandiseGroup)
                 .join(merchandiseGroup.provider, store)
                 .join(merchandiseGroup.category, merchandiseCategory)

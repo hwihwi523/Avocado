@@ -4,13 +4,13 @@ import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 
 @Getter
-public class MaxTypeDTO {
+public class MaxPersonalColorDTO {
     private final Long merchandiseId;
-    private final String type;
+    private final Byte personalColorId;
 
     @QueryProjection
-    public MaxTypeDTO(Long merchandiseId, String type) {
+    public MaxPersonalColorDTO(Long merchandiseId, Byte personalColorId) {
         this.merchandiseId = merchandiseId;
-        this.type = type;
+        this.personalColorId = personalColorId;
     }
 }

@@ -10,7 +10,7 @@ public class SimpleMerchandiseResp extends DefaultMerchandiseResp {
     private String image_url;
     private Float score;
 
-    public void updateSimple(SimpleMerchandiseDTO simpleMerchandiseDTO) {
+    public SimpleMerchandiseResp(SimpleMerchandiseDTO simpleMerchandiseDTO) {
         super.updateDefault(simpleMerchandiseDTO);
         this.image_url = simpleMerchandiseDTO.getImageUrl();
         this.score = simpleMerchandiseDTO.getScore() != null ? simpleMerchandiseDTO.getScore() : 0;

@@ -15,11 +15,15 @@ public class DefaultMerchandiseDTO {
     private final String merchandiseName;
     private final Integer price;
     private final Integer discountedPrice;
+    private final Byte mbtiId;
+    private final Byte personalColorId;
+    private final Short ageGroup;
 
 
     @QueryProjection
     public DefaultMerchandiseDTO(String brandName, Long merchandiseId, String merchandiseCategory, String imageUrl,
-                                 String merchandiseName, Integer price, Integer discountedPrice) {
+                                 String merchandiseName, Integer price, Integer discountedPrice, Byte mbtiId, Byte personalColorId,
+                                 Short ageGroup) {
         this.brandName = brandName;
         this.merchandiseId = merchandiseId;
         this.merchandiseCategory = merchandiseCategory;
@@ -27,5 +31,8 @@ public class DefaultMerchandiseDTO {
         this.merchandiseName = merchandiseName;
         this.price = price;
         this.discountedPrice = discountedPrice;
+        this.mbtiId = mbtiId;
+        this.personalColorId = personalColorId;
+        this.ageGroup = ageGroup;
     }
 }

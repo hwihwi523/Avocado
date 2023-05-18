@@ -4,15 +4,13 @@ import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 
 @Getter
-public class TotalScoreDTO {
+public class MaxAgeGroupDTO {
     private final Long merchandiseId;
     private final Short ageGroup;
-    private final Long score;
 
     @QueryProjection
-    public TotalScoreDTO(Long merchandiseId, Short ageGroup, Long score) {
+    public MaxAgeGroupDTO(Long merchandiseId, Short ageGroup) {
         this.merchandiseId = merchandiseId;
         this.ageGroup = ageGroup;
-        this.score = score;
     }
 }

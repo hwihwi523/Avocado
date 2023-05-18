@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,9 +33,8 @@ public class MerchandiseService {
     private final PurchaseRepository purchaseRepository;  // 구매 여부 조회하기 위한 repo
     private final ReviewRepository reviewRepository;  // 리뷰 여부 조회하기 위한 repo
     private final WishlistRepository wishlistRepository;  // 찜꽁 여부를 조회하기 위한 repo
+    private final TagRepository tagRepository;
 
-    // 대표 퍼스널컬러, MBTI, 나이대 등 개인화 정보 조회를 위한 service
-    private final ScoreService scoreService;
     // is_wishlist 업데이트를 위한 service
     private final WishlistService wishlistService;
 
@@ -56,13 +56,9 @@ public class MerchandiseService {
                 .findByCategoryAndBrand_NoOffset(categoryId, providerId, lastMerchandiseId, PageRequest.ofSize(size));
 
         // DTO -> Response 변환
-        List<SimpleMerchandiseResp> respContent;
-
-        try {
-            respContent = scoreService.insertPersonalInfoIntoList(result.getContent(), SimpleMerchandiseResp.class);
-        } catch (Exception e) {
-            throw new RuntimeException();
-        }
+        List<SimpleMerchandiseResp> respContent = new ArrayList<>();
+        for (SimpleMerchandiseDTO dto : result)
+            respContent.add(new SimpleMerchandiseResp(dto));
 
         // 사용자가 존재할 경우 찜꽁 여부 조회 및 부착
         if (consumerId != null)
@@ -86,12 +82,12 @@ public class MerchandiseService {
      * @return : 해당 상품의 상세정보, 요청한 사용자가 해당 상품을 구매했는지, 리뷰를 남겼는지 true / false
      */
     @Transactional(readOnly = true)
-    public DetailMerchandiseResp showDetailMerchandise(UUID consumerId, Long merchandiseId) {
+    public DetailMerchandiseResp showDetailMerchandise(UUID consumerId, Long merchandiseId, Integer size) {
         // DB 조회
         DetailMerchandiseDTO queryContent = merchandiseRepository.findDetailMerchandise(merchandiseId);
 
         // 대표 퍼스널컬러, MBTI, 나이대 정보 부착
-        DetailMerchandiseResp respContent = scoreService.insertPersonalInfo(queryContent);
+        DetailMerchandiseResp respContent = new DetailMerchandiseResp(queryContent);
 
         // 추가 이미지 조회 및 부착
         List<String> additionalImages = merchandiseRepository.findAdditionalImages(merchandiseId);
@@ -113,6 +109,13 @@ public class MerchandiseService {
             Wishlist wishlist = wishlistRepository.searchWishlist(consumerId, merchandiseId);
             respContent.updateIsWishlist(wishlist != null);
         }
+
+        // 연관 상품 조회
+        List<SimpleMerchandiseDTO> relatedResult = tagRepository.getRelatedMerchandises(merchandiseId, size);
+        List<SimpleMerchandiseResp> related = new ArrayList<>();
+        for (SimpleMerchandiseDTO dto : relatedResult)
+            related.add(new SimpleMerchandiseResp(dto));
+        respContent.updateRelated(related);
 
         kafkaProducer.sendClick(merchandiseId, consumerId);
 
@@ -141,12 +144,9 @@ public class MerchandiseService {
         List<ClickMerchandiseDTO> recentMerchandises = merchandiseRepository.findRecentMerchandises(consumerId);
 
         // 대표 퍼스널컬러, MBTI, 나이대 추가 + DTO -> Response 변환
-        List<ClickMerchandiseResp> respContent;
-        try {
-            respContent = scoreService.insertPersonalInfoIntoList(recentMerchandises, ClickMerchandiseResp.class);
-        } catch (Exception e) {
-            throw new RuntimeException();
-        }
+        List<ClickMerchandiseResp> respContent = new ArrayList<>();
+        for (ClickMerchandiseDTO dto : recentMerchandises)
+            respContent.add(new ClickMerchandiseResp(dto));
 
         // 사용자가 존재할 경우 찜꽁 여부 조회 및 부착
         if (consumerId != null)
@@ -169,14 +169,9 @@ public class MerchandiseService {
                 .findPurchaseHistories(consumerId, lastPurchaseDate, size);
 
         // DTO -> Response 변환
-        List<PurchaseHistoryMerchandiseResp> respContent;
-        try {
-            respContent = scoreService.insertPersonalInfoIntoList(
-                    result.getContent(), PurchaseHistoryMerchandiseResp.class
-            );
-        } catch (Exception e) {
-            throw new RuntimeException();
-        }
+        List<PurchaseHistoryMerchandiseResp> respContent = new ArrayList<>();
+        for (PurchaseHistoryMerchandiseDTO dto : result)
+            respContent.add(new PurchaseHistoryMerchandiseResp(dto));
 
         // 사용자가 존재할 경우 찜꽁 여부 조회 및 부착
         if (consumerId != null)
@@ -202,13 +197,9 @@ public class MerchandiseService {
                 .findPopularMerchandises(PageRequest.of(page, size));
 
         // DTO -> Response 변환
-        List<SimpleMerchandiseResp> respContent;
-
-        try {
-            respContent = scoreService.insertPersonalInfoIntoList(result.getContent(), SimpleMerchandiseResp.class);
-        } catch (Exception e) {
-            throw new RuntimeException();
-        }
+        List<SimpleMerchandiseResp> respContent = new ArrayList<>();
+        for (SimpleMerchandiseDTO dto : result)
+            respContent.add(new SimpleMerchandiseResp(dto));
 
         // 마지막으로 조회한 ID
         Long newLastMerchandiseId = respContent.isEmpty()

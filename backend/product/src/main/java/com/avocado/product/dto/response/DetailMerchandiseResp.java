@@ -21,6 +21,8 @@ public class DetailMerchandiseResp extends DefaultMerchandiseResp {
     private Boolean is_reviewed;  // 요청한 사용자가 이 상품에 리뷰를 남겼는지
     private Boolean is_wishlist;  // 요청한 사용자가 이 상품을 찜했는지
 
+    private List<SimpleMerchandiseResp> related;
+
     public DetailMerchandiseResp(DetailMerchandiseDTO detailMerchandiseDTO) {
         super();
         updateDetail(detailMerchandiseDTO);
@@ -50,5 +52,8 @@ public class DetailMerchandiseResp extends DefaultMerchandiseResp {
     }
     public void updateIsWishlist(Boolean is_wishlist) {
         this.is_wishlist = is_wishlist;
+    }
+    public void updateRelated(List<SimpleMerchandiseResp> related) {
+        this.related = related;
     }
 }
