@@ -11,6 +11,7 @@
   "fields": [
     {"name": "userId", "type": "string"},
     {"name": "totalPrice", "type": "long"},
+    {"name": "createdAt", "type": "string", "default": "2000-01-01T00:00:00.000000"},
     {"name": "merchandises", "type": {
       "type": "array",
       "items": {
