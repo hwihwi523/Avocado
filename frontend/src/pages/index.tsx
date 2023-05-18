@@ -198,10 +198,7 @@ export default function Home() {
 
           {!!member &&
             (member.mbti_id === -1 ? (
-              <RequiredBox
-                title={"나의 Personal color 설정하러 가기"}
-                to={"/user/regist"}
-              />
+              <RequiredBox title={"MBTI 설정하러 가기"} to={"/user/regist"} />
             ) : (
               <ProductCardsRow data={mbti_recommends} />
             ))}
@@ -230,7 +227,7 @@ export default function Home() {
           {!!member &&
             (member.personal_color_id === -1 ? (
               <RequiredBox
-                title={"나의 Personal color 설정하러 가기"}
+                title={"Personal color 설정하러 가기"}
                 to={"/user/regist"}
               />
             ) : (
