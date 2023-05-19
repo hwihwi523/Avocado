@@ -22,7 +22,7 @@ import { InlineText, BlockText } from "../../atoms";
 import { AppState, useAppSelector } from "@/src/features/store";
 import { useGetStatisticDataForProviderQuery } from "@/src/features/statistic/statisticApi";
 import CircularProgress from "@mui/material/CircularProgress";
-import { mbti_list, personal_color_list } from "../../atoms/data";
+import { mbti_list, personal_color_list_eng } from "../../atoms/data";
 import { StatisticDataForProvider } from "@/src/features/statistic/statisticSlice";
 
 const StoreState = () => {
@@ -78,11 +78,12 @@ const StoreState = () => {
     provider_statistic: StatisticDataForProvider
   ) {
     const result = [];
-    for (let i = 0; i < personal_color_list.length; i++) {
+    for (let i = 0; i < personal_color_list_eng.length; i++) {
       let skip = false;
       for (let j = 0; j < provider_statistic?.personal_colors.length; j++) {
         if (
-          personal_color_list[i] === provider_statistic.personal_colors[j].kind
+          personal_color_list_eng[i] ===
+          provider_statistic.personal_colors[j].kind
         ) {
           result.push(provider_statistic.personal_colors[j].count);
           skip = true;
