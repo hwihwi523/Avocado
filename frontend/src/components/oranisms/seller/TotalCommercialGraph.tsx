@@ -12,8 +12,11 @@ import { useState, useEffect } from "react";
 const CommercialState: React.FC<{ commercialId: number }> = (props) => {
   const { commercialId } = props;
 
+  console.log("commercialId >>> ", commercialId);
+
   const { data: analyses, refetch } =
     useGetCommercialAnalysesQuery(commercialId);
+  console.log("analyses >>> ", analyses);
 
   const [date, setDate] = useState<string[]>([]);
   const [exposureCnt, setExposureCnt] = useState<number[]>([]);
@@ -32,7 +35,7 @@ const CommercialState: React.FC<{ commercialId: number }> = (props) => {
       setPurchaseAmount(analyses.map((item) => item.purchase_amount));
       setQuantity(analyses.map((item) => item.quantity));
     }
-  }, [commercialId]);
+  }, [commercialId, analyses]);
 
   //숫자 변환 함수 3000 = > 3,000
   function formatCurrency(num: number) {
