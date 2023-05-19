@@ -71,9 +71,11 @@ const MyCommercial = () => {
       });
   }
 
-  useEffect(() => {
-    refetch();
-  }, []);
+  // useEffect(() => {
+  //   if (data) {
+  //     setCommercialId(data[0].id);
+  //   }
+  // }, [data]);
 
   if (isLoading) {
     return (
