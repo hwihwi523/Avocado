@@ -42,7 +42,8 @@ const MobileHeader = () => {
             <Image
               alt="로고 이미지"
               src="/assets/images/logo.png"
-              fill
+              width={150}
+              height={30}
               style={{ objectFit: "cover" }}
             />
           </Link>

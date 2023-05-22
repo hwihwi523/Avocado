@@ -80,7 +80,6 @@ const CommercialItem: React.FC<{
           />
           <Chip label={age + "대"} variant="outlined" />
         </Stack>
-       
       </Stack>
     </Background>
   );
