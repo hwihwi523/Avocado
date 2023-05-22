@@ -1,3 +1,4 @@
+import React from "react";
 import { Inter } from "next/font/google";
 import styled from "@emotion/styled";
 import { Grid, Button, Box } from "@mui/material";
@@ -26,7 +27,10 @@ import {
 } from "../features/commercial/commercialSlice";
 import { statisticApi } from "../features/statistic/statisticApi";
 
-import { setRecommendProductsData } from "../features/statistic/statisticSlice";
+import {
+  RecommendProductItem,
+  setRecommendProductsData,
+} from "../features/statistic/statisticSlice";
 import { RequiredBox } from "../components/molecues";
 import CategoryForMain from "../components/oranisms/CategoryForMain";
 
@@ -51,7 +55,7 @@ export default function Home() {
   );
 
   // 사용자와 게스트의 컴포넌트 공유
-  let general_recommends = [];
+  let general_recommends: RecommendProductItem[] = [];
   if (consumer_recommends.length !== 0)
     general_recommends = consumer_recommends;
   else general_recommends = guest_recommends;

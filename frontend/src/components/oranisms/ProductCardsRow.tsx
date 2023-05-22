@@ -44,6 +44,8 @@ const RowScrollable = styled.div`
   overflow-x: scroll;
   white-space: nowrap;
 
+  overflow-y: hidden;
+
   ::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera*/
   }

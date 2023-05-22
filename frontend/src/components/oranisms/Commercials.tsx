@@ -26,7 +26,8 @@ const Commercials: React.FC<{ data: CommercialItem[] }> = (props) => {
             <Image
               src={item.imgurl}
               alt="광고 이미지"
-              fill
+              width={392}
+              height={275}
               style={{ objectFit: "cover" }}
             />
           </ImageBox>

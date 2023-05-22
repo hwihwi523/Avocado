@@ -86,7 +86,8 @@ const PopupCommercial: React.FC<{
               <Image
                 src={item.imgurl}
                 alt="광고 이미지"
-                fill
+                width={300}
+                height={347.5}
                 style={{ objectFit: "cover" }}
                 loading="lazy"
                 onLoad={handleImageLoad} // 이미지 로드 완료 후 로딩 상태 변경

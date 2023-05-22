@@ -100,8 +100,9 @@ const ProductCard = (props: any) => {
           <Image
             src={img_url}
             alt="제품 이미지"
-            fill
-            style={{ objectFit: "cover" }}
+            width={150}
+            height={200}
+            style={{ objectFit: "cover", maxHeight: 200 }}
             loading="lazy"
             onLoad={handleImageLoad}
           />
