@@ -35,7 +35,8 @@ public class ConsumerStatisticsController {
     }
 
     @GetMapping("/recommend")
-    public ResponseEntity<?> getRecommendation(HttpServletRequest request) {
+    public ResponseEntity<?> getRecommendation(HttpServletRequest request) throws InterruptedException {
+        Thread.sleep(26000L);
         Claims claims = jwtUtils.getClaims(request);
         return ResponseEntity.ok(BaseResp.of("구매자 추천 데이터 조회 성공", consumerRecommendService.getConsumerRecommend(claims)));
     }
