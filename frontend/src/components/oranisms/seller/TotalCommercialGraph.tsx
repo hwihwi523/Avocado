@@ -27,8 +27,8 @@ const CommercialState: React.FC<{ commercialId: number }> = (props) => {
   // console.log("analyses >>>", analyses);
 
   useEffect(() => {
+    refetch();
     if (analyses) {
-      refetch();
       setDate(analyses.map((item) => item.date));
       setExposureCnt(analyses.map((item) => item.exposure_cnt));
       setClickCnt(analyses.map((item) => item.click_cnt));

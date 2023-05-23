@@ -10,6 +10,7 @@ import MouseOutlinedIcon from "@mui/icons-material/MouseOutlined";
 import { Box, Button, Stack } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import router from "next/router";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { BlockText, InlineText } from "../../atoms";
 import { mbti_list, personal_color_list_eng } from "../../atoms/data";
@@ -23,8 +24,16 @@ import {
 const StoreState = () => {
   const dispatch = useDispatch();
 
-  const { data: provider, isLoading } = useGetStatisticDataForProviderQuery();
+  const {
+    data: provider,
+    isLoading,
+    refetch,
+  } = useGetStatisticDataForProviderQuery();
   const provider_statistic = provider?.data;
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   //숫자 변환 함수 3000  => 3,000원
   function formatCurrency(num: number) {
