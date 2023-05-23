@@ -39,7 +39,7 @@ const CartList = () => {
     let result = 0;
     if (cartlistData) {
       for (let i = 0; i < cartlistData.length; i++) {
-        result += cartlistData[i].discounted_price;
+        result += cartlistData[i].discounted_price * cartlistData[i].quantity;
       }
     }
     return result;
