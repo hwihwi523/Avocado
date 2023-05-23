@@ -1,9 +1,9 @@
 import { IncomingMessage, ServerResponse } from "http";
-import { AppStore } from "../features/store";
 import jwt from "jsonwebtoken";
 import { DecodedToken } from "../features/auth/authApi";
-import authenticateMemberInPages from "./authenticateMemberInPages";
 import { clearAuth } from "../features/auth/authSlice";
+import { AppStore } from "../features/store";
+import authenticateMemberInPages from "./authenticateMemberInPages";
 
 // 서버
 export async function authenticateTokenInPages(

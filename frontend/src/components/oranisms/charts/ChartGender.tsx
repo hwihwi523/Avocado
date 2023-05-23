@@ -1,15 +1,15 @@
-import styled from "@emotion/styled";
 import { GendersData } from "@/src/features/statistic/statisticSlice";
-import React from "react";
+import styled from "@emotion/styled";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
   BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
   Title,
   Tooltip,
-  Legend,
 } from "chart.js";
+import React from "react";
 import { Bar } from "react-chartjs-2";
 
 ChartJS.register(

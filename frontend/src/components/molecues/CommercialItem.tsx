@@ -1,11 +1,9 @@
 import styled from "@emotion/styled";
-import { Stack, Chip, Button } from "@mui/material";
+import { Chip, Stack } from "@mui/material";
 import Image from "next/image";
-import { BlockText, InlineText } from "../atoms";
 import Link from "next/link";
-import { useState } from "react";
-import { TotalCommercialGraph } from "../oranisms/seller";
 import * as React from "react";
+import { BlockText, InlineText } from "../atoms";
 
 import { myCommercialItem } from "@/src/features/commercial/commercialApi";
 import { mbti_list, personal_color_list } from "../atoms/data";

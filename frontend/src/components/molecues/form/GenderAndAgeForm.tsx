@@ -1,33 +1,34 @@
 import styled from "@emotion/styled";
 import { Stack } from "@mui/material";
-import { useState } from "react";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { InlineText } from "../../atoms";
 import { useSnackbar } from "notistack";
+import { useState } from "react";
+import { InlineText } from "../../atoms";
 
 //memberInfo의 타입
-type RequestType={
-	gender:String ;
-	age_group:number; // 10, 20, 30, 40, 50, 60, 70. null 불가
-	height:number|null; // 0 이상. null 가능
-	weight:number|null; // 0 이상. null 가능
-	mbti_id:number|null;// 0 이상 15이하
-	personal_color_id:number|null; // 0이상 9이하
-}
+type RequestType = {
+  gender: String;
+  age_group: number; // 10, 20, 30, 40, 50, 60, 70. null 불가
+  height: number | null; // 0 이상. null 가능
+  weight: number | null; // 0 이상. null 가능
+  mbti_id: number | null; // 0 이상 15이하
+  personal_color_id: number | null; // 0이상 9이하
+};
 
-
-const GenderAndAgeForm: React.FC<{ pageHandler: () => void, setMemberInfo:any}> = (props) => {
+const GenderAndAgeForm: React.FC<{
+  pageHandler: () => void;
+  setMemberInfo: any;
+}> = (props) => {
   const { pageHandler, setMemberInfo } = props;
 
   const { enqueueSnackbar } = useSnackbar();
   const [man, setMan] = useState(false);
   const [woman, setWoman] = useState(false);
   const [age, setAge] = useState("");
-
 
   //나이 선택 핸들러
   const handleChange = (event: SelectChangeEvent) => {
@@ -58,16 +59,12 @@ const GenderAndAgeForm: React.FC<{ pageHandler: () => void, setMemberInfo:any}> 
     }
 
     //유저정보 셋팅
-    setMemberInfo((preState:RequestType) =>({
+    setMemberInfo((preState: RequestType) => ({
       ...preState,
-      gender :man? "M": "F",
-      age_group : age,
-    }))
+      gender: man ? "M" : "F",
+      age_group: age,
+    }));
 
-  
-
- 
-    
     pageHandler(); // 다음페이지로 이동하는 함수
   }
 

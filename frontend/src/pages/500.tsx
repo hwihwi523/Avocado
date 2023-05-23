@@ -1,8 +1,7 @@
-import { Box, Button, Typography } from "@mui/material";
-import Link from "next/link";
-import { BlockText } from "../components/atoms";
+import { Box, Button } from "@mui/material";
 import Image from "next/image";
 import router from "next/router";
+import { BlockText } from "../components/atoms";
 
 const Custom500: React.FC = () => {
   return (

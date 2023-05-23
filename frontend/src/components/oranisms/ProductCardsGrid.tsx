@@ -1,7 +1,6 @@
-
 import styled from "@emotion/styled";
 import Grid from "@mui/material/Grid";
-import {ProductCard} from "../molecues";
+import { ProductCard } from "../molecues";
 
 type ProductInfo = {
   id: number;
@@ -13,14 +12,13 @@ type ProductInfo = {
   brand: string;
 };
 
-const ProductCardsGrid:React.FC<{data : ProductInfo[]}> = (props) => {
+const ProductCardsGrid: React.FC<{ data: ProductInfo[] }> = (props) => {
   // 더미 데이터
 
-  
   return (
     <Grid container>
       {props.data &&
-        props.data?.map((item: ProductInfo, i:number) => (
+        props.data?.map((item: ProductInfo, i: number) => (
           <Grid item lg={3} md={3} sm={4} xs={6} key={i}>
             <ProductCard data={item} key={i} />
           </Grid>

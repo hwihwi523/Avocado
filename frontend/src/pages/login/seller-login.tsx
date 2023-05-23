@@ -1,41 +1,32 @@
-import styled from "@emotion/styled";
+import { BlockText } from "@/src/components/atoms";
 import {
   DecodedToken,
-  SellerLoginResponse,
   useSellerLoginMutation,
 } from "@/src/features/auth/authApi";
+import { Member, setMember } from "@/src/features/auth/authSlice";
+import { AppState, wrapper } from "@/src/features/store";
+import { authenticateTokenInPages } from "@/src/utils/authenticateTokenInPages";
+import { setToken } from "@/src/utils/tokenManager";
+import styled from "@emotion/styled";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import {
-  Stack,
   Button,
   FormControl,
-  InputLabel,
-  InputAdornment,
-  Input,
-  OutlinedInput,
   IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  Stack,
 } from "@mui/material";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import { AppState, wrapper } from "@/src/features/store";
+import jwt from "jsonwebtoken";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import jwt from "jsonwebtoken";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import {
-  removeToken,
-  removeTokenAll,
-  setToken,
-} from "@/src/utils/tokenManager";
-import { Member, clearAuth, setMember } from "@/src/features/auth/authSlice";
-import { appCookies } from "../_app";
-import authenticateMemberInPages from "@/src/utils/authenticateMemberInPages";
-import { authenticateTokenInPages } from "@/src/utils/authenticateTokenInPages";
-import { BlockText } from "@/src/components/atoms";
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import { useSnackbar } from "notistack";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const SECRET = process.env.NEXT_PUBLIC_JWT_SECRET
   ? process.env.NEXT_PUBLIC_JWT_SECRET

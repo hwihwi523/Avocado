@@ -1,33 +1,15 @@
-import styled from "@emotion/styled";
-import Grid from "@mui/material/Grid";
+import { BlockText } from "@/src/components/atoms";
+import {
+  ProductCardsRow,
+  ProductDescription,
+  ProductDetailImage,
+  ProductReviewOrg,
+} from "@/src/components/oranisms";
+import ProductBottom from "@/src/components/oranisms/ProductBottom";
 import {
   ChartMbti,
   ChartPersonalColor,
 } from "@/src/components/oranisms/charts";
-import {
-  ProductDetailImage,
-  ProductCardsRow,
-  ProductDescription,
-  ProductReviewOrg,
-} from "@/src/components/oranisms";
-import { IconButton, Stack } from "@mui/material";
-import Dialog from "@mui/material/Dialog";
-import * as React from "react";
-import { BlockText } from "@/src/components/atoms";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import Slide from "@mui/material/Slide";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
-import { TransitionProps } from "@mui/material/transitions";
-import { useState, useEffect } from "react";
-import { Button } from "@mui/material";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { AppState, useAppSelector, wrapper } from "@/src/features/store";
-import { authenticateTokenInPages } from "@/src/utils/authenticateTokenInPages";
 import {
   productApi,
   useAddCartMutation,
@@ -39,12 +21,26 @@ import {
   setSelectedProductDetail,
 } from "@/src/features/product/productSlice";
 import { statisticApi } from "@/src/features/statistic/statisticApi";
-import {
-  setRecommendProductsData,
-  setSelectedProductStatisticData,
-} from "@/src/features/statistic/statisticSlice";
-import ProductBottom from "@/src/components/oranisms/ProductBottom";
+import { setSelectedProductStatisticData } from "@/src/features/statistic/statisticSlice";
+import { AppState, useAppSelector, wrapper } from "@/src/features/store";
+import { authenticateTokenInPages } from "@/src/utils/authenticateTokenInPages";
+import styled from "@emotion/styled";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import { Button, IconButton, Stack } from "@mui/material";
+import Dialog from "@mui/material/Dialog";
+import FormControl from "@mui/material/FormControl";
+import Grid from "@mui/material/Grid";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Slide from "@mui/material/Slide";
+import { TransitionProps } from "@mui/material/transitions";
+import Head from "next/head";
+import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
+import * as React from "react";
+import { useEffect, useState } from "react";
 
 const ProductDetailPage = () => {
   const router = useRouter();

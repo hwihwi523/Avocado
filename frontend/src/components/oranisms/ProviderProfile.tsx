@@ -1,10 +1,8 @@
-import styled from "@emotion/styled";
-import { Stack, Button } from "@mui/material";
-import Grid from "@mui/material/Grid";
-import { BlockText, InlineText } from "../atoms";
-import router from "next/router";
 import { Member } from "@/src/features/auth/authSlice";
-import { useEffect } from "react";
+import styled from "@emotion/styled";
+import { Button, Stack } from "@mui/material";
+import router from "next/router";
+import { BlockText, InlineText } from "../atoms";
 
 const ProviderProfile: React.FC<{ member: Member }> = (props) => {
   const { gender, mbti_id, name, personal_color_id, picture_url, grade } =

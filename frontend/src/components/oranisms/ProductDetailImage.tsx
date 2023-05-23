@@ -1,16 +1,15 @@
-import styled from "@emotion/styled";
-import { Box, Skeleton, Stack } from "@mui/material";
-import Grid from "@mui/material/Grid";
-import Carousel from "react-material-ui-carousel";
-import Image from "next/image";
-import Link from "next/link";
-import Chip from "@mui/material/Chip";
-import { BlockText, InlineText } from "../atoms";
-import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { ProductDetail } from "@/src/features/product/productSlice";
-import { useState } from "react";
-import router from "next/router";
+import styled from "@emotion/styled";
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import StarIcon from "@mui/icons-material/Star";
+import { Box, Skeleton, Stack } from "@mui/material";
+import Chip from "@mui/material/Chip";
+import Grid from "@mui/material/Grid";
+import Image from "next/image";
+import router from "next/router";
+import { useState } from "react";
+import Carousel from "react-material-ui-carousel";
+import { BlockText, InlineText } from "../atoms";
 
 type ProductDetailImageProps = {
   product: ProductDetail | null;

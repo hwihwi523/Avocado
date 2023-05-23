@@ -1,26 +1,25 @@
-import { configureStore, ThunkAction } from "@reduxjs/toolkit";
-import { Action } from "redux";
+import { combineReducers, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import { createWrapper } from "next-redux-wrapper";
-import { combineReducers } from "@reduxjs/toolkit";
-import { exampleSlice } from "./example/exampleSlice";
-import { examplePostsApi } from "../queries/examplePostApi";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import { Action } from "redux";
 import thunkMiddleware from "redux-thunk";
-import { testProductListApi } from "../queries/testProductListApi";
-import { authSlice } from "./auth/authSlice";
-import { productSlice } from "./product/productSlice";
-import { authApi } from "./auth/authApi";
-import { productApi } from "./product/productApi";
+import { examplePostsApi } from "../queries/examplePostApi";
 import { searchApi } from "../queries/searchApi";
+import { testProductListApi } from "../queries/testProductListApi";
+import { authApi } from "./auth/authApi";
+import { authSlice } from "./auth/authSlice";
+import { commercialApi } from "./commercial/commercialApi";
+import { commercialSlice } from "./commercial/commercialSlice";
+import { exampleSlice } from "./example/exampleSlice";
 import { memberInfoApi } from "./memberInfo/memberInfoApi";
 import { paymentApi } from "./payment/paymentApi";
 import { paymentSlice } from "./payment/paymentSlice";
-import { snapshotApi } from "./snapshot/snapshotApi";
-import { commercialApi } from "./commercial/commercialApi";
+import { productApi } from "./product/productApi";
+import { productSlice } from "./product/productSlice";
 import { sellerApi } from "./seller/sellerApi";
-import { commercialSlice } from "./commercial/commercialSlice";
-import { statisticSlice } from "./statistic/statisticSlice";
+import { snapshotApi } from "./snapshot/snapshotApi";
 import { statisticApi } from "./statistic/statisticApi";
+import { statisticSlice } from "./statistic/statisticSlice";
 
 // Root reducer 설정
 const rootReducer = combineReducers({

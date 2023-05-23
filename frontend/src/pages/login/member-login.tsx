@@ -1,14 +1,9 @@
 import { useLoginMutation } from "@/src/features/auth/authApi";
 import { AppState, wrapper } from "@/src/features/store";
+import { authenticateTokenInPages } from "@/src/utils/authenticateTokenInPages";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
-import { removeToken, removeTokenAll } from "@/src/utils/tokenManager";
-import { clearAuth } from "@/src/features/auth/authSlice";
-import authenticateMemberInPages from "@/src/utils/authenticateMemberInPages";
-import { useEffect } from "react";
-import { authenticateTokenInPages } from "@/src/utils/authenticateTokenInPages";
-import { appCookies } from "../_app";
 
 const SECRET = process.env.NEXT_PUBLIC_JWT_SECRET
   ? process.env.NEXT_PUBLIC_JWT_SECRET

@@ -1,16 +1,16 @@
-import "public/fonts/style.css";
-import "../styles/globals.css";
-import React, { FC, useEffect, useState } from "react";
-import { Provider } from "react-redux";
-import { AppContext, AppProps } from "next/app";
-import { wrapper } from "../features/store";
-import { MobileBottom, MobileHeader } from "../components/oranisms";
+import { AppProps } from "next/app";
 import { SnackbarProvider } from "notistack";
+import "public/fonts/style.css";
+import { FC, useEffect, useState } from "react";
+import { Provider } from "react-redux";
+import { MobileBottom, MobileHeader } from "../components/oranisms";
+import { wrapper } from "../features/store";
+import "../styles/globals.css";
 // 토큰 관리, 자동 로그인, '오늘 더 이상 이 창을 보지 않음', 장바구니(우리 프로젝트 X) 등을 위해 사용
-import { Cookies, CookiesProvider } from "react-cookie";
-import { createCookiesInstance } from "../utils/createCookiesInstance";
 import { Box, LinearProgress, ThemeProvider, createTheme } from "@mui/material";
 import { Router } from "next/router";
+import { CookiesProvider } from "react-cookie";
+import { createCookiesInstance } from "../utils/createCookiesInstance";
 
 export const appCookies = createCookiesInstance(); // 앱에서 사용할 쿠키 생성
 

@@ -1,17 +1,16 @@
 import styled from "@emotion/styled";
-import { Stack, Button } from "@mui/material";
-import { BlockText, InlineText } from "../components/atoms";
-import { useState } from "react";
-import { InputAdornment, TextField } from "@mui/material";
-import { AddressInput } from "../components/molecues";
 import MapIcon from "@mui/icons-material/Map";
-import { useSnackbar } from "notistack";
+import { Button, InputAdornment, Stack, TextField } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { ProductForBuy } from "../features/product/productSlice";
+import { useSnackbar } from "notistack";
+import { useState } from "react";
+import { BlockText, InlineText } from "../components/atoms";
+import { AddressInput } from "../components/molecues";
 import { Member } from "../features/auth/authSlice";
-import { ProductForPayment } from "../features/payment/paymentSlice";
 import { useStartPaymentMutation } from "../features/payment/paymentApi";
+import { ProductForPayment } from "../features/payment/paymentSlice";
+import { ProductForBuy } from "../features/product/productSlice";
 
 const BillingPage = () => {
   const router = useRouter();
@@ -95,7 +94,7 @@ const BillingPage = () => {
         size: product.size,
       };
       merchandises.push(merchandise);
-      total_price += product.discounted_price;
+      total_price += product.discounted_price * product.quantity;
     });
 
     startPayment({

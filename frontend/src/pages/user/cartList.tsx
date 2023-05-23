@@ -1,15 +1,14 @@
+import { useGetCartQuery } from "@/src/features/product/productApi";
 import styled from "@emotion/styled";
-import { Stack, Button } from "@mui/material";
-import { BlockText } from "../../components/atoms";
-import { CartItem } from "../../components/molecues";
+import { Button, Stack } from "@mui/material";
 import Head from "next/head";
+import router from "next/router";
+import { useSnackbar } from "notistack";
+import { useEffect } from "react";
+import { BlockText, InlineText } from "../../components/atoms";
+import { CartItem } from "../../components/molecues";
 import { AppState, useAppSelector, wrapper } from "../../features/store";
 import { authenticateTokenInPages } from "../../utils/authenticateTokenInPages";
-import router from "next/router";
-import { useEffect } from "react";
-import { useGetCartQuery } from "@/src/features/product/productApi";
-import { InlineText } from "../../components/atoms";
-import { useSnackbar } from "notistack";
 const CartList = () => {
   const { data: cartlistData, isLoading, refetch } = useGetCartQuery();
 

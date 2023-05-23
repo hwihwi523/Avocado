@@ -46,23 +46,20 @@ export const commercialSlice = createSlice({
     },
   },
 
-  extraReducers:{
-    [HYDRATE]:(state,action)=>{
-        return {
-            ...state,
-            ...action.payload.commercial
-        }
-    }
-  }
-
+  extraReducers: {
+    [HYDRATE]: (state, action) => {
+      return {
+        ...state,
+        ...action.payload.commercial,
+      };
+    },
+  },
 });
 
-export const{
-    setCarouselCommercialList,
-    setPopupCommercialList,
-    clearAllCommercialList,
-    clearCarouselCommercialList,
-    clearPopupCommercialList
-} = commercialSlice.actions
-
-
+export const {
+  setCarouselCommercialList,
+  setPopupCommercialList,
+  clearAllCommercialList,
+  clearCarouselCommercialList,
+  clearPopupCommercialList,
+} = commercialSlice.actions;

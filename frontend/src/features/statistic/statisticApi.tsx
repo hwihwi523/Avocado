@@ -2,10 +2,10 @@ import { customFetchBaseQuery } from "@/src/utils/customFetchBaseQuery";
 import { createApi } from "@reduxjs/toolkit/dist/query/react";
 import { HYDRATE } from "next-redux-wrapper";
 import {
+  StatisticDataForContumer,
   StatisticDataForPersonalRecommendation,
   StatisticDataForProductDetail,
   StatisticDataForProvider,
-  StatisticDataForContumer,
 } from "./statisticSlice";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;

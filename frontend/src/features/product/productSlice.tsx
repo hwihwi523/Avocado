@@ -1,7 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
 import { RecommendProductItem } from "../statistic/statisticSlice";
-import { ProductItem } from "./productApi";
 
 export interface Product {
   id: number;

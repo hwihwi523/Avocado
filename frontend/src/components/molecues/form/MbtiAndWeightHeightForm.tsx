@@ -1,19 +1,18 @@
 import styled from "@emotion/styled";
-import * as React from "react";
-import { mbti_list } from "../../atoms/data";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputLabel from "@mui/material/InputLabel";
-import InputAdornment from "@mui/material/InputAdornment";
-import FormControl from "@mui/material/FormControl";
-import { useState, useRef } from "react";
-import MenuItem from "@mui/material/MenuItem";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { Stack } from "@mui/material";
 import Button from "@mui/material/Button";
-import { ChangeEvent } from "react";
-import { BlockText } from "../../atoms";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import FormControl from "@mui/material/FormControl";
+import InputAdornment from "@mui/material/InputAdornment";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { enqueueSnackbar } from "notistack";
+import * as React from "react";
+import { ChangeEvent, useState } from "react";
+import { BlockText } from "../../atoms";
+import { mbti_list } from "../../atoms/data";
 
 //memberInfo의 타입
 type RequestType = {

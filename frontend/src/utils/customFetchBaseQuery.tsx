@@ -1,10 +1,9 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/dist/query";
-import { appCookies } from "../pages/_app";
 import jwt from "jsonwebtoken";
 import { DecodedToken } from "../features/auth/authApi";
-import { removeTokenAll, setToken } from "./tokenManager";
 import { clearAuth } from "../features/auth/authSlice";
-import { useDispatch } from "react-redux";
+import { appCookies } from "../pages/_app";
+import { removeTokenAll, setToken } from "./tokenManager";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
   ? process.env.NEXT_PUBLIC_API_URL

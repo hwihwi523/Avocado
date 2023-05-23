@@ -1,29 +1,24 @@
+import { clearAuth } from "@/src/features/auth/authSlice";
+import { useGetStatisticDataForProviderQuery } from "@/src/features/statistic/statisticApi";
+import { StatisticDataForProvider } from "@/src/features/statistic/statisticSlice";
+import { removeTokenAll } from "@/src/utils/tokenManager";
 import styled from "@emotion/styled";
-import { Stack, Button, Box } from "@mui/material";
+import CheckroomOutlinedIcon from "@mui/icons-material/CheckroomOutlined";
+import LocalAtmOutlinedIcon from "@mui/icons-material/LocalAtmOutlined";
+import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
+import MouseOutlinedIcon from "@mui/icons-material/MouseOutlined";
+import { Box, Button, Stack } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
+import router from "next/router";
+import { useDispatch } from "react-redux";
+import { BlockText, InlineText } from "../../atoms";
+import { mbti_list, personal_color_list_eng } from "../../atoms/data";
 import {
   ChartAgeGroup,
   ChartGender,
   ChartMbti,
   ChartPersonalColor,
 } from "../charts";
-import MouseOutlinedIcon from "@mui/icons-material/MouseOutlined";
-import LocalAtmOutlinedIcon from "@mui/icons-material/LocalAtmOutlined";
-import CheckroomOutlinedIcon from "@mui/icons-material/CheckroomOutlined";
-import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
-import { useDispatch, useSelector } from "react-redux";
-import { Member, clearAuth, setMember } from "@/src/features/auth/authSlice";
-import router from "next/router";
-import {
-  removeToken,
-  removeTokenAll,
-  setToken,
-} from "@/src/utils/tokenManager";
-import { InlineText, BlockText } from "../../atoms";
-import { AppState, useAppSelector } from "@/src/features/store";
-import { useGetStatisticDataForProviderQuery } from "@/src/features/statistic/statisticApi";
-import CircularProgress from "@mui/material/CircularProgress";
-import { mbti_list, personal_color_list_eng } from "../../atoms/data";
-import { StatisticDataForProvider } from "@/src/features/statistic/statisticSlice";
 
 const StoreState = () => {
   const dispatch = useDispatch();

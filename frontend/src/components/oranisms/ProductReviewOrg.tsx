@@ -1,7 +1,7 @@
-import styled from "@emotion/styled";
-import { BlockText, InlineText } from "../atoms";
-import { ReviewInput, Review } from "../molecues";
 import { ProductReview } from "@/src/features/product/productSlice";
+import styled from "@emotion/styled";
+import { BlockText } from "../atoms";
+import { Review, ReviewInput } from "../molecues";
 
 type ProductReviewProps = {
   reviews: ProductReview[];

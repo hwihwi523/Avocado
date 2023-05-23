@@ -1,34 +1,31 @@
-import styled from "@emotion/styled";
-import { Button, Stack } from "@mui/material";
-import { InlineText, BlockText } from "../../components/atoms";
-import { useEffect } from "react";
-import {
-  ProductCardsRow,
-  UserProfile,
-  UserStateSummary,
-} from "../../components/oranisms";
-import { useRouter } from "next/router";
-import {
-  ChartCategoryPurchase,
-  ChartPersonalColor,
-} from "../../components/oranisms/charts";
-import Link from "next/link";
-import Head from "next/head";
-import { AppState, useAppSelector, wrapper } from "../../features/store";
-import { authenticateTokenInPages } from "../../utils/authenticateTokenInPages";
-import { removeTokenAll } from "@/src/utils/tokenManager";
-import { useDispatch } from "react-redux";
 import { clearAuth } from "@/src/features/auth/authSlice";
-import { useGetSnapshotCntAndLikeCntQuery } from "@/src/features/snapshot/snapshotApi";
 import {
   useGetCartQuery,
   useGetOrderListQuery,
   useGetRecentlyViewProductsListQuery,
   useGetWishlistQuery,
 } from "@/src/features/product/productApi";
-import CircularProgress from "@mui/material/CircularProgress";
+import { useGetSnapshotCntAndLikeCntQuery } from "@/src/features/snapshot/snapshotApi";
 import { statisticApi } from "@/src/features/statistic/statisticApi";
 import { setConsumerStatisticData } from "@/src/features/statistic/statisticSlice";
+import { removeTokenAll } from "@/src/utils/tokenManager";
+import styled from "@emotion/styled";
+import { Button, Stack } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
+import Head from "next/head";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { BlockText, InlineText } from "../../components/atoms";
+import {
+  ProductCardsRow,
+  UserProfile,
+  UserStateSummary,
+} from "../../components/oranisms";
+import { ChartCategoryPurchase } from "../../components/oranisms/charts";
+import { AppState, useAppSelector, wrapper } from "../../features/store";
+import { authenticateTokenInPages } from "../../utils/authenticateTokenInPages";
 
 const Mypage = () => {
   const member = useAppSelector((state: AppState) => state.auth.member);

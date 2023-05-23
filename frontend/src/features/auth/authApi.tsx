@@ -1,7 +1,6 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Member } from "./authSlice";
-import { HYDRATE } from "next-redux-wrapper";
 import { customFetchBaseQuery } from "@/src/utils/customFetchBaseQuery";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { HYDRATE } from "next-redux-wrapper";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
   ? process.env.NEXT_PUBLIC_API_URL
