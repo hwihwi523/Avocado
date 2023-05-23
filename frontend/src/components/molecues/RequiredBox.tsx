@@ -1,5 +1,6 @@
 import { BlockText } from "../atoms";
 import { Button } from "@mui/material";
+import Image from "next/image";
 import router from "next/router";
 
 const Required: React.FC<{ title: string; to: string }> = (props) => {
@@ -16,11 +17,17 @@ const Required: React.FC<{ title: string; to: string }> = (props) => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          backgroundImage: `url("/assets/images/empty.jpg")`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          position: "relative", // added for the parent of Image component
         }}
       >
+        <Image
+          src="/assets/images/empty.jpg"
+          alt="Background"
+          layout="fill" // fill the parent component
+          objectFit="cover" // replicate backgroundSize="cover"
+          objectPosition="center" // replicate backgroundPosition="center"
+          quality={100} // adjust for your needs
+        />
         <Button
           style={{
             backgroundColor: "black",
@@ -28,6 +35,8 @@ const Required: React.FC<{ title: string; to: string }> = (props) => {
             padding: "20px",
             width: "80%",
             boxShadow: "3px 3px 10px grey",
+            position: "absolute", // added to position over the Image component
+            zIndex: 1, // added to stack above the Image component
           }}
           onClick={redirection}
         >
