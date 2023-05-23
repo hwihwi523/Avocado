@@ -60,9 +60,13 @@ const MyProductsList: React.FC<{ provider_id: string }> = (props) => {
   }
 
   const [productList, setProductList] = useState<ProductItem[]>([]);
-  const { data, isLoading, error } = useGetProductListByCategoryQuery(
+  const { data, isLoading, error, refetch } = useGetProductListByCategoryQuery(
     requeryValue()
   );
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   //무한스크롤을 이용하기위해 이어 붙임
   useEffect(() => {

@@ -18,7 +18,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { TransitionProps } from "@mui/material/transitions";
 import { useSnackbar } from "notistack";
 import * as React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { InlineText } from "../../atoms";
 import { CommercialItem } from "../../molecues";
 import TotalCommercialGraph from "./TotalCommercialGraph";
@@ -26,6 +26,10 @@ import TotalCommercialGraph from "./TotalCommercialGraph";
 const MyCommercial = () => {
   //광고 리스트 출력
   const { data, isLoading, error, refetch } = useGetMyCommercialListQuery();
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   //알림창
   const { enqueueSnackbar } = useSnackbar();
