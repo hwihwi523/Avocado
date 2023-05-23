@@ -1,11 +1,11 @@
 import { DecodedToken } from "@/src/features/auth/authApi";
-import { AppState, useAppSelector, wrapper } from "@/src/features/store";
+import { Member, setMember } from "@/src/features/auth/authSlice";
 import { useQueryParams } from "@/src/hooks/useQueryParams";
-import { authenticateTokenInPages } from "@/src/utils/authenticateTokenInPages";
 import { setToken } from "@/src/utils/tokenManager";
 import jwt from "jsonwebtoken";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 
 const SECRET = process.env.NEXT_PUBLIC_JWT_SECRET
   ? process.env.NEXT_PUBLIC_JWT_SECRET
@@ -13,11 +13,10 @@ const SECRET = process.env.NEXT_PUBLIC_JWT_SECRET
 
 export default function OAuthRedirect() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const queryParams = useQueryParams();
-  const member = useAppSelector((state: AppState) => state.auth.member);
 
   useEffect(() => {
-    if (member) router.replace("/", undefined, { shallow: true });
     // url에서 받은 토큰으로 로그인 처리
     const accessToken = queryParams.get("access_token");
     const refreshToken = queryParams.get("refresh_token");
@@ -35,14 +34,29 @@ export default function OAuthRedirect() {
           const refreshExp = decodedRefreshToken.exp;
           setToken("ACCESS_TOKEN", accessToken, accessExp);
           setToken("REFRESH_TOKEN", refreshToken, refreshExp);
+          let member: Member;
+          member = {
+            type: decodedRefreshToken.type,
+            id: decodedRefreshToken.id,
+            email: decodedRefreshToken.email,
+            name: decodedRefreshToken.name,
+            grade: decodedRefreshToken.grade,
+            picture_url: decodedRefreshToken.picture_url,
+            gender: decodedRefreshToken.gender,
+            age_group: decodedRefreshToken.age_group,
+            height: decodedRefreshToken.height,
+            weight: decodedRefreshToken.weight,
+            mbti_id: decodedRefreshToken.mbti_id,
+            personal_color_id: decodedRefreshToken.personal_color_id,
+          };
+          dispatch(setMember(member));
         } catch (err) {
           console.error(err);
           // 토큰 검증에 실패했을 때의 처리 로직
         }
       }
-      // 리로드 -> 멤버 로그인 정보 store에 저장
-
-      window.location.reload();
+      // 멤버 로그인 정보 store에 저장 후 리플레이스
+      router.replace("/", undefined, { shallow: true });
     };
 
     navigateToLogin();
@@ -50,17 +64,3 @@ export default function OAuthRedirect() {
 
   return <></>;
 }
-
-export const getServerSideProps = wrapper.getServerSideProps(
-  (store) => async (context) => {
-    // 쿠키의 토큰을 통해 로그인 확인, 토큰 리프레시, 실패 시 로그아웃 처리 등
-    await authenticateTokenInPages(
-      { req: context.req, res: context.res },
-      store
-    );
-
-    return {
-      props: {},
-    };
-  }
-);
