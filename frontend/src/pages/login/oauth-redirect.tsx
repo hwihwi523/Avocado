@@ -1,9 +1,9 @@
-import { useEffect } from "react";
-import { useRouter } from "next/router";
+import { DecodedToken } from "@/src/features/auth/authApi";
 import { useQueryParams } from "@/src/hooks/useQueryParams";
-import { DecodedToken, authApi } from "@/src/features/auth/authApi";
-import jwt from "jsonwebtoken";
 import { setToken } from "@/src/utils/tokenManager";
+import jwt from "jsonwebtoken";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 const SECRET = process.env.NEXT_PUBLIC_JWT_SECRET
   ? process.env.NEXT_PUBLIC_JWT_SECRET

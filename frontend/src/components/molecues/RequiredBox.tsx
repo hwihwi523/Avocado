@@ -1,7 +1,7 @@
-import { BlockText } from "../atoms";
 import { Button } from "@mui/material";
 import Image from "next/image";
 import router from "next/router";
+import { BlockText } from "../atoms";
 
 const Required: React.FC<{ title: string; to: string }> = (props) => {
   function redirection() {

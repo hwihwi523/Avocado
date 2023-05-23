@@ -1,9 +1,7 @@
-import { DecodedToken } from "../features/auth/authApi";
-import { Member, clearAuth, setMember } from "../features/auth/authSlice";
-import jwt from "jsonwebtoken";
-import { appCookies } from "../pages/_app";
-import { NextApiResponse } from "next";
 import { IncomingMessage, ServerResponse } from "http";
+import jwt from "jsonwebtoken";
+import { DecodedToken } from "../features/auth/authApi";
+import { Member, setMember } from "../features/auth/authSlice";
 import { AppStore } from "../features/store";
 
 //서버

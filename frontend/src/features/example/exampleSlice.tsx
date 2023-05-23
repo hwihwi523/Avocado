@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ExampleState, ExampleUser } from "@/src/types/exampleTypes";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
 
 const initialState: ExampleState = {

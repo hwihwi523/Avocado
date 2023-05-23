@@ -1,18 +1,17 @@
-import styled from "@emotion/styled";
-import { Stack, Divider } from "@mui/material";
-import Image from "next/image";
-import { BlockText, InlineText } from "../../components/atoms";
 import { mbti_list, personal_color_list } from "@/src/components/atoms/data";
-import { Button } from "@mui/material";
-import { useState, ChangeEvent } from "react";
-import { useSnackbar } from "notistack";
+import styled from "@emotion/styled";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
+import { Button, Divider, Stack } from "@mui/material";
+import Image from "next/image";
+import { useSnackbar } from "notistack";
+import { ChangeEvent, useState } from "react";
+import { InlineText } from "../../components/atoms";
 
+import { useAddCommercialMutation } from "@/src/features/commercial/commercialApi";
+import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { useAddCommercialMutation } from "@/src/features/commercial/commercialApi";
 
 //구매 목록 더미 데이터
 

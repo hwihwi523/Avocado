@@ -1,15 +1,14 @@
 import styled from "@emotion/styled";
-import { Stack } from "@mui/material";
-import { useState } from "react";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { Button, Stack } from "@mui/material";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import * as React from "react";
 import { useSnackbar } from "notistack";
-import { Button } from "@mui/material";
+import * as React from "react";
+import { useState } from "react";
 import { BlockText } from "../../atoms";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { personal_color_list } from "../../atoms/data";
 
 //memberInfo의 타입

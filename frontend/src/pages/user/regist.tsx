@@ -1,19 +1,18 @@
 import styled from "@emotion/styled";
 import { Stack } from "@mui/material";
-import { useState } from "react";
 import Button from "@mui/material/Button";
+import { useState } from "react";
 
+import { BlockText } from "@/src/components/atoms";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import * as React from "react";
 import IconButton from "@mui/material/IconButton";
+import Head from "next/head";
+import router from "next/router";
 import {
   GenderAndAgeForm,
   MbtiAndWeightHeightForm,
   PersonalColorFormfrom,
 } from "../../components/molecues/form";
-import router from "next/router";
-import { BlockText } from "@/src/components/atoms";
-import Head from "next/head";
 
 import { useAddMemberInfoMutation } from "@/src/features/memberInfo/memberInfoApi";
 import { removeToken } from "@/src/utils/tokenManager";

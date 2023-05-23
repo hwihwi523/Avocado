@@ -1,18 +1,17 @@
 import styled from "@emotion/styled";
 
-
-import React from "react";
 import {
-  Chart as ChartJS,
   CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
+  Chart as ChartJS,
   Filler,
   Legend,
+  LineElement,
+  LinearScale,
+  PointElement,
+  Title,
+  Tooltip,
 } from "chart.js";
+import React from "react";
 import { Line } from "react-chartjs-2";
 
 ChartJS.register(
@@ -26,7 +25,6 @@ ChartJS.register(
   Legend
 );
 
-
 type Item = {
   title: string;
   value: number[];
@@ -37,23 +35,22 @@ type Item = {
 const ChartCommercialState: React.FC<Item> = (props) => {
   const { value, date, title, color } = props;
 
-
   //그래프 옵션
   const options = {
     responsive: true,
     plugins: {
       legend: {
-        display:false,
+        display: false,
         position: "top" as const,
       },
       title: {
         display: true,
-        text:title,
+        text: title,
       },
     },
   };
-  
-//데이터 옵션
+
+  //데이터 옵션
   const data = {
     labels: date,
     datasets: [
@@ -80,5 +77,5 @@ const Background = styled.div`
   padding: 10px;
   box-sizing: border-box;
   border: 1px solid #dddddd;
-  border-radius:10px;
+  border-radius: 10px;
 `;

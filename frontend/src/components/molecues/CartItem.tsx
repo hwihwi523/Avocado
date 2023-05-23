@@ -1,17 +1,17 @@
-import styled from "@emotion/styled";
-import { Stack, IconButton } from "@mui/material";
-import Image from "next/image";
-import { BlockText } from "../atoms";
-import Grid from "@mui/material/Grid";
-import router from "next/router";
-import ClearIcon from "@mui/icons-material/Clear";
-import StarIcon from "@mui/icons-material/Star";
-import { ProductForCart } from "@/src/features/product/productSlice";
-import { AppState, useAppSelector } from "@/src/features/store";
 import {
   useGetCartQuery,
   useRemoveCartMutation,
 } from "@/src/features/product/productApi";
+import { ProductForCart } from "@/src/features/product/productSlice";
+import { AppState, useAppSelector } from "@/src/features/store";
+import styled from "@emotion/styled";
+import ClearIcon from "@mui/icons-material/Clear";
+import StarIcon from "@mui/icons-material/Star";
+import { IconButton, Stack } from "@mui/material";
+import Grid from "@mui/material/Grid";
+import Image from "next/image";
+import router from "next/router";
+import { BlockText } from "../atoms";
 
 const CartItem: React.FC<{ data: ProductForCart }> = (props) => {
   const {

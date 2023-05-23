@@ -1,14 +1,9 @@
 // SSR 방식의 예제
-import Head from "next/head";
-import Axios from "axios";
-import { TestProduct } from "@/src/queries/testProductListApi";
-import Image from "next/image";
-import { Product } from "@/src/features/product/productSlice";
-import { authApi } from "@/src/features/auth/authApi";
-import { wrapper } from "@/src/features/store";
-import { useStore } from "react-redux";
 import { productApi } from "@/src/features/product/productApi";
-import jwt from "jsonwebtoken";
+import { Product } from "@/src/features/product/productSlice";
+import { wrapper } from "@/src/features/store";
+import Head from "next/head";
+import Image from "next/image";
 
 interface Props {
   products: Product[];

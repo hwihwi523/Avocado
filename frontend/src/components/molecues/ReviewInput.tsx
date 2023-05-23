@@ -1,13 +1,11 @@
-import styled from "@emotion/styled";
-import { Grid, TextField, Rating, Stack } from "@mui/material";
-import { useRef, useState } from "react";
-import { Button } from "@mui/material";
 import {
-  productApi,
   useGetProductReviewsQuery,
   useRegistProductReviewMutation,
 } from "@/src/features/product/productApi";
+import styled from "@emotion/styled";
+import { Button, Grid, Rating, Stack, TextField } from "@mui/material";
 import { useRouter } from "next/router";
+import { useRef, useState } from "react";
 
 const ReviewInput = (props: any) => {
   const [rating, setRating] = useState(0);

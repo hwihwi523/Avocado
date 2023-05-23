@@ -1,17 +1,14 @@
-import styled from "@emotion/styled";
-import { Stack } from "@mui/material";
-import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
-import Image from "next/image";
-import { BlockText } from "../atoms";
-import EditNoteIcon from "@mui/icons-material/EditNote";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import IconButton from "@mui/material/IconButton";
-import router from "next/router";
-import { mbti_list, personal_color_list } from "../atoms/data";
 import { Member } from "@/src/features/auth/authSlice";
-import { useEffect } from "react";
+import styled from "@emotion/styled";
+import EditNoteIcon from "@mui/icons-material/EditNote";
+import { Stack } from "@mui/material";
+import Divider from "@mui/material/Divider";
+import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
+import Image from "next/image";
+import router from "next/router";
+import { BlockText } from "../atoms";
+import { mbti_list, personal_color_list } from "../atoms/data";
 
 const MainUserProfile: React.FC<{ member: Member }> = (props) => {
   const { gender, mbti_id, name, personal_color_id, picture_url, grade } =

@@ -1,23 +1,16 @@
-import React from "react";
-import { Inter } from "next/font/google";
 import styled from "@emotion/styled";
-import { Grid, Button, Box } from "@mui/material";
+import { Box, Button, Grid } from "@mui/material";
+import { Inter } from "next/font/google";
 import Head from "next/head";
-import Image from "next/image";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { BlockText, InlineText } from "../components/atoms";
+import { mbti_list, personal_color_list } from "../components/atoms/data";
 import {
-  ProductCardsRow,
-  Category,
   Commercials,
+  ProductCardsRow,
   UserProfile,
 } from "../components/oranisms";
-import { useRouter } from "next/router";
-import { BlockText, InlineText } from "../components/atoms";
-import { AppState, useAppSelector, wrapper } from "../features/store";
-import { authenticateTokenInPages } from "../utils/authenticateTokenInPages";
-import { productApi } from "../features/product/productApi";
-import { setProductListForGuest } from "../features/product/productSlice";
-import { useState, useEffect, useRef } from "react";
-import { mbti_list, personal_color_list } from "../components/atoms/data";
 import PopupCommercial from "../components/oranisms/PopupCommercial";
 import ProviderProfile from "../components/oranisms/ProviderProfile";
 import { commercialApi } from "../features/commercial/commercialApi";
@@ -25,14 +18,18 @@ import {
   setCarouselCommercialList,
   setPopupCommercialList,
 } from "../features/commercial/commercialSlice";
+import { productApi } from "../features/product/productApi";
+import { setProductListForGuest } from "../features/product/productSlice";
 import { statisticApi } from "../features/statistic/statisticApi";
+import { AppState, useAppSelector, wrapper } from "../features/store";
+import { authenticateTokenInPages } from "../utils/authenticateTokenInPages";
 
+import { RequiredBox } from "../components/molecues";
+import CategoryForMain from "../components/oranisms/CategoryForMain";
 import {
   RecommendProductItem,
   setRecommendProductsData,
 } from "../features/statistic/statisticSlice";
-import { RequiredBox } from "../components/molecues";
-import CategoryForMain from "../components/oranisms/CategoryForMain";
 
 const inter = Inter({ subsets: ["latin"] });
 

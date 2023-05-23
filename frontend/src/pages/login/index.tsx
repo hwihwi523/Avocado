@@ -1,14 +1,10 @@
-import styled from "@emotion/styled";
-import Head from "next/head";
-import { Button, Stack, Box } from "@mui/material";
-import { useRouter } from "next/router";
-import authenticateMemberInPages from "@/src/utils/authenticateMemberInPages";
-import { wrapper } from "@/src/features/store";
-import { authenticateTokenInPages } from "@/src/utils/authenticateTokenInPages";
-import { useGetProductListQuery } from "@/src/features/product/productApi";
-import Image from "next/image";
 import { useLoginMutation } from "@/src/features/auth/authApi";
-import CircularProgress from "@mui/material/CircularProgress";
+import { wrapper } from "@/src/features/store";
+import styled from "@emotion/styled";
+import { Button, Stack } from "@mui/material";
+import Head from "next/head";
+import Image from "next/image";
+import { useRouter } from "next/router";
 export default function Login() {
   const router = useRouter();
   //이건 왜 있는거지

@@ -1,5 +1,7 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { customFetchBaseQuery } from "@/src/utils/customFetchBaseQuery";
+import { createApi } from "@reduxjs/toolkit/query/react";
 import { HYDRATE } from "next-redux-wrapper";
+import { RecommendProductItem } from "../statistic/statisticSlice";
 import {
   Product,
   ProductDetail,
@@ -8,9 +10,6 @@ import {
   ProductForWishlist,
   ProductReview,
 } from "./productSlice";
-import { customFetchBaseQuery } from "@/src/utils/customFetchBaseQuery";
-import { headers } from "next/dist/client/components/headers";
-import { RecommendProductItem } from "../statistic/statisticSlice";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 

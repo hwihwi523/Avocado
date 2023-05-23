@@ -1,30 +1,27 @@
-import styled from "@emotion/styled";
-import {
-  Button,
-  Stack,
-  Divider,
-  Box,
-  Dialog,
-  Slide,
-  AppBar,
-  IconButton,
-  Toolbar,
-} from "@mui/material";
-import { CommercialItem } from "../../molecues";
-import router from "next/router";
-import { useSnackbar } from "notistack";
 import {
   useGetMyCommercialListQuery,
   useRemoveCommercialMutation,
 } from "@/src/features/commercial/commercialApi";
-import CircularProgress from "@mui/material/CircularProgress";
-import { useState } from "react";
-import { TransitionProps } from "@mui/material/transitions";
-import * as React from "react";
-import TotalCommercialGraph from "./TotalCommercialGraph";
+import styled from "@emotion/styled";
 import CloseIcon from "@mui/icons-material/Close";
-import { useEffect } from "react";
+import {
+  AppBar,
+  Button,
+  Dialog,
+  Divider,
+  IconButton,
+  Slide,
+  Stack,
+  Toolbar,
+} from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
+import { TransitionProps } from "@mui/material/transitions";
+import { useSnackbar } from "notistack";
+import * as React from "react";
+import { useState } from "react";
 import { InlineText } from "../../atoms";
+import { CommercialItem } from "../../molecues";
+import TotalCommercialGraph from "./TotalCommercialGraph";
 
 const MyCommercial = () => {
   //광고 리스트 출력

@@ -1,19 +1,21 @@
 import styled from "@emotion/styled";
-import { Stack, Box, IconButton } from "@mui/material";
+import { Box, IconButton, Stack } from "@mui/material";
 
-import AddIcon from "@mui/icons-material/Add";
-import { SnapshotItem } from "../../components/molecues";
-import router from "next/router";
-import Head from "next/head";
-import { useState, useEffect } from "react";
-import { useGetSnapshotListQuery } from "@/src/features/snapshot/snapshotApi";
 import { BlockText } from "@/src/components/atoms";
-import { SnapshotItem as snapshotItemType } from "@/src/features/snapshot/snapshotApi";
+import {
+  SnapshotItem as snapshotItemType,
+  useGetSnapshotListQuery,
+} from "@/src/features/snapshot/snapshotApi";
+import AddIcon from "@mui/icons-material/Add";
+import LinearProgress from "@mui/material/LinearProgress";
+import Head from "next/head";
+import router from "next/router";
+import { useSnackbar } from "notistack";
+import { useEffect, useState } from "react";
+import { useInView } from "react-intersection-observer";
+import { SnapshotItem } from "../../components/molecues";
 import { AppState, useAppSelector, wrapper } from "../../features/store";
 import { authenticateTokenInPages } from "../../utils/authenticateTokenInPages";
-import { useSnackbar } from "notistack";
-import { useInView } from "react-intersection-observer";
-import LinearProgress from "@mui/material/LinearProgress";
 
 const Snapshot = () => {
   // 화면 제일 하단으로 갔는지 감시하는 라이브러리 => 무한스크롤 쌉가능

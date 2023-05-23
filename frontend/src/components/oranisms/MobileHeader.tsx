@@ -1,12 +1,11 @@
-import styled from "@emotion/styled";
-import { Stack, IconButton, Button } from "@mui/material";
-import Link from "next/link";
-import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import Image from "next/image";
-import { AppState, useAppSelector } from "@/src/features/store";
-import { useSnackbar } from "notistack";
-import router from "next/router";
 import { appCookies } from "@/src/pages/_app";
+import styled from "@emotion/styled";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import { IconButton, Stack } from "@mui/material";
+import Image from "next/image";
+import Link from "next/link";
+import router from "next/router";
+import { useSnackbar } from "notistack";
 
 const MobileHeader = () => {
   // 모든 페이지에서 SSR을 하지 않으므로, 헤더에서 로그인 여부를 판단하기 위해 쿠키 이용

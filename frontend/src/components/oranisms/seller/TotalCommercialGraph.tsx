@@ -1,13 +1,13 @@
+import { useGetCommercialAnalysesQuery } from "@/src/features/commercial/commercialApi";
 import styled from "@emotion/styled";
-import { Stack } from "@mui/material";
-import { ChartCommercialState } from "../charts";
 import MouseOutlinedIcon from "@mui/icons-material/MouseOutlined";
-import { InlineText } from "../../atoms";
-import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import PaidOutlinedIcon from "@mui/icons-material/PaidOutlined";
 import SellOutlinedIcon from "@mui/icons-material/SellOutlined";
-import { useGetCommercialAnalysesQuery } from "@/src/features/commercial/commercialApi";
-import { useState, useEffect } from "react";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import { Stack } from "@mui/material";
+import { useEffect, useState } from "react";
+import { InlineText } from "../../atoms";
+import { ChartCommercialState } from "../charts";
 
 const CommercialState: React.FC<{ commercialId: number }> = (props) => {
   const { commercialId } = props;

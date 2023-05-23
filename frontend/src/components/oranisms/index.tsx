@@ -1,18 +1,20 @@
 import Category from "./Category";
+import CommercialRegist from "./CommercialRegist";
 import Commercials from "./Commercials";
-import UserProfile from "./UserProfile";
 import MobileBottom from "./MobileBottom";
 import MobileHeader from "./MobileHeader";
-import ProductCardsRow from "./ProductCardsRow";
-import ProductDetailImage from "./ProductDetailImage";
-import ProductDescription from "./ProductDescription";
-import ProductReviewOrg from "./ProductReviewOrg";
-import ProductCardsGrid from "./ProductCardsGrid";
-import UserStateSummary from "./UserStateSummary";
-import CommercialRegist from "./CommercialRegist";
-import MainUserProfile from "./UserProfile";
 import PopupCommercial from "./PopupCommercial";
+import ProductCardsGrid from "./ProductCardsGrid";
+import ProductCardsRow from "./ProductCardsRow";
+import ProductDescription from "./ProductDescription";
+import ProductDetailImage from "./ProductDetailImage";
+import ProductReviewOrg from "./ProductReviewOrg";
 import ProviderProfile from "./ProviderProfile";
+import {
+  default as MainUserProfile,
+  default as UserProfile,
+} from "./UserProfile";
+import UserStateSummary from "./UserStateSummary";
 
 export {
   Category,

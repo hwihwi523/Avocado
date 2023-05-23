@@ -1,32 +1,21 @@
-import styled from "@emotion/styled";
 import {
   ProductItem,
   useGetProductListByCategoryQuery,
 } from "@/src/features/seller/sellerApi";
-import { useState, useEffect } from "react";
+import styled from "@emotion/styled";
+import { useEffect, useState } from "react";
 
-import { Category } from "@/src/components/oranisms";
-import { useInView } from "react-intersection-observer";
-import CircularProgress from "@mui/material/CircularProgress";
-import { BlockText, InlineText } from "@/src/components/atoms";
-import {
-  Box,
-  Button,
-  Grid,
-  Dialog,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Stack,
-} from "@mui/material";
+import { BlockText } from "@/src/components/atoms";
 import { ProductCard } from "@/src/components/molecues";
+import { Category } from "@/src/components/oranisms";
+import { Grid } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 import Slide from "@mui/material/Slide";
-import * as React from "react";
 import { TransitionProps } from "@mui/material/transitions";
-import { CommercialRegist } from "@/src/components/oranisms";
-import CloseIcon from "@mui/icons-material/Close";
-import { useRouter } from "next/router";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import * as React from "react";
+import { useInView } from "react-intersection-observer";
 const Store: React.FC<{ provider_id: string }> = (props) => {
   const router = useRouter();
   const { provider_id, id: brand_name } = router.query;

@@ -1,23 +1,23 @@
-import styled from "@emotion/styled";
-import { Stack, Chip, IconButton, Button, Box, Skeleton } from "@mui/material";
-import Image from "next/image";
-import { BlockText, InlineText } from "../atoms";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import router from "next/router";
-import { useState } from "react";
 import {
   SnapshotItem as snapshotItemType,
   useAddSnapshotLikeMutation,
   useRemoveSnapshotLikeMutation,
+  useRemoveSnapshotMutation,
 } from "@/src/features/snapshot/snapshotApi";
-import { useRemoveSnapshotMutation } from "@/src/features/snapshot/snapshotApi";
+import styled from "@emotion/styled";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import { Box, Button, Chip, IconButton, Skeleton, Stack } from "@mui/material";
+import Image from "next/image";
+import router from "next/router";
+import { useSnackbar } from "notistack";
+import { useState } from "react";
+import { BlockText, InlineText } from "../atoms";
 import {
   mbti_list,
   personal_color_list,
   personal_color_list_eng,
 } from "../atoms/data";
-import { useSnackbar } from "notistack";
 
 const SnapshotItem: React.FC<{ data: snapshotItemType; refetch: any }> = (
   props

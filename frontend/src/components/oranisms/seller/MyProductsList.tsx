@@ -1,30 +1,28 @@
-import styled from "@emotion/styled";
 import {
   ProductItem,
   useGetProductListByCategoryQuery,
 } from "@/src/features/seller/sellerApi";
-import { useState, useEffect } from "react";
-import Category from "../Category";
-import ProductCardsGrid from "../ProductCardsGrid";
-import { useInView } from "react-intersection-observer";
-import CircularProgress from "@mui/material/CircularProgress";
-import { BlockText, InlineText } from "../../atoms";
+import styled from "@emotion/styled";
+import CloseIcon from "@mui/icons-material/Close";
 import {
-  Box,
-  Button,
-  Grid,
-  Dialog,
   AppBar,
-  Toolbar,
+  Button,
+  Dialog,
+  Grid,
   IconButton,
   Stack,
+  Toolbar,
 } from "@mui/material";
-import { ProductCard } from "../../molecues";
+import CircularProgress from "@mui/material/CircularProgress";
 import Slide from "@mui/material/Slide";
-import * as React from "react";
 import { TransitionProps } from "@mui/material/transitions";
+import * as React from "react";
+import { useEffect, useState } from "react";
+import { useInView } from "react-intersection-observer";
+import { BlockText } from "../../atoms";
+import { ProductCard } from "../../molecues";
+import Category from "../Category";
 import CommercialRegist from "../CommercialRegist";
-import CloseIcon from "@mui/icons-material/Close";
 
 const MyProductsList: React.FC<{ provider_id: string }> = (props) => {
   const [ref, inView] = useInView(); //무한스크롤 감지 라이브러리

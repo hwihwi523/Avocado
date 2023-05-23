@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import Carousel from "react-material-ui-carousel";
-import Image from "next/image";
 
 type CommercialItem = {
   merchandise_id: number;

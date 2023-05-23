@@ -1,9 +1,5 @@
-import { clearAuth } from "@/src/features/auth/authSlice";
 import { AppStore } from "@/src/features/store";
 import { IncomingMessage, ServerResponse } from "http";
-import { NextApiResponse } from "next";
-import { NextApiRequest } from "next";
-import { NextPageContext } from "next/types";
 
 // /api/logout 요청을 처리하는 핸들러
 export default function handler(

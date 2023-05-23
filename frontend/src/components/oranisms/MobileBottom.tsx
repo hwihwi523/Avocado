@@ -1,15 +1,15 @@
 //컴포넌트를 만들 때 테스트 하는 곳
 
-import { Box, Stack } from "@mui/material";
-import HomeIconOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import SearchIcon from "@mui/icons-material/Search";
-import ImageIcon from "@mui/icons-material/Image";
+import { AppState, useAppSelector } from "@/src/features/store";
+import styled from "@emotion/styled";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
+import HomeIconOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import ImageIcon from "@mui/icons-material/Image";
+import SearchIcon from "@mui/icons-material/Search";
+import { Box, Stack } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
-import styled from "@emotion/styled";
 import Link from "next/link";
-import { useAppSelector, AppState } from "@/src/features/store";
 import router from "next/router";
 import { useSnackbar } from "notistack";
 

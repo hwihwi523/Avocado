@@ -1,13 +1,13 @@
-import { Button } from '@mui/material';
-import DaumPostcode from 'react-daum-postcode';
+import { Button } from "@mui/material";
+import DaumPostcode from "react-daum-postcode";
 
 const AddressInput: React.FC<{
   setVisible: (data: boolean) => void;
-  dataRef:(data:string)=>void;
+  dataRef: (data: string) => void;
 }> = (props) => {
   const handleComplete = (data: any) => {
     let fullAddress = data.address;
-    let extraAddress = '';
+    let extraAddress = "";
     props.dataRef(fullAddress);
     props.setVisible(false);
   };

@@ -1,6 +1,6 @@
 // Or from '@reduxjs/toolkit/query' if not using the auto-generated hooks
-import { createApi } from "@reduxjs/toolkit/query/react";
 import { customFetchBaseQuery } from "@/src/utils/customFetchBaseQuery";
+import { createApi } from "@reduxjs/toolkit/query/react";
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 //광고 신청 타입

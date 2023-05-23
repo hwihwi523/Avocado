@@ -1,22 +1,16 @@
-import styled from "@emotion/styled";
-import { Stack, IconButton, Button } from "@mui/material";
-import Image from "next/image";
-import { BlockText } from "../atoms";
-import Grid from "@mui/material/Grid";
-import router from "next/router";
-import ClearIcon from "@mui/icons-material/Clear";
-import StarIcon from "@mui/icons-material/Star";
 import {
-  ProductForWishlist,
-  setProductListForWishlist,
-} from "@/src/features/product/productSlice";
-import { wrapper } from "@/src/features/store";
-import { authenticateTokenInPages } from "@/src/utils/authenticateTokenInPages";
-import {
-  productApi,
   useGetWishlistQuery,
   useRemoveWishlistMutation,
 } from "@/src/features/product/productApi";
+import { ProductForWishlist } from "@/src/features/product/productSlice";
+import styled from "@emotion/styled";
+import ClearIcon from "@mui/icons-material/Clear";
+import StarIcon from "@mui/icons-material/Star";
+import { IconButton, Stack } from "@mui/material";
+import Grid from "@mui/material/Grid";
+import Image from "next/image";
+import router from "next/router";
+import { BlockText } from "../atoms";
 
 const WishItem: React.FC<{ item: ProductForWishlist }> = (props) => {
   const {

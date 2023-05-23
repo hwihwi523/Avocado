@@ -1,7 +1,5 @@
 import styled from "@emotion/styled";
 import Grid from "@mui/material/Grid";
-import Link from "next/link";
-import { category_list } from "../atoms/data";
 import Image from "next/image";
 import router from "next/router";
 

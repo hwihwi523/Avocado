@@ -1,21 +1,20 @@
 import styled from "@emotion/styled";
-import { TextField, InputAdornment } from "@mui/material";
-import { useRef, useState, ChangeEvent, useCallback, useEffect } from "react";
 import SearchIcon from "@mui/icons-material/Search";
-import { ProductCardsGrid } from "../components/oranisms";
-import { BlockText } from "../components/atoms";
+import { InputAdornment, TextField, debounce } from "@mui/material";
 import Head from "next/head";
-import { debounce } from "@mui/material";
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
+import { BlockText } from "../components/atoms";
+import { ProductCardsGrid } from "../components/oranisms";
 
 import {
-  useGetRecommendsQuery,
   useGetProductListQuery,
+  useGetRecommendsQuery,
 } from "../queries/searchApi";
 
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
 import ListItemButton from "@mui/material/ListItemButton";
+import ListItemText from "@mui/material/ListItemText";
 import { useRouter } from "next/router";
 
 const Search = () => {
