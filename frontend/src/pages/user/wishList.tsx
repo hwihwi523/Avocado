@@ -17,6 +17,9 @@ const WishList = () => {
   const member = useAppSelector((state: AppState) => state.auth.member);
   const { enqueueSnackbar } = useSnackbar();
 
+  // wishlist 호출
+  const { data: wishlist, refetch } = useGetWishlistQuery();
+
   useEffect(() => {
     if (!member) {
       enqueueSnackbar(`로그인이 필요한 서비스입니다.`, {
@@ -28,10 +31,8 @@ const WishList = () => {
       });
       router.replace("/login");
     }
+    refetch(); // 위시리스트 refetch
   }, []);
-
-  // wishlist 호출
-  const { data: wishlist } = useGetWishlistQuery();
 
   return (
     <Background>
