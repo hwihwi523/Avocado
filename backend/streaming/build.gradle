@@ -21,14 +21,12 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 
-//	implementation 'org.springframework.kafka:spring-kafka'
 	implementation 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-//	testImplementation 'org.springframework.kafka:spring-kafka-test'
 
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
-	implementation 'org.rocksdb:rocksdbjni:8.0.0' // m1 mac에서 이슈가 있어서 최신에 가까운 버전 사용
+	implementation 'org.rocksdb:rocksdbjni:8.0.0'
 
 	// avro
 	implementation "org.apache.avro:avro:1.11.1"
@@ -38,11 +36,10 @@ dependencies {
 
 
 	implementation 'io.confluent:kafka-schema-registry-client:7.3.3' // or whatever the latest version available
-	implementation 'io.confluent:kafka-avro-serializer:7.3.3' // or whatever the latest version available
-// https://mvnrepository.com/artifact/io.confluent/kafka-streams-avro-serde
 	implementation 'io.confluent:kafka-streams-avro-serde:7.3.3'
 
-
+	implementation 'org.slf4j:slf4j-api'
+//	implementation 'org.slf4j:jcl-over-slf4j'
 }
 
 tasks.named('test') {

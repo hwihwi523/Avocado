@@ -11,6 +11,8 @@ import com.avocado.ActionType;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.apache.avro.generic.GenericRecord;
@@ -30,8 +32,9 @@ public class StreamingApplication {
 	private static Integer commitInterval = 10*1000;
 
 	public static void main(String[] args) throws IOException {
-		System.setProperty("spring.devtools.restart.enabled", "false"); // restart / launcher 클래스 로더 이슈 없애줌
+		System.setProperty("spring.devtools.restart.enabled", "false");
 		SpringApplication.run(StreamingApplication.class, args);
+		final Logger log = LogManager.getLogger(StreamingApplication.class);
 
 		final Serde<String> stringSerde = Serdes.String();
 		final Serde<Long> longSerde = Serdes.Long();
@@ -39,8 +42,7 @@ public class StreamingApplication {
 		boolean isKeySerde = false;
 
 		final Serde<GenericRecord> genericAvroSerde = new GenericAvroSerde();
- 		genericAvroSerde.configure(Collections.singletonMap(
-				 "schema.registry.url", "http://a5ef82e13fcbc44689f93c4924981608-494875664.ap-northeast-2.elb.amazonaws.com:8081"), isKeySerde);
+ 		genericAvroSerde.configure(Collections.singletonMap("schema.registry.url", "http://a5ef82e13fcbc44689f93c4924981608-494875664.ap-northeast-2.elb.amazonaws.com:8081"), isKeySerde);
 
 		 final Serde<Result> resultSerde = new SpecificAvroSerde<>();
 		 resultSerde.configure(Collections.singletonMap(
@@ -66,14 +68,9 @@ public class StreamingApplication {
 		StreamsBuilder builder = new StreamsBuilder();
 
 
-
-
-
-
-		//////////// payment counter
+		// payment counter
 		KStream<String, PurchaseHistory> purchaseHistoryStream = builder.stream("test-purchase-history1", Consumed.with(stringSerde, purchaseHistorySerde));
 		KStream<Long, Result> paymentStream = purchaseHistoryStream
-//				.flatMapValues((ValueMapper<PurchaseHistory, Iterable<Merchandise>>) PurchaseHistory::getMerchandises);
 				.flatMap((key, value) -> {
 					List<KeyValue<Long, Result>> result = new ArrayList<>();
 					for (Merchandise merchandise : value.getMerchandises()) {
@@ -88,39 +85,39 @@ public class StreamingApplication {
 					return result;
 				});
 
-		paymentStream.foreach((key, value) -> System.out.println("purchase result stream >> key: " + key + ", value: " + value));
+		paymentStream.foreach((key, value) -> log.info("purchase result stream >> key: {}, value: {}", key, value));
 		paymentStream.to("test-result1", Produced.with(longSerde, resultSerde));
 
-		//////////// normal view counter
+		// view counter
 		KStream<Long, GenericRecord> viewStream = builder.stream("test-view", Consumed.with(longSerde, genericAvroSerde));
 		KStream<Long, Result> viewResult = viewStream.map((key, value) -> KeyValue.pair(key, Result.newBuilder()
 				.setUserId(value.get("userId").toString())
 				.setAction(ActionType.VIEW)
 				.build()));
-		viewResult.foreach((key, value) -> System.out.println("View Stream >> key: " + key + ", value: " + value));
+		viewResult.foreach((key, value) -> log.info("View Stream >> key: {}, value: {}", key, value));
 		viewResult.to("test-result1", Produced.with(longSerde, resultSerde));
 
-		//////////// click counter
+		// click counter
 		KStream<Long, GenericRecord> clickStream = builder.stream("test-click1", Consumed.with(longSerde, genericAvroSerde));
 		KStream<Long, Result> resultStream = clickStream.map(((key, value) -> KeyValue.pair(key, Result.newBuilder()
 				.setUserId(value.get("userId").toString())
 				.setAction(ActionType.CLICK)
 				.build())));
-		resultStream.foreach((key, value) -> System.out.println("Click Stream >> key: " + key + ", value: " + value));
+		resultStream.foreach((key, value) -> log.info("Click Stream >> key: {}, value: {}", key, value));
 		resultStream.to("test-result1", Produced.with(longSerde, resultSerde));
 
-		//////////// cart counter
+		// cart counter
 		KStream<Long, GenericRecord> cartStream = builder.stream("test-cart", Consumed.with(longSerde, genericAvroSerde));
 		KStream<Long, Result> cartResult = cartStream.map(((key, value) -> KeyValue.pair(key, Result.newBuilder()
 				.setUserId(value.get("userId").toString())
 				.setAction(ActionType.CART)
 				.build())));
-		cartResult.foreach((key, value) -> System.out.println("Cart Stream >> key: " + key + ", value: " + value));
+		cartResult.foreach((key, value) -> log.info("Cart Stream >> key: {}, value: {}", key, value));
 		cartResult.to("test-result1", Produced.with(longSerde, resultSerde));
 
 		// adview counter
 		KStream<Long, GenericRecord> adviewStream = builder.stream("test-ad-view1", Consumed.with(longSerde, genericAvroSerde));
-		adviewStream.foreach((key, value) -> System.out.println("Adview Stream - Key: " + key + ", Value: " + value));
+		adviewStream.foreach((key, value) -> log.info("Adview Stream - key: {}, value: {}", key, value));
 
 
 		// define join windows
@@ -129,12 +126,9 @@ public class StreamingApplication {
 //				.after(Duration.ofSeconds(30)) // click event must happen within 15 seconds after adview event
 //				.before(Duration.ZERO);  // click event must happen after adview event
 
-		// Ad view table
-		KTable<Long, GenericRecord> adviewTable = adviewStream.toTable();
-
 		KStream<Long, String> joined = clickStream
 				.join(
-						adviewTable,
+						adviewStream.toTable(),
 						(clickValue, adviewValue) -> {
 							String clickUserId = clickValue.get("userId").toString();
 							String adviewUserId = adviewValue.get("userId").toString();
@@ -165,7 +159,7 @@ public class StreamingApplication {
 				.setAction(ActionType.AD_CLICK)
 				.setTimestamp(System.currentTimeMillis())
 				.build())));
-		ad_click_stream.foreach((k, v) -> System.out.println("ad click >> key: " + k + ", value: " + v));
+		ad_click_stream.foreach((k, v) -> log.info("ad click >> key: " + k + ", value: " + v));
 		ad_click_stream.to("test-result1", Produced.with(longSerde, resultSerde));
 
 
@@ -200,7 +194,7 @@ public class StreamingApplication {
 						.setAction(ActionType.AD_PAYMENT)
 						.setTimestamp(System.currentTimeMillis())
 						.build()));
-		ad_payment_stream.foreach((k, v) -> System.out.println("ad payment >> key: " + k + ", value: " + v));
+		ad_payment_stream.foreach((k, v) -> log.info("ad payment >> key: {}, value: {}", k, v));
 		ad_payment_stream.to("test-result1", Produced.with(longSerde, resultSerde));
 
 
